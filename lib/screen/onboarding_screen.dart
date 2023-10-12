@@ -121,62 +121,74 @@ class OnboardContent extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return  Column(
+
         children:[
           Expanded(
-            child: Column(
-              children: [
-                Flexible(
-                  child: Image.asset(image,fit: BoxFit.fill,),
-                ),
-                Column(
-                  children: [
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ...List.generate(
-                            OnBoardingData.length,
-                                (index) => Padding(
-                              padding: const EdgeInsets.only(right: 20.0),
-                              child: CustomIndicator(
-                                isActive: index == indexValue,
-                              ),
-                            )),
-                      ],
-                    ),
-                    SizedBox(height: height* .03,),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 26,
-                        fontFamily: 'alegreyaSans',
-                        color: Colors.black,
-                        fontStyle: FontStyle.italic,
+                children: [
+                 SizedBox(height: 40,),
+                  Flexible(
+                  child: SizedBox(
+                  height: height * .45,
+      width: width,
+                    child: Image.asset(image,fit: BoxFit.contain,),
+                  )  ),
+                  SizedBox(height: 15,),
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: height*.02,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(
-                      height: height * .02,
-                    ),
-                    Text(
-                      description,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 20,
-                        fontFamily: 'alegreyaSans',
-                        color: Color(0xFF131A38),
-                        fontStyle: FontStyle.italic,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ...List.generate(
+                              OnBoardingData.length,
+                                  (index) => Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: CustomIndicator(
+                                  isActive: index == indexValue,
+                                ),
+                              )),
+                        ],
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(
-                      height: height * .06,
-                    ),
-                  ],
-                ),
-              ],
+                      SizedBox(height: height* .04,),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 26,
+                          fontFamily: 'alegreyaSans',
+                          color: Colors.black,
+                          fontStyle: FontStyle.italic,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: height * .08,
+                      ),
+                      Text(
+                        description,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 16,
+                          fontFamily: 'Alegreya Sans',
+                          color: Color(0xFF616772),
+                          fontStyle: FontStyle.italic,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: height * .06,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           Container(
@@ -202,7 +214,7 @@ class OnboardContent extends StatelessWidget {
                   child: Icon(Icons.arrow_forward,size: 35,color: Colors.white,)
               )),
           SizedBox(
-            height: height * .007,
+            height: height * .07,
           ),
         ]);
   }

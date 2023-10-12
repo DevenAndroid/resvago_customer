@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/widget/apptheme.dart';
 
 import 'addsize.dart';
 
@@ -69,26 +70,26 @@ class CommonTextFieldWidget extends StatelessWidget {
       decoration: InputDecoration(
           hintText: hint,
           focusColor: Colors.black,
-          hintStyle: const TextStyle(
-            color:  Color(0xff2F353F),
-            fontSize: 13,
+          hintStyle:  GoogleFonts.poppins(
+            color:  Colors.white,
+            fontSize: 14,
             // fontFamily: 'poppins',
             fontWeight: FontWeight.w300,
           ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: Colors.white.withOpacity(.10),
           contentPadding:
-          const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+          const EdgeInsets.symmetric(horizontal: 18, vertical: 19),
           // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white),
+            borderSide:  BorderSide(color: Colors.white.withOpacity(.35)),
             borderRadius: BorderRadius.circular(10.0),
           ),
-          enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
+          enabledBorder:  OutlineInputBorder(
+              borderSide:  BorderSide(color: Colors.white.withOpacity(.35)),
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
           border: OutlineInputBorder(
-              borderSide: const BorderSide(color: Color(0xFFD8DCDD), width: 3.0),
+              borderSide:   BorderSide(color: Colors.white.withOpacity(.35), width: 3.0),
               borderRadius: BorderRadius.circular(15.0)),
           suffixIcon: suffix,
           prefixIcon: prefix),
@@ -106,13 +107,7 @@ class CommonButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        gradient: const LinearGradient(
-          // begin: Alignment.topCenter,
-          // end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF7ED957),
-              Color(0xff6BD13F)]
-        ),
+color: Colors.white
       ),
       child: ElevatedButton(
           onPressed: onPressed,
@@ -127,8 +122,9 @@ class CommonButton extends StatelessWidget {
           ),
           child: Text(title,
               style: GoogleFonts.poppins(
+
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppTheme.primaryColor,
                   letterSpacing: .5,
                   fontSize: 18))),
     );

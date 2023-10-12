@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../widget/custom_textfield.dart';
 
@@ -10,332 +13,208 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-
-  // final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  var obscureText1 = true;
-
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return Scaffold(
-      // body: SingleChildScrollView(
-      //   physics: const BouncingScrollPhysics(),
-      //   child: SafeArea(
-      //     child: Form(
-      //       key: _formKey,
-      //       child: Column(children: [
-      //         Stack(
-      //           children: [
-      //             SizedBox(
-      //                 height: screenHeight * .35,
-      //                 width: double.maxFinite,
-      //                 child: Image.asset(
-      //                   'assets/images/LoginBackground.png',
-      //                   fit: BoxFit.cover,
-      //                 )),
-      //             SizedBox(
-      //               width: screenWidth,
-      //               child: Column(
-      //                 children: [
-      //                   SizedBox(
-      //                     height: screenHeight * .02,
-      //                   ),
-      //                   Image.asset(
-      //                     'assets/images/AppLogo.png',
-      //                     width: 203,
-      //                   ),
-      //                   SizedBox(
-      //                     height: screenHeight * .05,
-      //                   ),
-      //                   const Center(
-      //                     child: Text(
-      //                       'Login To Your Account',
-      //                       style: TextStyle(
-      //                         fontSize: 18,
-      //                         fontFamily: 'poppinsSans',
-      //                         fontWeight: FontWeight.w600,
-      //                         color: Color(0xFF66656B),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                   SizedBox(
-      //                     height: screenHeight * .03,
-      //                   ),
-      //                   Padding(
-      //                     padding: const EdgeInsets.symmetric(horizontal: 16),
-      //                     child: Container(
-      //                       width: screenWidth,
-      //                       decoration: BoxDecoration(
-      //                         borderRadius: BorderRadius.circular(10),
-      //                         boxShadow: [
-      //                           BoxShadow(
-      //                             color:
-      //                                 const Color(0xFF37C666).withOpacity(0.10),
-      //                             offset: const Offset(
-      //                               .1,
-      //                               .1,
-      //                             ),
-      //                             blurRadius: 20.0,
-      //                             spreadRadius: 1.0,
-      //                           ),
-      //                         ],
-      //                       ),
-      //                       child: CommonTextFieldWidget(
-      //                         textInputAction: TextInputAction.next,
-      //                         hint: 'Enter your email or phone number',
-      //                         controller: emailController,
-      //                         validator: (value) {
-      //                           if (value!.isEmpty) {
-      //                             return "Email or Phone is required";
-      //                           } else {
-      //                             return null;
-      //                           }
-      //                         },
-      //                       ),
-      //                     ),
-      //                   ),
-      //                   SizedBox(
-      //                     height: screenHeight * .02,
-      //                   ),
-      //                 ],
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //         Padding(
-      //           padding: const EdgeInsets.symmetric(horizontal: 16),
-      //           child: Column(
-      //             children: [
-      //               Container(
-      //                 width: screenWidth,
-      //                 decoration: BoxDecoration(
-      //                   borderRadius: BorderRadius.circular(10),
-      //                   boxShadow: [
-      //                     BoxShadow(
-      //                       color: const Color(0xFF37C666).withOpacity(0.10),
-      //                       offset: const Offset(
-      //                         .1,
-      //                         .1,
-      //                       ),
-      //                       blurRadius: 20.0,
-      //                       spreadRadius: 1.0,
-      //                     ),
-      //                   ],
-      //                 ),
-      //                 child: CommonTextFieldWidget(
-      //                   hint: 'Password',
-      //                   controller: passwordController,
-      //                   obscureText: obscureText1,
-      //                   suffix: GestureDetector(
-      //                       onTap: () {
-      //                         setState(() {
-      //                           obscureText1 = !obscureText1;
-      //                         });
-      //                       },
-      //                       child: obscureText1
-      //                           ? const Icon(
-      //                               Icons.visibility_off,
-      //                               color: Colors.grey,
-      //                             )
-      //                           : const Icon(
-      //                               Icons.visibility,
-      //                               color: Color(0xFF53B176),
-      //                             )),
-      //                   validator: (value) {
-      //                     if (value!.isEmpty) {
-      //                       return "Password is required";
-      //                     } else {
-      //                       return null;
-      //                     }
-      //                   },
-      //                 ),
-      //               ),
-      //               SizedBox(
-      //                 height: screenHeight * .03,
-      //               ),
-      //               const Center(
-      //                 child: Text(
-      //                   'Or Continue With',
-      //                   style: TextStyle(
-      //                     fontWeight: FontWeight.w600,
-      //                     fontSize: 14,
-      //                     fontFamily: 'poppinsSans',
-      //                     color: Color(0xFF333848),
-      //                   ),
-      //                 ),
-      //               ),
-      //               SizedBox(
-      //                 height: screenHeight * .03,
-      //               ),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                 children: [
-      //                   Container(
-      //                     width: 152,
-      //                     height: 50,
-      //                     decoration: BoxDecoration(
-      //                       color: Colors.white,
-      //                       borderRadius: BorderRadius.circular(10),
-      //                       boxShadow: [
-      //                         BoxShadow(
-      //                           color:
-      //                               const Color(0xFF37C666).withOpacity(0.10),
-      //                           offset: const Offset(
-      //                             .1,
-      //                             .1,
-      //                           ),
-      //                           blurRadius: 20.0,
-      //                           spreadRadius: 1.0,
-      //                         ),
-      //                       ],
-      //                     ),
-      //                     child: Row(
-      //                       mainAxisAlignment: MainAxisAlignment.center,
-      //                       children: [
-      //                         const Icon(
-      //                           Icons.facebook,
-      //                           color: Colors.blue,
-      //                           size: 30,
-      //                         ),
-      //                         const Text(
-      //                           'Facebook',
-      //                           style: TextStyle(
-      //                               fontSize: 15,
-      //                               fontWeight: FontWeight.w600,
-      //                               color: Color(0xFF4C5369)),
-      //                         )
-      //                       ],
-      //                     ),
-      //                   ),
-      //                   GestureDetector(
-      //                     onTap: () {
-      //                       // signInWithGoogle();
-      //                     },
-      //                     child: Container(
-      //                       width: 152,
-      //                       height: 50,
-      //                       decoration: BoxDecoration(
-      //                         color: Colors.white,
-      //                         borderRadius: BorderRadius.circular(10),
-      //                         boxShadow: [
-      //                           BoxShadow(
-      //                             color:
-      //                                 const Color(0xFF37C666).withOpacity(0.10),
-      //                             offset: const Offset(
-      //                               .1,
-      //                               .1,
-      //                             ),
-      //                             blurRadius: 20.0,
-      //                             spreadRadius: 1.0,
-      //                           ),
-      //                         ],
-      //                       ),
-      //                       child: Row(
-      //                         mainAxisAlignment: MainAxisAlignment.center,
-      //                         children: [
-      //                           Image.asset(
-      //                             'assets/images/google.png',
-      //                             height: 25,
-      //                           ),
-      //                           const Text(
-      //                             'Google',
-      //                             style: TextStyle(
-      //                                 fontSize: 15,
-      //                                 fontWeight: FontWeight.w600,
-      //                                 color: Color(0xFF4C5369)),
-      //                           )
-      //                         ],
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ],
-      //               ),
-      //               SizedBox(
-      //                 height: screenHeight * .03,
-      //               ),
-      //               InkWell(
-      //                 onTap: () {
-      //                   // Get.toNamed(MyRouters.emailVerificationScreen2);
-      //                 },
-      //                 child: const Center(
-      //                   child: Text(
-      //                     'Forget your Password?',
-      //                     style: TextStyle(
-      //                         fontWeight: FontWeight.w600,
-      //                         fontSize: 16,
-      //                         letterSpacing: 0.5,
-      //                         color: Color(0xFF7ED957)),
-      //                   ),
-      //                 ),
-      //               ),
-      //               SizedBox(
-      //                 height: screenHeight * .03,
-      //               ),
-      //               CommonButton(title: 'Login', onPressed: () {}),
-      //               SizedBox(
-      //                 height: screenHeight * .03,
-      //               ),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.center,
-      //                 children: [
-      //                   const Text(
-      //                     'Don\'t have an account?',
-      //                     style: TextStyle(
-      //                         color: Color(0xFF3A3737),
-      //                         fontWeight: FontWeight.w300,
-      //                         fontSize: 14),
-      //                   ),
-      //                   InkWell(
-      //                     onTap: () {
-      //                       // Get.toNamed(MyRouters.signupScreen);
-      //                     },
-      //                     child: const Text(
-      //                       '  Signup',
-      //                       style: TextStyle(
-      //                           color: Color(0xFF69C541),
-      //                           fontWeight: FontWeight.w600,
-      //                           fontSize: 14),
-      //                     ),
-      //                   )
-      //                 ],
-      //               )
-      //             ],
-      //           ),
-      //         ),
-      //       ]),
-      //     ),
-      //   ),
-      // ),
-    );
+        backgroundColor: Colors.transparent,
+        body: SingleChildScrollView(
+            child: Container(
+                height: Get.height,
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage(
+                          "assets/images/login.png",
+                        ))),
+                child: SingleChildScrollView(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 220,
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'WELCOME BACK',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Login your account.',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 13,
+                              // fontFamily: 'poppins',
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 45),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Enter Mobile number',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              const CommonTextFieldWidget(
+                                textInputAction: TextInputAction.next,
+                                hint: 'Enter your Mobile number',
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              const CommonButton(
+                                title: 'login',
+                              ),
+                              const SizedBox(
+                                height: 50,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    height: 1,
+                                    width: 120,
+                                    color: Color(0xFFD2D8DC),
+                                  ),
+                                  //SizedBox(width: 10,),
+                                  Text('Or Login with'.toLowerCase(),
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      )),
+                                  //SizedBox(width: 10,),
+                                  Container(
+                                    height: 1,
+                                    width: 120,
+                                    color: Color(0xFFD2D8DC),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 50,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: 152,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(.10),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: Colors.white.withOpacity(.35))),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/icons/facrebook.png',
+                                          height: 25,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          'Facebook',
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      width: 152,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(.10),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: Colors.white.withOpacity(.35))),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/icons/google.png',
+                                            height: 25,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Google',
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 60,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Don't Have an Account?",
+                                    style:
+                                        GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      // Get.toNamed(MyRouters.signupScreen);
+                                    },
+                                    child: Text(
+                                      'Signup',
+                                      style: GoogleFonts.poppins(
+                                          color: Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        )
+                        // SizedBox(height: 25),
+                        // Text(
+                        //   'Enter Mobile number',
+                        //   style: TextStyle(
+                        //     color: Colors.white,
+                        //     fontSize: 16,
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   height: 2,
+                        // ),
+                        // SizedBox(
+                        //   height: 2,
+                        // ),
+                      ]),
+                ))));
   }
-// signInWithGoogle() async {
-//   await GoogleSignIn().signOut();
-//   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-//   final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
-//   final credential = GoogleAuthProvider.credential(
-//     idToken: googleAuth.idToken,
-//     accessToken: googleAuth.accessToken,
-//   );
-//   print("Token---------${googleAuth.accessToken}");
-//   final value = await FirebaseAuth.instance.signInWithCredential(credential);
-//   log(value.credential!.accessToken!);
-//   //log(value.additionalUserInfo.a);
-//   var fromToken = await FirebaseMessaging.instance.getToken();
-//
-//   socialLogin(provider: "google", token: value.credential!.accessToken!, context: context).then((value) async {
-//     if (value.status == true) {
-//       SharedPreferences pref = await SharedPreferences.getInstance();
-//       pref.setString('user_info', jsonEncode(value));
-//       showToast(value.message);
-//       Get.offAllNamed(MyRouters.bottomNavbar);
-//     } else {
-//       showToast(value.message);
-//     }
-//   });
-// }
 }
