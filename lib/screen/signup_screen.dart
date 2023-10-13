@@ -3,17 +3,17 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
+  static var signupScreen = "/signupScreen";
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -30,46 +30,71 @@ class _LoginScreenState extends State<LoginScreen> {
                           "assets/images/login.png",
                         ))),
                 child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 220,
+                        const SizedBox(
+                          height: 210,
                         ),
+
                         Align(
                           alignment: Alignment.center,
                           child: Text(
-                            'WELCOME BACK',
+                            'Create Account',
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
-                              fontSize: 28,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Login your account.',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 14,
+                              fontSize: 26,
                               // fontFamily: 'poppins',
                             ),
                           ),
                         ),
 
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 45),
+                          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                'Enter Your Name',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              const CommonTextFieldWidget(
+                                textInputAction: TextInputAction.next,
+                                hint: 'Enter Your Name',
+                                keyboardType: TextInputType.number,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                'Enter Email',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              const CommonTextFieldWidget(
+                                textInputAction: TextInputAction.next,
+                                hint: 'Enter your Email',
+                                keyboardType: TextInputType.text,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
                               Text(
                                 'Enter Mobile number',
                                 style: GoogleFonts.poppins(
@@ -87,13 +112,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 keyboardType: TextInputType.number,
                               ),
                               const SizedBox(
-                                height: 40,
+                                height: 25,
                               ),
                               const CommonButton(
-                                title: 'Login',
+                                title: 'Create Account',
                               ),
                               const SizedBox(
-                                height: 45,
+                                height: 30,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Container(
                                     height: 1,
                                     width: 120,
-                                    color: Color(0xFFD2D8DC),
+                                    color: const Color(0xFFD2D8DC),
                                   ),
                                   //SizedBox(width: 10,),
                                   Text('Or Login with',
@@ -118,15 +143,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                height: 45,
+                              const SizedBox(
+                                height: 30,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     width: 152,
-                                    height: 60,
+                                    height: 55,
                                     decoration: BoxDecoration(
                                         color: Colors.white.withOpacity(.10),
                                         borderRadius: BorderRadius.circular(10),
@@ -138,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           'assets/icons/facrebook.png',
                                           height: 27,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 10,
                                         ),
                                         Text(
@@ -153,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onTap: () {},
                                     child: Container(
                                       width: 152,
-                                      height: 60,
+                                      height: 55,
                                       decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(.10),
                                           borderRadius: BorderRadius.circular(10),
@@ -165,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             'assets/icons/google.png',
                                             height: 25,
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 10,
                                           ),
                                           Text(
@@ -180,24 +205,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                               const SizedBox(
-                                height: 50,
+                                height: 60,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Don't Have an Account?",
+                                    "Already Have an Account?",
                                     style:
                                         GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      Get.toNamed(MyRouters.signupScreen);
+                                      // Get.toNamed(MyRouters.signupScreen);
                                     },
                                     child: Text(
-                                      '  Signup',
+                                      '  Login',
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
+                                          color: Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
                                     ),
                                   )
                                 ],

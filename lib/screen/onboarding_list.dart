@@ -19,7 +19,7 @@ List<OnBoarding> page1 = [
 
   ),
   OnBoarding(
-    title: "Beautifully-designed menus",
+    title: "Beautifully-designed  menus",
     img: "assets/images/onboarding.png",
     description: 'Every menu item is manually reviewed by our team',
 

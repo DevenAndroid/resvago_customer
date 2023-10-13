@@ -52,6 +52,7 @@ class CommonTextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+
       onTap: onTap,
       onChanged: onChanged,
       readOnly: readOnly!,
@@ -63,7 +64,8 @@ class CommonTextFieldWidget extends StatelessWidget {
       textInputAction: textInputAction,
       minLines: minLines,
       maxLines: maxLines,
-      cursorColor: const Color(0xFF7ED957),
+      cursorColor:  Colors.white,
+      style: const TextStyle(color: Colors.white),
       inputFormatters: [
         LengthLimitingTextInputFormatter(length),
       ],
@@ -79,7 +81,7 @@ class CommonTextFieldWidget extends StatelessWidget {
           filled: true,
           fillColor: Colors.white.withOpacity(.10),
           contentPadding:
-          const EdgeInsets.symmetric(horizontal: 18, vertical: 19),
+          const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
           focusedBorder: OutlineInputBorder(
             borderSide:  BorderSide(color: Colors.white.withOpacity(.35)),
@@ -125,8 +127,8 @@ color: Colors.white
 
                   fontWeight: FontWeight.w700,
                   color: AppTheme.primaryColor,
-                  letterSpacing: .5,
-                  fontSize: 18))),
+
+                  fontSize: 20))),
     );
   }
 }
