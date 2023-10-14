@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../widget/custom_textfield.dart';
+import 'otpscreen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -14,6 +17,58 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController phoneNumberController = TextEditingController();
+  String verificationId = "";
+  Future<void> addUserToFirestore(String phoneNumber) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(phoneNumber).set({
+        'phoneNumber': phoneNumber,
+      });
+    } catch (e) {
+      print('Error adding user to Firestore: $e');
+    }
+  }
+  Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
+    try {
+      final QuerySnapshot result = await FirebaseFirestore.instance
+          .collection('users')
+          .where('phoneNumber', isEqualTo: phoneNumber)
+          .get();
+
+      if (result.docs.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Phone Number already exit Please Sign In"),
+        ));
+      } else {
+        final String phoneNumber = '+91${phoneNumberController.text}'; // Include the country code
+
+        try {
+          await _auth.verifyPhoneNumber(
+            phoneNumber: phoneNumber,
+            verificationCompleted: (PhoneAuthCredential credential) {},
+            verificationFailed: (FirebaseAuthException e) {
+              print("Verification Failed: $e");
+            },
+            codeSent: (String verificationId, [int? resendToken]) { // Update the parameter to accept nullable int
+              print("Code Sent: $verificationId");
+              this.verificationId = verificationId;
+              Get.to(OtpScreen(verificationId: verificationId));
+
+            },
+            codeAutoRetrievalTimeout: (String verificationId) {
+              print("Auto Retrieval Timeout: $verificationId");
+            },
+          );
+        } catch (e) {
+          print("Error: $e");
+        }
+      }
+    } catch (e) {
+      print('Error checking phone number in Firestore: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -68,10 +123,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               const SizedBox(
                                 height: 15,
                               ),
-                              const CommonTextFieldWidget(
+                               const CommonTextFieldWidget(
                                 textInputAction: TextInputAction.next,
                                 hint: 'Enter Your Name',
-                                keyboardType: TextInputType.number,
+                                keyboardType: TextInputType.text,
                               ),
                               const SizedBox(
                                 height: 15,
@@ -106,7 +161,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               const SizedBox(
                                 height: 15,
                               ),
-                              const CommonTextFieldWidget(
+                               CommonTextFieldWidget(
+                                controller: phoneNumberController,
                                 textInputAction: TextInputAction.next,
                                 hint: 'Enter your Mobile number',
                                 keyboardType: TextInputType.number,
@@ -114,7 +170,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               const SizedBox(
                                 height: 25,
                               ),
-                              const CommonButton(
+                               CommonButton(
+                                onPressed: (){
+                                  addUserToFirestore(phoneNumberController.text);
+                                  checkPhoneNumberInFirestore(phoneNumberController.text);
+                                },
                                 title: 'Create Account',
                               ),
                               const SizedBox(

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "452948387323",
+    "project_id": "resvago-customer",
+    "storage_bucket": "resvago-customer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452948387323:android:bfc20fa0edcb5bcdb7575e",
+        "android_client_info": {
+          "package_name": "com.resvago.resvago_customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVn-jOC659RgTuJ6Z7bwv7CQmICk9ZNO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/screen/otpscreen.dart';
 
 import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
@@ -14,6 +17,51 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController phoneNumberController = TextEditingController();
+  String verificationId = "";
+
+  Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
+    try {
+      final QuerySnapshot result = await FirebaseFirestore.instance
+          .collection('users')
+          .where('phoneNumber', isEqualTo: phoneNumber)
+          .get();
+
+      if (result.docs.isNotEmpty) {
+        final String phoneNumber = '+91${phoneNumberController.text}'; // Include the country code
+
+        try {
+          await _auth.verifyPhoneNumber(
+            phoneNumber: phoneNumber,
+            verificationCompleted: (PhoneAuthCredential credential) {},
+            verificationFailed: (FirebaseAuthException e) {
+              print("Verification Failed: $e");
+            },
+            codeSent: (String verificationId, [int? resendToken]) { // Update the parameter to accept nullable int
+              print("Code Sent: $verificationId");
+              this.verificationId = verificationId;
+              Get.to(OtpScreen(verificationId: verificationId));
+
+            },
+            codeAutoRetrievalTimeout: (String verificationId) {
+              print("Auto Retrieval Timeout: $verificationId");
+            },
+          );
+        } catch (e) {
+          print("Error: $e");
+        }
+
+      } else {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    content: Text("Phone Number does not exit Please Sign Up"),
+    ));
+      }
+    } catch (e) {
+      print('Error checking phone number in Firestore: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -81,7 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(
                                 height: 15,
                               ),
-                              const CommonTextFieldWidget(
+                               CommonTextFieldWidget(
+                                controller: phoneNumberController,
                                 textInputAction: TextInputAction.next,
                                 hint: 'Enter your Mobile number',
                                 keyboardType: TextInputType.number,
@@ -89,7 +138,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(
                                 height: 40,
                               ),
-                              const CommonButton(
+                               CommonButton(
+                                onPressed: (){
+                                  checkPhoneNumberInFirestore(phoneNumberController.text);                                },
                                 title: 'Login',
                               ),
                               const SizedBox(
@@ -205,20 +256,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                           ),
                         )
-                        // SizedBox(height: 25),
-                        // Text(
-                        //   'Enter Mobile number',
-                        //   style: TextStyle(
-                        //     color: Colors.white,
-                        //     fontSize: 16,
-                        //   ),
-                        // ),
-                        // SizedBox(
-                        //   height: 2,
-                        // ),
-                        // SizedBox(
-                        //   height: 2,
-                        // ),
                       ]),
                 ))));
   }

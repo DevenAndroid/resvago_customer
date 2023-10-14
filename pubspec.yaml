@@ -39,6 +39,10 @@ dependencies:
   google_fonts: ^6.1.0
   form_validator: ^2.1.1
   form_field_validator: ^1.1.0
+  firebase_auth: ^4.10.1
+  google_sign_in: ^6.1.5
+  firebase_core: ^2.17.0
+  cloud_firestore: ^4.9.3
 
 dev_dependencies:
   flutter_test:
