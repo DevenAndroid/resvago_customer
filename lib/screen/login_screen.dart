@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
     try {
-      if(FirebaseAuth.instance.currentUser == null){
+      if(FirebaseAuth.instance.currentUser != null){
         try {
           final String phoneNumber = '+91${phoneNumberController.text}'; // Include the country code
           await _auth.verifyPhoneNumber(
