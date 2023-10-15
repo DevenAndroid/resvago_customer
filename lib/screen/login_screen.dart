@@ -23,15 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
     try {
-      final QuerySnapshot result = await FirebaseFirestore.instance
-          .collection('users')
-          .where('phoneNumber', isEqualTo: phoneNumber)
-          .get();
-
-      if (result.docs.isNotEmpty) {
-        final String phoneNumber = '+91${phoneNumberController.text}'; // Include the country code
-
+      if(FirebaseAuth.instance.currentUser == null){
         try {
+          final String phoneNumber = '+91${phoneNumberController.text}'; // Include the country code
           await _auth.verifyPhoneNumber(
             phoneNumber: phoneNumber,
             verificationCompleted: (PhoneAuthCredential credential) {},

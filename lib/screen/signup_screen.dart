@@ -31,12 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
   Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
     try {
-      final QuerySnapshot result = await FirebaseFirestore.instance
-          .collection('users')
-          .where('phoneNumber', isEqualTo: phoneNumber)
-          .get();
-
-      if (result.docs.isNotEmpty) {
+      if (FirebaseAuth.instance.currentUser != null) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Phone Number already exit Please Sign In"),
         ));
