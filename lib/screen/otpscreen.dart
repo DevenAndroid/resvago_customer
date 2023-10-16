@@ -126,11 +126,12 @@
 // }
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/login_screen.dart';
 import '../controller/logn_controller.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 
 
 class OtpScreen extends StatefulWidget {
@@ -146,7 +147,7 @@ class _OtpScreenState extends State<OtpScreen> {
   TextEditingController otpController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final loginController = Get.put(LoginController());
-
+ // var phoneNo = Get.arguments[0];
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -192,12 +193,12 @@ class _OtpScreenState extends State<OtpScreen> {
                                 height: 20,
                               ),
                               PinCodeFields(
-                                length: 4,
+                                length: 6,
                                 controller: otpController,
                                 fieldBorderStyle: FieldBorderStyle.square,
                                 responsive: false,
-                                fieldHeight: 55.0,
-                                fieldWidth: 55.0,
+                                fieldHeight: 40.0,
+                                fieldWidth: 40.0,
                                 borderWidth: 1.0,
                                 activeBorderColor: Colors.white,
                                 activeBackgroundColor:
@@ -211,16 +212,17 @@ class _OtpScreenState extends State<OtpScreen> {
                                 textStyle: GoogleFonts.poppins(
                                   fontSize: 25.0,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w400,
+
                                 ),
                                 onComplete: (output) {
-                                  // Get.back();
+                               Get.toNamed(MyRouters.loginScreen);
                                 },
                               ),
                               Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'Enter the OTP Send to ${otpController.text}',
+                                  'Enter the OTP Send to ${loginController.phoneNumberController.text.toString()}',
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w400,
