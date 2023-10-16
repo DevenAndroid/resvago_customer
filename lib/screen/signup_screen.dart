@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +28,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String verificationId = "";
 
   Future<bool> addUserToFirestore(String phoneNumber) async {
-    final response = await FirebaseFirestore.instance.collection('users')
-        .where("phoneNumber",isEqualTo: phoneNumber).get();
+    final response = await FirebaseFirestore.instance.collection('users').where("phoneNumber", isEqualTo: phoneNumber).get();
 
-    if(response.docs.isEmpty){
+    if (response.docs.isEmpty) {
       return true;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("User Already Exist")));
@@ -44,32 +45,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // }
   }
 
-
   Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
     try {
       // if (FirebaseAuth.instance.currentUser != null) {
-        final String phoneNumber = '+91${loginController.phoneNumberController.text}'; // Include the country code
-
-        try {
-          await _auth.verifyPhoneNumber(
-            phoneNumber: phoneNumber,
-            verificationCompleted: (PhoneAuthCredential credential) {},
-            verificationFailed: (FirebaseAuthException e) {
-              print("Verification Failed: $e");
-            },
-            codeSent: (String verificationId, [int? resendToken]) { // Update the parameter to accept nullable int
-              print("Code Sent: $verificationId");
-              this.verificationId = verificationId;
-              Get.to(OtpScreen(verificationId: verificationId ));
-
-            },
-            codeAutoRetrievalTimeout: (String verificationId) {
-              print("Auto Retrieval Timeout: $verificationId");
-            },
-          );
-        } catch (e) {
-          print("Error: $e");
-        }
+      final String phoneNumber = '+91${loginController.phoneNumberController.text}'; // Include the country code
+      log("phoneNumber.....     $phoneNumber");
+      try {
+        await _auth.verifyPhoneNumber(
+          phoneNumber: phoneNumber,
+          verificationCompleted: (PhoneAuthCredential credential) {},
+          verificationFailed: (FirebaseAuthException e) {
+            print("Verification Failed: $e");
+          },
+          codeSent: (String verificationId, [int? resendToken]) {
+            // Update the parameter to accept nullable int
+            print("Code Sent: $verificationId");
+            this.verificationId = verificationId;
+            Get.to(OtpScreen(verificationId: verificationId));
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {
+            print("Auto Retrieval Timeout: $verificationId");
+          },
+        );
+      } catch (e) {
+        print("Error: $e");
+      }
 
       // } else {
       //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -78,7 +78,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // }
     } catch (e) {
       print('Error checking phone number in Firestore: $e');
-
     }
   }
 
@@ -89,161 +88,184 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
+          child: Container(
+              // height: Get.height,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage(
+                        "assets/images/login.png",
+                      ))),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 220,
+                        ),
 
-            child: Container(
-                height: Get.height,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage(
-                          "assets/images/login.png",
-                        ))),
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 200,
-                          ),
-
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Create Account',
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 26,
-                                // fontFamily: 'poppins',
-                              ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Create Account',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 26,
+                              // fontFamily: 'poppins',
                             ),
                           ),
+                        ),
 
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Enter Your Name',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                  ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Enter Your Name',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
                                 ),
-                                const SizedBox(
-                                  height: 15,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              const CommonTextFieldWidget(
+                                textInputAction: TextInputAction.next,
+                                hint: 'Enter Your Name',
+                                keyboardType: TextInputType.text,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                'Enter Email',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
                                 ),
-                                 const CommonTextFieldWidget(
-                                  textInputAction: TextInputAction.next,
-                                  hint: 'Enter Your Name',
-                                  keyboardType: TextInputType.text,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              CommonTextFieldWidget(
+                                textInputAction: TextInputAction.next,
+                                hint: 'Enter your Email',
+                                keyboardType: TextInputType.text,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Email required";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                'Enter Mobile number',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
                                 ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  'Enter Email',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                 CommonTextFieldWidget(
-                                  textInputAction: TextInputAction.next,
-                                  hint: 'Enter your Email',
-                                  keyboardType: TextInputType.text,
-                                   validator: (value){
-                                     if(value!.isEmpty){
-                                       return "Email required";
-                                     }
-                                     else{
-                                       return null;
-                                     }
-                                   },
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  'Enter Mobile number',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                 CommonTextFieldWidget(
-                                  controller: loginController.phoneNumberController,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              CommonTextFieldWidget(
+                                controller: loginController.phoneNumberController,
 
-                                  hint: 'Enter your Mobile number',
-                                   // length: 10,
-                                   validator: MultiValidator([
-                                     RequiredValidator(errorText: 'Please enter your phone number'),
-                                     MinLengthValidator(10,errorText: 'Please enter valid phone number'),
-                                   ]),
-                                  keyboardType: TextInputType.number,
-                                ),
-                                const SizedBox(
-                                  height: 25,
-                                ),
-                                 CommonButton(
-                                  onPressed: (){
-                                    if(!_formKey.currentState!.validate())return;
-                                    addUserToFirestore("+91${loginController.phoneNumberController.text}").then((value) {
-                                      if(value == true) {
-                                        checkPhoneNumberInFirestore("${loginController.phoneNumberController.text}");
-                                      }
-                                    });
-
-                                  },
-                                  title: 'Create Account',
-                                ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      height: 1,
-                                      width: 120,
-                                      color: const Color(0xFFD2D8DC),
+                                hint: 'Enter your Mobile number',
+                                // length: 10,
+                                validator: MultiValidator([
+                                  RequiredValidator(errorText: 'Please enter your phone number'),
+                                  MinLengthValidator(10, errorText: 'Please enter valid phone number'),
+                                ]),
+                                keyboardType: TextInputType.number,
+                              ),
+                              const SizedBox(
+                                height: 25,
+                              ),
+                              CommonButton(
+                                onPressed: () {
+                                  if (!_formKey.currentState!.validate()) return;
+                                  addUserToFirestore("+91${loginController.phoneNumberController.text}").then((value) {
+                                    if (value == true) {
+                                      checkPhoneNumberInFirestore(loginController.phoneNumberController.text);
+                                    }
+                                  });
+                                },
+                                title: 'Create Account',
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    height: 1,
+                                    width: 120,
+                                    color: const Color(0xFFD2D8DC),
+                                  ),
+                                  //SizedBox(width: 10,),
+                                  Text('Or Login with',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      )),
+                                  //SizedBox(width: 10,),
+                                  Container(
+                                    height: 1,
+                                    width: 120,
+                                    color: Color(0xFFD2D8DC),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: 152,
+                                    height: 55,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(.10),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: Colors.white.withOpacity(.35))),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/icons/facrebook.png',
+                                          height: 27,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          'Facebook',
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
+                                        )
+                                      ],
                                     ),
-                                    //SizedBox(width: 10,),
-                                    Text('Or Login with',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        )),
-                                    //SizedBox(width: 10,),
-                                    Container(
-                                      height: 1,
-                                      width: 120,
-                                      color: Color(0xFFD2D8DC),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
                                       width: 152,
                                       height: 55,
                                       decoration: BoxDecoration(
@@ -254,92 +276,66 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Image.asset(
-                                            'assets/icons/facrebook.png',
-                                            height: 27,
+                                            'assets/icons/google.png',
+                                            height: 25,
                                           ),
                                           const SizedBox(
                                             width: 10,
                                           ),
                                           Text(
-                                            'Facebook',
+                                            'Google',
                                             style: GoogleFonts.poppins(
-                                                fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
+                                                fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                           )
                                         ],
                                       ),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {},
-                                      child: Container(
-                                        width: 152,
-                                        height: 55,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white.withOpacity(.10),
-                                            borderRadius: BorderRadius.circular(10),
-                                            border: Border.all(color: Colors.white.withOpacity(.35))),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'assets/icons/google.png',
-                                              height: 25,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              'Google',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
-                                            )
-                                          ],
-                                        ),
-                                      ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Already Have an Account?",
+                                    style: GoogleFonts.poppins(
+                                        color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Get.toNamed(MyRouters.loginScreen);
+                                    },
+                                    child: Text(
+                                      '  Login',
+                                      style: GoogleFonts.poppins(
+                                          color: Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Already Have an Account?",
-                                      style:
-                                          GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        Get.toNamed(MyRouters.loginScreen);
-                                      },
-                                      child: Text(
-                                        '  Login',
-                                        style: GoogleFonts.poppins(
-                                            color: Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          )
-                          // SizedBox(height: 25),
-                          // Text(
-                          //   'Enter Mobile number',
-                          //   style: TextStyle(
-                          //     color: Colors.white,
-                          //     fontSize: 16,
-                          //   ),
-                          // ),
-                          // SizedBox(
-                          //   height: 2,
-                          // ),
-                          // SizedBox(
-                          //   height: 2,
-                          // ),
-                        ]),
-                  ),
-                ))));
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        )
+                        // SizedBox(height: 25),
+                        // Text(
+                        //   'Enter Mobile number',
+                        //   style: TextStyle(
+                        //     color: Colors.white,
+                        //     fontSize: 16,
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   height: 2,
+                        // ),
+                        // SizedBox(
+                        //   height: 2,
+                        // ),
+                      ]),
+                ),
+              )),
+        ));
   }
 }
