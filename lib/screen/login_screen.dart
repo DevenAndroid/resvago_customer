@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
     try {
-      if(FirebaseAuth.instance.currentUser != null){
+      // if(FirebaseAuth.instance.currentUser != null){
         try {
           final String phoneNumber = '+91${phoneNumberController.text}'; // Include the country code
           await _auth.verifyPhoneNumber(
@@ -46,11 +46,11 @@ class _LoginScreenState extends State<LoginScreen> {
           print("Error: $e");
         }
 
-      } else {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    content: Text("Phone Number does not exit Please Sign Up"),
-    ));
-      }
+    //   } else {
+    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    // content: Text("Phone Number does not exit Please Sign Up"),
+    // ));
+    //   }
     } catch (e) {
       print('Error checking phone number in Firestore: $e');
     }
