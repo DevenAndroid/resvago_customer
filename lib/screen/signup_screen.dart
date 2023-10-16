@@ -7,6 +7,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../controller/logn_controller.dart';
+import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
 import 'otpscreen.dart';
 
@@ -23,15 +24,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final loginController = Get.put(LoginController());
   final _formKey = GlobalKey<FormState>();
   String verificationId = "";
-  Future<void> addUserToFirestore(String phoneNumber) async {
-    try {
-      await FirebaseFirestore.instance.collection('users').doc(phoneNumber).set({
-        'phoneNumber': phoneNumber,
-      });
-    } catch (e) {
-      print('Error adding user to Firestore: $e');
+
+  Future<bool> addUserToFirestore(String phoneNumber) async {
+    final response = await FirebaseFirestore.instance.collection('users')
+        .where("phoneNumber",isEqualTo: phoneNumber).get();
+
+    if(response.docs.isEmpty){
+      return true;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("User Already Exist")));
+      return false;
     }
+    // try {
+    //   await FirebaseFirestore.instance.collection('users').doc(phoneNumber).set({
+    //     'phoneNumber': phoneNumber,
+    //   });
+    // } catch (e) {
+    //   print('Error adding user to Firestore: $e');
+    // }
   }
+
+
   Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
     try {
       // if (FirebaseAuth.instance.currentUser != null) {
@@ -65,6 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // }
     } catch (e) {
       print('Error checking phone number in Firestore: $e');
+
     }
   }
 
@@ -75,6 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
+
             child: Container(
                 height: Get.height,
                 decoration: const BoxDecoration(
@@ -92,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(
-                            height: 210,
+                            height: 200,
                           ),
 
                           Align(
@@ -143,10 +158,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 const SizedBox(
                                   height: 15,
                                 ),
-                                const CommonTextFieldWidget(
+                                 CommonTextFieldWidget(
                                   textInputAction: TextInputAction.next,
                                   hint: 'Enter your Email',
                                   keyboardType: TextInputType.text,
+                                   validator: (value){
+                                     if(value!.isEmpty){
+                                       return "Email required";
+                                     }
+                                     else{
+                                       return null;
+                                     }
+                                   },
                                 ),
                                 const SizedBox(
                                   height: 15,
@@ -164,10 +187,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                                  CommonTextFieldWidget(
                                   controller: loginController.phoneNumberController,
-                                  textInputAction: TextInputAction.next,
+
                                   hint: 'Enter your Mobile number',
-                                   length: 10,
-                                   validator: RequiredValidator(errorText: 'Please enter your phone number '),
+                                   // length: 10,
+                                   validator: MultiValidator([
+                                     RequiredValidator(errorText: 'Please enter your phone number'),
+                                     MinLengthValidator(10,errorText: 'Please enter valid phone number'),
+                                   ]),
                                   keyboardType: TextInputType.number,
                                 ),
                                 const SizedBox(
@@ -175,8 +201,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                                  CommonButton(
                                   onPressed: (){
-                                    addUserToFirestore(loginController.phoneNumberController.text);
-                                    checkPhoneNumberInFirestore(loginController.phoneNumberController.text);
+                                    if(!_formKey.currentState!.validate())return;
+                                    addUserToFirestore("+91${loginController.phoneNumberController.text}").then((value) {
+                                      if(value == true) {
+                                        checkPhoneNumberInFirestore("${loginController.phoneNumberController.text}");
+                                      }
+                                    });
 
                                   },
                                   title: 'Create Account',
@@ -269,7 +299,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ],
                                 ),
                                 const SizedBox(
-                                  height: 60,
+                                  height: 30,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -281,7 +311,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        // Get.toNamed(MyRouters.signupScreen);
+                                        Get.toNamed(MyRouters.loginScreen);
                                       },
                                       child: Text(
                                         '  Login',

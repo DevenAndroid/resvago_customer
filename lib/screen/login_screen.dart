@@ -10,6 +10,7 @@ import 'package:resvago_customer/screen/otpscreen.dart';
 import '../controller/logn_controller.dart';
 import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
+import 'otpscreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -21,40 +22,52 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final loginController = Get.put(LoginController());
+
   // TextEditingController phoneNumberController = TextEditingController();
   String verificationId = "";
   final _formKey = GlobalKey<FormState>();
 
+  Future<bool> addUserToFirestore(String phoneNumber) async {
+    final response = await FirebaseFirestore.instance.collection('users').where("phoneNumber", isEqualTo: phoneNumber).get();
+
+    if (response.docs.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Phone Number does not exit Please Sign Up")));
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
     try {
       // if(FirebaseAuth.instance.currentUser != null){
-        try {
-          final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
-          await _auth.verifyPhoneNumber(
-            phoneNumber: phoneNumber,
-            verificationCompleted: (PhoneAuthCredential credential) {},
-            verificationFailed: (FirebaseAuthException e) {
-              print("Verification Failed: $e");
-            },
-            codeSent: (String verificationId, [int? resendToken]) { // Update the parameter to accept nullable int
-              print("Code Sent: $verificationId");
-              this.verificationId = verificationId;
-              Get.toNamed(MyRouters.homePageScreen);
+      try {
+        final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
+        await _auth.verifyPhoneNumber(
+          phoneNumber: phoneNumber,
+          verificationCompleted: (PhoneAuthCredential credential) {},
+          verificationFailed: (FirebaseAuthException e) {
+            print("Verification Failed: $e");
+          },
+          codeSent: (String verificationId, [int? resendToken]) {
+            // Update the parameter to accept nullable int
+            print("Code Sent: $verificationId");
+            this.verificationId = verificationId;
+            Get.to(OtpScreen(verificationId: verificationId));
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {
+            print("Auto Retrieval Timeout: $verificationId");
+          },
+        );
+      } catch (e) {
+        print("Error: $e");
+      }
 
-            },
-            codeAutoRetrievalTimeout: (String verificationId) {
-              print("Auto Retrieval Timeout: $verificationId");
-            },
-          );
-        } catch (e) {
-          print("Error: $e");
-        }
-
-    //   } else {
-    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    // content: Text("Phone Number does not exit Please Sign Up"),
-    // ));
-    //   }
+      //   } else {
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      // content: Text("Phone Number does not exit Please Sign Up"),
+      // ));
+      //   }
     } catch (e) {
       print('Error checking phone number in Firestore: $e');
     }
@@ -111,14 +124,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 25, vertical: 45),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Enter Mobile number',
+                              'Enter email or phone number',
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
@@ -128,20 +140,32 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(
                               height: 15,
                             ),
-                             CommonTextFieldWidget(
+                            CommonTextFieldWidget(
                               controller: loginController.mobileController,
                               textInputAction: TextInputAction.next,
-                               length: 10,
-                               validator: RequiredValidator(errorText: 'Please enter your phone number '),
-                              hint: 'Enter your Mobile number',
+                              length: 10,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "field is required";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              hint: 'Enter email or phone number',
                               keyboardType: TextInputType.number,
                             ),
                             const SizedBox(
                               height: 40,
                             ),
-                             CommonButton(
-                              onPressed: (){
-                                checkPhoneNumberInFirestore(loginController.mobileController.text);                                },
+                            CommonButton(
+                              onPressed: () {
+                                if (!_formKey.currentState!.validate()) return;
+                                addUserToFirestore("+91${loginController.mobileController.text}").then((value) {
+                                  if (value == true) {
+                                    checkPhoneNumberInFirestore("${loginController.mobileController.text}");
+                                  }
+                                });
+                              },
                               title: 'Login',
                             ),
                             const SizedBox(
@@ -239,8 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 Text(
                                   "Don't Have an Account?",
-                                  style:
-                                      GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
+                                  style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
                                 ),
                                 InkWell(
                                   onTap: () {
