@@ -26,7 +26,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final loginController = Get.put(LoginController());
   final _formKey = GlobalKey<FormState>();
   String verificationId = "";
-
+  bool value = false;
+  bool showValidation = false;
   Future<bool> addUserToFirestore(String phoneNumber) async {
     final response = await FirebaseFirestore.instance.collection('users').where("phoneNumber", isEqualTo: phoneNumber).get();
 
@@ -136,9 +137,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               const SizedBox(
                                 height: 15,
                               ),
-                              const CommonTextFieldWidget(
+                               CommonTextFieldWidget(
                                 textInputAction: TextInputAction.next,
                                 hint: 'Enter Your Name',
+                                 validator: MultiValidator([
+                                 RequiredValidator(errorText: 'Please enter your name'),]),
                                 keyboardType: TextInputType.text,
                               ),
                               const SizedBox(
@@ -192,9 +195,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ]),
                                 keyboardType: TextInputType.number,
                               ),
-                              const SizedBox(
-                                height: 25,
+
+                              Row(
+                                children: [
+                                  Transform.scale(
+                                    scale: 1.1,
+                                    child: Theme(
+                                      data: ThemeData(
+                                          unselectedWidgetColor: showValidation == false
+                                              ?  Colors.white
+                                              : Colors.red),
+                                      child: Checkbox(
+
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(4)),
+                                          materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                          value: value,
+                                          activeColor:  Colors.orange,
+                                          visualDensity: VisualDensity(vertical: 0,horizontal: 0),
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              value = newValue!;
+                                              setState(() {});
+                                            });
+                                          }),
+                                    ),
+                                  ),
+                                  const Text(
+                                      'Are you agree terms and conditions?',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 13,
+                                          color: Colors.white)),
+                                ],
                               ),
+                              SizedBox(height: 10,),
                               CommonButton(
                                 onPressed: () {
                                   if (!_formKey.currentState!.validate()) return;
@@ -214,7 +250,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 children: [
                                   Container(
                                     height: 1,
-                                    width: 120,
+                                    width: 110,
                                     color: const Color(0xFFD2D8DC),
                                   ),
                                   //SizedBox(width: 10,),
@@ -227,7 +263,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   //SizedBox(width: 10,),
                                   Container(
                                     height: 1,
-                                    width: 120,
+                                    width: 110,
                                     color: Color(0xFFD2D8DC),
                                   ),
                                 ],

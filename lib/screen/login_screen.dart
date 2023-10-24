@@ -79,16 +79,16 @@ class _LoginScreenState extends State<LoginScreen> {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: Colors.transparent,
-        body: Container(
-            height: Get.height,
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: AssetImage(
-                      "assets/images/login.png",
-                    ))),
-            child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
+        body: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Container(
+
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage(
+                        "assets/images/login.png",
+                      ))),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: 210,
+                        height: 180,
                       ),
                       Align(
                         alignment: Alignment.center,
@@ -125,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 45),
+                        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -142,8 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             CommonTextFieldWidget(
                               controller: loginController.mobileController,
-                              textInputAction: TextInputAction.next,
-                              length: 10,
+                              // textInputAction: TextInputAction.next,
+                              // length: 10,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "field is required";
@@ -152,31 +152,54 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                               },
                               hint: 'Enter email or phone number',
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.text,
                             ),
                             const SizedBox(
                               height: 40,
                             ),
                             CommonButton(
                               onPressed: () {
-                                if (!_formKey.currentState!.validate()) return;
-                                addUserToFirestore("+91${loginController.mobileController.text}").then((value) {
-                                  if (value == true) {
-                                    checkPhoneNumberInFirestore("${loginController.mobileController.text}");
-                                  }
-                                });
+                                Get.toNamed(MyRouters.homePageScreen);
+                                // if (!_formKey.currentState!.validate()) return;
+                                // addUserToFirestore("+91${loginController.mobileController.text}").then((value) {
+                                //   if (value == true) {
+                                //     checkPhoneNumberInFirestore("${loginController.mobileController.text}");
+                                //   }
+                                // });
                               },
                               title: 'Login',
                             ),
                             const SizedBox(
-                              height: 45,
+                              height: 20,
+                            ),
+                            Text(
+                              'Customer Booking?',
+                              style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Sign in as a business',
+                              style: GoogleFonts.poppins(
+                                  color: Color(0xFFFAAF40),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
                                   height: 1,
-                                  width: 120,
+                                  width: 110,
                                   color: Color(0xFFD2D8DC),
                                 ),
                                 //SizedBox(width: 10,),
@@ -189,13 +212,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 //SizedBox(width: 10,),
                                 Container(
                                   height: 1,
-                                  width: 120,
+                                  width: 110,
                                   color: Color(0xFFD2D8DC),
                                 ),
                               ],
                             ),
                             SizedBox(
-                              height: 45,
+                              height: 30,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -281,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       )
                     ]),
-              ),
-            )));
+              )),
+        ));
   }
 }

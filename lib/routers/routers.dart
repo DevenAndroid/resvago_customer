@@ -3,6 +3,7 @@ import 'package:resvago_customer/screen/homepage.dart';
 
 import '../screen/login_screen.dart';
 import '../screen/onboarding_screen.dart';
+import '../screen/otpscreen.dart';
 import '../screen/signup_screen.dart';
 import '../splash_screen.dart';
 
@@ -21,5 +22,6 @@ class MyRouters {
 
     GetPage(name: MyRouters.signupScreen, page: () => const SignUpScreen()),
     GetPage(name: MyRouters.homePageScreen, page: () => const HomePage()),
+    // GetPage(name: MyRouters.homePageScreen, page: () => const OtpScreen()),
   ];
 }
