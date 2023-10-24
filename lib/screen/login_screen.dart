@@ -159,12 +159,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             CommonButton(
                               onPressed: () {
-                                if (!_formKey.currentState!.validate()) return;
-                                addUserToFirestore("+91${loginController.mobileController.text}").then((value) {
-                                  if (value == true) {
-                                    checkPhoneNumberInFirestore("${loginController.mobileController.text}");
-                                  }
-                                });
+                                Get.toNamed(MyRouters.homePageScreen);
+                                // if (!_formKey.currentState!.validate()) return;
+                                // addUserToFirestore("+91${loginController.mobileController.text}").then((value) {
+                                //   if (value == true) {
+                                //     checkPhoneNumberInFirestore("${loginController.mobileController.text}");
+                                //   }
+                                // });
                               },
                               title: 'Login',
                             ),
