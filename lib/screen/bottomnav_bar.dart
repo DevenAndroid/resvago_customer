@@ -11,9 +11,6 @@ import '../controller/bottomnavbar_controller.dart';
 import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
 
-
-
-
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({Key? key}) : super(key: key);
 
@@ -24,30 +21,19 @@ class BottomNavbar extends StatefulWidget {
 class _BottomNavbarState extends State<BottomNavbar> {
   final bottomController = Get.put(BottomNavBarController());
 
-
-
   final pages = [
     const HomePage(),
-    // const AddBookingSlot(),
-
     const DeliveryScreen(),
     const OderScreen(),
-    // const AddBookingSlot(),
-     const ProfileScreen(),
-
+    const ProfileScreen(),
   ];
-
-
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
-
-
         body: pages.elementAt(bottomController.pageIndex.value),
         extendBody: true,
-        // extendBodyBehindAppBar: true,
         backgroundColor: Colors.white,
         bottomNavigationBar: buildMyNavBar(context),
       );
@@ -76,7 +62,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
           ),
           child: Column(
             children: [
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -85,25 +70,31 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       padding: const EdgeInsets.only(bottom: 10),
                       onPressed: () {
                         bottomController.updateIndexValue(0);
-
                       },
-
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: 8,),
-
-                          bottomController. pageIndex.value == 0
-                              ?  SvgPicture.asset(AppAssets.dining,
-                            color:  Color(0xFFFAAF40),
-                          )
+                          SizedBox(
+                            height: 8,
+                          ),
+                          bottomController.pageIndex.value == 0
+                              ? SvgPicture.asset(
+                                  AppAssets.dining,
+                                  color: Color(0xFFFAAF40),
+                                )
                               : SvgPicture.asset(AppAssets.dining),
-                          const SizedBox(height: 5,),
-
-                          bottomController. pageIndex.value == 0
-                              ?
-                          const Text("Dining",style: TextStyle(color:  Color(0xFFFAAF40),fontSize: 15,fontWeight: FontWeight.w400),):  const Text("Dining",style: TextStyle(color:Color(0xFF4E5B5F),fontSize: 15,fontWeight: FontWeight.w400),)
-
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          bottomController.pageIndex.value == 0
+                              ? const Text(
+                                  "Dining",
+                                  style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
+                                )
+                              : const Text(
+                                  "Dining",
+                                  style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
+                                )
                         ],
                       ),
                     ),
@@ -113,24 +104,30 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       padding: const EdgeInsets.only(bottom: 10),
                       onPressed: () {
                         bottomController.updateIndexValue(1);
-
-
                       },
                       child: Column(
                         children: [
-                          const SizedBox(height: 8,),
-                          bottomController. pageIndex.value == 1
-                              ? SvgPicture.asset(AppAssets.delivery,
-                            color:  Color(0xFFFAAF40)
-                          )
-                              :  SvgPicture.asset(AppAssets.delivery,color: Colors.black,),
-
-                          const SizedBox(height: 5,),
-
-                          bottomController. pageIndex.value == 1
-                              ?
-                          const Text("Delivery",style: TextStyle(color:  Color(0xFFFAAF40),fontSize: 15,fontWeight: FontWeight.w400),):  const Text("Delivery",style: TextStyle(color:Color(0xFF4E5B5F),fontSize: 15,fontWeight: FontWeight.w400),)
-
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          bottomController.pageIndex.value == 1
+                              ? SvgPicture.asset(AppAssets.delivery, color: Color(0xFFFAAF40))
+                              : SvgPicture.asset(
+                                  AppAssets.delivery,
+                                  color: Colors.black,
+                                ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          bottomController.pageIndex.value == 1
+                              ? const Text(
+                                  "Delivery",
+                                  style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
+                                )
+                              : const Text(
+                                  "Delivery",
+                                  style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
+                                )
                         ],
                       ),
                     ),
@@ -139,25 +136,28 @@ class _BottomNavbarState extends State<BottomNavbar> {
                     child: MaterialButton(
                       padding: const EdgeInsets.only(bottom: 10),
                       onPressed: () {
-
                         bottomController.updateIndexValue(2);
-
-
-
                       },
                       child: Column(
                         children: [
-                          const SizedBox(height: 8,),
+                          const SizedBox(
+                            height: 8,
+                          ),
                           bottomController.pageIndex.value == 2
-                              ?  SvgPicture.asset(AppAssets.oder,
-                            color: Color(0xFFFAAF40)
-                          )
+                              ? SvgPicture.asset(AppAssets.oder, color: Color(0xFFFAAF40))
                               : SvgPicture.asset(AppAssets.oder),
-                          const SizedBox(height: 5,),
-                          bottomController. pageIndex.value == 2
-                              ?
-                          const Text("Oders",style: TextStyle(color:  Color(0xFFFAAF40),fontSize: 15,fontWeight: FontWeight.w400),):  const Text("Oders",style: TextStyle(color: Color(0xFF4E5B5F),fontSize: 15,fontWeight: FontWeight.w400),)
-
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          bottomController.pageIndex.value == 2
+                              ? const Text(
+                                  "Oders",
+                                  style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
+                                )
+                              : const Text(
+                                  "Oders",
+                                  style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
+                                )
                         ],
                       ),
                     ),
@@ -170,23 +170,28 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       },
                       child: Column(
                         children: [
-                          const SizedBox(height: 8,),
-                          bottomController. pageIndex.value == 3
-                              ?  SvgPicture.asset(AppAssets.profile,
-                            color:  Color(0xFFFAAF40)
-                          )
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          bottomController.pageIndex.value == 3
+                              ? SvgPicture.asset(AppAssets.profile, color: Color(0xFFFAAF40))
                               : SvgPicture.asset(AppAssets.profile),
-
-                          const SizedBox(height: 5,),
-                          bottomController. pageIndex.value == 3
-                              ?
-                          const Text("Profile",style: TextStyle(color:  Color(0xFFFAAF40),fontSize: 15,fontWeight: FontWeight.w400),):  const Text("Profile",style: TextStyle(color:  Color(0xFF4E5B5F),fontSize: 15,fontWeight: FontWeight.w400),)
-
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          bottomController.pageIndex.value == 3
+                              ? const Text(
+                                  "Profile",
+                                  style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
+                                )
+                              : const Text(
+                                  "Profile",
+                                  style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
+                                )
                         ],
                       ),
                     ),
                   ),
-
                 ],
               ),
             ],

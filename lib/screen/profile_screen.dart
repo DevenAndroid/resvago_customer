@@ -1,10 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 
+import '../model/profile_model.dart';
 import '../widget/apptheme.dart';
 import '../widget/common_text_field.dart';
+import 'helper.dart';
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -18,6 +25,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  ProfileData profileData = ProfileData();
+  void fetchdata() {
+    FirebaseFirestore.instance
+        .collection("customer_users")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        if (value.data() == null) return;
+        profileData = ProfileData.fromJson(value.data()!);
+        mobileController.text = profileData.mobileNumber.toString();
+        firstNameController.text = profileData.userName.toString();
+        lastNameController.text = profileData.userName.toString();
+        emailController.text = profileData.email.toString();
+        setState(() {});
+      }
+    });
+  }
+
+
+
+  Future<void> updateProfileToFirestore() async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
+    try {
+      await FirebaseFirestore.instance
+          .collection("customer_users")
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .update({
+        "userName": firstNameController.text.trim(),
+        "email": emailController.text.trim(),
+        "mobileNumber": mobileController.text.trim(),
+      }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
+      Get.back();
+      Helper.hideLoader(loader);
+    } catch (e) {
+      Helper.hideLoader(loader);
+      throw Exception(e);
+    } finally {
+      Helper.hideLoader(loader);
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchdata();
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -68,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(5000),
                                     // color: Colors.brown
                                   ),
-                                  child: Image.asset('assets/images/man.png',height: 50,)
+                                  child: Image.asset('assets/images/man.png',height: 50,fit: BoxFit.cover,)
                                 ),
                               ),
                             ],
@@ -98,8 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                         "Piyush Prajapati",
-
+                          profileData.userName.toString(),
                         style: GoogleFonts.poppins(
                             color: AppTheme.registortext,
                             fontWeight: FontWeight.bold,
@@ -109,9 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-
-                            "Piyush@yopmail.com",
-
+                        profileData.email.toString(),
                         style: GoogleFonts.poppins(
                             color: Colors.grey,
                             fontWeight: FontWeight.normal,
@@ -223,6 +276,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                           CommonButtonBlue(
                             onPressed: () {
+                              if(formKey.currentState!.validate()){
+                                updateProfileToFirestore();
+                              }
                             },
                             title: 'Save',
                           ),

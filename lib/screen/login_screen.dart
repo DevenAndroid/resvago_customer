@@ -1,16 +1,15 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:form_field_validator/form_field_validator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/otpscreen.dart';
-
 import '../controller/logn_controller.dart';
 import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
-import 'otpscreen.dart';
+import 'helper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -21,68 +20,57 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final loginController = Get.put(LoginController());
-
-  // TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController mobileController = TextEditingController();
   String verificationId = "";
   final _formKey = GlobalKey<FormState>();
-
-  Future<bool> addUserToFirestore(String phoneNumber) async {
-    final response = await FirebaseFirestore.instance.collection('users').where("phoneNumber", isEqualTo: phoneNumber).get();
-
-    if (response.docs.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Phone Number does not exit Please Sign Up")));
-      return false;
+  final loginController = Get.put(LoginController());
+  void checkPhoneNumberInFirestore() async {
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('customer_users')
+        .where('mobileNumber', isEqualTo: loginController.mobileController.text)
+        .get();
+    if (result.docs.isNotEmpty) {
+      login();
     } else {
-      return true;
+      Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
     }
   }
 
-  Future<void> checkPhoneNumberInFirestore(String phoneNumber) async {
+  login() async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
     try {
-      // if(FirebaseAuth.instance.currentUser != null){
-      try {
-        final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
-        await _auth.verifyPhoneNumber(
-          phoneNumber: phoneNumber,
-          verificationCompleted: (PhoneAuthCredential credential) {},
-          verificationFailed: (FirebaseAuthException e) {
-            print("Verification Failed: $e");
-          },
-          codeSent: (String verificationId, [int? resendToken]) {
-            // Update the parameter to accept nullable int
-            print("Code Sent: $verificationId");
-            this.verificationId = verificationId;
-            Get.to(OtpScreen(verificationId: verificationId));
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {
-            print("Auto Retrieval Timeout: $verificationId");
-          },
-        );
-      } catch (e) {
-        print("Error: $e");
-      }
-
-      //   } else {
-      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      // content: Text("Phone Number does not exit Please Sign Up"),
-      // ));
-      //   }
+      final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
+      await _auth
+          .verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {
+            log("Verification Failed: $e");
+        },
+        codeSent: (String verificationId, [int? resendToken]) {
+          // Update the parameter to accept nullable int
+          log("Code Sent: $verificationId");
+          this.verificationId = verificationId;
+          Get.to(() => OtpScreen(verificationId: verificationId));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          log("Auto Retrieval Timeout: $verificationId");
+        },
+      );
+      Helper.hideLoader(loader);
     } catch (e) {
-      print('Error checking phone number in Firestore: $e');
+      Helper.hideLoader(loader);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Container(
-
               decoration: const BoxDecoration(
                   image: DecorationImage(
                       fit: BoxFit.fill,
@@ -95,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 180,
                       ),
                       Align(
@@ -109,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 8,
                       ),
                       Align(
@@ -125,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -141,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 15,
                             ),
                             CommonTextFieldWidget(
-                              controller: loginController.mobileController,
+                              controller:mobileController,
                               // textInputAction: TextInputAction.next,
                               // length: 10,
                               validator: (value) {
@@ -159,13 +147,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             CommonButton(
                               onPressed: () {
-                                Get.toNamed(MyRouters.bottomNavbar);
-                                // if (!_formKey.currentState!.validate()) return;
-                                // addUserToFirestore("+91${loginController.mobileController.text}").then((value) {
-                                //   if (value == true) {
-                                //     checkPhoneNumberInFirestore("${loginController.mobileController.text}");
-                                //   }
-                                // });
+                               if(_formKey.currentState!.validate()){
+                                 checkPhoneNumberInFirestore();
+                               }
                               },
                               title: 'Login',
                             ),
@@ -186,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Text(
                               'Sign in as a business',
                               style: GoogleFonts.poppins(
-                                  color: Color(0xFFFAAF40),
+                                  color: const Color(0xFFFAAF40),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600
                               ),
@@ -200,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Container(
                                   height: 1,
                                   width: 110,
-                                  color: Color(0xFFD2D8DC),
+                                  color: const Color(0xFFD2D8DC),
                                 ),
                                 //SizedBox(width: 10,),
                                 Text('Or Login with',
@@ -213,11 +197,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Container(
                                   height: 1,
                                   width: 110,
-                                  color: Color(0xFFD2D8DC),
+                                  color: const Color(0xFFD2D8DC),
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 30,
                             ),
                             Row(
@@ -237,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         'assets/icons/facrebook.png',
                                         height: 27,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 10,
                                       ),
                                       Text(
@@ -264,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           'assets/icons/google.png',
                                           height: 25,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 10,
                                         ),
                                         Text(

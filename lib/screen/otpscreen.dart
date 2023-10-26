@@ -124,6 +124,8 @@
 //                 ))));
 //   }
 // }
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
@@ -132,6 +134,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/login_screen.dart';
 import '../controller/logn_controller.dart';
+import 'bottomnav_bar.dart';
 
 
 class OtpScreen extends StatefulWidget {
@@ -147,6 +150,30 @@ class _OtpScreenState extends State<OtpScreen> {
   TextEditingController otpController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final loginController = Get.put(LoginController());
+  String verificationId = "";
+  reSend() async {
+    try {
+      final String phoneNumber = '+91${loginController.mobileController.text}'; // Include the country code
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {
+          log("Verification Failed: $e");
+        },
+        codeSent: (String verificationId, [int? resendToken]) {
+          // Update the parameter to accept nullable int
+          log("Code Sent: $verificationId");
+          this.verificationId = verificationId;
+          Get.to(() => OtpScreen(verificationId: verificationId));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          log("Auto Retrieval Timeout: $verificationId");
+        },
+      );
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
  // var phoneNo = Get.arguments[0];
   @override
   Widget build(BuildContext context) {
@@ -193,31 +220,42 @@ class _OtpScreenState extends State<OtpScreen> {
                                 height: 20,
                               ),
                               PinCodeFields(
-                                length: 6,
-                                controller: otpController,
-                                fieldBorderStyle: FieldBorderStyle.square,
-                                responsive: false,
-                                fieldHeight: 40.0,
-                                fieldWidth: 40.0,
-                                borderWidth: 1.0,
-                                activeBorderColor: Colors.white,
-                                activeBackgroundColor:
-                                Colors.white.withOpacity(.10),
-                                borderRadius: BorderRadius.circular(10.0),
-                                keyboardType: TextInputType.number,
-                                autoHideKeyboard: true,
-                                fieldBackgroundColor:
-                                Colors.white.withOpacity(.10),
-                                borderColor: Colors.white,
-                                textStyle: GoogleFonts.poppins(
-                                  fontSize: 25.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-
-                                ),
-                                onComplete: (output) {
-                               Get.toNamed(MyRouters.loginScreen);
-                                },
+                                  length: 6,
+                                  controller: otpController,
+                                  fieldBorderStyle: FieldBorderStyle.square,
+                                  responsive: true,
+                                  fieldHeight: 50.0,
+                                  fieldWidth: 60.0,
+                                  borderWidth: 1.0,
+                                  activeBorderColor: Colors.white,
+                                  activeBackgroundColor:
+                                  Colors.white.withOpacity(.10),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  keyboardType: TextInputType.number,
+                                  autoHideKeyboard: true,
+                                  fieldBackgroundColor:
+                                  Colors.white.withOpacity(.10),
+                                  borderColor: Colors.white,
+                                  textStyle: GoogleFonts.poppins(
+                                    fontSize: 25.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                onComplete: (output) async {
+                                    try {
+                                      PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
+                                        verificationId: widget.verificationId,
+                                        smsCode: otpController.text.trim(),
+                                      );
+                                      final UserCredential authResult =
+                                          await _auth.signInWithCredential(phoneAuthCredential);
+                                      final User? user = authResult.user;
+                                      print('Successfully signed in with phone number: ${user!.phoneNumber}');
+                                      Get.to(const BottomNavbar());
+                                    } catch (e) {
+                                      print("Error: $e");
+                                    }
+                                  }
                               ),
                               Align(
                                 alignment: Alignment.center,
@@ -236,22 +274,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  onPressed:
-                                  () async {
-                                    try {
-                                      PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
-                                        verificationId: widget.verificationId,
-                                        smsCode: otpController.text.trim(),
-                                      );
-                                      final UserCredential authResult =
-                                          await _auth.signInWithCredential(phoneAuthCredential);
-                                      final User? user = authResult.user;
-                                      print('Successfully signed in with phone number: ${user!.phoneNumber}');
-                                      Get.to(const LoginScreen());
-                                    } catch (e) {
-                                      print("Error: $e");
-                                    }
-                                  };
+                                  reSend();
                                 },
                                 child: Center(
                                   child: Text(
