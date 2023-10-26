@@ -159,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             CommonButton(
                               onPressed: () {
-                                Get.toNamed(MyRouters.homePageScreen);
+                                Get.toNamed(MyRouters.bottomNavbar);
                                 // if (!_formKey.currentState!.validate()) return;
                                 // addUserToFirestore("+91${loginController.mobileController.text}").then((value) {
                                 //   if (value == true) {
