@@ -20,7 +20,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  TextEditingController mobileController = TextEditingController();
   String verificationId = "";
   final _formKey = GlobalKey<FormState>();
   final loginController = Get.put(LoginController());
@@ -129,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 15,
                             ),
                             CommonTextFieldWidget(
-                              controller:mobileController,
+                              controller:loginController.mobileController,
                               // textInputAction: TextInputAction.next,
                               // length: 10,
                               validator: (value) {
