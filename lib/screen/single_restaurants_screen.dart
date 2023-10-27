@@ -73,7 +73,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                     children: [
                       Stack(
                         children:[ Container(
-                          height: 267,
+                          // height: 267,
                           width: size.width,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
@@ -324,23 +324,217 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
             primary: const Color(0xFF3B5998),
             textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
         child:  Text(
-          "Menu List",
-          style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,),
-        ),),
-               ),
-             ),
+                              "Menu List",
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                )
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                      width: size.width,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF37C666).withOpacity(0.10),
+                              offset: const Offset(
+                                1,
+                                1,
+                              ),
+                              blurRadius: 20.0,
+                              spreadRadius: 1.0,
+                            ),
+                          ]),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "About",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFF3B5998)),
+                              ),
+                              Text(
+                                "Menu",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                    color: const Color(0xFF1E2538)),
+                              ),
+                              Text(
+                                "Reviews",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                    color: const Color(0xFF1E2538)),
+                              ),
+                            ],
+                          ),
+                          Divider(
+                            thickness: 1,
+                            color: Colors.grey.withOpacity(0.3),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            "About Us",
+                            style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF1E2538)),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text",
+                            style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w300,
+                                color: const Color(0xFF1E2538)),
+                          ),
+                          SizedBox(
+                            height: 18,
+                          ),
+                          Row(
+                            children: [
+                              Image.asset(AppAssets.about),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Image.asset(AppAssets.about),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Image.asset(AppAssets.about),
+                            ],
+                          )
+                        ],
+                      )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                      width: size.width,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF37C666).withOpacity(0.10),
+                              offset: const Offset(
+                                1,
+                                1,
+                              ),
+                              blurRadius: 20.0,
+                              spreadRadius: 1.0,
+                            ),
+                          ]),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Restaurant Menu",
+                            style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF1E2538)),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Center(child: Image.asset(AppAssets.menu)),
+                          SizedBox(
 
-              ],
-            )
-          ],
+
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: 5,
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Column(children: [
+Row(
+  children: [
+    Image.asset(AppAssets.pasta),
+    Column(
+      children: [
+        Text(
+          "Salad veggie",
+          style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF1E2538)),
         ),
-      ),
-    );
+        Text(
+          "Lorem ipsum Dollar",
+          style: GoogleFonts.poppins(
+              fontSize: 10,
+              fontWeight: FontWeight.w300,
+              color: const Color(0xFF74848C)),
+        ),
+        SizedBox(
+          // width: size.width,
+          height: 30,
+          child: ElevatedButton(
+            onPressed: () {
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF3B5998),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(
+                  width: 2.0,
+                  color:const Color(0xFF3B5998),
+                )),
+
+                primary: const Color(0xFF3B5998),
+                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+            child:  Text(
+              "Add to cart",
+              style: GoogleFonts.poppins(
+                fontSize: 8,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    )
+  ],
+)
+
+                                      ]));
+                                }),
+                          )
+                        ],
+                      )),
+                ),
+              ],
+            ),
+          ]),
+        ));
   }
 }
