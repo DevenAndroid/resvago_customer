@@ -1,18 +1,23 @@
 import 'dart:developer';
-
 import 'package:card_swiper/card_swiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/routers/routers.dart';
-
 import '../controller/location_controller.dart';
 import '../model/category_model.dart';
 import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:rxdart/rxdart.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -41,8 +46,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<CategoryData>? categoryList;
+
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("resturent").orderBy('time', descending: isDescendingOrder).get().then((value) {
+    FirebaseFirestore.instance.collection("resturent").where("deactivate", isNotEqualTo: true).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         categoryList ??= [];
@@ -52,13 +58,39 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  List<RestaurantModel>? restaurantList;
+  getRestaurantList() {
+    FirebaseFirestore.instance.collection("vendor_users").get().then((value) {
+      for (var element in value.docs) {
+        var gg = element.data();
+        restaurantList ??= [];
+        restaurantList!.add(RestaurantModel.fromJson(gg));
+      }
+      setState(() {});
+    });
+  }
+  final radius = BehaviorSubject<double>.seeded(1.0);
+  final _firestore = FirebaseFirestore.instance;
+  late Stream<List<DocumentSnapshot>> stream;
+  Geoflutterfire? geo;
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getSliders();
     getVendorCategories();
-    locationController.checkGps(context);
+    getRestaurantList();
+    locationController.checkGps(context).then((value) {
+      geo = Geoflutterfire();
+      GeoFirePoint center = geo!.point(latitude: double.parse(locationController.lat.toString()), longitude:double.parse(locationController.long.toString()));
+      stream = radius.switchMap((rad) {
+        final collectionReference = _firestore.collection('vendor_users');
+        return geo!.collection(collectionRef: collectionReference).within(
+            center: center, radius: rad, field: 'restaurant_position', strictMode: true);
+      });
+    });
   }
 
   @override
@@ -195,24 +227,66 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
                         color: Colors.white,
-                        // boxShadow: [
-                        //   BoxShadow(
-                        //     color: const Color(0xFF37C666).withOpacity(0.30),
-                        //     offset: const Offset(
-                        //       .1,
-                        //       .1,
-                        //     ),
-                        //     blurRadius: 20.0,
-                        //     spreadRadius: 1.0,
-                        //   ),
-                        // ],
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(
-                          'assets/icons/filter.png',
-                          height: 18,
-                        ),
+                        padding: const EdgeInsets.all(2.0),
+                        child: PopupMenuButton<int>(
+                            padding: EdgeInsets.zero,
+                            icon: const Icon(
+                              Icons.filter_list_sharp,
+                              color: Colors.black,
+                            ),
+                            color: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            itemBuilder: (context) {
+                              return [
+                                PopupMenuItem(
+                                  value: 1,
+                                  onTap: () {
+
+                                  },
+                                  child: const Column(
+                                    children: [
+                                      Text("Near By"),
+                                      Divider()
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 1,
+                                  onTap: () {
+                                  },
+                                  child: const Column(
+                                    children: [
+                                      Text("Rating"),
+                                      Divider()
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 1,
+                                  onTap: () {
+                                  },
+                                  child: const Column(
+                                    children: [
+                                      Text("Offers"),
+                                      Divider()
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 1,
+                                  onTap: () {
+                                  },
+                                  child: const Column(
+                                    children: [
+                                      Text("Popular"),
+                                      Divider(color: Colors.white,)
+                                    ],
+                                  ),
+                                ),
+                              ];
+                            })
                       ),
                     ),
                   ],
@@ -223,22 +297,23 @@ class _HomePageState extends State<HomePage> {
               ),
               if (sliderList != null)
                 SizedBox(
-                  height: size.height * 0.25,
+                  height: size.height * 0.20,
                   child: Swiper(
                     itemBuilder: (context, index) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.network(
-                          sliderList![index],
-                          fit: BoxFit.cover,
-                          height: 80,
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.network(
+                            sliderList![index],
+                            fit: BoxFit.cover,
+                            height: 80,
+                          ),
                         ),
                       );
                     },
-                    autoplay: false,
                     outer: false,
                     itemCount: sliderList!.length,
-
                     autoplayDelay: 1,
                     autoplayDisableOnInteraction: false,
                     scrollDirection: Axis.horizontal,
@@ -260,16 +335,21 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 8.0),
-                        child: Column(
+                        child:
+
+                        Column(
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(50),
                               child: Image.network(
                                 categoryList![index].image,
                                 fit: BoxFit.cover,
-                                height: 80,
-                                width: 80,
+                                height: 70,
+                                width: 70,
                               ),
+                            ),
+                            const SizedBox(
+                              height: 5,
                             ),
                             Text(
                             categoryList![index].name ?? "",
@@ -291,13 +371,15 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 10,
               ),
+              if(restaurantList !=null)
               SizedBox(
                 height: 240,
                 child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: 7,
+                    itemCount: restaurantList!.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
+                      var restaurantListItem = restaurantList![index];
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
@@ -319,10 +401,11 @@ class _HomePageState extends State<HomePage> {
                                     topLeft: Radius.circular(10),
                                   ),
                                   child: Stack(children: [
-                                    Image.asset(
-                                      AppAssets.hotel,
-                                      width: 237,
-                                      // height: 300,
+                                    Image.network(
+                                      restaurantListItem.image.toString(),
+                                      height: 150,
+                                      width: 250,
+                                      fit: BoxFit.cover,
                                     ),
                                     Positioned(
                                         top: 11,
@@ -346,12 +429,12 @@ class _HomePageState extends State<HomePage> {
                                   height: 5,
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 8.0, right: 8),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "McDonald’s NewRestaurant",
+                                        restaurantListItem.restaurantName.toString(),
                                         style: GoogleFonts.ibmPlexSansArabic(
                                             fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
                                       ),
@@ -374,33 +457,31 @@ class _HomePageState extends State<HomePage> {
                                 const SizedBox(
                                   height: 3,
                                 ),
-                                FittedBox(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "25 mins ",
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                        ),
-                                        const SizedBox(
-                                          width: 3,
-                                        ),
-                                        const Icon(Icons.circle, size: 5, color: Color(0xff384953)),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          " 1.8KM",
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                        ),
-                                        const SizedBox(
-                                          width: 3,
-                                        ),
-                                      ],
-                                    ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "25 mins ",
+                                        style: GoogleFonts.poppins(
+                                            fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                      ),
+                                      const SizedBox(
+                                        width: 3,
+                                      ),
+                                      const Icon(Icons.circle, size: 5, color: Color(0xff384953)),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        " 1.8KM",
+                                        style: GoogleFonts.poppins(
+                                            fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                      ),
+                                      const SizedBox(
+                                        width: 3,
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Row(
