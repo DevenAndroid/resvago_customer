@@ -14,5 +14,6 @@ class AppAssets {
   static const String food = "assets/icons/food.svg";
   static const String money = "assets/icons/money.svg";
   static const String chat = "assets/icons/chat.svg";
+  static const String code = "assets/images/code.svg";
   static const String roll = "assets/images/roll.png";
 }
