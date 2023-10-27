@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/routers/routers.dart';
 
+import '../controller/location_controller.dart';
 import '../model/category_model.dart';
 import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
@@ -23,6 +24,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final locationController = Get.put(LocationController());
   bool isDescendingOrder = false;
   List<String>? sliderList;
   getSliders() {
@@ -56,6 +58,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getSliders();
     getVendorCategories();
+    locationController.checkGps(context);
   }
 
   @override
@@ -110,14 +113,16 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     height: 6,
                   ),
-                  Text(
-                    '184 Main Collins Street....',
-                    style: GoogleFonts.poppins(
-                      color: const Color(0xFF1E2538),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
+                 Obx((){
+                 return Text(
+                     locationController.locality.value.toString(),
+                     style: GoogleFonts.poppins(
+                       color: const Color(0xFF1E2538),
+                       fontSize: 12,
+                       fontWeight: FontWeight.w300,
+                     ),
+                   );
+                 })
                 ],
               ),
             ),
