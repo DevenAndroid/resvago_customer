@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 
 
 class SingleRestaurantsScreen extends StatefulWidget {
-  const SingleRestaurantsScreen({super.key});
+  const  SingleRestaurantsScreen({super.key});
 
   @override
   State<SingleRestaurantsScreen> createState() =>
@@ -281,32 +282,33 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                   padding: const EdgeInsets.only(left: 12.0,right: 12),
                   child: Row(
                     children: [
-             Expanded(
-               child: SizedBox(
-                   width: size.width,
-                   height: 50,
-                   child: ElevatedButton(
-                   onPressed: () {
-      },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(
-                    width: 2.0,
-                    color:const Color(0xFF3B5998),
-            )),
-
-            primary: const Color(0xFF3B5998),
-            textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-        child:  Text(
-          "Select Date",
-          style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF3B5998)),
-        ),),
-               ),
-             ),
-             SizedBox(width: 20,),
+                      Expanded(
+                        child: SizedBox(
+                          width: size.width,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                                Get.toNamed(MyRouters.restaurantsStepperScreen);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    side: const BorderSide(
+                                      width: 2.0,
+                                      color: const Color(0xFF3B5998),
+                                    )),
+                                primary: const Color(0xFF3B5998),
+                                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                            child: Text(
+                              "Select Date",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF3B5998)),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 20,),
              Expanded(
                child: SizedBox(
                    width: size.width,
