@@ -1,12 +1,12 @@
 class RestaurantModel {
   List<String>? restaurantImage;
   List<String>? menuGalleryImages;
-  String? password;
-  String? address;
+  dynamic password;
+  dynamic address;
   dynamic latitude;
   dynamic longitude;
-  String? restaurantName;
-  Null? docid;
+  dynamic restaurantName;
+  dynamic docid;
   dynamic mobileNumber;
   dynamic confirmPassword;
   dynamic category;

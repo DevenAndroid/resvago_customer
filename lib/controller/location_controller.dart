@@ -112,6 +112,7 @@ class LocationController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    getLocation();
     checkGps(Get.context);
   }
 }
