@@ -243,6 +243,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                     ],
                                   ),
                                 ),
+                                const SizedBox(height: 5),
                               ],
                             ),
                           ),

@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
 
   final radius = BehaviorSubject<double>.seeded(1.0);
   final _firestore = FirebaseFirestore.instance;
-   Stream<List<DocumentSnapshot>>? stream;
+  Stream<List<DocumentSnapshot>>? stream;
   Geoflutterfire? geo;
 
   String _calculateDistance({dynamic lat1, dynamic lon1}) {
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
 
     double distanceInMeters = Geolocator.distanceBetween(double.parse(lat1), double.parse(lon1),
         double.parse(locationController.lat.toString()), double.parse(locationController.long.toString()));
-    if((distanceInMeters / 1000) < 1){
+    if ((distanceInMeters / 1000) < 1) {
       return "${distanceInMeters.toInt()} Meter away";
     }
     return "${(distanceInMeters / 1000).toStringAsFixed(2)} KM";
@@ -114,8 +114,7 @@ class _HomePageState extends State<HomePage> {
     getVendorCategories();
     getRestaurantList();
     locationController.getLocation();
-    locationController.checkGps(context).then((value) {
-    });
+    locationController.checkGps(context).then((value) {});
   }
 
   @override
@@ -313,7 +312,7 @@ class _HomePageState extends State<HomePage> {
                   child: Swiper(
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.only(right: 5.0,left: 5.0),
+                        padding: const EdgeInsets.only(right: 5.0, left: 5.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
@@ -346,8 +345,8 @@ class _HomePageState extends State<HomePage> {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return InkWell(
-                        onTap: (){
-                          Get.to(()=> RestaurantByCategory(categoryName:categoryList![index].name.toString()));
+                        onTap: () {
+                          Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8.0),
@@ -367,8 +366,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Text(
                                 categoryList![index].name ?? "",
-                                style:
-                                    GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                style: GoogleFonts.poppins(
+                                    fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
                               )
                             ],
                           ),
@@ -389,164 +388,157 @@ class _HomePageState extends State<HomePage> {
               ),
               if (restaurantList != null)
                 SizedBox(
-                  height: 240,
-                  child: StreamBuilder<List<DocumentSnapshot>>(
-                      stream: stream,
-                      builder: (context, snapshot) {
-                        return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: restaurantList!.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              var restaurantListItem = restaurantList![index];
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: InkWell(
-                                  onTap: () {
-                                    Get.toNamed(MyRouters.singleProductScreen);
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffFFFFFF),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
+                  height: 260,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: restaurantList!.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        var restaurantListItem = restaurantList![index];
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: () {
+                              Get.toNamed(MyRouters.singleProductScreen);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xffFFFFFF),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Stack(
+                                    children: [
+                                      ClipRRect(
                                           borderRadius: const BorderRadius.only(
                                             topRight: Radius.circular(10),
                                             topLeft: Radius.circular(10),
                                           ),
-                                          child: Stack(children: [
-                                            Image.network(
-                                              restaurantListItem.image.toString(),
-                                              height: 140,
-                                              width: 250,
-                                              fit: BoxFit.cover,
+                                          child: Image.network(
+                                            restaurantListItem.image.toString(),
+                                            height: 150,
+                                            width: 250,
+                                            fit: BoxFit.cover,
+                                          )),
+                                      Positioned(
+                                          top: 11,
+                                          right: 10,
+                                          child: InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                                              child: const Icon(
+                                                Icons.favorite_border,
+                                                color: AppTheme.primaryColor,
+                                                size: 18,
+                                              ),
                                             ),
-                                            Positioned(
-                                                top: 11,
-                                                right: 10,
-                                                child: InkWell(
-                                                  onTap: () {},
-                                                  child: Container(
-                                                    height: 25,
-                                                    width: 25,
-                                                    decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                                                    child: const Icon(
-                                                      Icons.favorite_border,
-                                                      color: AppTheme.primaryColor,
-                                                      size: 18,
-                                                    ),
-                                                  ),
-                                                )),
-                                          ]),
+                                          )),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          restaurantListItem.restaurantName.toString(),
+                                          style: GoogleFonts.ibmPlexSansArabic(
+                                              fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
                                         ),
                                         const SizedBox(
-                                          height: 5,
+                                          width: 10,
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                restaurantListItem.restaurantName.toString(),
-                                                style: GoogleFonts.ibmPlexSansArabic(
-                                                    fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Row(children: [
-                                                const Icon(
-                                                  Icons.star,
-                                                  color: Color(0xff2C4D61),
-                                                  size: 17,
-                                                ),
-                                                Text(
-                                                  "4.4",
-                                                  style: GoogleFonts.ibmPlexSansArabic(
-                                                      fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
-                                                ),
-                                              ],)
-                                            ],
-                                          ),
+                                        const Icon(
+                                          Icons.star,
+                                          color: Color(0xff2C4D61),
+                                          size: 17,
                                         ),
-                                        const SizedBox(
-                                          height: 3,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "25 mins ",
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                              ),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
-                                              const Icon(Icons.circle, size: 5, color: Color(0xff384953)),
-                                              const SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(
-                                                _calculateDistance(
-                                                  lat1: restaurantListItem.latitude.toString(),
-                                                  lon1: restaurantListItem.longitude.toString(),
-                                                ),
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                              ),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Row(
-                                          children: List.generate(
-                                              17,
-                                              (index) => Padding(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2),
-                                                    child: Container(
-                                                      color: Colors.grey[200],
-                                                      height: 2,
-                                                      width: 10,
-                                                    ),
-                                                  )),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 8.0),
-                                          child: Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                AppAssets.vector,
-                                                height: 16,
-                                              ),
-                                              Text(
-                                                "  40% off up to \$100",
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-                                              ),
-                                            ],
-                                          ),
+                                        Text(
+                                          "4.4",
+                                          style: GoogleFonts.ibmPlexSansArabic(
+                                              fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                              );
-                            });
+                                  const SizedBox(
+                                    height: 3,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "25 mins ",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                        ),
+                                        const SizedBox(
+                                          width: 3,
+                                        ),
+                                        const Icon(Icons.circle, size: 5, color: Color(0xff384953)),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          _calculateDistance(
+                                            lat1: restaurantListItem.latitude.toString(),
+                                            lon1: restaurantListItem.longitude.toString(),
+                                          ),
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                        ),
+                                        const SizedBox(
+                                          width: 3,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: List.generate(
+                                        17,
+                                            (index) => Padding(
+                                          padding: const EdgeInsets.only(left: 2, right: 2),
+                                          child: Container(
+                                            color: Colors.grey[200],
+                                            height: 2,
+                                            width: 10,
+                                          ),
+                                        )),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          AppAssets.vector,
+                                          height: 16,
+                                        ),
+                                        Text(
+                                          "  40% off up to \$100",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
                       }),
                 ),
               const SizedBox(
@@ -628,7 +620,7 @@ class _HomePageState extends State<HomePage> {
               ),
               if (restaurantList != null)
                 SizedBox(
-                  height: 240,
+                  height: 260,
                   child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: restaurantList!.length,
@@ -650,18 +642,19 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      topLeft: Radius.circular(10),
-                                    ),
-                                    child: Stack(children: [
-                                      Image.network(
-                                        restaurantListItem.image.toString(),
-                                        height: 150,
-                                        width: 250,
-                                        fit: BoxFit.cover,
-                                      ),
+                                  Stack(
+                                    children: [
+                                      ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(10),
+                                            topLeft: Radius.circular(10),
+                                          ),
+                                          child: Image.network(
+                                            restaurantListItem.image.toString(),
+                                            height: 150,
+                                            width: 250,
+                                            fit: BoxFit.cover,
+                                          )),
                                       Positioned(
                                           top: 11,
                                           right: 10,
@@ -678,7 +671,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                           )),
-                                    ]),
+                                    ],
                                   ),
                                   const SizedBox(
                                     height: 5,
