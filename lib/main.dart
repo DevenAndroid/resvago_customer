@@ -20,10 +20,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xffF6F6F6)
       ),
-debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       initialRoute: "/",
-      getPages:MyRouters.route,
+      getPages: MyRouters.route,
     );
   }
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'addsize.dart';
+import 'appassets.dart';
 import 'apptheme.dart';
 
 class RegisterTextFieldWidget extends StatelessWidget {
@@ -135,4 +138,34 @@ class CommonButtonBlue extends StatelessWidget {
                   fontSize: 20))),
     );
   }
+}
+
+AppBar backAppBar(
+    {required title,
+      required BuildContext context,
+      String dispose = "",
+      Color? backgroundColor = AppTheme.backgroundcolor,
+      Color? textColor = Colors.black,
+      Widget? icon,
+      disposeController}) {
+  return AppBar(
+    toolbarHeight: 60,
+    elevation: 0,
+    leadingWidth: AddSize.size22 * 1.6,
+    backgroundColor: backgroundColor,
+    surfaceTintColor: AppTheme.backgroundcolor,
+    title: Text(
+      title,
+      style: GoogleFonts.poppins(color: Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17),
+    ),
+    leading: Padding(
+      padding: EdgeInsets.only(left: AddSize.padding10),
+      child: GestureDetector(
+          onTap: () {
+            Get.back();
+          },
+          child: icon ??
+              SvgPicture.asset(AppAssets.back)),
+    ),
+  );
 }
