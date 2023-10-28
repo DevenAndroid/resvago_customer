@@ -91,7 +91,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Restaurant", context: context),
+      appBar: backAppBar(title: widget.categoryName, context: context),
       body: restaurantList != null
           ? StreamBuilder<List<DocumentSnapshot>>(
               stream: stream,

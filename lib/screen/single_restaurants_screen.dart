@@ -220,10 +220,10 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                               child: Container(
                                 width: size.width,
                                 height: 60,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     borderRadius:
-                                        const BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-                                    color: const Color(0xFFEBF0FB)),
+                                        BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+                                    color: Color(0xFFEBF0FB)),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -301,7 +301,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Expanded(
@@ -347,7 +347,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                           ): GoogleFonts.poppins(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color:  Color(0xFF3B5998),
+                            color:  const Color(0xFF3B5998),
                           )
                         ),
                       ),
@@ -406,7 +406,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                          thickness: 1,
                          color: Colors.grey.withOpacity(0.3),
                        ),
-                       SizedBox(
+                       const SizedBox(
                          height: 8,
                        ),
                        Text(
@@ -414,7 +414,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                          style:
                          GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                        ),
-                       SizedBox(
+                       const SizedBox(
                          height: 8,
                        ),
                        Text(
@@ -422,17 +422,17 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                          style:
                          GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xFF1E2538)),
                        ),
-                       SizedBox(
+                       const SizedBox(
                          height: 18,
                        ),
                        Row(
                          children: [
                            Image.asset(AppAssets.about),
-                           SizedBox(
+                           const SizedBox(
                              width: 10,
                            ),
                            Image.asset(AppAssets.about),
-                           SizedBox(
+                           const SizedBox(
                              width: 10,
                            ),
                            Image.asset(AppAssets.about),
@@ -466,19 +466,19 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                          style:
                          GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                        ),
-                       SizedBox(
+                       const SizedBox(
                          height: 15,
                        ),
                        Image.network(
                            "https://marketplace.canva.com/EAFKfB87pN0/1/0/1131w/canva-brown-and-black-illustration-fast-food-menu-y8NpubROdFc.jpg"),
-                       SizedBox(
+                       const SizedBox(
                          height: 15,
                        ),
                        SizedBox(
                          // height: 200,
                          child: ListView.builder(
                              shrinkWrap: true,
-                             physics: NeverScrollableScrollPhysics(),
+                             physics: const NeverScrollableScrollPhysics(),
                              itemCount: 5,
                              itemBuilder: (context, index) {
                                return Column(children: [
@@ -502,7 +502,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                              style: GoogleFonts.poppins(
                                                  fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
                                            ),
-                                           SizedBox(
+                                           const SizedBox(
                                              height: 3,
                                            ),
                                            Text(
@@ -510,7 +510,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                              style: GoogleFonts.poppins(
                                                  fontSize: 10, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                            ),
-                                           SizedBox(
+                                           const SizedBox(
                                              height: 10,
                                            ),
                                            SizedBox(
@@ -539,7 +539,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                ),
                                              ),
                                            ),
-                                           SizedBox(
+                                           const SizedBox(
                                              height: 15,
                                            ),
                                            // DottedLine(
@@ -548,7 +548,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                          ],
                                        ),
                                      ),
-                                     Spacer(),
+                                     const Spacer(),
                                      Column(
                                        crossAxisAlignment: CrossAxisAlignment.end,
                                        children: [
@@ -559,7 +559,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                // fontWeight: FontWeight.w400,
                                                color: const Color(0xFF1E2538)),
                                          ),
-                                         SizedBox(
+                                         const SizedBox(
                                            height: 5,
                                          ),
                                          Text(
@@ -575,7 +575,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                  ),
                                  index != 4 ?   const DottedLine(
                                    dashColor: Color(0xffBCBCBC),
-                                 ):SizedBox(),
+                                 ):const SizedBox(),
                                  const SizedBox(
                                    height: 15,
                                  ),
@@ -610,7 +610,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                              style: GoogleFonts.poppins(
                                  fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                            ),
-                           SizedBox(
+                           const SizedBox(
                              height: 5,
                            ),
                            Text(
@@ -621,13 +621,13 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                  fontWeight: FontWeight.w500,
                                  color: const Color(0xFF3B5998)),
                            ),
-                           SizedBox(
+                           const SizedBox(
                              height: 10,
                            ),
                            const DottedLine(
                              dashColor: Color(0xffBCBCBC),
                            ),
-                           SizedBox(
+                           const SizedBox(
                              height: 10,
                            ),
                            Row(
@@ -650,7 +650,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                          style: GoogleFonts.poppins(
                                              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
                                        ),
-                                       SizedBox(
+                                       const SizedBox(
                                          height: 3,
                                        ),
                                        Text(
@@ -658,7 +658,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                          style: GoogleFonts.poppins(
                                              fontSize: 10, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                        ),
-                                       SizedBox(
+                                       const SizedBox(
                                          height: 10,
                                        ),
                                        SizedBox(
@@ -690,7 +690,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                      ],
                                    ),
                                  ),
-                                 Spacer(),
+                                 const Spacer(),
                                  Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                                    Text(
                                      "\$10.00",
@@ -727,7 +727,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                              style: GoogleFonts.poppins(
                                  fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                            ),
-                           SizedBox(
+                           const SizedBox(
                              height: 10,
                            ),
                            Text(
@@ -747,7 +747,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                        fontWeight: FontWeight.w600,
                                      ),
                                    ),
-                                   SizedBox(
+                                   const SizedBox(
                                      width: 20,
                                    ),
                                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -757,11 +757,11 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                        unratedColor: const Color(0xFF698EDE).withOpacity(.2),
                                        itemCount: 5,
                                        itemSize: 16.0,
-                                       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                       itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                                        updateOnDrag: true,
                                        itemBuilder: (context, index) => Image.asset(
                                          'assets/icons/star.png',
-                                         color: Color(0xff3B5998),
+                                         color: const Color(0xff3B5998),
                                        ),
                                        onRatingUpdate: (ratingvalue) {
                                          setState(() {
@@ -769,7 +769,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                          });
                                        },
                                      ),
-                                     SizedBox(
+                                     const SizedBox(
                                        height: 8,
                                      ),
                                      const Padding(
@@ -790,8 +790,8 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                              Row(
                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                children: [
-                                 Expanded(
-                                   child: const Text(
+                                 const Expanded(
+                                   child: Text(
                                      'Excellent',
                                      style: TextStyle(
                                        color: Color(0xFF969AA3),
@@ -814,14 +814,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                  ),
                                ],
                              ),
-                             SizedBox(
+                             const SizedBox(
                                height: 5,
                              ),
                              Row(
                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                children: [
-                                 Expanded(
-                                   child: const Text(
+                                 const Expanded(
+                                   child: Text(
                                      'Good',
                                      style: TextStyle(
                                        color: Color(0xFF969AA3),
@@ -844,14 +844,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                  ),
                                ],
                              ),
-                             SizedBox(
+                             const SizedBox(
                                height: 5,
                              ),
                              Row(
                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                children: [
-                                 Expanded(
-                                   child: const Text(
+                                 const Expanded(
+                                   child: Text(
                                      'Average',
                                      style: TextStyle(
                                        color: Color(0xFF969AA3),
@@ -874,14 +874,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                  ),
                                ],
                              ),
-                             SizedBox(
+                             const SizedBox(
                                height: 5,
                              ),
                              Row(
                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                children: [
-                                 Expanded(
-                                   child: const Text(
+                                 const Expanded(
+                                   child: Text(
                                      'Below Average',
                                      style: TextStyle(
                                        color: Color(0xFF969AA3),
@@ -904,14 +904,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                  ),
                                ],
                              ),
-                             SizedBox(
+                             const SizedBox(
                                height: 5,
                              ),
                              Row(
                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                children: [
-                                 Expanded(
-                                   child: const Text(
+                                 const Expanded(
+                                   child: Text(
                                      'Poor',
                                      style: TextStyle(
                                        color: Color(0xFF969AA3),
@@ -932,26 +932,26 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                      animationDuration: 1200,
                                    ),
                                  ),
-                                 SizedBox(
+                                 const SizedBox(
                                    height: 5,
                                  ),
                                ],
                              ),
                            ]),
-                           SizedBox(
+                           const SizedBox(
                              height: 5,
                            ),
                            Divider(
-                             color: Color(0xFF698EDE).withOpacity(.1),
+                             color: const Color(0xFF698EDE).withOpacity(.1),
                              thickness: 2,
                            ),
-                           SizedBox(
+                           const SizedBox(
                              height: 8,
                            ),
                            ListView.builder(
                                shrinkWrap: true,
                                itemCount: 3,
-                               physics: NeverScrollableScrollPhysics(),
+                               physics: const NeverScrollableScrollPhysics(),
                                itemBuilder: (context, index) {
                                  return Column(
                                    children: [
@@ -963,7 +963,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                            'assets/images/Ellipse 1563.png',
                                            height: 50,
                                          ),
-                                         SizedBox(
+                                         const SizedBox(
                                            width: 20,
                                          ),
                                          Expanded(
@@ -971,17 +971,17 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                              crossAxisAlignment: CrossAxisAlignment.start,
                                              children: [
                                                Padding(
-                                                 padding: EdgeInsets.symmetric(horizontal: 5.0),
+                                                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                                  child: Text(
                                                    'Abhishek Jangid',
                                                    style: GoogleFonts.poppins(
-                                                     color: Color(0xFF1B233A),
+                                                     color: const Color(0xFF1B233A),
                                                      fontSize: 16,
                                                      fontWeight: FontWeight.w600,
                                                    ),
                                                  ),
                                                ),
-                                               SizedBox(
+                                               const SizedBox(
                                                  height: 6,
                                                ),
                                                RatingBar.builder(
@@ -994,7 +994,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                  updateOnDrag: true,
                                                  itemBuilder: (context, index) => Image.asset(
                                                    'assets/icons/star.png',
-                                                   color: Color(0xff3B5998),
+                                                   color: const Color(0xff3B5998),
                                                  ),
                                                  onRatingUpdate: (ratingvalue) {
                                                    setState(() {
@@ -1002,7 +1002,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                    });
                                                  },
                                                ),
-                                               SizedBox(
+                                               const SizedBox(
                                                  height: 8,
                                                ),
                                                Padding(
@@ -1013,7 +1013,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                          text:
                                                          'It is a long established fact that a reader will be distracted by the readable content of a page when looking...',
                                                          style: GoogleFonts.poppins(
-                                                           color: Color(0xFF969AA3),
+                                                           color: const Color(0xFF969AA3),
                                                            fontSize: 14,
                                                            fontWeight: FontWeight.w300,
                                                          )),
@@ -1022,7 +1022,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                          style: GoogleFonts.poppins(
                                                              fontSize: 14,
                                                              fontWeight: FontWeight.w400,
-                                                             color: Color(0xFF567DF4)))
+                                                             color: const Color(0xFF567DF4)))
                                                    ]),
                                                  ),
                                                ),
@@ -1043,14 +1043,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                          ),
                                        ],
                                      ),
-                                     SizedBox(
+                                     const SizedBox(
                                        height: 10,
                                      ),
                                      index != 2 ?   Divider(
-                                       color: Color(0xFF698EDE).withOpacity(.1),
+                                       color: const Color(0xFF698EDE).withOpacity(.1),
                                        thickness: 2,
                                      ) : const SizedBox(),
-                                     SizedBox(
+                                     const SizedBox(
                                        height: 12,
                                      ),
                                    ],
@@ -1067,21 +1067,21 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                       colorScheme: const ColorScheme.light(primary: Color(0xFF3B5998))
                   ),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14,vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 14,vertical: 15),
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: Color(0xFF5F5F5F).withOpacity(0.4),
-                              offset: Offset(0.0, 0.5),
+                              color: const Color(0xFF5F5F5F).withOpacity(0.4),
+                              offset: const Offset(0.0, 0.5),
                               blurRadius: 5,),
                           ]
                       ),
                       child: Stepper(
                         type: StepperType.horizontal,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         steps: getSteps(),
                         currentStep: currentStep,
                         onStepContinue: () {
@@ -1186,7 +1186,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
               Container(
                 child: TableCalendar(
                   rowHeight: 43,
-                    headerStyle: HeaderStyle(formatButtonVisible: false,titleCentered: true),
+                    headerStyle: const HeaderStyle(formatButtonVisible: false,titleCentered: true),
                     locale: "en_US",
                     availableGestures: AvailableGestures.all,
                     focusedDay: today,

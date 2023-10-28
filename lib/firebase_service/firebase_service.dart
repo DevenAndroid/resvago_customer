@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import '../model/registerData.dart';
+import '../screen/helper.dart';
 
 class FirebaseService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -30,6 +32,31 @@ class FirebaseService {
       throw Exception(e);
     }
   }
+
+
+  Future manageWishlist({
+    required String wishlistId,
+    dynamic userId,
+    dynamic vendorId,
+    dynamic time,
+  }) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('wishlist')
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .collection("wishlist_list")
+          .doc(wishlistId)
+          .set({
+        "wishlistId": wishlistId,
+        "userId":userId,
+        "vendorId":vendorId,
+        "time":time
+      });
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
 
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
