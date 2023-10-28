@@ -1,6 +1,13 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resvago_customer/routers/routers.dart';
+import 'package:resvago_customer/screen/bottomnav_bar.dart';
+import 'package:resvago_customer/screen/onboarding_screen.dart';
+
+import 'firebase_service/firebase_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,11 +17,29 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  FirebaseService service = FirebaseService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  Future<void> checkUserAuth() async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const BottomNavbar()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
+      );
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3)).then((value) {
-
-      Get.offAllNamed(MyRouters.onBoardingScreen);
+    Timer(const Duration(seconds: 2), () async {
+      checkUserAuth();
     });
   }
 
@@ -32,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
              height: 80,
               width: 80,
               child: Center(child: Image.asset('assets/images/splash.png'))),
-          Center(child: const Image(image: AssetImage('assets/images/Resvago.png'))),
+          const Center(child: Image(image: AssetImage('assets/images/Resvago.png'))),
         ],
       ),
     );

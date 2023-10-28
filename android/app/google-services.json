@@ -1,13 +1,32 @@
 {
   "project_info": {
-    "project_number": "452948387323",
-    "project_id": "resvago-customer",
-    "storage_bucket": "resvago-customer.appspot.com"
+    "project_number": "671324938172",
+    "project_id": "resvago-b7bd4",
+    "storage_bucket": "resvago-b7bd4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:452948387323:android:bfc20fa0edcb5bcdb7575e",
+        "mobilesdk_app_id": "1:671324938172:android:8bbfda7bcdf63d00aed5b9",
+        "android_client_info": {
+          "package_name": "com.resvago.resvago"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGZotKXkd29aqYgF5nL0BV8KcTacvM23Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:671324938172:android:1851263c58d72a0eaed5b9",
         "android_client_info": {
           "package_name": "com.resvago.resvago_customer"
         }
@@ -15,7 +34,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBVn-jOC659RgTuJ6Z7bwv7CQmICk9ZNO4"
+          "current_key": "AIzaSyCGZotKXkd29aqYgF5nL0BV8KcTacvM23Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:671324938172:android:e94020ddea2c63f7aed5b9",
+        "android_client_info": {
+          "package_name": "com.resvago.resvago_vendor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGZotKXkd29aqYgF5nL0BV8KcTacvM23Y"
         }
       ],
       "services": {
