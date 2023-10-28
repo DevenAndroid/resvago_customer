@@ -10,12 +10,12 @@ class LocationController extends GetxController {
   RxBool haspermission = false.obs;
   late LocationPermission permission;
   late Position position;
-  RxString long = "".obs, lat = "".obs;
+  RxString long = "0.0".obs, lat = "0.0".obs;
   var locality = 'No location set'.obs;
   var country = 'Getting Country..'.obs;
   late StreamSubscription<Position> positionStream;
 
-  checkGps(context) async {
+  Future checkGps(context) async {
     servicestatus.value = await Geolocator.isLocationServiceEnabled();
     if (servicestatus.value) {
       permission = await Geolocator.checkPermission();
@@ -29,7 +29,7 @@ class LocationController extends GetxController {
       }
 
       if (haspermission.value) {
-        getLocation();
+       await getLocation();
       }
     } else {
       showDialog(
@@ -65,7 +65,7 @@ class LocationController extends GetxController {
                     }
 
                     if (haspermission.value) {
-                      getLocation();
+                      await getLocation();
                     }
                   }
                 },
@@ -112,6 +112,7 @@ class LocationController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    getLocation();
     checkGps(Get.context);
   }
 }
