@@ -4,10 +4,9 @@ import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/oder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
-
 import '../screen/login_screen.dart';
 import '../screen/onboarding_screen.dart';
-import '../screen/otpscreen.dart';
+import '../screen/resturants_selectdate_screen.dart';
 import '../screen/signup_screen.dart';
 import '../screen/single_restaurants_screen.dart';
 import '../splash_screen.dart';
@@ -23,6 +22,7 @@ class MyRouters {
   static var profileScreen = "/profileScreen";
   static var bottomNavbar = "/bottomNavbar";
   static var singleProductScreen = "/singleProductScreen";
+  static var restaurantsStepperScreen = "/restaurantsStepperScreen";
 
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
@@ -37,6 +37,7 @@ class MyRouters {
     GetPage(name: MyRouters.profileScreen, page: () => const ProfileScreen()),
     GetPage(name: MyRouters.bottomNavbar, page: () => const BottomNavbar()),
     GetPage(name: MyRouters.singleProductScreen, page: () => const SingleRestaurantsScreen()),
+    GetPage(name: MyRouters.restaurantsStepperScreen, page: () => const RestaurantsStepperScreen()),
     // GetPage(name: MyRouters.homePageScreen, page: () => const OtpScreen()),
   ];
 }
