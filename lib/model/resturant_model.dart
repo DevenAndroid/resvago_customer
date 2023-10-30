@@ -32,7 +32,7 @@ class RestaurantModel {
       this.email,
       this.aboutUs});
 
-  RestaurantModel.fromJson(Map<String, dynamic> json) {
+  RestaurantModel.fromJson(Map<String, dynamic> json, String docId) {
     restaurantImage = json['restaurantImage'] != null ? json['restaurantImage'].cast<String>() : [];
     menuGalleryImages = json['menuImage'] != null ? json['menuImage'].cast<String>() : [];
     password = json['password'];
@@ -41,7 +41,7 @@ class RestaurantModel {
     latitude = json['latitude'];
     longitude = json['longitude'];
     restaurantName = json['restaurantName'];
-    docid = json['docid'];
+    docid = docId;
     mobileNumber = json['mobileNumber'];
     confirmPassword = json['confirmPassword'];
     category = json['category'];
