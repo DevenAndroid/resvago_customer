@@ -327,6 +327,20 @@ class _HomePageState extends State<HomePage> {
                                   size: 19,
                                   color: const Color(0xFF000000).withOpacity(0.56),
                                 ),
+                              ],
+                              color: Colors.white),
+                          child: CommonTextFieldWidget1(
+                            hint: 'Find for food or restaurant...',
+                            onTap: (){
+                              Get.toNamed(MyRouters.searchListScreen);
+                            },
+                            // controller: filterDataController.storeSearchController,
+                            prefix: InkWell(
+                              onTap: () {},
+                              child: Icon(
+                                Icons.search,
+                                size: 19,
+                                color: const Color(0xFF000000).withOpacity(0.56),
                               ),
                               onChanged: (val) {},
                             )),

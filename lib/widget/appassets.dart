@@ -20,4 +20,5 @@ class AppAssets {
   static const String code = "assets/images/code.svg";
   static const String roll = "assets/images/roll.png";
   static const String back = "assets/images/back.svg";
+  static const String restaurant = "assets/images/restaurant.png";
 }
