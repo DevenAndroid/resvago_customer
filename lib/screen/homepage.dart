@@ -230,6 +230,9 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white),
                           child: CommonTextFieldWidget1(
                             hint: 'Find for food or restaurant...',
+                            onTap: (){
+                              Get.toNamed(MyRouters.searchListScreen);
+                            },
                             // controller: filterDataController.storeSearchController,
                             prefix: InkWell(
                               onTap: () {},

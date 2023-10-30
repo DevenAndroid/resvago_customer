@@ -1105,8 +1105,8 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                               margin: const EdgeInsets.only(top: 50),
                               child:
                               (currentStep != 3 && currentStep != 0) ? SizedBox(
-                                width: size.width,
-                                height: 50,
+                                width: size.width,        height: 50,
+
                                 child: ElevatedButton(
                                   onPressed: details.onStepContinue,
                                   style: ElevatedButton.styleFrom(
