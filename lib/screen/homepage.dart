@@ -13,7 +13,9 @@ import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/model/wishListModel.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/helper.dart';
+import 'package:resvago_customer/widget/like_button.dart';
 import '../controller/location_controller.dart';
+import '../controller/wishlist_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/category_model.dart';
 import '../widget/appassets.dart';
@@ -33,6 +35,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final locationController = Get.put(LocationController());
+  final wishListController = Get.put(WishListController());
   bool isDescendingOrder = false;
   List<String>? sliderList;
   getSliders() {
@@ -61,12 +64,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<RestaurantModel>? restaurantList;
-  getRestaurantList() {
-    FirebaseFirestore.instance.collection("vendor_users").get().then((value) {
+  Future getRestaurantList() async {
+    restaurantList ??= [];
+    restaurantList!.clear();
+    await FirebaseFirestore.instance.collection("vendor_users").get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
-        restaurantList ??= [];
-        restaurantList!.add(RestaurantModel.fromJson(gg));
+        restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
       }
       setState(() {});
     });
@@ -158,8 +162,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<WishListModel>? wishList;
-  getWishList() {
-    FirebaseFirestore.instance
+  Future getWishList() async {
+    await FirebaseFirestore.instance
         .collection('wishlist')
         .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
         .collection("wishlist_list")
@@ -175,31 +179,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
-  // List<WishListModel> wishList = [];
-  // Stream<List<WishListModel>> getWishList() {
-  //   return FirebaseFirestore.instance
-  //       .collection("wishlist")
-  //       .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-  //       .collection("wishlist_list")
-  //       .snapshots()
-  //       .map((querySnapshot) {
-  //     try {
-  //       for (var doc in querySnapshot.docs) {
-  //         var gg = doc.data();
-  //         wishList.add(WishListModel.fromMap(gg, doc.id.toString()));
-  //       }
-  //     } catch (e) {
-  //       throw Exception(e.toString());
-  //     }
-  //     return wishList;
-  //   });
-  // }
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    wishListController.startListener();
     geo = Geoflutterfire();
     GeoFirePoint center = geo!.point(
         latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
@@ -303,6 +286,8 @@ class _HomePageState extends State<HomePage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
+          await getRestaurantList();
+          await getWishList();
         },
         child: SingleChildScrollView(
           child: Padding(
@@ -528,67 +513,10 @@ class _HomePageState extends State<HomePage> {
                                               fit: BoxFit.cover,
                                             )),
                                         Positioned(
-                                            top: 11,
-                                            right: 10,
-                                            child: InkWell(
-                                              onTap: () {
-                                                if (wishList != null) {
-                                                  if (wishList!
-                                                          .map((e) => e.vendorId.toString())
-                                                          .toList()
-                                                          .contains(restaurantListItem.userID) ==
-                                                      true) {
-                                                    dynamic id;
-                                                    for (var i = 0; i <= wishList!.length - 1; i++) {
-                                                      if (wishList![i].vendorId == restaurantListItem.userID) {
-                                                        id = wishList![i].wishlistId;
-                                                      }
-                                                    }
-                                                    FirebaseFirestore.instance
-                                                        .collection("wishlist")
-                                                        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-                                                        .collection("wishlist_list")
-                                                        .doc(id)
-                                                        .delete()
-                                                        .then((value) {
-                                                      getWishList();
-                                                      showToast("Item was remove to the wishlist successfully");
-                                                      getRestaurantList();
-                                                      setState(() {});
-                                                    });
-                                                  } else {
-                                                    addWishlist(restaurantListItem.userID);
-                                                  }
-                                                } else {
-                                                  addWishlist(restaurantListItem.userID);
-                                                }
-                                              },
-                                              child: Container(
-                                                height: 25,
-                                                width: 25,
-                                                decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                                                child: Icon(
-                                                  wishList != null
-                                                      ? wishList!
-                                                                  .map((e) => e.vendorId.toString())
-                                                                  .toList()
-                                                                  .contains(restaurantListItem.userID) ==
-                                                              true
-                                                          ? Icons.favorite
-                                                          : Icons.favorite_border
-                                                      : Icons.favorite_border,
-                                                  color: wishList != null
-                                                      ? wishList!
-                                                                  .map((e) => e.vendorId.toString())
-                                                                  .toList()
-                                                                  .contains(restaurantListItem.userID) ==
-                                                              true
-                                                          ? Colors.red
-                                                          : AppTheme.primaryColor
-                                                      : AppTheme.primaryColor,
-                                                  size: 18,
-                                                ),
-                                              ),
+                                            top: 0,
+                                            right: 0,
+                                            child: LikeButtonWidget(
+                                              restaurantModel: restaurantListItem,
                                             )),
                                       ],
                                     ),
@@ -807,20 +735,10 @@ class _HomePageState extends State<HomePage> {
                                               fit: BoxFit.cover,
                                             )),
                                         Positioned(
-                                            top: 11,
-                                            right: 10,
-                                            child: InkWell(
-                                              onTap: () {},
-                                              child: Container(
-                                                height: 25,
-                                                width: 25,
-                                                decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                                                child: const Icon(
-                                                  Icons.favorite_border,
-                                                  color: AppTheme.primaryColor,
-                                                  size: 18,
-                                                ),
-                                              ),
+                                            top: 0,
+                                            right: 0,
+                                            child: LikeButtonWidget(
+                                              restaurantModel: restaurantListItem,
                                             )),
                                       ],
                                     ),
