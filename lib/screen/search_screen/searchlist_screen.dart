@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:resvago_customer/routers/routers.dart';
 
 import '../../widget/custom_textfield.dart';
 
@@ -13,7 +15,7 @@ class SerachListScreen extends StatefulWidget {
 class _SerachListScreenState extends State<SerachListScreen> {
   @override
   Widget build(BuildContext context) {
-    return  DefaultTabController(
+    return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
@@ -77,12 +79,10 @@ class _SerachListScreenState extends State<SerachListScreen> {
                               PopupMenuItem(
                                 value: 1,
                                 onTap: () {
-
-
-
+                                  Get.toNamed(MyRouters.searchRestaurantScreen);
                                 },
                                 child: const Column(
-                                  children: [Text("Near By"), Divider()],
+                                  children: [Text("Near Bys"), Divider()],
                                 ),
                               ),
                               PopupMenuItem(
@@ -119,9 +119,12 @@ class _SerachListScreenState extends State<SerachListScreen> {
           ),
           bottom: TabBar(
             tabs: [
-              Tab(child: Text("Delivery"),),
-              Tab(child: Text("Delivery"),),
-
+              Tab(
+                child: Text("Delivery"),
+              ),
+              Tab(
+                child: Text("Delivery"),
+              ),
             ],
           ),
           // title: Text('Tabs Demo'),
