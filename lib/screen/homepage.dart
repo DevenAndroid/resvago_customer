@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   final locationController = Get.put(LocationController());
   bool isDescendingOrder = false;
   List<String>? sliderList;
+
   getSliders() {
     FirebaseFirestore.instance.collection("slider").orderBy('timestamp', descending: isDescendingOrder).get().then((value) {
       for (var element in value.docs) {
@@ -58,6 +59,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<RestaurantModel>? restaurantList;
+
   getRestaurantList() {
     FirebaseFirestore.instance.collection("vendor_users").get().then((value) {
       for (var element in value.docs) {
@@ -102,7 +104,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     geo = Geoflutterfire();
     GeoFirePoint center = geo!.point(
-        latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
+        latitude: double.parse(locationController.lat.toString()),
+        longitude: double.parse(locationController.long.toString()));
     stream = radius.switchMap((rad) {
       final collectionReference = _firestore.collection('vendor_users');
       // return collectionReference;
@@ -121,6 +124,189 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      drawer: Container(
+        width: MediaQuery.of(context).size.width * 0.7,
+        child: Drawer(
+            child: Container(
+          // width: MediaQuery.of(context).size.width * 0.8,
+          color: AppTheme.backgroundcolor,
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: size.height * 0.30,
+                  width: size.width,
+                  color: AppTheme.primaryColor,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: size.height * 0.05,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          // Get.to(navigationPage.elementAt(_currentPage))
+                          // Get.to(MyProfile());
+                        },
+                        child: Card(
+                            elevation: 1,
+                            shape: const CircleBorder(),
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            child: Container(
+                                margin: const EdgeInsets.all(4),
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                decoration: const ShapeDecoration(
+                                  shape: CircleBorder(),
+                                  color: Colors.white,
+                                ),
+                                child: Image.asset(
+                                  AppAssets.profileImage,
+                                  height: 100,
+                                )
+                                //         CachedNetworkImage(
+                                //     imageUrl:
+                                //     profileController.isDataLoading.value
+                                //     ? (profileController.model.value.data!
+                                //         .profileImage ??
+                                //         "")
+                                //         .toString()
+                                //       : "",
+                                //   height: screenSize.height * 0.12,
+                                //   width: screenSize.height * 0.12,
+                                //   errorWidget: (_, __, ___) => const SizedBox(),
+                                //   placeholder: (_, __) => const SizedBox(),
+                                //   fit: BoxFit.cover,
+                                // )
+                                )),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      Text("Williams Jones",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600)),
+                      Text('williamsjones@gmail.com',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Column(
+                  children: [
+                    _drawerTile(
+                        active: true,
+                        title: "My Orders".tr,
+                        icon: const ImageIcon(
+                          AssetImage(AppAssets.order),
+                          size: 22,
+                          color: AppTheme.drawerColor,
+                        ),
+                        onTap: () {
+
+                          Get.toNamed(MyRouters.myOrder);
+                        }),
+                    const Divider(
+                      height: 5,
+                      color: Color(0xffF2F2F2),
+                    ),
+                    _drawerTile(
+                        active: true,
+                        title: "My Profile".tr,
+                        icon: const ImageIcon(
+                          AssetImage(AppAssets.profilee),
+                          size: 22,
+                          color: AppTheme.drawerColor,
+                        ),
+                        onTap: () async {
+                          // Get.toNamed(MyProfileScreen.myProfileScreen);
+                        }),
+                    const Divider(
+                      height: 5,
+                      color: Color(0xffF2F2F2),
+                    ),
+                    _drawerTile(
+                        active: true,
+                        title: "Notification".tr,
+                        icon: const ImageIcon(
+                          AssetImage(AppAssets.notification),
+                          size: 22,
+                          color: AppTheme.drawerColor,
+                        ),
+                        onTap: () {}),
+                    const Divider(
+                      height: 5,
+                      color: Color(0xffF2F2F2),
+                    ),
+                    _drawerTile(
+                        active: true,
+                        title: "My Address".tr,
+                        icon: const ImageIcon(
+                          AssetImage(AppAssets.myAddress),
+                          size: 22,
+                          color: AppTheme.drawerColor,
+                        ),
+                        onTap: () {
+                          // Get.toNamed(MyAddress.myAddressScreen);
+                          // Get.back();
+                          // widget.onItemTapped(1);
+                        }),
+                    const Divider(
+                      height: 5,
+                      color: Color(0xffF2F2F2),
+                    ),
+                    _drawerTile(
+                        active: true,
+                        title: "Privacy Policy".tr,
+                        icon: const ImageIcon(
+                          AssetImage(AppAssets.privacyPolicy),
+                          size: 22,
+                          color: AppTheme.drawerColor,
+                        ),
+                        onTap: () async {
+                          Get.toNamed(MyRouters.privacyPolicyScreen);
+
+                          // }
+                        }),
+                    const Divider(
+                      height: 5,
+                      color: Color(0xffF2F2F2),
+                    ),
+                    _drawerTile(
+                        active: true,
+                        title: "Help Center".tr,
+                        icon: const ImageIcon(
+                          AssetImage(AppAssets.helpCenter),
+                          size: 22,
+                          color: AppTheme.drawerColor,
+                        ),
+                        onTap: () async {
+                          // Get.toNamed(HelpCenter.helpCenterScreen);
+                          // }
+                        }),
+                    const Divider(
+                      height: 5,
+                      color: Color(0xffF2F2F2),
+                    ),
+                    _drawerTile(
+                        active: true,
+                        title: "Logout".tr,
+                        icon: const ImageIcon(
+                          AssetImage(AppAssets.logOut),
+                          size: 22,
+                          color: AppTheme.drawerColor,
+                        ),
+                        onTap: () {}),
+                  ],
+                ),
+                // SizedBox(height:20,)
+              ],
+            ),
+          ),
+        )),
+      ),
       backgroundColor: const Color(0xffF6F6F6),
       appBar: AppBar(
         surfaceTintColor: AppTheme.backgroundcolor,
@@ -230,7 +416,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white),
                           child: CommonTextFieldWidget1(
                             hint: 'Find for food or restaurant...',
-                            onTap: (){
+                            onTap: () {
                               Get.toNamed(MyRouters.searchListScreen);
                             },
                             // controller: filterDataController.storeSearchController,
@@ -509,14 +695,14 @@ class _HomePageState extends State<HomePage> {
                                   Row(
                                     children: List.generate(
                                         17,
-                                            (index) => Padding(
-                                          padding: const EdgeInsets.only(left: 2, right: 2),
-                                          child: Container(
-                                            color: Colors.grey[200],
-                                            height: 2,
-                                            width: 10,
-                                          ),
-                                        )),
+                                        (index) => Padding(
+                                              padding: const EdgeInsets.only(left: 2, right: 2),
+                                              child: Container(
+                                                color: Colors.grey[200],
+                                                height: 2,
+                                                width: 10,
+                                              ),
+                                            )),
                                   ),
                                   const SizedBox(
                                     height: 10,
@@ -782,6 +968,26 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListTile(
+        selectedTileColor: AppTheme.primaryColor,
+        leading: icon,
+        minLeadingWidth: 25,
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: AppTheme.drawerColor,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        onTap: active ? onTap : null,
       ),
     );
   }

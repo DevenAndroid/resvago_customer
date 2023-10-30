@@ -518,39 +518,40 @@ class _OderScreenState extends State<OderScreen> {
                       SizedBox(
                         height: 12,
                       ),
-                      // Container(
-                      //   width: size.width,
-                      //   decoration: BoxDecoration(
-                      //       borderRadius: BorderRadius.all(Radius.circular(8)),
-                      //       border: Border.all(color: Color(0xff3B5998).withOpacity(.3))),
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                      //     child: Row(
-                      //       children: [
-                      //         Image.asset(
-                      //           "assets/icons/phonepay.png",
-                      //           height: 20,
-                      //         ),
-                      //         SizedBox(
-                      //           width: 18,
-                      //         ),
-                      //         Text(
-                      //           'PayPal',
-                      //           style: GoogleFonts.poppins(
-                      //               fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      
+                      Container(
+                        width: size.width,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            border: Border.all(color: Color(0xff3B5998).withOpacity(.3))),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "assets/icons/phonepay.png",
+                                height: 20,
+                              ),
+                              SizedBox(
+                                width: 18,
+                              ),
+                              Text(
+                                'PayPay',
+                                style: GoogleFonts.poppins(
+                                    fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
                       SizedBox(
-                        height: 80,
+                        height: 20,
                       ),
                     ],
                   ))),
           Container(
-              margin: const EdgeInsets.only(top: 50),
+              margin: const EdgeInsets.only(top: 20),
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: SizedBox(
                 width: size.width,
                 height: 50,
@@ -569,11 +570,11 @@ class _OderScreenState extends State<OderScreen> {
                     textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                   child: Text(
-                    "Book Table",
+                    "Place Order",
                     style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                   ),
                 ),
-              ))
+              )),SizedBox(height: 100,)
         ])));
   }
 }

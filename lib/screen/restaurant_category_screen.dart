@@ -1,172 +1,62 @@
 import 'package:dotted_line/dotted_line.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../../routers/routers.dart';
-import '../../widget/appassets.dart';
-import '../../widget/apptheme.dart';
-import '../../widget/custom_textfield.dart';
+import '../widget/appassets.dart';
+import '../widget/apptheme.dart';
 
-class SearchRestaurantScreen extends StatefulWidget {
-  const SearchRestaurantScreen({super.key});
+class RestaurantCategoryScreen extends StatefulWidget {
+  const RestaurantCategoryScreen({super.key});
 
   @override
-  State<SearchRestaurantScreen> createState() => _SearchRestaurantScreenState();
+  State<RestaurantCategoryScreen> createState() => _RestaurantCategoryScreenState();
 }
 
-class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
-  int currentDrawer = 0;
-
+class _RestaurantCategoryScreenState extends State<RestaurantCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 80,
-          automaticallyImplyLeading: false,
-          title: Row(
-            children: [
-              Expanded(
-                child: Container(
-                    height: 42,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF37C666).withOpacity(0.10),
-                            offset: const Offset(
-                              .1,
-                              .1,
-                            ),
-                            blurRadius: 20.0,
-                            spreadRadius: 1.0,
-                          ),
-                        ],
-                        color: Colors.white),
-                    child: CommonTextFieldWidget1(
-                      hint: 'Find for food or restaurant...',
-                      // controller: filterDataController.storeSearchController,
-                      prefix: InkWell(
-                        onTap: () {},
-                        child: Icon(
-                          Icons.search,
-                          size: 19,
-                          color: const Color(0xFF000000).withOpacity(0.56),
-                        ),
-                      ),
-                      onChanged: (val) {},
-                    )),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  color: Colors.white,
-                ),
-                child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: PopupMenuButton<int>(
-                        padding: EdgeInsets.zero,
-                        icon: const Icon(
-                          Icons.filter_list_sharp,
-                          color: AppTheme.primaryColor,
-                        ),
-                        color: Colors.white,
-                        surfaceTintColor: Colors.white,
-                        itemBuilder: (context) {
-                          return [
-                            PopupMenuItem(
-                              value: 1,
-                              onTap: () {},
-                              child: const Column(
-                                children: [Text("Near By"), Divider()],
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 1,
-                              onTap: () {},
-                              child: const Column(
-                                children: [Text("Rating"), Divider()],
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 1,
-                              onTap: () {},
-                              child: const Column(
-                                children: [Text("Offers"), Divider()],
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 1,
-                              onTap: () {},
-                              child: const Column(
-                                children: [
-                                  Text("Popular"),
-                                  Divider(
-                                    color: Colors.white,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ];
-                        })),
-              ),
-            ],
-          ),
-          bottom: TabBar(
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicatorColor: AppTheme.primaryColor,
-            indicatorPadding: EdgeInsets.symmetric(horizontal: 15),
-            // automaticIndicatorColorAdjustment: true,
-            onTap: (value) {
-              currentDrawer = 0;
-              setState(() {
-
-              });
-            },
-            tabs: [
-              Tab(
-                child: Text(
-                  "Restaurants",
-                  style: currentDrawer == 0
-                      ? GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500)
-                      : GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  "Dishes",
-                  style: currentDrawer == 1
-                      ? GoogleFonts.poppins(color: Colors.cyan, fontSize: 16, fontWeight: FontWeight.w500)
-                      : GoogleFonts.poppins(color: Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-              ),
-            ],
+    return  Scaffold(
+      appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
+            Get.back();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(13.0),
+            child: SvgPicture.asset("assets/images/back.svg"),
           ),
         ),
-        body: TabBarView(
-          children: [
-            SizedBox(
-              height: 260,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: 4,
-                  scrollDirection: Axis.vertical,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                         Get.toNamed(MyRouters.searchDiningListScreen);
-                      },
+        elevation: 1,
+        title: Text(
+          "Category",
+          style: GoogleFonts.poppins(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column
+          (children: [
+          SizedBox(
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: 4,
+                physics: BouncingScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      // Get.toNamed(MyRouters.searchDiningListScreen);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
                       child: Container(
-                        margin: EdgeInsets.only(right: 12, top: 18, left: 12),
+                        margin: EdgeInsets.only(right: 12, top: 8, left: 12),
                         decoration: BoxDecoration(
                           color: const Color(0xffFFFFFF),
                           borderRadius: BorderRadius.circular(12),
@@ -219,12 +109,12 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                     height: 30,
                                     width: 130,
                                     decoration: BoxDecoration(
-                                        color: Color(0xff3B5998).withOpacity(.3),
+                                        color: Color(0xff3B5998).withOpacity(.5),
                                         // border: Border.all(color: ),
                                         borderRadius: BorderRadius.all(Radius.circular(5))),
                                     child: Center(
                                       child: Text(
-                                        'South Indian Food',
+                                        'Chinese  Food',
                                         style: GoogleFonts.poppins(
                                             fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.primaryColor),
                                       ),
@@ -315,13 +205,11 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                           ],
                         ),
                       ),
-                    );
-                  }),
-            ),
-            Text('djn'),
-            // Icon(Icons.directions_transit, size: 350),
-          ],
-        ),
+                    ),
+                  );
+                }),
+          ),
+        ],),
       ),
     );
   }

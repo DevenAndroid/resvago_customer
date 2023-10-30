@@ -2,12 +2,16 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:resvago_customer/screen/bottomnav_bar.dart';
 import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
+import 'package:resvago_customer/screen/myorder_screen.dart';
 import 'package:resvago_customer/screen/oder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import '../screen/login_screen.dart';
 import '../screen/onboarding_screen.dart';
+import '../screen/privacypolicy.dart';
+import '../screen/restaurant_category_screen.dart';
 import '../screen/resturants_selectdate_screen.dart';
 import '../screen/search_screen/search_singlerestaurant_screen.dart';
+import '../screen/search_screen/searchlist_dining_screen.dart';
 import '../screen/search_screen/searchlist_screen.dart';
 import '../screen/signup_screen.dart';
 import '../screen/single_restaurants_screen.dart';
@@ -27,6 +31,10 @@ class MyRouters {
   static var restaurantsStepperScreen = "/restaurantsStepperScreen";
   static var searchListScreen = "/searchListScreen";
   static var searchRestaurantScreen = "/searchRestaurantScreen";
+  static var searchDiningListScreen = "/searchDiningListScreen";
+  static var restaurantCategoryScreen = "/restaurantCategoryScreen";
+  static var privacyPolicyScreen = "/privacyPolicyScreen";
+  static var myOrder = "/myOrder";
 
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
@@ -43,7 +51,11 @@ class MyRouters {
     GetPage(name: MyRouters.singleProductScreen, page: () => const SingleRestaurantsScreen()),
     GetPage(name: MyRouters.restaurantsStepperScreen, page: () => const RestaurantsStepperScreen()),
     GetPage(name: MyRouters.searchListScreen, page: () => const SerachListScreen()),
-    GetPage(name: MyRouters.searchRestaurantScreen, page: () => const SingleRestaurantScreen()),
+    GetPage(name: MyRouters.searchRestaurantScreen, page: () => const SearchRestaurantScreen()),
+    GetPage(name: MyRouters.searchDiningListScreen, page: () => const SearchListDiningScreen()),
+    GetPage(name: MyRouters.restaurantCategoryScreen, page: () => const RestaurantCategoryScreen()),
+    GetPage(name: MyRouters.privacyPolicyScreen, page: () => const PrivacyPolicy()),
+    GetPage(name: MyRouters.myOrder, page: () => const MyOrder()),
     // GetPage(name: MyRouters.homePageScreen, page: () => const OtpScreen()),
   ];
 }

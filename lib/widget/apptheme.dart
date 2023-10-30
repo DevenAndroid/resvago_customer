@@ -28,4 +28,5 @@ class AppTheme {
   static const Color callPhoneColor = Color(0xFF52AC1A);
   static const Color loginTextColor = Color(0xFF909090);
   static const Color loginFieldColor = Color(0xFFADADB8);
+  static const Color drawerColor = Color(0xFF4F535E);
 }
