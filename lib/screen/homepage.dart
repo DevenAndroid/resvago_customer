@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/routers/routers.dart';
+import 'package:resvago_customer/screen/searchlist_screen.dart';
 import '../controller/location_controller.dart';
 import '../model/category_model.dart';
 import '../widget/appassets.dart';
@@ -32,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   bool isDescendingOrder = false;
   List<String>? sliderList;
   String searchQuery = '';
+  TextEditingController searchController = TextEditingController();
 
   getSliders() {
     FirebaseFirestore.instance
@@ -247,10 +249,12 @@ class _HomePageState extends State<HomePage> {
                               ],
                               color: Colors.white),
                           child: CommonTextFieldWidget1(
+                            controller: searchController,
                             hint: 'Find for food or restaurant...',
                             // controller: filterDataController.storeSearchController,
                             prefix: InkWell(
                               onTap: () {
+                                Get.to(const SerachListScreen());
                               },
                               child: Icon(
                                 Icons.search,
