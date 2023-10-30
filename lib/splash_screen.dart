@@ -1,12 +1,8 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/bottomnav_bar.dart';
 import 'package:resvago_customer/screen/onboarding_screen.dart';
-
 import 'firebase_service/firebase_service.dart';
 
 class SplashScreen extends StatefulWidget {

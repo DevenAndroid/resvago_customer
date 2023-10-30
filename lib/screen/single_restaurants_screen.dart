@@ -226,10 +226,10 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                               child: Container(
                                 width: size.width,
                                 height: 60,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     borderRadius:
-                                        const BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-                                    color: const Color(0xFFEBF0FB)),
+                                        BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+                                    color: Color(0xFFEBF0FB)),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -303,7 +303,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Expanded(
@@ -348,6 +348,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                     fontWeight: FontWeight.w600,
                                     color: Color(0xFF3B5998),
                                   )),
+
                       ),
                     ),
                   ),
@@ -1092,7 +1093,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                       ]),
                       child: Stepper(
                         type: StepperType.horizontal,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         steps: getSteps(),
                         currentStep: currentStep,
                         onStepContinue: () {

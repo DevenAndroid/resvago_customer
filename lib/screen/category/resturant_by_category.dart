@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/widget/common_text_field.dart';
 import '../../controller/location_controller.dart';
@@ -36,11 +35,12 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
       for (var element in value.docs) {
         var gg = element.data();
         restaurantList ??= [];
-        restaurantList!.add(RestaurantModel.fromJson(gg));
+        restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
       }
       setState(() {});
     });
   }
+
 
   final radius = BehaviorSubject<double>.seeded(1.0);
   Stream<List<DocumentSnapshot>>? stream;
@@ -91,7 +91,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Restaurant", context: context),
+      appBar: backAppBar(title: widget.categoryName, context: context),
       body: restaurantList != null
           ? StreamBuilder<List<DocumentSnapshot>>(
               stream: stream,
