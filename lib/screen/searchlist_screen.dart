@@ -72,7 +72,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                   child: Padding(
                       padding: const EdgeInsets.all(2.0),
                       child: PopupMenuButton<int>(
-                        shadowColor: Colors.white,
+                          shadowColor: Colors.white,
                           padding: EdgeInsets.zero,
                           icon: const Icon(
                             Icons.filter_list_sharp,
@@ -140,9 +140,9 @@ class _SerachListScreenState extends State<SerachListScreen> {
             StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('vendor_menu')
-              .where("bookingForDelivery" , isEqualTo: true)
+                  .where("bookingForDelivery" , isEqualTo: true)
                   .where('category',
-                      isGreaterThanOrEqualTo: searchKeyword)
+                  isGreaterThanOrEqualTo: searchKeyword)
                   .where('category', isLessThan: '${searchKeyword}z')
                   .snapshots(),
               builder: (context, snapshot) {
@@ -173,7 +173,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                     },
                   );
                 }
-                  return const Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               },
             ),
             StreamBuilder(
@@ -207,7 +207,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                           title: Text(name[index]),
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(image[index]),
-                              ),
+                          ),
                         ),
                       );
                     },
