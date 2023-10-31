@@ -19,4 +19,16 @@ class AppAssets {
   static const String chat = "assets/icons/chat.svg";
   static const String code = "assets/images/code.svg";
   static const String roll = "assets/images/roll.png";
+  static const String back = "assets/images/back.svg";
+  static const String restaurant = "assets/images/restaurant.png";
+  static const String pizza = "assets/images/pizza.png";
+  static const String logOut = "assets/icons/logout.png";
+  static const String helpCenter = "assets/icons/helpcenter.png";
+  static const String myAddress = "assets/icons/myaddress.png";
+  static const String notification = "assets/icons/notification.png";
+  static const String order = "assets/icons/order.png";
+  static const String privacyPolicy = "assets/icons/privacypolicy.png";
+  static const String profilee = "assets/icons/profile.png";
+  static const String profileImage = "assets/images/profleImage.png";
+  static const String orderEmpty = "assets/images/orderempty.png";
 }

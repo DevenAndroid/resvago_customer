@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controller/logn_controller.dart';
@@ -30,6 +31,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController phoneNumberController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+  late Geoflutterfire geo;
+
   String verificationId = "";
   bool value = false;
   bool showValidation = false;

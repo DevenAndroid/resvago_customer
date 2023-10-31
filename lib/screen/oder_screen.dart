@@ -468,7 +468,9 @@ class _OderScreenState extends State<OderScreen> {
                           SizedBox(
                             width: 8,
                           ),
-                          SizedBox(height: 12,),
+                          SizedBox(
+                            height: 12,
+                          ),
                           Container(
                             height: 23,
                             width: 23,
@@ -485,53 +487,94 @@ class _OderScreenState extends State<OderScreen> {
                           )
                         ],
                       ),
-                      SizedBox(height: 14,),
+                      SizedBox(
+                        height: 14,
+                      ),
                       Container(
                         width: size.width,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             border: Border.all(color: Color(0xff3B5998).withOpacity(.3))),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                           child: Row(
                             children: [
-                              Image.asset("assets/icons/debvitcard.png",height: 20,),
-                              SizedBox(width: 18,),
+                              Image.asset(
+                                "assets/icons/debvitcard.png",
+                                height: 20,
+                              ),
+                              SizedBox(
+                                width: 18,
+                              ),
                               Text(
                                 'Debit/Credit Card',
                                 style: GoogleFonts.poppins(
                                     fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
                               )
-
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 12,),
+                      SizedBox(
+                        height: 12,
+                      ),
                       Container(
                         width: size.width,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            
                             border: Border.all(color: Color(0xff3B5998).withOpacity(.3))),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                           child: Row(
                             children: [
-                              Image.asset("assets/icons/phonepay.png",height: 20,),
-                              SizedBox(width: 18,),
+                              Image.asset(
+                                "assets/icons/phonepay.png",
+                                height: 20,
+                              ),
+                              SizedBox(
+                                width: 18,
+                              ),
                               Text(
-                                'PayPal',
+                                'PayPay',
                                 style: GoogleFonts.poppins(
                                     fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
-                              )
-
+                              ),
                             ],
                           ),
                         ),
-                      ),SizedBox(height: 200,)
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
                     ],
-                  )))
+                  ))),
+          Container(
+              margin: const EdgeInsets.only(top: 20),
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: SizedBox(
+                width: size.width,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: const BorderSide(
+                        width: 2.0,
+                        color: Color(0xFF3B5998),
+                      ),
+                    ),
+                    primary: const Color(0xFF3B5998),
+                    textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                  child: Text(
+                    "Place Order",
+                    style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                  ),
+                ),
+              )),SizedBox(height: 100,)
         ])));
   }
 }
