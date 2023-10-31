@@ -1,17 +1,45 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import '../../model/menu_model.dart';
+import '../../model/model_store_slots.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
+
+extension GetTotalDates on List<ModelStoreSlots> {
+  List<DateTime> get totalDates {
+    var kk = DateFormat("dd-MMM-yyyy");
+    List<DateTime> slotsDate = [];
+    for (var element in this) {
+      DateTime initialDate = kk.parse(element.startDateForLunch);
+      if ((element.endDateForLunch ?? "").toString().isEmpty) {
+        slotsDate.add(initialDate);
+      } else {
+        DateTime lastDate = kk.parse(element.endDateForLunch);
+        while (initialDate.isBefore(lastDate.add(const Duration(days: 1)))) {
+          slotsDate.add(initialDate);
+          initialDate = initialDate.add(const Duration(days: 1));
+        }
+      }
+    }
+    return slotsDate;
+  }
+}
+
+extension ChangeToDate on String {
+  DateTime get formatDate {
+    var kk = DateFormat("dd-MMM-yyyy");
+    return kk.parse(this);
+  }
+}
 
 class SelectDateFlowScreen extends StatefulWidget {
   const SelectDateFlowScreen({super.key, required this.userId});
@@ -32,7 +60,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
-      today = day;
+      today = DateTime(day.year,day.month,day.day);
     });
   }
 
@@ -50,6 +78,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
     });
   }
 
+  List<ModelStoreSlots> slotsList = [];
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -57,6 +86,8 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
         if (snapshot.hasData) {
           log(snapshot.data!.docs.map((e) => jsonEncode(e.data())).toList().toString());
+          slotsList = snapshot.data!.docs.map((e) => ModelStoreSlots.fromJson(e.data())).toList();
+          print(slotsList.map((e) => e.startDateForLunch));
           return Padding(
             padding: const EdgeInsets.all(12),
             child: Container(
@@ -146,49 +177,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                     color: Colors.grey,
                     thickness: 0.5,
                   ),
-                  if (kk == 0)
-                    Column(
-                      children: [
-                        TableCalendar(
-                          rowHeight: 43,
-                          headerStyle: const HeaderStyle(formatButtonVisible: false, titleCentered: true),
-                          locale: "en_US",
-                          availableGestures: AvailableGestures.all,
-                          focusedDay: DateTime.now(),
-                          firstDay: DateTime.now(),
-                          lastDay: DateTime.utc(2030, 3, 14),
-                          onDaySelected: _onDaySelected,
-                          selectedDayPredicate: (day) => isSameDay(day, DateTime.now()),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              "Cancel",
-                              style: GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w500, fontSize: 16),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                kk = .3333333;
-                                setState(() {});
-                              },
-                              child: Text(
-                                "Ok",
-                                style:
-                                    GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w500, fontSize: 16),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
+                  if (kk == 0) tableCalenderWidget(),
                   if (kk == .3333333)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,6 +608,58 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         }
         return const CircularProgressIndicator();
       },
+    );
+  }
+
+  tableCalenderWidget() {
+    List<DateTime> availableDates = slotsList.totalDates;
+    print(today.toLocal());
+    print(availableDates);
+    return Column(
+      children: [
+        TableCalendar(
+          rowHeight: 43,
+          headerStyle: const HeaderStyle(formatButtonVisible: false, titleCentered: true),
+          locale: "en_US",
+          availableGestures: AvailableGestures.all,
+          focusedDay: today,
+          firstDay: DateTime.now(),
+          lastDay: DateTime.utc(2030, 3, 14),
+          onDaySelected: _onDaySelected,
+          selectedDayPredicate: (day) => isSameDay(day, today),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              "Cancel",
+              style: GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w500, fontSize: 16),
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+            InkWell(
+              onTap: () {
+                if(!availableDates.contains(today)){
+                  showToast("Slot not available for this day");
+                  return;
+                }
+                kk = .3333333;
+
+                setState(() {});
+              },
+              child: Text(
+                "Ok",
+                style: GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w500, fontSize: 16),
+              ),
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+          ],
+        )
+      ],
     );
   }
 }

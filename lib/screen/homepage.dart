@@ -84,12 +84,6 @@ class _HomePageState extends State<HomePage> {
   Geoflutterfire? geo;
 
   String _calculateDistance({dynamic lat1, dynamic lon1}) {
-    if (kDebugMode) {
-      print(double.tryParse(locationController.lat.toString()));
-    }
-    if (kDebugMode) {
-      print(double.tryParse(locationController.long.toString()));
-    }
     if (double.tryParse(lat1) == null ||
         double.tryParse(lon1) == null ||
         double.tryParse(locationController.lat.toString()) == null ||
