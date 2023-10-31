@@ -9,7 +9,7 @@ import '../../widget/apptheme.dart';
 import '../../widget/custom_textfield.dart';
 
 class SingleRestaurantScreen extends StatefulWidget {
-  const SingleRestaurantScreen({super.key});
+  const SingleRestaurantScreen({super.key, required String restaurantId});
 
   @override
   State<SingleRestaurantScreen> createState() => _SingleRestaurantScreenState();

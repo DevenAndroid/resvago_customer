@@ -57,6 +57,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   percent_indicator: ^4.2.3
   table_calendar: ^3.0.9
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

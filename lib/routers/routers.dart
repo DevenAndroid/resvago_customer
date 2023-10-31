@@ -10,7 +10,7 @@ import '../screen/resturants_selectdate_screen.dart';
 import '../screen/search_screen/search_singlerestaurant_screen.dart';
 import '../screen/search_screen/searchlist_screen.dart';
 import '../screen/signup_screen.dart';
-import '../screen/single_restaurants_screen.dart';
+import '../screen/single_store_screens/single_restaurants_screen.dart';
 import '../splash_screen.dart';
 
 class MyRouters {
@@ -40,10 +40,9 @@ class MyRouters {
     GetPage(name: MyRouters.oderScreen, page: () => const OderScreen()),
     GetPage(name: MyRouters.profileScreen, page: () => const ProfileScreen()),
     GetPage(name: MyRouters.bottomNavbar, page: () => const BottomNavbar()),
-    GetPage(name: MyRouters.singleProductScreen, page: () => const SingleRestaurantsScreen()),
     GetPage(name: MyRouters.restaurantsStepperScreen, page: () => const RestaurantsStepperScreen()),
     GetPage(name: MyRouters.searchListScreen, page: () => const SerachListScreen()),
-    GetPage(name: MyRouters.searchRestaurantScreen, page: () => const SingleRestaurantScreen()),
+    // GetPage(name: MyRouters.searchRestaurantScreen, page: () =>  SingleRestaurantScreen()),
     // GetPage(name: MyRouters.homePageScreen, page: () => const OtpScreen()),
   ];
 }
