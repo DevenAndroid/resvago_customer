@@ -48,7 +48,7 @@ class MyRouters {
     GetPage(name: MyRouters.oderScreen, page: () => const OderScreen()),
     GetPage(name: MyRouters.profileScreen, page: () => const ProfileScreen()),
     GetPage(name: MyRouters.bottomNavbar, page: () => const BottomNavbar()),
-    GetPage(name: MyRouters.singleProductScreen, page: () => const SingleRestaurantsScreen()),
+    // GetPage(name: MyRouters.singleProductScreen, page: () =>  SingleRestaurantsScreen(restaurantItem: null, distance: '',)),
     GetPage(name: MyRouters.restaurantsStepperScreen, page: () => const RestaurantsStepperScreen()),
     GetPage(name: MyRouters.searchListScreen, page: () => const SerachListScreen()),
     GetPage(name: MyRouters.searchRestaurantScreen, page: () => const SearchRestaurantScreen()),

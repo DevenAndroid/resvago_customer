@@ -13,6 +13,8 @@ import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/model/wishListModel.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/helper.dart';
+import 'package:resvago_customer/screen/search_screen/search_singlerestaurant_screen.dart';
+import 'package:resvago_customer/screen/single_restaurants_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
 import '../controller/location_controller.dart';
 import '../controller/wishlist_controller.dart';
@@ -25,6 +27,8 @@ import 'package:rxdart/rxdart.dart';
 import 'category/resturant_by_category.dart';
 
 class HomePage extends StatefulWidget {
+
+
   const HomePage({super.key});
 
   static var homePageScreen = "/homePageScreen";
@@ -103,82 +107,6 @@ class _HomePageState extends State<HomePage> {
     return "${(distanceInMeters / 1000).toStringAsFixed(2)} KM";
   }
 
-  Future<bool> addToWishlist(
-    String userId,
-    String vendorId,
-  ) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('wishlist')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-          .collection("wishlist_list")
-          .doc()
-          .set({
-        'userId': userId,
-        'vendorId': vendorId,
-        'timestamp': DateTime.now().microsecondsSinceEpoch,
-      });
-      return true;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error adding to wishlist: $e');
-      }
-      return false;
-    }
-  }
-
-  FirebaseService firebaseService = FirebaseService();
-  Future<bool> addWishlistToFirestore(vendorId) async {
-    OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
-    try {
-      await firebaseService
-          .manageWishlist(
-              time: DateTime.now().millisecondsSinceEpoch,
-              wishlistId: DateTime.now().microsecondsSinceEpoch.toString(),
-              userId: FirebaseAuth.instance.currentUser!.phoneNumber,
-              vendorId: vendorId)
-          .then((value) {
-        Get.back();
-        Helper.hideLoader(loader);
-      });
-    } catch (e) {
-      Helper.hideLoader(loader);
-      showToast(e.toString());
-      throw Exception(e.toString());
-    }
-    return true;
-  }
-
-  bool? addedToWishlist;
-  addWishlist(
-    String vendorId,
-  ) async {
-    addedToWishlist = await addWishlistToFirestore(vendorId);
-    if (addedToWishlist!) {
-      showToast("Item was added to the wishlist successfully");
-      getWishList();
-    } else {}
-  }
-
-  List<WishListModel>? wishList;
-  Future getWishList() async {
-    await FirebaseFirestore.instance
-        .collection('wishlist')
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-        .collection("wishlist_list")
-        .get()
-        .then((value) {
-      for (var element in value.docs) {
-        var gg = element.data();
-        wishList ??= [];
-        wishList!.add(WishListModel.fromMap(gg, element.id));
-        log("wishList$wishList");
-      }
-      setState(() {});
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -196,7 +124,6 @@ class _HomePageState extends State<HomePage> {
     getSliders();
     getVendorCategories();
     getRestaurantList();
-    getWishList();
     locationController.getLocation();
     locationController.checkGps(context).then((value) {});
   }
@@ -287,7 +214,6 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         onRefresh: () async {
           await getRestaurantList();
-          await getWishList();
         },
         child: SingleChildScrollView(
           child: Padding(
@@ -326,23 +252,11 @@ class _HomePageState extends State<HomePage> {
                                   Icons.search,
                                   size: 19,
                                   color: const Color(0xFF000000).withOpacity(0.56),
-                              color: Colors.white),
-                          child: CommonTextFieldWidget1(
-                            hint: 'Find for food or restaurant...',
-                            onTap: (){
-                              Get.toNamed(MyRouters.searchListScreen);
-                            },
-                            // controller: filterDataController.storeSearchController,
-                            prefix: InkWell(
-                              onTap: () {},
-                              child: Icon(
-                                Icons.search,
-                                size: 19,
-                                color: const Color(0xFF000000).withOpacity(0.56),
+                                ),
                               ),
                               onChanged: (val) {},
                             )),
-                      )),
+                      ),
                       const SizedBox(
                         width: 10,
                       ),
@@ -500,7 +414,10 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.toNamed(MyRouters.singleProductScreen);
+                                Get.to(()=>SingleRestaurantsScreen(restaurantItem: restaurantListItem,distance:_calculateDistance(
+                                  lat1: restaurantListItem.latitude.toString(),
+                                  lon1: restaurantListItem.longitude.toString(),
+                                ),));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
