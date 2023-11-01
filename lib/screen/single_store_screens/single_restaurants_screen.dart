@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:resvago_customer/model/menu_model.dart';
+import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../model/resturant_model.dart';
@@ -241,11 +242,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                       const SizedBox(
                                         width: 20,
                                       ),
-                                      Text(
-                                        "Average price \$20",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                      SettingDataScreen(
+                                        docId: widget.restaurantItem!.docid.toString(),
                                       ),
+                                      // Text(
+                                      //   "Average price \$20",
+                                      //   style: GoogleFonts.poppins(
+                                      //       fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                      // ),
                                       const Spacer(),
                                       Column(
                                         children: [

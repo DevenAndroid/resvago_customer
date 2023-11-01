@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-
 import '../model/model_store_timing.dart';
-import '../screen/timimg_list.dart';
+import '../screen/single_store_screens/timimg_list.dart';
 
 class RestaurantTimingScreen extends StatefulWidget {
   const RestaurantTimingScreen({super.key, required this.docId});

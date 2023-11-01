@@ -1,76 +1,49 @@
-class ModelStoreSlots {
-  dynamic endDateForDinner;
-  dynamic noOfGuest;
-  dynamic vendorId;
-  dynamic dinnerDuration;
-  dynamic setOffer;
-  dynamic startTimeForLunch;
-  dynamic lunchDuration;
-  dynamic startDateForLunch;
-  dynamic dateType;
-  dynamic endTimeForLunch;
-  dynamic endDateForLunch;
-  dynamic slotId;
-  dynamic time;
-  dynamic endTimeForDinner;
-  dynamic startDateForDinner;
-  dynamic startTimeForDinner;
+import 'dart:convert';
 
-  ModelStoreSlots(
-      {this.endDateForDinner,
-        this.noOfGuest,
-        this.vendorId,
-        this.dinnerDuration,
-        this.setOffer,
-        this.startTimeForLunch,
-        this.lunchDuration,
-        this.startDateForLunch,
-        this.dateType,
-        this.endTimeForLunch,
-        this.endDateForLunch,
-        this.slotId,
-        this.time,
-        this.endTimeForDinner,
-        this.startDateForDinner,
-        this.startTimeForDinner});
+class CreateSlotData {
+  int? createdTime;
+  int? slotDate;
+  String? noOfGuest;
+  Map<String, int>? morningSlots;
+  String? vendorId;
+  DateTime? slotId;
+  Map<String, int>? eveningSlots;
+  String? setOffer;
 
-  ModelStoreSlots.fromJson(Map<String, dynamic> json) {
-    endDateForDinner = json['endDateForDinner'];
-    noOfGuest = json['noOfGuest'];
-    vendorId = json['vendorId'];
-    dinnerDuration = json['dinnerDuration'];
-    setOffer = json['setOffer'];
-    startTimeForLunch = json['startTimeForLunch'];
-    lunchDuration = json['lunchDuration'];
-    startDateForLunch = json['startDateForLunch'];
-    dateType = json['dateType'];
-    endTimeForLunch = json['endTimeForLunch'];
-    endDateForLunch = json['endDateForLunch'];
-    slotId = json['slotId'];
-    time = json['time'];
-    endTimeForDinner = json['endTimeForDinner'];
-    startDateForDinner = json['startDateForDinner'];
-    startTimeForDinner = json['startTimeForDinner'];
-  }
+  CreateSlotData({
+    this.createdTime,
+    this.slotDate,
+    this.noOfGuest,
+    this.morningSlots,
+    this.vendorId,
+    this.slotId,
+    this.eveningSlots,
+    this.setOffer,
+  });
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['endDateForDinner'] = endDateForDinner;
-    data['noOfGuest'] = noOfGuest;
-    data['vendorId'] = vendorId;
-    data['dinnerDuration'] = dinnerDuration;
-    data['setOffer'] = setOffer;
-    data['startTimeForLunch'] = startTimeForLunch;
-    data['lunchDuration'] = lunchDuration;
-    data['startDateForLunch'] = startDateForLunch;
-    data['dateType'] = dateType;
-    data['endTimeForLunch'] = endTimeForLunch;
-    data['endDateForLunch'] = endDateForLunch;
-    data['slotId'] = slotId;
-    data['time'] = time;
-    data['endTimeForDinner'] = endTimeForDinner;
-    data['startDateForDinner'] = startDateForDinner;
-    data['startTimeForDinner'] = startTimeForDinner;
-    return data;
-  }
+  factory CreateSlotData.fromJson(String str) => CreateSlotData.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory CreateSlotData.fromMap(Map<String, dynamic> json) => CreateSlotData(
+    createdTime: json["created_time"],
+    slotDate: json["slot_date"],
+    noOfGuest: json["noOfGuest"],
+    morningSlots: Map.from(json["morning_slots"]!).map((k, v) => MapEntry<String, int>(k, v)),
+    vendorId: json["vendorId"],
+    slotId: json["slotId"] == null ? null : DateTime.parse(json["slotId"]),
+    eveningSlots: Map.from(json["evening_slots"]!).map((k, v) => MapEntry<String, int>(k, v)),
+    setOffer: json["setOffer"],
+  );
+
+  Map<String, dynamic> toMap() => {
+    "created_time": createdTime,
+    "slot_date": slotDate,
+    "noOfGuest": noOfGuest,
+    "morning_slots": Map.from(morningSlots!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+    "vendorId": vendorId,
+    "slotId": slotId?.toIso8601String(),
+    "evening_slots": Map.from(eveningSlots!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+    "setOffer": setOffer,
+  };
 }

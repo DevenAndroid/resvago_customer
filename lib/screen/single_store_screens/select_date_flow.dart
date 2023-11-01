@@ -14,25 +14,25 @@ import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 
-extension GetTotalDates on List<ModelStoreSlots> {
-  List<DateTime> get totalDates {
-    var kk = DateFormat("dd-MMM-yyyy");
-    List<DateTime> slotsDate = [];
-    for (var element in this) {
-      DateTime initialDate = kk.parse(element.startDateForLunch);
-      if ((element.endDateForLunch ?? "").toString().isEmpty) {
-        slotsDate.add(initialDate);
-      } else {
-        DateTime lastDate = kk.parse(element.endDateForLunch);
-        while (initialDate.isBefore(lastDate.add(const Duration(days: 1)))) {
-          slotsDate.add(initialDate);
-          initialDate = initialDate.add(const Duration(days: 1));
-        }
-      }
-    }
-    return slotsDate;
-  }
-}
+// extension GetTotalDates on List<ModelStoreSlots> {
+//   Map<DateTime, ModelStoreSlots> get totalDates {
+//     var kk = DateFormat("dd-MMM-yyyy");
+//     Map<DateTime, ModelStoreSlots> slotsDate = {};
+//     for (var element in this) {
+//       DateTime initialDate = kk.parse(element.startDateForLunch);
+//       if ((element.endDateForLunch ?? "").toString().isEmpty) {
+//         slotsDate[initialDate] = element;
+//       } else {
+//         DateTime lastDate = kk.parse(element.endDateForLunch);
+//         while (initialDate.isBefore(lastDate.add(const Duration(days: 1)))) {
+//           slotsDate[initialDate] = element;
+//           initialDate = initialDate.add(const Duration(days: 1));
+//         }
+//       }
+//     }
+//     return slotsDate;
+//   }
+// }
 
 extension ChangeToDate on String {
   DateTime get formatDate {
@@ -40,6 +40,8 @@ extension ChangeToDate on String {
     return kk.parse(this);
   }
 }
+
+List<CreateSlotData> slotDataList = [];
 
 class SelectDateFlowScreen extends StatefulWidget {
   const SelectDateFlowScreen({super.key, required this.userId});
@@ -60,7 +62,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
-      today = DateTime(day.year,day.month,day.day);
+      today = DateTime(day.year, day.month, day.day);
     });
   }
 
@@ -78,543 +80,593 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
     });
   }
 
-  List<ModelStoreSlots> slotsList = [];
+  // List<CreateSlotData> slotsList = [];
+  // Map<DateTime, CreateSlotData> availableDates = {};
+  CreateSlotData? slotData;
+  getSlotData() {
+    log(today.toString());
+    FirebaseFirestore.instance
+        .collection("vendor_slot")
+        .doc(widget.userId)
+        .collection("slot")
+        .doc(today.toString())
+        .get()
+        .then((value) {
+      log(value.data().toString());
+      slotData = CreateSlotData.fromMap(value.data()!);
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("vendor_slot").doc(widget.userId).collection("slot").snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-        if (snapshot.hasData) {
-          log(snapshot.data!.docs.map((e) => jsonEncode(e.data())).toList().toString());
-          slotsList = snapshot.data!.docs.map((e) => ModelStoreSlots.fromJson(e.data())).toList();
-          print(slotsList.map((e) => e.startDateForLunch));
-          return Padding(
-            padding: const EdgeInsets.all(12),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-              ),
-              child: Column(
+    log(widget.userId.toString());
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 40,
+              width: double.maxFinite,
+              child: Stack(
                 children: [
-                  SizedBox(
-                    height: 40,
-                    width: double.maxFinite,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                            child: Center(
-                                child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    child: TweenAnimationBuilder(
-                                      tween: Tween<double>(begin: 0, end: kk),
-                                      duration: const Duration(milliseconds: 600),
-                                      builder: (BuildContext context, double value, Widget? child) {
-                                        return LinearProgressIndicator(
-                                          color: AppTheme.primaryColor,
-                                          value: value,
-                                          minHeight: 2,
-                                        );
-                                      },
-                                    )))),
-                        Positioned.fill(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(
-                            4,
-                            (index) => IconButton(
-                              visualDensity: const VisualDensity(horizontal: -4),
-                              onPressed: () {
-                                if (index == 0) {
-                                  kk = 0;
-                                }
-                                if (index == 1) {
-                                  kk = .3333333;
-                                }
-                                if (index == 2) {
-                                  kk = .66666666;
-                                }
-                                if (index == 3) {
-                                  kk = 1;
-                                }
-                                setState(() {});
-                              },
-                              icon: Container(
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    color: Colors.white,
-                                    border: Border.all(color: AppTheme.primaryColor, width: 2)),
-                                child: Center(
-                                  child: Container(
-                                    height: 8,
-                                    width: 8,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                        color: AppTheme.primaryColor,
-                                        border: Border.all(color: AppTheme.primaryColor, width: 2)),
-                                  ),
-                                ),
-                              ),
+                  Positioned.fill(
+                      child: Center(
+                          child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: TweenAnimationBuilder(
+                                tween: Tween<double>(begin: 0, end: kk),
+                                duration: const Duration(milliseconds: 600),
+                                builder: (BuildContext context, double value, Widget? child) {
+                                  return LinearProgressIndicator(
+                                    color: AppTheme.primaryColor,
+                                    value: value,
+                                    minHeight: 2,
+                                  );
+                                },
+                              )))),
+                  Positioned.fill(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      4,
+                      (index) => IconButton(
+                        visualDensity: const VisualDensity(horizontal: -4),
+                        onPressed: () async {
+                          if (index == 0) {
+                            kk = 0;
+                          }
+                          if (index == 1) {
+                            await getSlotData();
+                            if (slotData != null) {
+                              kk = .3333333;
+                              setState(() {});
+                            }
+                            else {
+                              showToast("Slots not available");
+                            }
+                          }
+                          if (index == 2) {
+                            kk = .66666666;
+                          }
+                          if (index == 3) {
+                            kk = 1;
+                          }
+                          setState(() {});
+                        },
+                        icon: Container(
+                          height: 20,
+                          width: 20,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Colors.white,
+                              border: Border.all(color: AppTheme.primaryColor, width: 2)),
+                          child: Center(
+                            child: Container(
+                              height: 8,
+                              width: 8,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: AppTheme.primaryColor,
+                                  border: Border.all(color: AppTheme.primaryColor, width: 2)),
                             ),
                           ),
-                        )),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(
-                        fields.length,
-                        (index) => Text(fields[index]),
+                        ),
                       ),
                     ),
-                  ),
-                  const Divider(
-                    color: Colors.grey,
-                    thickness: 0.5,
-                  ),
-                  if (kk == 0) tableCalenderWidget(),
-                  if (kk == .3333333)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            'Lunch',
-                            style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        GridView.builder(
-                          itemCount: 6,
-                          shrinkWrap: true,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 0,
-                              mainAxisExtent: AddSize.screenHeight * .080),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: [
-                                Container(
-                                  height: 48,
-                                  width: 66,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.grey,
-                                      ),
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: Center(
-                                    child: Text(
-                                      '11:33',
-                                      style: GoogleFonts.poppins(color: AppTheme.primaryColor),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            'Dinner',
-                            style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        GridView.builder(
-                          itemCount: 7,
-                          shrinkWrap: true,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 0,
-                              mainAxisExtent: AddSize.screenHeight * .080),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: [
-                                Container(
-                                  height: 48,
-                                  width: 66,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.grey,
-                                      ),
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: Center(
-                                    child: Text(
-                                      '19:30',
-                                      style: GoogleFonts.poppins(color: AppTheme.primaryColor),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    kk = .66666666;
-                                    setState(() {});
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppTheme.primaryColor,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
-                                          side: const BorderSide(
-                                            width: 2.0,
-                                            color: AppTheme.primaryColor,
-                                          )),
-                                      primary: AppTheme.primaryColor,
-                                      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                                  child: Text(
-                                    "Next".toUpperCase(),
-                                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (kk == .66666666)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            'Number Of Guests',
-                            style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        GridView.builder(
-                          itemCount: 15,
-                          shrinkWrap: true,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 0,
-                            mainAxisExtent: AddSize.screenHeight * 0.080,
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            int number = index + 1;
-                            return Column(
-                              children: [
-                                Container(
-                                  height: 48,
-                                  width: 66,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                    ),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '$number', // Display the number
-                                      style: GoogleFonts.poppins(
-                                        color: AppTheme.primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Center(
-                          child: Text(
-                            'We have max 100 sitting capacity'.toUpperCase(),
-                            style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: const Color(0xFFFF2D2D)),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    kk = 1;
-                                    setState(() {});
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppTheme.primaryColor,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
-                                          side: const BorderSide(
-                                            width: 2.0,
-                                            color: AppTheme.primaryColor,
-                                          )),
-                                      primary: AppTheme.primaryColor,
-                                      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                                  child: Text(
-                                    "Next".toUpperCase(),
-                                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (kk == 1)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(color: const Color(0xFFC7C7C7), width: 1.0)),
-                              width: AddSize.screenWidth,
-                              height: 50,
-                              child: GestureDetector(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(AppAssets.vector, height: 20),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      "Select Your Offer",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF3B5998)),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                          const SizedBox(
-                            height: 13,
-                          ),
-                          Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(color: const Color(0xFFC7C7C7), width: 1.0)),
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-                              width: AddSize.screenWidth,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '20% Off On “A La Carte” Menu',
-                                          style:
-                                              GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          'Discount available for the booked timeslot preset menus and drinks not inclused',
-                                          style: GoogleFonts.poppins(
-                                              color: const Color(0xFF384953), fontWeight: FontWeight.w300, fontSize: 13),
-                                          maxLines: 5,
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Container(
-                                          width: 90,
-                                          padding: const EdgeInsets.symmetric(vertical: 6),
-                                          decoration:
-                                              BoxDecoration(color: AppTheme.primaryColor, borderRadius: BorderRadius.circular(5)),
-                                          child: Center(
-                                            child: Text(
-                                              '20% off',
-                                              style: GoogleFonts.poppins(
-                                                  color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.all(2),
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: AppTheme.primaryColor,
-                                    ),
-                                    child: const Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  )
-                                ],
-                              )),
-                          const SizedBox(
-                            height: 13,
-                          ),
-                          Text(
-                            'Restaurants Menu Chosen For You',
-                            style: GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w500, fontSize: 17),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          if (menuList != null)
-                            ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: menuList!.length,
-                                itemBuilder: (context, index) {
-                                  var menuListData = menuList![index];
-                                  return Column(children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Transform.scale(
-                                          scale: 1.1,
-                                          child: Checkbox(
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              value: menuListData.isCheck,
-                                              activeColor: AppTheme.primaryColor,
-                                              visualDensity: const VisualDensity(vertical: 0, horizontal: 0),
-                                              onChanged: (newValue) {
-                                                setState(() {
-                                                  menuListData.isCheck = newValue!;
-                                                  setState(() {});
-                                                });
-                                              }),
-                                        ),
-                                        const SizedBox(
-                                          width: 7,
-                                        ),
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(10),
-                                          child: Image.network(
-                                            menuListData.image ?? "",
-                                            height: 60,
-                                            width: 80,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 15),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                (menuListData.dishName ?? "").toString(),
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
-                                              ),
-                                              const SizedBox(
-                                                height: 3,
-                                              ),
-                                              Text(
-                                                "\$${menuListData.price ?? "0"}",
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 14, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    const DottedLine(
-                                      dashColor: Color(0xffBCBCBC),
-                                      dashGapLength: 2,
-                                    ),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                  ]);
-                                }),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppTheme.primaryColor,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
-                                          side: const BorderSide(
-                                            width: 2.0,
-                                            color: AppTheme.primaryColor,
-                                          )),
-                                      primary: AppTheme.primaryColor,
-                                      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                                  child: Text(
-                                    "Checkout".toUpperCase(),
-                                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  )),
                 ],
               ),
             ),
-          );
-        }
-        return const CircularProgressIndicator();
-      },
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  fields.length,
+                  (index) => Text(fields[index]),
+                ),
+              ),
+            ),
+            const Divider(
+              color: Colors.grey,
+              thickness: 0.5,
+            ),
+            if (kk == 0) tableCalenderWidget(),
+            if (kk == .3333333) slotsWidget(),
+            if (kk == .66666666) guestCountWidget(),
+            if (kk == 1)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: const Color(0xFFC7C7C7), width: 1.0)),
+                        width: AddSize.screenWidth,
+                        height: 50,
+                        child: GestureDetector(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(AppAssets.vector, height: 20),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Select Your Offer",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF3B5998)),
+                              ),
+                            ],
+                          ),
+                        )),
+                    const SizedBox(
+                      height: 13,
+                    ),
+                    Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: const Color(0xFFC7C7C7), width: 1.0)),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+                        width: AddSize.screenWidth,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '20% Off On “A La Carte” Menu',
+                                    style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    'Discount available for the booked timeslot preset menus and drinks not inclused',
+                                    style: GoogleFonts.poppins(
+                                        color: const Color(0xFF384953), fontWeight: FontWeight.w300, fontSize: 13),
+                                    maxLines: 5,
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: 90,
+                                    padding: const EdgeInsets.symmetric(vertical: 6),
+                                    decoration:
+                                        BoxDecoration(color: AppTheme.primaryColor, borderRadius: BorderRadius.circular(5)),
+                                    child: Center(
+                                      child: Text(
+                                        '20% off',
+                                        style:
+                                            GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppTheme.primaryColor,
+                              ),
+                              child: const Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            )
+                          ],
+                        )),
+                    const SizedBox(
+                      height: 13,
+                    ),
+                    Text(
+                      'Restaurants Menu Chosen For You',
+                      style: GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w500, fontSize: 17),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    if (menuList != null)
+                      ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: menuList!.length,
+                          itemBuilder: (context, index) {
+                            var menuListData = menuList![index];
+                            return Column(children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Transform.scale(
+                                    scale: 1.1,
+                                    child: Checkbox(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        value: menuListData.isCheck,
+                                        activeColor: AppTheme.primaryColor,
+                                        visualDensity: const VisualDensity(vertical: 0, horizontal: 0),
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            menuListData.isCheck = newValue!;
+                                            setState(() {});
+                                          });
+                                        }),
+                                  ),
+                                  const SizedBox(
+                                    width: 7,
+                                  ),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      menuListData.image ?? "",
+                                      height: 60,
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          (menuListData.dishName ?? "").toString(),
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                        ),
+                                        const SizedBox(
+                                          height: 3,
+                                        ),
+                                        Text(
+                                          "\$${menuListData.price ?? "0"}",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 14, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 7,
+                              ),
+                              const DottedLine(
+                                dashColor: Color(0xffBCBCBC),
+                                dashGapLength: 2,
+                              ),
+                              const SizedBox(
+                                height: 7,
+                              ),
+                            ]);
+                          }),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.primaryColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    side: const BorderSide(
+                                      width: 2.0,
+                                      color: AppTheme.primaryColor,
+                                    )),
+                                primary: AppTheme.primaryColor,
+                                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                            child: Text(
+                              "Checkout".toUpperCase(),
+                              style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  guestCountWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Number Of Guests',
+            style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: guestNo,
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 0,
+            mainAxisExtent: AddSize.screenHeight * 0.080,
+          ),
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    selectGuestNo = index;
+                    setState(() {
+
+                    });
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 66,
+                    decoration: BoxDecoration(
+                      color: selectGuestNo == index ? AppTheme.primaryColor : Colors.white,
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Center(
+                      child: Text(
+                        index.toString(), // Display the number
+                        style: GoogleFonts.poppins(
+                            color: selectGuestNo == index ? Colors.white : AppTheme.primaryColor
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Center(
+          child: Text(
+            'We have max $guestNo sitting capacity'.toUpperCase(),
+            style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: const Color(0xFFFF2D2D)),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    kk = 1;
+                    setState(() {});
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: const BorderSide(
+                            width: 2.0,
+                            color: AppTheme.primaryColor,
+                          )),
+                      primary: AppTheme.primaryColor,
+                      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                  child: Text(
+                    "Next".toUpperCase(),
+                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  int selectSlot = -1;
+  int selectSlotDinner = -1;
+  int selectGuestNo = -1;
+  int guestNo = 0;
+
+  slotsWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Lunch',
+            style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        GridView.builder(
+          itemCount: slotData!.morningSlots!.entries.toList().length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    selectSlot = index;
+                    selectSlotDinner = -1;
+                    guestNo = slotData!.morningSlots!.entries.toList()[index].value;
+                    log(guestNo.toString());
+                    setState(() {});
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 66,
+                    decoration: BoxDecoration(
+                        color: selectSlot == index ? AppTheme.primaryColor : Colors.white,
+                        border: Border.all(
+                          color: Colors.grey,
+                        ),
+                        borderRadius: BorderRadius.circular(4)),
+                    child: Center(
+                      child: Text(
+                        slotData!.morningSlots!.entries.toList()[index].key.split(",").first,
+                        style: GoogleFonts.poppins(color: selectSlot == index ? Colors.white : AppTheme.primaryColor),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Dinner',
+            style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        GridView.builder(
+          itemCount: slotData!.eveningSlots!.entries.toList().length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    selectSlotDinner = index;
+                    selectSlot = -1;
+                    guestNo = slotData!.eveningSlots!.entries.toList()[index].value;
+                    log(guestNo.toString());
+                    setState(() {});
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 66,
+                    decoration: BoxDecoration(
+                        color: selectSlotDinner == index ? AppTheme.primaryColor : Colors.white,
+                        border: Border.all(
+                          color: Colors.grey,
+                        ),
+                        borderRadius: BorderRadius.circular(4)),
+                    child: Center(
+                      child: Text(
+                        slotData!.eveningSlots!.entries.toList()[index].key.split(",").first,
+                        style: GoogleFonts.poppins(color: selectSlotDinner == index ? Colors.white : AppTheme.primaryColor),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (guestNo != 0) {
+                      kk = .66666666;
+                      setState(() {});
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: const BorderSide(
+                            width: 2.0,
+                            color: AppTheme.primaryColor,
+                          )),
+                      primary: AppTheme.primaryColor,
+                      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                  child: Text(
+                    "Next".toUpperCase(),
+                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   tableCalenderWidget() {
-    List<DateTime> availableDates = slotsList.totalDates;
-    print(today.toLocal());
-    print(availableDates);
+    log("Today   ${today.millisecondsSinceEpoch}");
+    // log("availableDates   $availableDates");
     return Column(
       children: [
         TableCalendar(
@@ -640,14 +692,15 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
               width: 20,
             ),
             InkWell(
-              onTap: () {
-                if(!availableDates.contains(today)){
-                  showToast("Slot not available for this day");
-                  return;
+              onTap: () async {
+                await getSlotData();
+                if (slotData != null) {
+                  kk = .3333333;
+                  setState(() {});
                 }
-                kk = .3333333;
-
-                setState(() {});
+                else {
+                  showToast("Slots not available");
+                }
               },
               child: Text(
                 "Ok",

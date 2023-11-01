@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/widget/common_text_field.dart';
-import '../model/model_store_timing.dart';
-import '../widget/apptheme.dart';
+import '../../model/model_store_timing.dart';
+import '../../widget/apptheme.dart';
 
 class RestaurantTimingScreenList extends StatefulWidget {
   const RestaurantTimingScreenList({super.key, required this.docId});

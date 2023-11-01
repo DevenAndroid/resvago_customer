@@ -6,7 +6,7 @@ import 'package:resvago_customer/screen/oder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import '../screen/login_screen.dart';
 import '../screen/onboarding_screen.dart';
-import '../screen/resturants_selectdate_screen.dart';
+import '../screen/single_store_screens/resturants_selectdate_screen.dart';
 import '../screen/search_screen/search_singlerestaurant_screen.dart';
 import '../screen/search_screen/searchlist_screen.dart';
 import '../screen/signup_screen.dart';
