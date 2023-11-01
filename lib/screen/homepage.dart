@@ -13,6 +13,8 @@ import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/model/wishListModel.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/helper.dart';
+import 'package:resvago_customer/screen/addAddress.dart';
+import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
 import '../controller/location_controller.dart';
@@ -24,6 +26,7 @@ import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'package:rxdart/rxdart.dart';
 import 'category/resturant_by_category.dart';
+import 'myAddressList.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -266,9 +269,11 @@ class _HomePageState extends State<HomePage> {
                   })
                 ],
               ),
-            ),
+          ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Get.to( MyAddressList());
+              },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
