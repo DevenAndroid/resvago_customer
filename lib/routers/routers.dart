@@ -11,12 +11,12 @@ import '../screen/notification.dart';
 import '../screen/onboarding_screen.dart';
 import '../screen/privacypolicy.dart';
 import '../screen/restaurant_category_screen.dart';
-import '../screen/resturants_selectdate_screen.dart';
 import '../screen/search_screen/search_singlerestaurant_screen.dart';
 import '../screen/search_screen/searchlist_dining_screen.dart';
 import '../screen/search_screen/searchlist_screen.dart';
 import '../screen/signup_screen.dart';
 import '../screen/single_restaurants_screen.dart';
+import '../screen/single_store_screens/resturants_selectdate_screen.dart';
 import '../splash_screen.dart';
 
 class MyRouters {
