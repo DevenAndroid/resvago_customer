@@ -33,7 +33,8 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
             "Privacy Policy",
             style: GoogleFonts.poppins(
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              color: Color(0xff423E5E),
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
