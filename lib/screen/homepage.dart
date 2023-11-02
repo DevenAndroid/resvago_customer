@@ -293,7 +293,7 @@ class _HomePageState extends State<HomePage> {
                               color: AppTheme.drawerColor,
                             ),
                             onTap: () async {
-                              // Get.toNamed(HelpCenter.helpCenterScreen);
+                               Get.toNamed(MyRouters.helpCenterScreen);
                               // }
                             }),
                         const Divider(
