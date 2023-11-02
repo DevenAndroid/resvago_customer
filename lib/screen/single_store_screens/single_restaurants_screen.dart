@@ -564,7 +564,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                               fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                                         ),
                                         const SizedBox(
-                                          height: 15,
+                                          height: 5,
                                         ),
                                         if (widget.restaurantItem!.menuGalleryImages!.isNotEmpty)
                                           SizedBox(
@@ -590,19 +590,24 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                               itemBuilder: (context, index) {
                                                 var menuListData = menuList![index];
                                                 return Column(children: [
+                                                  SizedBox(height: 10,),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
-                                                      Image.asset(
-                                                        AppAssets.roll,
-                                                        height: 60,
-                                                        width: 80,
+                                                      ClipRRect(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        child: Image.network(
+                                                          menuListData.image ?? "",
+                                                          height: 60,
+                                                          width: 80,
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                       ),
                                                       Padding(
                                                         padding: const EdgeInsets.only(left: 15),
                                                         child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Text(
@@ -622,39 +627,39 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                                   fontWeight: FontWeight.w300,
                                                                   color: const Color(0xFF74848C)),
                                                             ),
-                                                            const SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            SizedBox(
-                                                              // width: size.width,
-                                                              height: 23,
-
-                                                              child: ElevatedButton(
-                                                                onPressed: () {},
-                                                                style: ElevatedButton.styleFrom(
-                                                                    backgroundColor: const Color(0xFF3B5998),
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius: BorderRadius.circular(3),
-                                                                        side: const BorderSide(
-                                                                          width: 2.0,
-                                                                          color: Color(0xFF3B5998),
-                                                                        )),
-                                                                    primary: const Color(0xFF3B5998),
-                                                                    textStyle: const TextStyle(
-                                                                        fontSize: 18, fontWeight: FontWeight.w500)),
-                                                                child: Text(
-                                                                  "ADD TO CART",
-                                                                  style: GoogleFonts.poppins(
-                                                                    fontSize: 10,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    color: Colors.white,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 15,
-                                                            ),
+                                                            // const SizedBox(
+                                                            //   height: 10,
+                                                            // ),
+                                                            // SizedBox(
+                                                            //   // width: size.width,
+                                                            //   height: 23,
+                                                            //
+                                                            //   child: ElevatedButton(
+                                                            //     onPressed: () {},
+                                                            //     style: ElevatedButton.styleFrom(
+                                                            //         backgroundColor: const Color(0xFF3B5998),
+                                                            //         shape: RoundedRectangleBorder(
+                                                            //             borderRadius: BorderRadius.circular(3),
+                                                            //             side: const BorderSide(
+                                                            //               width: 2.0,
+                                                            //               color: Color(0xFF3B5998),
+                                                            //             )),
+                                                            //         primary: const Color(0xFF3B5998),
+                                                            //         textStyle: const TextStyle(
+                                                            //             fontSize: 18, fontWeight: FontWeight.w500)),
+                                                            //     child: Text(
+                                                            //       "ADD TO CART",
+                                                            //       style: GoogleFonts.poppins(
+                                                            //         fontSize: 10,
+                                                            //         fontWeight: FontWeight.w500,
+                                                            //         color: Colors.white,
+                                                            //       ),
+                                                            //     ),
+                                                            //   ),
+                                                            // ),
+                                                            // const SizedBox(
+                                                            //   height: 15,
+                                                            // ),
                                                             // DottedLine(
                                                             //   dashColor: Colors.black,
                                                             // )
@@ -686,14 +691,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       )
                                                     ],
                                                   ),
+                                                  SizedBox(height: 10,),
                                                   index != 4
                                                       ? const DottedLine(
                                                           dashColor: Color(0xffBCBCBC),
+                                                    dashGapLength: 1,
                                                         )
                                                       : const SizedBox(),
-                                                  const SizedBox(
-                                                    height: 15,
-                                                  ),
+
                                                 ]);
                                               }),
                                       ],
@@ -1170,7 +1175,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                       ],
                     ),
                   if (currentDrawer == 0)
-                    SelectDateFlowScreen(userId: widget.restaurantItem!.docid,),
+                    SelectDateFlowScreen(userId: widget.restaurantItem!.docid,restaurantItem:widget.restaurantItem!),
                 ]),
                 const SizedBox(
                   height: 20,

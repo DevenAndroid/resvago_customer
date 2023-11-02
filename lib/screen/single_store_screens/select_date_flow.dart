@@ -2,14 +2,17 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../../firebase_service/firebase_service.dart';
 import '../../model/menu_model.dart';
 import '../../model/model_store_slots.dart';
+import '../../model/resturant_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
@@ -44,14 +47,15 @@ extension ChangeToDate on String {
 List<CreateSlotData> slotDataList = [];
 
 class SelectDateFlowScreen extends StatefulWidget {
-  const SelectDateFlowScreen({super.key, required this.userId});
+  const SelectDateFlowScreen({super.key, required this.userId, this.restaurantItem});
   final String userId;
-
+  final RestaurantModel? restaurantItem;
   @override
   State<SelectDateFlowScreen> createState() => _SelectDateFlowScreenState();
 }
 
 class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
+  RestaurantModel? get restaurantData => widget.restaurantItem;
   double kk = 0.0;
   List<String> fields = [
     "Date",
@@ -67,15 +71,10 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   }
 
   DateTime today = DateTime.now();
-
   List<MenuData>? menuList;
   getMenuList() {
     print(widget.userId);
-    FirebaseFirestore.instance
-        .collection("vendor_menu")
-        .where("vendorId", isEqualTo: widget.userId)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("vendor_menu").where("vendorId", isEqualTo: widget.userId).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         menuList ??= [];
@@ -85,8 +84,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
     });
   }
 
-  // List<CreateSlotData> slotsList = [];
-  // Map<DateTime, CreateSlotData> availableDates = {};
   CreateSlotData? slotData;
   getSlotData() {
     log(today.toString());
@@ -101,6 +98,33 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
       slotData = CreateSlotData.fromMap(value.data()!);
       setState(() {});
     });
+  }
+
+  FirebaseService firebaseService = FirebaseService();
+
+  Future<void> manageCheckOut(String vendorId) async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
+    try {
+      await firebaseService
+          .manageCheckOut(
+        date: today.millisecondsSinceEpoch.toString(),
+        guest: 2,
+        menuList: menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList(),
+        restaurantInfo: restaurantData!.toJson(),
+        slot: slot!,
+        vendorId: vendorId,
+        time: DateTime
+            .now()
+            .millisecondsSinceEpoch,
+      )
+          .then((value) {
+        Helper.hideLoader(loader);
+      });
+    } catch(e){
+      Helper.hideLoader(loader);
+      throw Exception(e);
+    }
   }
 
   @override
@@ -162,15 +186,13 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                             }
                           }
                           if (index == 2) {
-                            if (slotData != null){
+                            if (slotData != null) {
                               kk = .66666666;
-                              setState(() {
-
-                              });
+                              setState(() {});
                             }
                           }
                           if (index == 3) {
-                            if (slotData != null){
+                            if (slotData != null) {
                               kk = 1;
                             }
                           }
@@ -401,7 +423,13 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if (menuList!.where((e) => e.isCheck == true).toList().isNotEmpty) {
+                                manageCheckOut(widget.userId);
+                              } else {
+                                showToast("Please select menu");
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.primaryColor,
                                 shape: RoundedRectangleBorder(
@@ -465,6 +493,8 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                 InkWell(
                   onTap: () {
                     selectGuestNo = index;
+                    guest = index + 1;
+                    log(guest.toString());
                     setState(() {});
                   },
                   child: Container(
@@ -479,7 +509,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        index.toString(), // Display the number
+                        "${index + 1}".toString(), // Display the number
                         style: GoogleFonts.poppins(color: selectGuestNo == index ? Colors.white : AppTheme.primaryColor),
                       ),
                     ),
@@ -535,6 +565,8 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   int selectSlotDinner = -1;
   int selectGuestNo = -1;
   int guestNo = 0;
+  String? slot;
+  int? guest;
 
   slotsWidget() {
     return Column(
@@ -567,6 +599,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                     selectSlot = index;
                     selectSlotDinner = -1;
                     guestNo = slotData!.morningSlots!.entries.toList()[index].value;
+                    slot = slotData!.eveningSlots!.entries.toList()[index].key.split(",").first;
                     log(guestNo.toString());
                     setState(() {});
                   },
@@ -618,6 +651,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                     selectSlotDinner = index;
                     selectSlot = -1;
                     guestNo = slotData!.eveningSlots!.entries.toList()[index].value;
+                    slot = slotData!.eveningSlots!.entries.toList()[index].key.split(",").first;
                     log(guestNo.toString());
                     setState(() {});
                   },
