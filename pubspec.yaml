@@ -60,6 +60,7 @@ dependencies:
   google_places_flutter: ^2.0.6
   table_calendar: ^3.0.9
   google_api_headers: ^2.0.3
+  intl:
 dev_dependencies:
   flutter_test:
     sdk: flutter
