@@ -6,6 +6,7 @@ import 'package:resvago_customer/screen/myorder_screen.dart';
 import 'package:resvago_customer/screen/oder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import '../screen/login_screen.dart';
+import '../screen/notification.dart';
 import '../screen/onboarding_screen.dart';
 import '../screen/privacypolicy.dart';
 import '../screen/restaurant_category_screen.dart';
@@ -35,6 +36,7 @@ class MyRouters {
   static var restaurantCategoryScreen = "/restaurantCategoryScreen";
   static var privacyPolicyScreen = "/privacyPolicyScreen";
   static var myOrder = "/myOrder";
+  static var notification = "/notification";
 
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
@@ -48,7 +50,7 @@ class MyRouters {
     GetPage(name: MyRouters.oderScreen, page: () => const OderScreen()),
     GetPage(name: MyRouters.profileScreen, page: () => const ProfileScreen()),
     GetPage(name: MyRouters.bottomNavbar, page: () => const BottomNavbar()),
-    GetPage(name: MyRouters.singleProductScreen, page: () => const SingleRestaurantsScreen()),
+    // GetPage(name: MyRouters.singleProductScreen, page: () =>  SingleRestaurantsScreen(restaurantItem: null, distance: '',)),
     GetPage(name: MyRouters.restaurantsStepperScreen, page: () => const RestaurantsStepperScreen()),
     GetPage(name: MyRouters.searchListScreen, page: () => const SerachListScreen()),
     GetPage(name: MyRouters.searchRestaurantScreen, page: () => const SearchRestaurantScreen()),
@@ -56,6 +58,7 @@ class MyRouters {
     GetPage(name: MyRouters.restaurantCategoryScreen, page: () => const RestaurantCategoryScreen()),
     GetPage(name: MyRouters.privacyPolicyScreen, page: () => const PrivacyPolicy()),
     GetPage(name: MyRouters.myOrder, page: () => const MyOrder()),
+    GetPage(name: MyRouters.notification, page: () => const NotificationScreen()),
     // GetPage(name: MyRouters.homePageScreen, page: () => const OtpScreen()),
   ];
 }
