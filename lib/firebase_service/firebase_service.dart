@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import '../model/menu_model.dart';
 import '../model/registerData.dart';
 import '../screen/helper.dart';
 
@@ -26,13 +27,11 @@ class FirebaseService {
         "docid": docid,
         "mobileNumber": mobileNumber,
         "userID": "+91$mobileNumber",
-      }).then((value){
-      });
+      }).then((value) {});
     } catch (e) {
       throw Exception(e);
     }
   }
-
 
   Future manageWishlist({
     required String wishlistId,
@@ -46,18 +45,36 @@ class FirebaseService {
           .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
           .collection("wishlist_list")
           .doc(wishlistId)
-          .set({
-        "wishlistId": wishlistId,
-        "userId":userId,
-        "vendorId":vendorId,
-        "time":time
-      });
+          .set({"wishlistId": wishlistId, "userId": userId, "vendorId": vendorId, "time": time});
     } catch (e) {
       throw Exception(e);
     }
   }
 
-
+ Future manageCheckOut(
+      {required String slot,
+      required int guest,
+      required String date,
+      dynamic vendorId,
+      required Map<String, dynamic> restaurantInfo,
+      required List<dynamic> menuList,
+      dynamic time}) async {
+    try {
+      await FirebaseFirestore.instance.collection('checkOut').doc(FirebaseAuth.instance.currentUser!.phoneNumber).set({
+        "slot": slot,
+        "guest": guest,
+        "date": date,
+        "userId": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "vendorId": vendorId,
+        "restaurantInfo": restaurantInfo,
+        "menuList": menuList,
+        "time": time
+      });
+      showToast("Checkout Successfully");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;

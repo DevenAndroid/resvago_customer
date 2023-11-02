@@ -43,9 +43,7 @@ class MyRouters {
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
     GetPage(name: '/onBoardingScreen', page: () => const OnBoardingScreen()),
-
     GetPage(name: MyRouters.loginScreen, page: () => const LoginScreen()),
-
     GetPage(name: MyRouters.signupScreen, page: () => const SignUpScreen()),
     GetPage(name: MyRouters.homePageScreen, page: () => const HomePage()),
     GetPage(name: MyRouters.deliveryScreen, page: () => const DeliveryScreen()),
