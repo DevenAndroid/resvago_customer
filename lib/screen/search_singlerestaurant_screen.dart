@@ -34,7 +34,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
         var gg = element.data();
         categoryList ??= [];
         log(categoryList.toString());
-        categoryList.add(RestaurantModel.fromJson(gg, element.id.toString()));
+        categoryList!.add(RestaurantModel.fromJson(gg,element.id.toString()));
       }
       setState(() {});
     });

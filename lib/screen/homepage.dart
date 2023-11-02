@@ -13,6 +13,9 @@ import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/model/wishListModel.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/helper.dart';
+import 'package:resvago_customer/screen/addAddress.dart';
+import 'package:resvago_customer/screen/review_rating_screen.dart';
+import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
 import 'package:resvago_customer/screen/search_screen/search_singlerestaurant_screen.dart';
 import 'package:resvago_customer/screen/single_restaurants_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
@@ -25,6 +28,7 @@ import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'package:rxdart/rxdart.dart';
 import 'category/resturant_by_category.dart';
+import 'myAddressList.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -105,6 +109,82 @@ class _HomePageState extends State<HomePage> {
       return "${distanceInMeters.toInt()} Meter away";
     }
     return "${(distanceInMeters / 1000).toStringAsFixed(2)} KM";
+  }
+
+  Future<bool> addToWishlist(
+      String userId,
+      String vendorId,
+      ) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('wishlist')
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .collection("wishlist_list")
+          .doc()
+          .set({
+        'userId': userId,
+        'vendorId': vendorId,
+        'timestamp': DateTime.now().microsecondsSinceEpoch,
+      });
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error adding to wishlist: $e');
+      }
+      return false;
+    }
+  }
+
+  FirebaseService firebaseService = FirebaseService();
+  Future<bool> addWishlistToFirestore(vendorId) async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
+    try {
+      await firebaseService
+          .manageWishlist(
+          time: DateTime.now().millisecondsSinceEpoch,
+          wishlistId: DateTime.now().microsecondsSinceEpoch.toString(),
+          userId: FirebaseAuth.instance.currentUser!.phoneNumber,
+          vendorId: vendorId)
+          .then((value) {
+        Get.back();
+        Helper.hideLoader(loader);
+      });
+    } catch (e) {
+      Helper.hideLoader(loader);
+      showToast(e.toString());
+      throw Exception(e.toString());
+    }
+    return true;
+  }
+
+  bool? addedToWishlist;
+  addWishlist(
+      String vendorId,
+      ) async {
+    addedToWishlist = await addWishlistToFirestore(vendorId);
+    if (addedToWishlist!) {
+      showToast("Item was added to the wishlist successfully");
+      getWishList();
+    } else {}
+  }
+
+  List<WishListModel>? wishList;
+  Future getWishList() async {
+    await FirebaseFirestore.instance
+        .collection('wishlist')
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .collection("wishlist_list")
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        var gg = element.data();
+        wishList ??= [];
+        wishList!.add(WishListModel.fromMap(gg, element.id));
+        log("wishList$wishList");
+      }
+      setState(() {});
+    });
   }
 
   @override
@@ -378,9 +458,11 @@ class _HomePageState extends State<HomePage> {
                   })
                 ],
               ),
-            ),
+          ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Get.to( MyAddressList());
+              },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
@@ -400,6 +482,7 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         onRefresh: () async {
           await getRestaurantList();
+          await getWishList();
         },
         child: SingleChildScrollView(
           child: Padding(
@@ -430,6 +513,8 @@ class _HomePageState extends State<HomePage> {
                                 ],
                                 color: Colors.white),
                             child: CommonTextFieldWidget1(
+                              onTap: (){ Get.to(const SerachListScreen());},
+                              readOnly: true,
                               hint: 'Find for food or restaurant...',
                               // controller: filterDataController.storeSearchController,
                               prefix: InkWell(
@@ -752,6 +837,210 @@ class _HomePageState extends State<HomePage> {
                       itemCount: 7,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(
+                                    categoryList![index].image,
+                                    fit: BoxFit.cover,
+                                    height: 70,
+                                    width: 70,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  categoryList![index].name ?? "",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '  Restaurants chosen for you',
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                if (restaurantList != null)
+                  SizedBox(
+                    height: 260,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: restaurantList!.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          var restaurantListItem = restaurantList![index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Get.toNamed(MyRouters.singleProductScreen);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xffFFFFFF),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        ClipRRect(
+                                            borderRadius: const BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              topLeft: Radius.circular(10),
+                                            ),
+                                            child: Image.network(
+                                              restaurantListItem.image.toString(),
+                                              height: 150,
+                                              width: 250,
+                                              fit: BoxFit.cover,
+                                            )),
+                                        Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: LikeButtonWidget(
+                                              restaurantModel: restaurantListItem,
+                                            )),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            restaurantListItem.restaurantName.toString(),
+                                            style: GoogleFonts.ibmPlexSansArabic(
+                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          const Icon(
+                                            Icons.star,
+                                            color: Color(0xff2C4D61),
+                                            size: 17,
+                                          ),
+                                          Text(
+                                            "4.4",
+                                            style: GoogleFonts.ibmPlexSansArabic(
+                                                fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "25 mins ",
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                          ),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                          const Icon(Icons.circle, size: 5, color: Color(0xff384953)),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            _calculateDistance(
+                                              lat1: restaurantListItem.latitude.toString(),
+                                              lon1: restaurantListItem.longitude.toString(),
+                                            ),
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                          ),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: List.generate(
+                                          17,
+                                              (index) => Padding(
+                                            padding: const EdgeInsets.only(left: 2, right: 2),
+                                            child: Container(
+                                              color: Colors.grey[200],
+                                              height: 2,
+                                              width: 10,
+                                            ),
+                                          )),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            AppAssets.vector,
+                                            height: 16,
+                                          ),
+                                          Text(
+                                            "  40% off up to \$100",
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '  Explore Now',
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 170,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: 7,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
@@ -922,14 +1211,14 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: List.generate(
                                           17,
-                                          (index) => Padding(
-                                                padding: const EdgeInsets.only(left: 2, right: 2),
-                                                child: Container(
-                                                  color: Colors.grey[200],
-                                                  height: 2,
-                                                  width: 10,
-                                                ),
-                                              )),
+                                              (index) => Padding(
+                                            padding: const EdgeInsets.only(left: 2, right: 2),
+                                            child: Container(
+                                              color: Colors.grey[200],
+                                              height: 2,
+                                              width: 10,
+                                            ),
+                                          )),
                                     ),
                                     const SizedBox(
                                       height: 10,
