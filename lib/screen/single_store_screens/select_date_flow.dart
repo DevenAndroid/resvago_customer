@@ -5,6 +5,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/screen/helper.dart';
@@ -16,6 +17,7 @@ import '../../model/resturant_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
+import '../oder_screen.dart';
 
 // extension GetTotalDates on List<ModelStoreSlots> {
 //   Map<DateTime, ModelStoreSlots> get totalDates {
@@ -85,9 +87,10 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   }
 
   CreateSlotData? slotData;
-  getSlotData() {
+  Future getSlotData() async {
     log(today.toString());
-    FirebaseFirestore.instance
+    slotData = null;
+    await FirebaseFirestore.instance
         .collection("vendor_slot")
         .doc(widget.userId)
         .collection("slot")
@@ -95,6 +98,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         .get()
         .then((value) {
       log(value.data().toString());
+      if(value.exists == false)return;
       slotData = CreateSlotData.fromMap(value.data()!);
       setState(() {});
     });
@@ -114,14 +118,12 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         restaurantInfo: restaurantData!.toJson(),
         slot: slot!,
         vendorId: vendorId,
-        time: DateTime
-            .now()
-            .millisecondsSinceEpoch,
+        time: DateTime.now().millisecondsSinceEpoch,
       )
           .then((value) {
         Helper.hideLoader(loader);
       });
-    } catch(e){
+    } catch (e) {
       Helper.hideLoader(loader);
       throw Exception(e);
     }
@@ -425,7 +427,12 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (menuList!.where((e) => e.isCheck == true).toList().isNotEmpty) {
-                                manageCheckOut(widget.userId);
+                                Get.to(() => OderScreen(
+                                   slot:slot,
+                                    guest:guest,
+                                    date:today,
+                                    restaurantItem: widget.restaurantItem,
+                                    menuList: menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList()));
                               } else {
                                 showToast("Please select menu");
                               }
@@ -743,10 +750,10 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                 await getSlotData();
                 if (slotData != null) {
                   kk = .3333333;
-                  setState(() {});
                 } else {
                   showToast("Slots not available");
                 }
+                setState(() {});
               },
               child: Text(
                 "Ok",
