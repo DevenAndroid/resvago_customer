@@ -16,6 +16,8 @@ import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/addAddress.dart';
 import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
+import 'package:resvago_customer/screen/search_screen/search_singlerestaurant_screen.dart';
+import 'package:resvago_customer/screen/single_restaurants_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
 import '../controller/location_controller.dart';
 import '../controller/wishlist_controller.dart';
@@ -29,6 +31,8 @@ import 'category/resturant_by_category.dart';
 import 'myAddressList.dart';
 
 class HomePage extends StatefulWidget {
+
+
   const HomePage({super.key});
 
   static var homePageScreen = "/homePageScreen";
@@ -200,7 +204,6 @@ class _HomePageState extends State<HomePage> {
     getSliders();
     getVendorCategories();
     getRestaurantList();
-    getWishList();
     locationController.getLocation();
     locationController.checkGps(context).then((value) {});
   }
@@ -209,8 +212,194 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      drawer: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.7,
+        child: Drawer(
+            child: Container(
+              // width: MediaQuery.of(context).size.width * 0.8,
+              color: AppTheme.backgroundcolor,
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: size.height * 0.30,
+                      width: size.width,
+                      color: AppTheme.primaryColor,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.05,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              // Get.to(navigationPage.elementAt(_currentPage))
+                              // Get.to(MyProfile());
+                            },
+                            child: Card(
+                                elevation: 1,
+                                shape: const CircleBorder(),
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                child: Container(
+                                    margin: const EdgeInsets.all(4),
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    decoration: const ShapeDecoration(
+                                      shape: CircleBorder(),
+                                      color: Colors.white,
+                                    ),
+                                    child: Image.asset(
+                                      AppAssets.profileImage,
+                                      height: 100,
+                                    )
+                                  //         CachedNetworkImage(
+                                  //     imageUrl:
+                                  //     profileController.isDataLoading.value
+                                  //     ? (profileController.model.value.data!
+                                  //         .profileImage ??
+                                  //         "")
+                                  //         .toString()
+                                  //       : "",
+                                  //   height: screenSize.height * 0.12,
+                                  //   width: screenSize.height * 0.12,
+                                  //   errorWidget: (_, __, ___) => const SizedBox(),
+                                  //   placeholder: (_, __) => const SizedBox(),
+                                  //   fit: BoxFit.cover,
+                                  // )
+                                )),
+                          ),
+                          SizedBox(
+                            height: size.height * 0.02,
+                          ),
+                          Text("Williams Jones",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600)),
+                          const Text('williamsjones@gmail.com',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Column(
+                      children: [
+                        _drawerTile(
+                            active: true,
+                            title: "My Orders".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.order),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () {
+
+                              Get.toNamed(MyRouters.myOrder);
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        _drawerTile(
+                            active: true,
+                            title: "My Profile".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.profilee),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () async {
+                               Get.toNamed(MyRouters.profileScreen);
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        _drawerTile(
+                            active: true,
+                            title: "Notification".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.notification),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () {
+                              Get.toNamed(MyRouters.notification);
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        _drawerTile(
+                            active: true,
+                            title: "My Address".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.myAddress),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () {
+                              // Get.toNamed(MyAddress.myAddressScreen);
+                              // Get.back();
+                              // widget.onItemTapped(1);
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        _drawerTile(
+                            active: true,
+                            title: "Privacy Policy".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.privacyPolicy),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () async {
+                              Get.toNamed(MyRouters.privacyPolicyScreen);
+
+                              // }
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        _drawerTile(
+                            active: true,
+                            title: "Help Center".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.helpCenter),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () async {
+                               Get.toNamed(MyRouters.helpCenterScreen);
+                              // }
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        _drawerTile(
+                            active: true,
+                            title: "Logout".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.logOut),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () {}),
+                      ],
+                    ),
+                    // SizedBox(height:20,)
+                  ],
+                ),
+              ),
+            )),
+      ),
       backgroundColor: const Color(0xffF6F6F6),
       appBar: AppBar(
+
         surfaceTintColor: AppTheme.backgroundcolor,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -328,10 +517,13 @@ class _HomePageState extends State<HomePage> {
                               readOnly: true,
                               hint: 'Find for food or restaurant...',
                               // controller: filterDataController.storeSearchController,
-                              prefix: Icon(
-                                Icons.search,
-                                size: 19,
-                                color: const Color(0xFF000000).withOpacity(0.56),
+                              prefix: InkWell(
+                                onTap: () {},
+                                child: Icon(
+                                  Icons.search,
+                                  size: 19,
+                                  color: const Color(0xFF000000).withOpacity(0.56),
+                                ),
                               ),
                               onChanged: (val) {},
                             )),
@@ -436,6 +628,213 @@ class _HomePageState extends State<HomePage> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: categoryList!.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(
+                                    categoryList![index].image,
+                                    fit: BoxFit.cover,
+                                    height: 70,
+                                    width: 70,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  categoryList![index].name ?? "",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '  Restaurants chosen for you',
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                if (restaurantList != null)
+                  SizedBox(
+                    height: 260,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: restaurantList!.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          var restaurantListItem = restaurantList![index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Get.to(()=>SingleRestaurantsScreen(restaurantItem: restaurantListItem,distance:_calculateDistance(
+                                  lat1: restaurantListItem.latitude.toString(),
+                                  lon1: restaurantListItem.longitude.toString(),
+                                ),));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xffFFFFFF),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        ClipRRect(
+                                            borderRadius: const BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              topLeft: Radius.circular(10),
+                                            ),
+                                            child: Image.network(
+                                              restaurantListItem.image.toString(),
+                                              height: 150,
+                                              width: 250,
+                                              fit: BoxFit.cover,
+                                            )),
+                                        Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: LikeButtonWidget(
+                                              restaurantModel: restaurantListItem,
+                                            )),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            restaurantListItem.restaurantName.toString(),
+                                            style: GoogleFonts.ibmPlexSansArabic(
+                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          const Icon(
+                                            Icons.star,
+                                            color: Color(0xff2C4D61),
+                                            size: 17,
+                                          ),
+                                          Text(
+                                            "4.4",
+                                            style: GoogleFonts.ibmPlexSansArabic(
+                                                fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "25 mins ",
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                          ),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                          const Icon(Icons.circle, size: 5, color: Color(0xff384953)),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            _calculateDistance(
+                                              lat1: restaurantListItem.latitude.toString(),
+                                              lon1: restaurantListItem.longitude.toString(),
+                                            ),
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                          ),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: List.generate(
+                                          17,
+                                          (index) => Padding(
+                                                padding: const EdgeInsets.only(left: 2, right: 2),
+                                                child: Container(
+                                                  color: Colors.grey[200],
+                                                  height: 2,
+                                                  width: 10,
+                                                ),
+                                              )),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            AppAssets.vector,
+                                            height: 16,
+                                          ),
+                                          Text(
+                                            "  40% off up to \$100",
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '  Explore Now',
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 170,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: 7,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         return InkWell(
@@ -857,4 +1256,24 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  Widget _drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListTile(
+        selectedTileColor: AppTheme.primaryColor,
+        leading: icon,
+        minLeadingWidth: 25,
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: AppTheme.drawerColor,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        onTap: active ? onTap : null,
+      ),
+    );
+  }
+
 }

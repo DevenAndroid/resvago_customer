@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -12,7 +13,9 @@ import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
 
 class SingleRestaurantsScreen extends StatefulWidget {
-  const SingleRestaurantsScreen({super.key});
+  final RestaurantModel? restaurantItem;
+  String distance;
+  SingleRestaurantsScreen({super.key, required this.restaurantItem, required this.distance});
 
   @override
   State<SingleRestaurantsScreen> createState() => _SingleRestaurantsScreenState();

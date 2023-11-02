@@ -152,7 +152,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
           bottom: TabBar(
             indicatorSize: TabBarIndicatorSize.tab,
             indicatorColor: AppTheme.primaryColor,
-            indicatorPadding: EdgeInsets.symmetric(horizontal: 15),
+            indicatorPadding: const EdgeInsets.symmetric(horizontal: 15),
             // automaticIndicatorColorAdjustment: true,
             onTap: (value) {
               currentDrawer = 0;
@@ -182,7 +182,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                           fontSize: 16,
                           fontWeight: FontWeight.w500)
                       : GoogleFonts.poppins(
-                          color: Color(0xff1A2E33),
+                          color: const Color(0xff1A2E33),
                           fontSize: 16,
                           fontWeight: FontWeight.w500),
                 ),
@@ -204,7 +204,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                         // Get.toNamed(MyRouters.singleProductScreen);
                       },
                       child: Container(
-                        margin: EdgeInsets.only(right: 12, top: 18, left: 12),
+                        margin: const EdgeInsets.only(right: 12, top: 18, left: 12),
                         decoration: BoxDecoration(
                           color: const Color(0xffFFFFFF),
                           borderRadius: BorderRadius.circular(12),
@@ -261,9 +261,9 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                     width: 130,
                                     decoration: BoxDecoration(
                                         color:
-                                            Color(0xff3B5998).withOpacity(.3),
+                                            const Color(0xff3B5998).withOpacity(.3),
                                         // border: Border.all(color: ),
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                             Radius.circular(5))),
                                     child: Center(
                                       child: Text(
@@ -289,13 +289,13 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                             fontWeight: FontWeight.w400,
                                             color: const Color(0xff08141B)),
                                       ),
-                                      Spacer(),
+                                      const Spacer(),
                                       const Icon(
                                         Icons.star,
                                         color: Color(0xffFFC529),
                                         size: 17,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 5,
                                       ),
                                       Text(
@@ -342,7 +342,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                   const SizedBox(
                                     height: 15,
                                   ),
-                                  DottedLine(
+                                  const DottedLine(
                                     dashColor: Color(0xffBCBCBC),
                                   ),
                                   const SizedBox(
@@ -375,7 +375,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                     );
                   }),
             ),
-            Text('djn'),
+            const Text('djn'),
             // Icon(Icons.directions_transit, size: 350),
           ],
         ),
