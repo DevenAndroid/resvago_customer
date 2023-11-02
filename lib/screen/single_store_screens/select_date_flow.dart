@@ -70,7 +70,12 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
 
   List<MenuData>? menuList;
   getMenuList() {
-    FirebaseFirestore.instance.collection("vendor_menu").where("vendorId", isEqualTo: widget.userId).get().then((value) {
+    print(widget.userId);
+    FirebaseFirestore.instance
+        .collection("vendor_menu")
+        .where("vendorId", isEqualTo: widget.userId)
+        .get()
+        .then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         menuList ??= [];
@@ -96,6 +101,12 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
       slotData = CreateSlotData.fromMap(value.data()!);
       setState(() {});
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getMenuList();
   }
 
   @override
@@ -146,16 +157,22 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                             if (slotData != null) {
                               kk = .3333333;
                               setState(() {});
-                            }
-                            else {
+                            } else {
                               showToast("Slots not available");
                             }
                           }
                           if (index == 2) {
-                            kk = .66666666;
+                            if (slotData != null){
+                              kk = .66666666;
+                              setState(() {
+
+                              });
+                            }
                           }
                           if (index == 3) {
-                            kk = 1;
+                            if (slotData != null){
+                              kk = 1;
+                            }
                           }
                           setState(() {});
                         },
@@ -448,9 +465,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                 InkWell(
                   onTap: () {
                     selectGuestNo = index;
-                    setState(() {
-
-                    });
+                    setState(() {});
                   },
                   child: Container(
                     height: 48,
@@ -465,9 +480,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                     child: Center(
                       child: Text(
                         index.toString(), // Display the number
-                        style: GoogleFonts.poppins(
-                            color: selectGuestNo == index ? Colors.white : AppTheme.primaryColor
-                        ),
+                        style: GoogleFonts.poppins(color: selectGuestNo == index ? Colors.white : AppTheme.primaryColor),
                       ),
                     ),
                   ),
@@ -697,8 +710,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                 if (slotData != null) {
                   kk = .3333333;
                   setState(() {});
-                }
-                else {
+                } else {
                   showToast("Slots not available");
                 }
               },

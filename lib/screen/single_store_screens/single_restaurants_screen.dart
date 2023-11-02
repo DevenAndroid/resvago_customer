@@ -43,14 +43,15 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
 
   bool value = false;
 
-  final _firestore = FirebaseFirestore.instance;
   List<MenuData>? menuList;
   getMenuList() {
+    print("kkkkkk......     "+widget.restaurantItem!.docid);
     FirebaseFirestore.instance
         .collection("vendor_menu")
-        .where("vendorId", isEqualTo: widget.restaurantItem!.userID)
+        .where("vendorId", isEqualTo: widget.restaurantItem!.docid)
         .get()
         .then((value) {
+      print("kkkkkk......     ${value.docs}");
       for (var element in value.docs) {
         var gg = element.data();
         menuList ??= [];
@@ -1169,7 +1170,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                       ],
                     ),
                   if (currentDrawer == 0)
-                    SelectDateFlowScreen(userId: restaurantData!.docid.toString(),),
+                    SelectDateFlowScreen(userId: widget.restaurantItem!.docid,),
                 ]),
                 const SizedBox(
                   height: 20,
