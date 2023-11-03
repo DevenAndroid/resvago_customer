@@ -11,12 +11,10 @@ import '../screen/notification.dart';
 import '../screen/onboarding_screen.dart';
 import '../screen/privacypolicy.dart';
 import '../screen/restaurant_category_screen.dart';
-import '../screen/resturants_selectdate_screen.dart';
 import '../screen/search_screen/search_singlerestaurant_screen.dart';
 import '../screen/search_screen/searchlist_dining_screen.dart';
 import '../screen/search_screen/searchlist_screen.dart';
 import '../screen/signup_screen.dart';
-import '../screen/single_restaurants_screen.dart';
 import '../splash_screen.dart';
 
 class MyRouters {
@@ -43,17 +41,15 @@ class MyRouters {
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
     GetPage(name: '/onBoardingScreen', page: () => const OnBoardingScreen()),
-
     GetPage(name: MyRouters.loginScreen, page: () => const LoginScreen()),
-
     GetPage(name: MyRouters.signupScreen, page: () => const SignUpScreen()),
     GetPage(name: MyRouters.homePageScreen, page: () => const HomePage()),
     GetPage(name: MyRouters.deliveryScreen, page: () => const DeliveryScreen()),
-    GetPage(name: MyRouters.oderScreen, page: () => const OderScreen()),
+    // GetPage(name: MyRouters.oderScreen, page: () => const OderScreen()),
     GetPage(name: MyRouters.profileScreen, page: () => const ProfileScreen()),
     GetPage(name: MyRouters.bottomNavbar, page: () => const BottomNavbar()),
     // GetPage(name: MyRouters.singleProductScreen, page: () =>  SingleRestaurantsScreen(restaurantItem: null, distance: '',)),
-    GetPage(name: MyRouters.restaurantsStepperScreen, page: () => const RestaurantsStepperScreen()),
+    // GetPage(name: MyRouters.restaurantsStepperScreen, page: () => const RestaurantsStepperScreen()),
     GetPage(name: MyRouters.searchListScreen, page: () => const SerachListScreen()),
     GetPage(name: MyRouters.searchRestaurantScreen, page: () => const SearchRestaurantScreen()),
     GetPage(name: MyRouters.searchDiningListScreen, page: () => const SearchListDiningScreen()),

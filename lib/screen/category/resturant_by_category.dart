@@ -29,7 +29,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
   getRestaurantList() {
     FirebaseFirestore.instance
         .collection("vendor_users")
-        .where("category", isNotEqualTo: widget.categoryName)
+        .where("category", isEqualTo: widget.categoryName)
         .get()
         .then((value) {
       for (var element in value.docs) {

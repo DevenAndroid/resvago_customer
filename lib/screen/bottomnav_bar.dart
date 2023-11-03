@@ -24,7 +24,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   final pages = [
     const HomePage(),
     const DeliveryScreen(),
-    const OderScreen(),
+     // OderScreen(),
     const ProfileScreen(),
   ];
 

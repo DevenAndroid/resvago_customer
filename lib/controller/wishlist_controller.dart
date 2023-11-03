@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:resvago_customer/firebase_service/firebase_service.dart';
 import '../model/resturant_model.dart';
 
 class WishListController extends GetxController{
