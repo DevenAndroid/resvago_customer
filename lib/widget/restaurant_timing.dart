@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import '../model/coupon_modal.dart';
 import '../model/model_store_timing.dart';
 import '../screen/single_store_screens/timimg_list.dart';
 
@@ -44,6 +46,58 @@ class _RestaurantTimingScreenState extends State<RestaurantTimingScreen> {
           "Open",
           style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
         );
+      },
+    );
+  }
+}
+
+
+class MaxDiscountScreen extends StatefulWidget {
+  const MaxDiscountScreen({super.key, required this.docId});
+  final String docId;
+
+  @override
+  State<MaxDiscountScreen> createState() => _MaxDiscountScreenState();
+}
+
+class _MaxDiscountScreenState extends State<MaxDiscountScreen> {
+
+  @override
+  Widget build(BuildContext context) {
+    if (kDebugMode) {
+      print(widget.docId);
+    }
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection("Coupon_data").where("userID", isEqualTo: widget.docId).orderBy("maxDiscount",descending: true).limit(1).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        if(snapshot.hasData){
+
+          if(snapshot.data == null){
+            return const SizedBox();
+          }
+          log(snapshot.data!.docs.map((e) => e.data()).toList().toString());
+          if(snapshot.data!.docs.isEmpty){
+            return const SizedBox.shrink();
+          }
+          CouponData couponData = CouponData.fromMap(snapshot.data!.docs.first.data());
+          return Row(
+            children: [
+              const SizedBox(width: 5),
+              Text(
+                "${couponData.discount}% Off",
+                // schedule.status == true ? "Open (${schedule.startTime} to ${schedule.endTime})" : "Closed",
+                style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+              ),
+              const SizedBox(width: 5),
+              Text(
+                "Up To \$${couponData.maxDiscount}",
+                // schedule.status == true ? "Open (${schedule.startTime} to ${schedule.endTime})" : "Closed",
+                style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+              ),
+            ],
+          );
+        }
+        return const SizedBox();
       },
     );
   }

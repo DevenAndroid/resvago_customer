@@ -189,7 +189,6 @@ class _SerachListScreenState extends State<SerachListScreen> {
 
                   var products = snapshot.data!.docs;
                   List<String> kk = products.map((e) => e.data()['category'].toString()).toList().toSet().toList();
-                  List<String> name = products.map((e) => e.data()['name'].toString()).toList().toSet().toList();
                   List<String> image = products.map((e) => e.data()['image'].toString()).toList().toSet().toList();
                   print(products);
                   return ListView.builder(
@@ -204,7 +203,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                           ));
                         },
                         child: ListTile(
-                          title: Text(name[index]),
+                          title: Text(product),
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(image[index]),
                           ),
@@ -213,9 +212,49 @@ class _SerachListScreenState extends State<SerachListScreen> {
                     },
                   );
                 }
-                return Center(child: const CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               },
             ),
+            // StreamBuilder(
+            //   stream: FirebaseFirestore.instance
+            //       .collection('vendor_menu')
+            //       .where("bookingForDining" , isEqualTo: true)
+            //       .where('category',
+            //       isGreaterThanOrEqualTo: searchKeyword)
+            //       .where('category', isLessThan: '${searchKeyword}z')
+            //       .snapshots(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasData) {
+            //
+            //       var products = snapshot.data!.docs;
+            //       List<String> kk = products.map((e) => e.data()['category'].toString()).toList().toSet().toList();
+            //       List<String> name = products.map((e) => e.data()['name'].toString()).toList().toSet().toList();
+            //       List<String> image = products.map((e) => e.data()['image'].toString()).toList().toSet().toList();
+            //       print(products);
+            //       return ListView.builder(
+            //         itemCount: kk.length,
+            //         itemBuilder: (context, index) {
+            //           var product = kk[index];
+            //           return GestureDetector(
+            //             onTap: (){
+            //               Get.to(SearchRestaurantScreen(
+            //                 category: product,
+            //
+            //               ));
+            //             },
+            //             child: ListTile(
+            //               title: Text(name[index]),
+            //               leading: CircleAvatar(
+            //                 backgroundImage: NetworkImage(image[index]),
+            //               ),
+            //             ),
+            //           );
+            //         },
+            //       );
+            //     }
+            //     return Center(child: const CircularProgressIndicator());
+            //   },
+            // ),
           ],
         ),
       ),

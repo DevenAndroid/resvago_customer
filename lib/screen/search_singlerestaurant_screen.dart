@@ -4,12 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/controller/location_controller.dart';
 import 'package:resvago_customer/model/resturant_model.dart';
+import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
 
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/custom_textfield.dart';
+import '../widget/like_button.dart';
+import '../widget/restaurant_timing.dart';
 
 class SearchRestaurantScreen extends StatefulWidget {
   final String? category;
@@ -38,6 +44,22 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
       }
       setState(() {});
     });
+  }
+final locationController = Get.put(LocationController());
+  String _calculateDistance({dynamic lat1, dynamic lon1}) {
+    if (double.tryParse(lat1) == null ||
+        double.tryParse(lon1) == null ||
+        double.tryParse(locationController.lat.toString()) == null ||
+        double.tryParse(locationController.long.toString()) == null) {
+      return "Not Available";
+    }
+
+    double distanceInMeters = Geolocator.distanceBetween(double.parse(lat1), double.parse(lon1),
+        double.parse(locationController.lat.toString()), double.parse(locationController.long.toString()));
+    if ((distanceInMeters / 1000) < 1) {
+      return "${distanceInMeters.toInt()} Meter away";
+    }
+    return "${(distanceInMeters / 1000).toStringAsFixed(2)} KM";
   }
 
   @override
@@ -201,175 +223,166 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        // Get.toNamed(MyRouters.singleProductScreen);
+                        Get.to(() => SingleRestaurantsScreen(
+                          restaurantItem: categoryList[index],
+                          distance: _calculateDistance(
+                            lat1: categoryList[index].latitude.toString(),
+                            lon1: categoryList[index].longitude.toString(),
+                          ),
+                        ));
                       },
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 12, top: 18, left: 12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xffFFFFFF),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
-                              children: [
-                                ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      topLeft: Radius.circular(10),
-                                    ),
-                                    child: Image.asset(
-                                      AppAssets.burger,
-                                      height: 150,
-                                      width: size.width,
-                                      fit: BoxFit.cover,
-                                    )),
-                                Positioned(
-                                    top: 11,
-                                    right: 10,
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Container(
-                                        height: 25,
-                                        width: 25,
-                                        decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.white),
-                                        child: const Icon(
-                                          Icons.favorite_border,
-                                          color: AppTheme.primaryColor,
-                                          size: 18,
-                                        ),
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 12, left: 12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xffFFFFFF),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Stack(
                                 children: [
-                                  Container(
-                                    // margin: EdgeInsets.all(13),
-                                    height: 30,
-                                    width: 130,
-                                    decoration: BoxDecoration(
-                                        color:
-                                            const Color(0xff3B5998).withOpacity(.3),
-                                        // border: Border.all(color: ),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(5))),
-                                    child: Center(
-                                      child: Text(
-                                        'South Indian Food',
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppTheme.primaryColor),
+                                  ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        topLeft: Radius.circular(10),
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 13,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        categoryList![index].restaurantName,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w400,
-                                            color: const Color(0xff08141B)),
-                                      ),
-                                      const Spacer(),
-                                      const Icon(
-                                        Icons.star,
-                                        color: Color(0xffFFC529),
-                                        size: 17,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        "4.5",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w300,
-                                            color: const Color(0xff08141B)),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "25 Mins ",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            color: const Color(0xff384953)),
-                                      ),
-                                      const SizedBox(
-                                        width: 3,
-                                      ),
-                                      const Icon(Icons.circle,
-                                          size: 5, color: Color(0xff384953)),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        "1.8 Km",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            color: const Color(0xff384953)),
-                                      ),
-                                      const SizedBox(
-                                        width: 3,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  const DottedLine(
-                                    dashColor: Color(0xffBCBCBC),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        AppAssets.vector,
-                                        height: 16,
-                                      ),
-                                      Text(
-                                        "  40% off up to \$100",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: const Color(0xff3B5998)),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
+                                      child: Image.network(
+                                        categoryList[index].image.toString(),
+                                        height: 150,
+                                        width: size.width,
+                                        fit: BoxFit.cover,
+                                      )),
+                                  Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: LikeButtonWidget(
+                                        restaurantModel: categoryList[index],
+                                      )),
                                 ],
                               ),
-                            ),
-                          ],
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      height: 30,
+                                      // width: 130,
+                                      decoration: BoxDecoration(
+                                          color:
+                                              const Color(0xff3B5998).withOpacity(.3),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(5))),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                        child: Text(
+                                            categoryList[index].category ?? "",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppTheme.primaryColor),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          categoryList[index].restaurantName ?? "",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: const Color(0xff08141B)),
+                                        ),
+                                        const Spacer(),
+                                        const Icon(
+                                          Icons.star,
+                                          color: Color(0xffFFC529),
+                                          size: 17,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          "4.5",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w300,
+                                              color: const Color(0xff08141B)),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "25 Mins ",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300,
+                                              color: const Color(0xff384953)),
+                                        ),
+                                        const SizedBox(
+                                          width: 3,
+                                        ),
+                                        const Icon(Icons.circle,
+                                            size: 5, color: Color(0xff384953)),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          _calculateDistance(
+                                            lat1: categoryList[index].latitude.toString(),
+                                            lon1: categoryList[index].longitude.toString(),
+                                          ),
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                        ),
+                                        const SizedBox(
+                                          width: 3,
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    const DottedLine(
+                                      dashColor: Color(0xffBCBCBC),
+                                    ),
+                                    const SizedBox(
+                                      height:10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          AppAssets.vector,
+                                          height: 16,
+                                        ),
+                                        MaxDiscountScreen(docId:categoryList[index].docid)
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

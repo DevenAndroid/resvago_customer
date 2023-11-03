@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
-import 'package:resvago_customer/screen/oder_screen.dart';
+import 'package:resvago_customer/screen/checkout_for_dining/oder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 
 import '../controller/bottomnavbar_controller.dart';

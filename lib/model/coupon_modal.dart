@@ -5,7 +5,8 @@ class CouponData {
   final dynamic startDate;
   final dynamic endDate;
   final dynamic maxDiscount;
-  final dynamic? docid;
+  final dynamic docid;
+  final dynamic userID;
   final bool deactivate;
 
 
@@ -17,6 +18,7 @@ class CouponData {
         this.maxDiscount,
         required this.deactivate,
         this.endDate,
+        this.userID,
         this.docid});
 
   Map<String, dynamic> toMap() {
@@ -28,6 +30,7 @@ class CouponData {
       'endDate': endDate,
       'maxDiscount': maxDiscount,
       'docid': docid,
+      'userID': userID,
       'deactivate': deactivate,
     };
   }
@@ -42,6 +45,7 @@ class CouponData {
       startDate: map['startDate'],
       endDate: map['endDate'],
       docid: map['docid'],
+      userID: map['userID'],
     );
   }
 }

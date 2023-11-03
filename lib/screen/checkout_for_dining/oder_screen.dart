@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,38 +10,56 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/widget/apptheme.dart';
-import '../model/menu_model.dart';
-import '../model/resturant_model.dart';
-import '../widget/appassets.dart';
+import '../../model/menu_model.dart';
+import '../../model/resturant_model.dart';
+import '../../widget/appassets.dart';
 
 class OderScreen extends StatefulWidget {
-   OderScreen({super.key, this.restaurantItem, this.menuList,this.guest,this.slot,required this.date});
+  OderScreen({super.key, this.restaurantItem, this.menuList, this.guest, this.slot, required this.date,this.discountValue});
   final RestaurantModel? restaurantItem;
-  final List<Map<String, dynamic>>? menuList;
+  final List<MenuData>? menuList;
   DateTime date;
   int? guest;
   String? slot;
+  dynamic discountValue;
   @override
   State<OderScreen> createState() => _OderScreenState();
 }
 
 class _OderScreenState extends State<OderScreen> {
   RestaurantModel? get restaurantData => widget.restaurantItem;
-  List<Map<String, dynamic>>? get menuListData => widget.menuList;
-  // getCheckOutData() {
-  //   FirebaseFirestore.instance
-  //       .collection("checkOut")
-  //       .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-  //       .get()
-  //       .then((value) {
-  //     log(value.data().toString());
-  //     setState(() {});
-  //   });
-  // }
+  List<MenuData>? get menuListData => widget.menuList;
+
+  increaseQty(qty){
+    qty = qty+1;
+    setState(() {
+
+    });
+  }
+
+  decrementQty(qty){
+    qty = qty-1;
+    setState(() {
+
+    });
+  }
+
+  var totalPrice = 0.0;
+  getTotalPrice(){
+    totalPrice = 0;
+    for(int i = 0; i< menuListData!.length;i++){
+      totalPrice = totalPrice + double.parse(menuListData![i].qty.toString()) * double.parse(menuListData![i].price);
+      log(totalPrice.toString());
+      setState(() {
+
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    getTotalPrice();
   }
 
   @override
@@ -123,7 +142,7 @@ class _OderScreenState extends State<OderScreen> {
                                         height: 3,
                                       ),
                                       Text(
-                                          restaurantData!.aboutUs ?? "",
+                                        restaurantData!.aboutUs ?? "",
                                         maxLines: 3,
                                         style: GoogleFonts.poppins(
                                             fontSize: 10, fontWeight: FontWeight.w300, color: const Color(0xFF384953)),
@@ -230,7 +249,7 @@ class _OderScreenState extends State<OderScreen> {
                                     fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                               ),
                               Text(
-                                  widget.guest.toString(),
+                                widget.guest.toString(),
                                 style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF1E2538)),
                               ),
                             ],
@@ -269,19 +288,24 @@ class _OderScreenState extends State<OderScreen> {
                               const SizedBox(
                                 height: 15,
                               ),
-                              SizedBox(
-                                height: 130,
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: 2,
-                                    itemBuilder: (context, index) {
-                                      return Column(children: [
+                              ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: menuListData!.length,
+                                  itemBuilder: (context, index) {
+                                    var menuListItem = menuListData![index];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 5),
+                                      child: Column(children: [
                                         Row(children: [
-                                          Image.asset(
-                                            AppAssets.roll,
-                                            height: 60,
-                                            width: 80,
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(10),
+                                            child: Image.network(
+                                              menuListItem.image ?? "",
+                                              height: 60,
+                                              width: 80,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.only(left: 15),
@@ -290,7 +314,7 @@ class _OderScreenState extends State<OderScreen> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "Salad veggie",
+                                                  menuListItem.dishName ?? "",
                                                   style: GoogleFonts.poppins(
                                                       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
                                                 ),
@@ -298,7 +322,7 @@ class _OderScreenState extends State<OderScreen> {
                                                   height: 3,
                                                 ),
                                                 Text(
-                                                  "\$10.00",
+                                                  "\$${menuListItem.price ?? ""}",
                                                   style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF74848C)),
                                                 ),
 
@@ -320,13 +344,21 @@ class _OderScreenState extends State<OderScreen> {
                                                     borderRadius: const BorderRadius.all(
                                                       Radius.circular(20),
                                                     )),
-                                                child: const Icon(Icons.remove),
+                                                child: InkWell(
+                                                  onTap: (){
+                                                    menuListItem.qty--;
+                                                    getTotalPrice();
+                                                    setState(() {
+
+                                                    });
+                                                  },
+                                                    child: const Icon(Icons.remove,size: 18,)),
                                               ),
                                               const SizedBox(
                                                 width: 8,
                                               ),
                                               Text(
-                                                "2",
+                                               menuListItem.qty.toString(),
                                                 style: GoogleFonts.alegreyaSans(
                                                   fontSize: 16,
                                                 ),
@@ -344,10 +376,19 @@ class _OderScreenState extends State<OderScreen> {
                                                         borderRadius: BorderRadius.all(
                                                           Radius.circular(20),
                                                         )),
-                                                    child: const Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
-                                                      size: 18,
+                                                    child: InkWell(
+                                                      onTap: (){
+                                                        menuListItem.qty++;
+                                                        getTotalPrice();
+                                                        setState(() {
+
+                                                        });
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                        size: 18,
+                                                      ),
                                                     ),
                                                   )
                                                 ],
@@ -355,9 +396,9 @@ class _OderScreenState extends State<OderScreen> {
                                             ],
                                           ),
                                         ])
-                                      ]);
-                                    }),
-                              ),
+                                      ]),
+                                    );
+                                  }),
                             ]))),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -469,7 +510,7 @@ class _OderScreenState extends State<OderScreen> {
                                       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                                 ),
                                 Text(
-                                  '\$30.00',
+                                  '\$$totalPrice',
                                   style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
                                 ),
                               ],
