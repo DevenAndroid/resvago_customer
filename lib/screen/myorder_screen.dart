@@ -51,7 +51,7 @@ class _MyOrderState extends State<MyOrder> {
                         borderRadius: BorderRadius.circular(4),
                         color: Colors.white,
                         border: Border.all(
-                          color: Color(0xff363539).withOpacity(.1),
+                          color: const Color(0xff363539).withOpacity(.1),
                         )),
                     child: Padding(
                         padding: const EdgeInsets.all(2.0),
@@ -106,7 +106,7 @@ class _MyOrderState extends State<MyOrder> {
               bottom: TabBar(
                 indicatorSize: TabBarIndicatorSize.tab,
                 indicatorColor: AppTheme.primaryColor,
-                indicatorPadding: EdgeInsets.symmetric(horizontal: 15),
+                indicatorPadding: const EdgeInsets.symmetric(horizontal: 15),
                 // automaticIndicatorColorAdjustment: true,
                 onTap: (value) {
                   currentDrawer = 0;
@@ -126,7 +126,7 @@ class _MyOrderState extends State<MyOrder> {
                       "Completed",
                       style: currentDrawer == 1
                           ? GoogleFonts.poppins(color: Colors.cyan, fontSize: 16, fontWeight: FontWeight.w500)
-                          : GoogleFonts.poppins(color: Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500),
+                          : GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                   ),
                   Tab(
@@ -134,7 +134,7 @@ class _MyOrderState extends State<MyOrder> {
                       "Cancelled",
                       style: currentDrawer == 1
                           ? GoogleFonts.poppins(color: Colors.cyan, fontSize: 16, fontWeight: FontWeight.w500)
-                          : GoogleFonts.poppins(color: Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500),
+                          : GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -144,11 +144,11 @@ class _MyOrderState extends State<MyOrder> {
               Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(
+                    margin: const EdgeInsets.only(
                       top: 18,
                     ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xffFFFFFF),
+                    decoration: const BoxDecoration(
+                      color: Color(0xffFFFFFF),
                     ),
                     child: Column(
                       // mainAxisAlignment: MainAxisAlignment.start,
@@ -164,7 +164,7 @@ class _MyOrderState extends State<MyOrder> {
                         ),
                         Text(
                           'You do not have an active order of this time',
-                          style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w400, color: Color(0xff747474)),
+                          style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
                         ),
                         const SizedBox(
                           height: 40,
@@ -176,7 +176,7 @@ class _MyOrderState extends State<MyOrder> {
               ),
               ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: 5,
                   itemBuilder: (context, index) {
                     return Column(
@@ -184,7 +184,7 @@ class _MyOrderState extends State<MyOrder> {
                         children: [
 
                           Container(
-                            margin: EdgeInsets.symmetric(horizontal: 13,vertical: 7),
+                            margin: const EdgeInsets.symmetric(horizontal: 13,vertical: 7),
                               width: size.width,
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
@@ -209,7 +209,7 @@ class _MyOrderState extends State<MyOrder> {
                                     borderRadius: BorderRadius.circular(5),
                                     color: Colors.white,
                                     border: Border.all(
-                                      color: Color(0xff363539).withOpacity(.1),
+                                      color: const Color(0xff363539).withOpacity(.1),
                                     )),
                                 child: Padding(
                                   padding: const EdgeInsets.all(2),
@@ -239,7 +239,7 @@ class _MyOrderState extends State<MyOrder> {
                                             style: GoogleFonts.poppins(
                                                 fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1A2E33)),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 3,
                                           ),
                                           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -252,7 +252,7 @@ class _MyOrderState extends State<MyOrder> {
                                                     style: GoogleFonts.poppins(
                                                         fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                                   ),
-                                                  SizedBox(height: 5,),
+                                                  const SizedBox(height: 5,),
                                                   Text(
                                                     "24 Oct 23",
                                                     style: GoogleFonts.poppins(
@@ -269,7 +269,7 @@ class _MyOrderState extends State<MyOrder> {
                                                     style: GoogleFonts.poppins(
                                                         fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                                   ),
-                                                  SizedBox(height: 5,),
+                                                  const SizedBox(height: 5,),
                                                   Text(
                                                     "6:30PM",
                                                     style: GoogleFonts.poppins(
@@ -286,7 +286,7 @@ class _MyOrderState extends State<MyOrder> {
                                                     style: GoogleFonts.poppins(
                                                         fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                                   ),
-                                                  SizedBox(height: 5,),
+                                                  const SizedBox(height: 5,),
                                                   Text(
                                                     "12",
                                                     style: GoogleFonts.poppins(
@@ -303,7 +303,7 @@ class _MyOrderState extends State<MyOrder> {
                                                     style: GoogleFonts.poppins(
                                                         fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                                   ),
-                                                  SizedBox(height: 5,),
+                                                  const SizedBox(height: 5,),
                                                   Text(
                                                     "-20%",
                                                     style: GoogleFonts.poppins(
@@ -317,7 +317,7 @@ class _MyOrderState extends State<MyOrder> {
                                       ),
                                   ]),
                               ) ]),
-                              Divider(
+                              const Divider(
 
                                 height: 40,
                                 color: Color(0xffE8E8E8),
@@ -353,7 +353,7 @@ class _MyOrderState extends State<MyOrder> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 20,),
+                                  const SizedBox(width: 20,),
                                   SizedBox(
                                     // width: size.width,
                                     height: 28,
@@ -391,7 +391,7 @@ class _MyOrderState extends State<MyOrder> {
                   }),
               ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: 5,
                   itemBuilder: (context, index) {
                     return Column(
@@ -399,7 +399,7 @@ class _MyOrderState extends State<MyOrder> {
                         children: [
 
                           Container(
-                              margin: EdgeInsets.symmetric(horizontal: 13,vertical: 7),
+                              margin: const EdgeInsets.symmetric(horizontal: 13,vertical: 7),
                               width: size.width,
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
@@ -424,7 +424,7 @@ class _MyOrderState extends State<MyOrder> {
                                         borderRadius: BorderRadius.circular(5),
                                         color: Colors.white,
                                         border: Border.all(
-                                          color: Color(0xff363539).withOpacity(.1),
+                                          color: const Color(0xff363539).withOpacity(.1),
                                         )),
                                     child: Padding(
                                       padding: const EdgeInsets.all(2),
@@ -454,7 +454,7 @@ class _MyOrderState extends State<MyOrder> {
                                                   style: GoogleFonts.poppins(
                                                       fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1A2E33)),
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: 3,
                                                 ),
                                                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -467,7 +467,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           style: GoogleFonts.poppins(
                                                               fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                                         ),
-                                                        SizedBox(height: 5,),
+                                                        const SizedBox(height: 5,),
                                                         Text(
                                                           "24 Oct 23",
                                                           style: GoogleFonts.poppins(
@@ -484,7 +484,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           style: GoogleFonts.poppins(
                                                               fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                                         ),
-                                                        SizedBox(height: 5,),
+                                                        const SizedBox(height: 5,),
                                                         Text(
                                                           "6:30PM",
                                                           style: GoogleFonts.poppins(
@@ -501,7 +501,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           style: GoogleFonts.poppins(
                                                               fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                                         ),
-                                                        SizedBox(height: 5,),
+                                                        const SizedBox(height: 5,),
                                                         Text(
                                                           "12",
                                                           style: GoogleFonts.poppins(
@@ -518,7 +518,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           style: GoogleFonts.poppins(
                                                               fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                                         ),
-                                                        SizedBox(height: 5,),
+                                                        const SizedBox(height: 5,),
                                                         Text(
                                                           "-20%",
                                                           style: GoogleFonts.poppins(

@@ -28,7 +28,7 @@ class CommonTextFieldWidget extends StatelessWidget {
   final length;
 
   const CommonTextFieldWidget({
-    Key? key,
+    super.key,
     this.suffixIcon,
     this.prefixIcon,
     this.onChanged,
@@ -47,7 +47,7 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.length,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class CommonTextFieldWidget extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.white.withOpacity(.35)),
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0))),
           border: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.white.withOpacity(.35), width: 3.0),
               borderRadius: BorderRadius.circular(15.0)),
@@ -172,14 +172,14 @@ class CommonTextFiel1dWidget extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey),
+            borderSide: const BorderSide(color: Colors.grey),
             borderRadius: BorderRadius.circular(10.0),
           ),
-          enabledBorder: OutlineInputBorder(
+          enabledBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
           border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey, width: 3.0),
+              borderSide: const BorderSide(color: Colors.grey, width: 3.0),
               borderRadius: BorderRadius.circular(15.0)),
           suffixIcon: suffix,
           prefixIcon: prefix),
@@ -191,7 +191,7 @@ class CommonButton extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
 
-  const CommonButton({Key? key, required this.title, this.onPressed}) : super(key: key);
+  const CommonButton({super.key, required this.title, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +236,7 @@ class CommonTextFieldWidget1 extends StatelessWidget {
   final length;
 
   const CommonTextFieldWidget1({
-    Key? key,
+    super.key,
     this.suffixIcon,
     this.prefixIcon,
     this.onChanged,
@@ -255,7 +255,7 @@ class CommonTextFieldWidget1 extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.length,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

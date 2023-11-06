@@ -10,10 +10,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:resvago_customer/model/menu_model.dart';
 import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/widget/appassets.dart';
-import 'package:table_calendar/table_calendar.dart';
 import '../../model/resturant_model.dart';
-import '../../widget/addsize.dart';
-import '../../widget/apptheme.dart';
 import '../../widget/restaurant_timing.dart';
 import 'select_date_flow.dart';
 
@@ -590,7 +587,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                               itemBuilder: (context, index) {
                                                 var menuListData = menuList![index];
                                                 return Column(children: [
-                                                  SizedBox(height: 10,),
+                                                  const SizedBox(height: 10,),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -691,7 +688,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       )
                                                     ],
                                                   ),
-                                                  SizedBox(height: 10,),
+                                                  const SizedBox(height: 10,),
                                                   index != 4
                                                       ? const DottedLine(
                                                           dashColor: Color(0xffBCBCBC),
