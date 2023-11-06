@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import '../model/checkout_model.dart';
 import '../model/menu_model.dart';
 import '../model/registerData.dart';
 import '../screen/helper.dart';
@@ -71,6 +72,36 @@ class FirebaseService {
       throw Exception(e);
     }
   }
+
+  Future manageOrder(
+      {required String orderId,
+        dynamic vendorId,
+        dynamic address,
+        dynamic couponDiscount,
+        required Map<String, dynamic> restaurantInfo,
+        // required List<MenuList> menuList,
+        dynamic time}) async {
+    try {
+      await FirebaseFirestore.instance.collection('order').doc(FirebaseAuth.instance.currentUser!.phoneNumber).set({
+        "orderId": orderId,
+        "userId": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "vendorId": vendorId,
+        "restaurantInfo": restaurantInfo,
+        // "menuList": menuList,
+        "address":address,
+        "couponDiscount":couponDiscount,
+        "time": time,
+        "order_type":"COD",
+        "order_status":"Place Order"
+      });
+      showToast("Order Placed Successfully");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+
+
 
   Future<RegisterData?> getUserInfo({required String uid}) async {
     RegisterData? vendorModel;

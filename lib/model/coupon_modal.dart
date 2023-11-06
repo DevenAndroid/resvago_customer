@@ -9,6 +9,9 @@ class CouponData {
   final dynamic userID;
   final bool deactivate;
 
+  double get maximumDiscount => (double.tryParse(discount.toString()) ?? 0) / 100;
+  double get maximumDiscountAmount => double.tryParse(maxDiscount.toString()) ?? 0;
+
 
   CouponData(
       {required this.promoCodeName,

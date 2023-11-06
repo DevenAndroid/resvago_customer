@@ -31,7 +31,6 @@ class _OderScreenState extends State<OderScreen> {
   RestaurantModel? get restaurantData => widget.restaurantItem;
   List<MenuData>? get menuListData => widget.menuList;
 
-
   var totalPrice = 0.0;
   getTotalPrice(){
     totalPrice = 0;
@@ -39,7 +38,6 @@ class _OderScreenState extends State<OderScreen> {
       totalPrice = totalPrice + double.parse(menuListData![i].qty.toString()) * double.parse(menuListData![i].price);
       log(totalPrice.toString());
       setState(() {
-
       });
     }
   }
@@ -49,6 +47,7 @@ class _OderScreenState extends State<OderScreen> {
     super.initState();
     getTotalPrice();
   }
+
 
   @override
   Widget build(BuildContext context) {
