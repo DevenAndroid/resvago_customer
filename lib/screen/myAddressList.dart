@@ -108,9 +108,16 @@ class _MyAddressListState extends State<MyAddressList> {
                                         color: Color(0xff384953),
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  leading: const CircleAvatar(
-                                    backgroundColor: Color(0xff3B5998),
-                                    child: Icon(Icons.location_on,color: Colors.white,),
+                                  leading: CircleAvatar(
+                                    maxRadius: 40,
+                                    minRadius: 40,
+                                    backgroundColor: Color(0x1a3b5998),
+                                    child: const CircleAvatar(
+                                      minRadius: 20,
+                                      maxRadius: 20,
+                                      backgroundColor: Color(0xff3B5998),
+                                      child: Icon(Icons.location_on,color: Colors.white,),
+                                    ),
                                   ),
                                   subtitle:
                                   Text(item.streetAddress.toString(),overflow: TextOverflow.ellipsis,),

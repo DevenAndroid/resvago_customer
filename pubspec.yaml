@@ -61,6 +61,10 @@ dependencies:
   table_calendar: ^3.0.9
   google_api_headers: ^2.0.3
   intl:
+  firebase_database: ^10.3.3
+  firebase_messaging: ^14.7.3
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
