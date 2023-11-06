@@ -123,7 +123,7 @@ class OnboardContent extends StatelessWidget {
       Expanded(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
             Flexible(
@@ -135,7 +135,7 @@ class OnboardContent extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
             )),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Column(
@@ -208,7 +208,7 @@ class OnboardContent extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                  shape: CircleBorder(),
+                  shape: const CircleBorder(),
                   primary: const Color(0xFF3B5998),
                   textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
            child: Image.asset(height:23,width: 23,'assets/icons/arrow.png'),)),

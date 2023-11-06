@@ -21,7 +21,7 @@ class RestaurantTimingScreen extends StatefulWidget {
 class _RestaurantTimingScreenState extends State<RestaurantTimingScreen> {
   @override
   Widget build(BuildContext context) {
-    print(widget.docId);
+    log(widget.docId);
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection("week_schedules").doc(widget.docId).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {

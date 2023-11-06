@@ -47,7 +47,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           return Container(
             color: AppTheme.backgroundcolor,
             child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: <Widget>[
                   Container(
@@ -95,12 +95,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         SizedBox(
                           height: screenSize.height * 0.02,
                         ),
-                        Text("",
+                        const Text("",
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w500)),
-                        Text('',
+                            style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w500)),
+                        const Text('',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
+                            style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
                         const SizedBox(
                             // height: SizeConfig.heightMultiplier! * 1.8,
                             ),
@@ -208,11 +208,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 // SizedBox(height: 10,),
-                                Icon(
+                                const Icon(
                                   Icons.favorite_border,
                                   color: AppTheme.primaryColor,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 25,
                                 ),
                                 Text(
