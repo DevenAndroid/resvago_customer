@@ -23,10 +23,12 @@ import '../controller/location_controller.dart';
 import '../controller/wishlist_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/category_model.dart';
+import '../model/profile_model.dart';
 import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'package:rxdart/rxdart.dart';
+import '../widget/restaurant_timing.dart';
 import 'category/resturant_by_category.dart';
 import 'coupon_list_screen.dart';
 import 'myAddressList.dart';
@@ -186,6 +188,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  ProfileData profileData = ProfileData();
+  void getProfileData() {
+    FirebaseFirestore.instance
+        .collection("customer_users")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        if (value.data() == null) return;
+        profileData = ProfileData.fromJson(value.data()!);
+        setState(() {});
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -200,6 +217,7 @@ class _HomePageState extends State<HomePage> {
           .collection(collectionRef: collectionReference)
           .within(center: center, radius: rad, field: 'restaurant_position', strictMode: true);
     });
+    getProfileData();
     getSliders();
     getVendorCategories();
     getRestaurantList();
@@ -270,12 +288,12 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: size.height * 0.02,
                       ),
-                      Text("Williams Jones",
+                      Text(profileData.userName ?? "",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600)),
-                      const Text('williamsjones@gmail.com',
+                       Text(profileData.email ?? "",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
+                          style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
                     ],
                   ),
                 ),
@@ -338,7 +356,7 @@ class _HomePageState extends State<HomePage> {
                           color: AppTheme.drawerColor,
                         ),
                         onTap: () {
-                          // Get.toNamed(MyAddress.myAddressScreen);
+                          Get.to(()=>MyAddressList());
                           // Get.back();
                           // widget.onItemTapped(1);
                         }),
@@ -397,142 +415,142 @@ class _HomePageState extends State<HomePage> {
         )),
       ),
       backgroundColor: const Color(0xffF6F6F6),
-      drawer: Drawer(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-        width: MediaQuery.sizeOf(context).width * .70,
-        child: ListView(
-          padding: EdgeInsets.zero,
-
-          children: [
-            SizedBox(
-              height: 230,
-              child: DrawerHeader(
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppTheme.primaryColor,
-                          AppTheme.primaryColor,
-                        ],
-                      )),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(4),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          decoration: const ShapeDecoration(
-                            shape: CircleBorder(),
-                            color: Colors.white,
-                          ),
-                          child: Image.network(
-                            "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                            fit: BoxFit.cover,
-                            height: 100,
-                            width: 100,
-                          ),
-                        ),
-                        Text("TestVendor",
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              color: const Color(0xFFFFFFFF),
-                              fontWeight: FontWeight.w600,
-                            )),
-                        Text("TestVendor@gmail.com",
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              color: const Color(0xFFFFFFFF),
-                              fontWeight: FontWeight.w400,
-                            )),
-                      ],
-                    ),
-                  )),
-            ),
-            ListTile(
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-              leading: const Icon(Icons.dashboard),
-              title: Text('Dashboard',
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    color: const Color(0xFF4F535E),
-                    fontWeight: FontWeight.w400,
-                  )),
-              onTap: () {
-                setState(() {
-                  currentDrawer = 0;
-                  Get.back();
-                });
-              },
-            ),
-            const Divider(
-              height: 5,
-              color: Color(0xffEFEFEF),
-              thickness: 1,
-            ),
-            ListTile(
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-              leading: const Icon(Icons.restaurant_menu_sharp),
-              title: Text('Review',
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    color: const Color(0xFF4F535E),
-                    fontWeight: FontWeight.w400,
-                  )),
-              onTap: () {
-                setState(() {
-                  currentDrawer = 1;
-                  Get.to(ReviewAndRatingScreen());
-                });
-              },
-            ),
-            const Divider(
-              height: 5,
-              color: Color(0xffEFEFEF),
-              thickness: 1,
-            ),
-            ListTile(
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-              leading: const Icon(Icons.countertops_outlined),
-
-              title: Text('Address',
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    color: const Color(0xFF4F535E),
-                    fontWeight: FontWeight.w400,
-                  )),
-              onTap: () {
-                setState(() {
-                  currentDrawer = 3;
-                  Get.to(MyAddressList());
-                });
-              },
-            ),
-            const Divider(
-              height: 5,
-              color: Color(0xffEFEFEF),
-              thickness: 1,
-            ),
-            ListTile(
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
-              leading: const Icon(Icons.countertops_outlined),
-
-              title: Text('CouponList',
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    color: const Color(0xFF4F535E),
-                    fontWeight: FontWeight.w400,
-                  )),
-              onTap: () {
-                setState(() {
-                  currentDrawer = 4;
-                  Get.to(const PromoCodeList());
-                });
-              },
-            ),
-            SizedBox(height: 100,),
-          ],
-        ),
-      ),
+      // drawer: Drawer(
+      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+      //   width: MediaQuery.sizeOf(context).width * .70,
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //
+      //     children: [
+      //       SizedBox(
+      //         height: 230,
+      //         child: DrawerHeader(
+      //             decoration: const BoxDecoration(
+      //                 gradient: LinearGradient(
+      //                   colors: [
+      //                     AppTheme.primaryColor,
+      //                     AppTheme.primaryColor,
+      //                   ],
+      //                 )),
+      //             child: Align(
+      //               alignment: Alignment.center,
+      //               child: Column(
+      //                 children: [
+      //                   Container(
+      //                     margin: const EdgeInsets.all(4),
+      //                     clipBehavior: Clip.antiAliasWithSaveLayer,
+      //                     decoration: const ShapeDecoration(
+      //                       shape: CircleBorder(),
+      //                       color: Colors.white,
+      //                     ),
+      //                     child: Image.network(
+      //                       "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+      //                       fit: BoxFit.cover,
+      //                       height: 100,
+      //                       width: 100,
+      //                     ),
+      //                   ),
+      //                   Text("TestVendor",
+      //                       style: GoogleFonts.poppins(
+      //                         fontSize: 18,
+      //                         color: const Color(0xFFFFFFFF),
+      //                         fontWeight: FontWeight.w600,
+      //                       )),
+      //                   Text("TestVendor@gmail.com",
+      //                       style: GoogleFonts.poppins(
+      //                         fontSize: 15,
+      //                         color: const Color(0xFFFFFFFF),
+      //                         fontWeight: FontWeight.w400,
+      //                       )),
+      //                 ],
+      //               ),
+      //             )),
+      //       ),
+      //       ListTile(
+      //         visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+      //         leading: const Icon(Icons.dashboard),
+      //         title: Text('Dashboard',
+      //             style: GoogleFonts.poppins(
+      //               fontSize: 15,
+      //               color: const Color(0xFF4F535E),
+      //               fontWeight: FontWeight.w400,
+      //             )),
+      //         onTap: () {
+      //           setState(() {
+      //             currentDrawer = 0;
+      //             Get.back();
+      //           });
+      //         },
+      //       ),
+      //       const Divider(
+      //         height: 5,
+      //         color: Color(0xffEFEFEF),
+      //         thickness: 1,
+      //       ),
+      //       ListTile(
+      //         visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+      //         leading: const Icon(Icons.restaurant_menu_sharp),
+      //         title: Text('Review',
+      //             style: GoogleFonts.poppins(
+      //               fontSize: 15,
+      //               color: const Color(0xFF4F535E),
+      //               fontWeight: FontWeight.w400,
+      //             )),
+      //         onTap: () {
+      //           setState(() {
+      //             currentDrawer = 1;
+      //             Get.to(ReviewAndRatingScreen());
+      //           });
+      //         },
+      //       ),
+      //       const Divider(
+      //         height: 5,
+      //         color: Color(0xffEFEFEF),
+      //         thickness: 1,
+      //       ),
+      //       ListTile(
+      //         visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+      //         leading: const Icon(Icons.countertops_outlined),
+      //
+      //         title: Text('Address',
+      //             style: GoogleFonts.poppins(
+      //               fontSize: 15,
+      //               color: const Color(0xFF4F535E),
+      //               fontWeight: FontWeight.w400,
+      //             )),
+      //         onTap: () {
+      //           setState(() {
+      //             currentDrawer = 3;
+      //             Get.to(MyAddressList());
+      //           });
+      //         },
+      //       ),
+      //       const Divider(
+      //         height: 5,
+      //         color: Color(0xffEFEFEF),
+      //         thickness: 1,
+      //       ),
+      //       ListTile(
+      //         visualDensity: const VisualDensity(horizontal: -4, vertical: -2),
+      //         leading: const Icon(Icons.countertops_outlined),
+      //
+      //         title: Text('CouponList',
+      //             style: GoogleFonts.poppins(
+      //               fontSize: 15,
+      //               color: const Color(0xFF4F535E),
+      //               fontWeight: FontWeight.w400,
+      //             )),
+      //         onTap: () {
+      //           setState(() {
+      //             currentDrawer = 4;
+      //             Get.to(const PromoCodeList());
+      //           });
+      //         },
+      //       ),
+      //       SizedBox(height: 100,),
+      //     ],
+      //   ),
+      // ),
       appBar: AppBar(
         surfaceTintColor: AppTheme.backgroundcolor,
         title: Row(
@@ -944,11 +962,12 @@ class _HomePageState extends State<HomePage> {
                                             AppAssets.vector,
                                             height: 16,
                                           ),
-                                          Text(
-                                            "  40% off up to \$100",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-                                          ),
+                                          MaxDiscountScreen(docId:restaurantListItem.docid)
+                                          // Text(
+                                          //   "  40% off up to \$100",
+                                          //   style: GoogleFonts.poppins(
+                                          //       fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+                                          // ),
                                         ],
                                       ),
                                     ),

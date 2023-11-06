@@ -8,6 +8,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:resvago_customer/model/coupon_modal.dart';
+import 'package:resvago_customer/screen/coupon_list_screen.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../firebase_service/firebase_service.dart';
@@ -17,7 +19,7 @@ import '../../model/resturant_model.dart';
 import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
-import '../oder_screen.dart';
+import '../checkout_for_dining/oder_screen.dart';
 
 // extension GetTotalDates on List<ModelStoreSlots> {
 //   Map<DateTime, ModelStoreSlots> get totalDates {
@@ -135,6 +137,8 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
     getMenuList();
   }
 
+  CouponData? couponData;
+
   @override
   Widget build(BuildContext context) {
     log(widget.userId.toString());
@@ -188,14 +192,23 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                             }
                           }
                           if (index == 2) {
-                            if (slotData != null) {
+                            if (slot != null) {
                               kk = .66666666;
                               setState(() {});
                             }
+                            else {
+                              showToast("Please select slot number");
+                            }
+                            setState(() {
+
+                            });
                           }
                           if (index == 3) {
-                            if (slotData != null) {
+                            if (guest != null) {
                               kk = 1;
+                            }
+                            else {
+                              showToast("Please select guest number");
                             }
                           }
                           setState(() {});
@@ -247,32 +260,42 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: const Color(0xFFC7C7C7), width: 1.0)),
-                        width: AddSize.screenWidth,
-                        height: 50,
-                        child: GestureDetector(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(AppAssets.vector, height: 20),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "Select Your Offer",
-                                style: GoogleFonts.poppins(
-                                    fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF3B5998)),
-                              ),
-                            ],
-                          ),
-                        )),
+                    InkWell(
+                      onTap: (){
+                        Get.to(()=>PromoCodeList(id:widget.restaurantItem!.docid,
+                          couponData: (CouponData coupon) {
+                            couponData = coupon;
+                            setState(() {});
+                          },));
+                      },
+                      child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: const Color(0xFFC7C7C7), width: 1.0)),
+                          width: AddSize.screenWidth,
+                          height: 50,
+                          child: GestureDetector(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(AppAssets.vector, height: 20),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Select Your Offer",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF3B5998)),
+                                ),
+                              ],
+                            ),
+                          )),
+                    ),
                     const SizedBox(
                       height: 13,
                     ),
+                    couponData != null ?
                     Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(4),
@@ -288,7 +311,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '20% Off On “A La Carte” Menu',
+                                    '${couponData!.discount}% Off On “A La Carte” Menu',
                                     style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
                                   ),
                                   const SizedBox(
@@ -310,7 +333,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                         BoxDecoration(color: AppTheme.primaryColor, borderRadius: BorderRadius.circular(5)),
                                     child: Center(
                                       child: Text(
-                                        '20% off',
+                                        '${couponData!.discount}% off',
                                         style:
                                             GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                                       ),
@@ -332,7 +355,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                               ),
                             )
                           ],
-                        )),
+                        )) : Center(child: Text("No Offer Selected"),),
                     const SizedBox(
                       height: 13,
                     ),
@@ -427,12 +450,18 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (menuList!.where((e) => e.isCheck == true).toList().isNotEmpty) {
+                                log("aaaaaaa-----${jsonEncode(menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList())}");
+                                dynamic discountValue = 0;
+                                if(couponData !=null){
+                                  discountValue = couponData!.discount;
+                                }
                                 Get.to(() => OderScreen(
-                                   slot:slot,
+                                    discountValue:discountValue,
+                                    slot:slot,
                                     guest:guest,
                                     date:today,
                                     restaurantItem: widget.restaurantItem,
-                                    menuList: menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList()));
+                                    menuList: menuList!.where((e) => e.isCheck == true).toList()));
                               } else {
                                 showToast("Please select menu");
                               }

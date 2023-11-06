@@ -12,6 +12,7 @@ class MenuData {
   dynamic time;
   dynamic bookingForDining;
   dynamic bookingForDelivery;
+  int qty = 1;
   bool isCheck = false;
 
   MenuData({this.dishName, this.category, this.price, this.docid, this.discount, this.description, this.image, this.booking,this.time,this.menuId,this.vendorId,this.bookingForDelivery,this.bookingForDining});

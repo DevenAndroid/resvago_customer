@@ -95,13 +95,13 @@ class _MyAddressListState extends State<MyAddressList> {
                                 color: Colors.grey.withOpacity(0.5),
                                 spreadRadius: 5,
                                 blurRadius: 7,
-                                offset: Offset(0, 3),
+                                offset: const Offset(0, 3),
                               ),
                             ],
                           ),
                           child: Center(
                               child: ListTile(
-                                  contentPadding: EdgeInsets.only(left: 15,right: 5),
+                                  contentPadding: const EdgeInsets.only(left: 15,right: 5),
                                   title: Text(
                                     item.AddressType.toString(),
                                     style: const TextStyle(
