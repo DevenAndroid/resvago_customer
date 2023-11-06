@@ -20,7 +20,7 @@ class _ThankuScreenState extends State<ThankuScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 18),
           child: Container(
 
-       padding: EdgeInsets.only(bottom: 20),
+       padding: const EdgeInsets.only(bottom: 20),
               child: SizedBox(
                 width: size.width,
                 height: 50,
@@ -31,9 +31,9 @@ class _ThankuScreenState extends State<ThankuScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     surfaceTintColor: Colors.white,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
 
-                      side: const BorderSide(
+                      side: BorderSide(
 
                         color: Color(0xFF3B5998),
                       ),

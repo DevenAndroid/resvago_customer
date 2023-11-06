@@ -3,8 +3,10 @@ import 'package:resvago_customer/screen/bottomnav_bar.dart';
 import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/myorder_screen.dart';
+import 'package:resvago_customer/screen/order_details_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import 'package:resvago_customer/screen/thanku_screen.dart';
+import '../screen/add_new_card.dart';
 import '../screen/cart screen.dart';
 import '../screen/helpcenter.dart';
 import '../screen/login_screen.dart';
@@ -40,6 +42,8 @@ class MyRouters {
   static var helpCenterScreen = "/helpCenterScreen";
   static var cartScreen = "/cartScreen";
   static var thankuScreen = "/thankuScreen";
+  static var orderDetail = "/orderDetail";
+  static var addNewCard = "/addNewCard";
 
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
@@ -63,5 +67,7 @@ class MyRouters {
     GetPage(name: MyRouters.helpCenterScreen, page: () => const HelpCenterScreen()),
     GetPage(name: MyRouters.cartScreen, page: () => const CartScreen()),
     GetPage(name: MyRouters.thankuScreen, page: () => const ThankuScreen()),
+    GetPage(name: MyRouters.orderDetail, page: () => const OderDetailsScreen()),
+    GetPage(name: MyRouters.addNewCard, page: () => const AddNewCardScreen()),
   ];
 }

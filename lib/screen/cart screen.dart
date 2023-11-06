@@ -454,21 +454,23 @@ class _CartScreenState extends State<CartScreen> {
                       const SizedBox(
                         width: 8,
                       ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      Container(
-                        height: 23,
-                        width: 23,
-                        decoration: const BoxDecoration(
-                            color: Color(0xffFAAF40),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            )),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 18,
+
+                      GestureDetector(onTap: (){
+                        Get.toNamed(MyRouters.addNewCard);
+                      },
+                        child: Container(
+                          height: 23,
+                          width: 23,
+                          decoration: const BoxDecoration(
+                              color: Color(0xffFAAF40),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              )),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
                       )
                     ],

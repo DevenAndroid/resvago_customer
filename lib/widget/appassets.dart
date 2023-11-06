@@ -31,4 +31,10 @@ class AppAssets {
   static const String profilee = "assets/icons/profile.png";
   static const String profileImage = "assets/images/profleImage.png";
   static const String orderEmpty = "assets/images/orderempty.png";
+  static const String contact = "assets/icons/contact.png";
+  static const String call = "assets/icons/call.png";
+  static const String customerLocation = "assets/icons/customerlocation.png";
+  static const String qr = "assets/images/qr.png";
+  static const String details = "assets/icons/details.png";
+  static const String paymentCardIcon = "assets/images/Mastercard.png";
 }
