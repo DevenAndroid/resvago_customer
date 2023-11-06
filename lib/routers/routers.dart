@@ -5,7 +5,7 @@ import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/myorder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import '../screen/delivery_screen/delivery_restaurnt_screen.dart';
-import '../screen/cart screen.dart';
+import '../screen/delivery_screen/cart screen.dart';
 import '../screen/helpcenter.dart';
 import '../screen/login_screen.dart';
 import '../screen/notification.dart';

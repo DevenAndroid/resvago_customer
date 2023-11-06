@@ -1,18 +1,11 @@
-import 'dart:convert';
 import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/widget/apptheme.dart';
 import '../../model/menu_model.dart';
 import '../../model/resturant_model.dart';
-import '../../widget/appassets.dart';
 import '../../widget/common_text_field.dart';
 
 class OderScreen extends StatefulWidget {

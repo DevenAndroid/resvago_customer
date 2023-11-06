@@ -16,6 +16,7 @@ import '../../model/resturant_model.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/restaurant_timing.dart';
 import '../helper.dart';
+import 'cart screen.dart';
 
 class SingleRestaurantForDeliveryScreen extends StatefulWidget {
   final RestaurantModel? restaurantItem;
@@ -1167,7 +1168,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                 child: ElevatedButton(
                                   onPressed: () {
                                     manageCheckOut(widget.restaurantItem!.docid).then((value) {
-
+                                      Get.to(()=>const CartScreen());
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(

@@ -225,6 +225,7 @@ class _HomePageState extends State<HomePage> {
     locationController.getLocation();
     locationController.checkGps(context).then((value) {});
   }
+
   int currentDrawer = 0;
 
   @override
@@ -292,7 +293,7 @@ class _HomePageState extends State<HomePage> {
                       Text(profileData.userName ?? "",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600)),
-                       Text(profileData.email ?? "",
+                      Text(profileData.email ?? "",
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
                     ],
@@ -357,7 +358,7 @@ class _HomePageState extends State<HomePage> {
                           color: AppTheme.drawerColor,
                         ),
                         onTap: () {
-                          Get.to(()=>MyAddressList());
+                          Get.to(() => MyAddressList());
                           // Get.back();
                           // widget.onItemTapped(1);
                         }),
@@ -482,7 +483,6 @@ class _HomePageState extends State<HomePage> {
             GestureDetector(
               onTap: () {
                 Get.toNamed(MyRouters.cartScreen);
-                // Get.to(MyAddressList());
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -831,7 +831,7 @@ class _HomePageState extends State<HomePage> {
                                             AppAssets.vector,
                                             height: 16,
                                           ),
-                                          MaxDiscountScreen(docId:restaurantListItem.docid)
+                                          MaxDiscountScreen(docId: restaurantListItem.docid)
                                           // Text(
                                           //   "  40% off up to \$100",
                                           //   style: GoogleFonts.poppins(
