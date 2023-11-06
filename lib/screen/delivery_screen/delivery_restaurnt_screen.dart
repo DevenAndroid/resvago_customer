@@ -29,6 +29,7 @@ import '../../widget/custom_textfield.dart';
 import '../../widget/restaurant_timing.dart';
 import '../category/resturant_by_category.dart';
 import '../myAddressList.dart';
+import 'cart screen.dart';
 
 class DeliveryPage extends StatefulWidget {
   const DeliveryPage({super.key});
@@ -291,7 +292,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
             ),
             GestureDetector(
               onTap: () {
-                Get.to(MyAddressList());
+                Get.to(const CartScreen());
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

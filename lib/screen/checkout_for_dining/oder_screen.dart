@@ -313,6 +313,7 @@ class _OderScreenState extends State<OderScreen> {
                                                     )),
                                                 child: InkWell(
                                                   onTap: (){
+                                                    if(menuListItem.qty<1)return;
                                                     menuListItem.qty--;
                                                     getTotalPrice();
                                                     setState(() {

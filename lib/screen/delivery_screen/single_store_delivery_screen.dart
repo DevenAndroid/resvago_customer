@@ -556,97 +556,97 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                               height: 10,
                                                             ),
                                                             menuListData.qty > 0
-                                                                ? Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: [
-                                                                      Container(
-                                                                        height: 28,
-                                                                        width: 28,
-                                                                        decoration: BoxDecoration(
-                                                                            border: Border.all(color: Colors.black),
-                                                                            borderRadius: const BorderRadius.all(
-                                                                              Radius.circular(20),
-                                                                            )),
-                                                                        child: InkWell(
+                                                              ? Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Container(
+                                                                      height: 28,
+                                                                      width: 28,
+                                                                      decoration: BoxDecoration(
+                                                                          border: Border.all(color: Colors.black),
+                                                                          borderRadius: const BorderRadius.all(
+                                                                            Radius.circular(20),
+                                                                          )),
+                                                                      child: InkWell(
+                                                                          onTap: () {
+                                                                            menuListData.qty--;
+                                                                            log(menuListData.qty.toString());
+                                                                            setState(() {});
+                                                                          },
+                                                                          child: const Icon(
+                                                                            Icons.remove,
+                                                                            size: 18,
+                                                                          )),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 8,
+                                                                    ),
+                                                                    Text(
+                                                                      menuListData.qty.toString(),
+                                                                      style: GoogleFonts.alegreyaSans(
+                                                                        fontSize: 16,
+                                                                      ),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 8,
+                                                                    ),
+                                                                    Row(
+                                                                      children: [
+                                                                        Container(
+                                                                          height: 28,
+                                                                          width: 28,
+                                                                          decoration: const BoxDecoration(
+                                                                              color: AppTheme.primaryColor,
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(20),
+                                                                              )),
+                                                                          child: InkWell(
                                                                             onTap: () {
-                                                                              menuListData.qty--;
+                                                                              menuListData.qty++;
                                                                               log(menuListData.qty.toString());
                                                                               setState(() {});
                                                                             },
                                                                             child: const Icon(
-                                                                              Icons.remove,
+                                                                              Icons.add,
+                                                                              color: Colors.white,
                                                                               size: 18,
-                                                                            )),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width: 8,
-                                                                      ),
-                                                                      Text(
-                                                                        menuListData.qty.toString(),
-                                                                        style: GoogleFonts.alegreyaSans(
-                                                                          fontSize: 16,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width: 8,
-                                                                      ),
-                                                                      Row(
-                                                                        children: [
-                                                                          Container(
-                                                                            height: 28,
-                                                                            width: 28,
-                                                                            decoration: const BoxDecoration(
-                                                                                color: AppTheme.primaryColor,
-                                                                                borderRadius: BorderRadius.all(
-                                                                                  Radius.circular(20),
-                                                                                )),
-                                                                            child: InkWell(
-                                                                              onTap: () {
-                                                                                menuListData.qty++;
-                                                                                log(menuListData.qty.toString());
-                                                                                setState(() {});
-                                                                              },
-                                                                              child: const Icon(
-                                                                                Icons.add,
-                                                                                color: Colors.white,
-                                                                                size: 18,
-                                                                              ),
                                                                             ),
-                                                                          )
-                                                                        ],
-                                                                      )
-                                                                    ],
-                                                                  )
-                                                                : SizedBox(
-                                                                    // width: size.width,
-                                                                    height: 23,
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    )
+                                                                  ],
+                                                                )
+                                                              : SizedBox(
+                                                                  // width: size.width,
+                                                                  height: 23,
 
-                                                                    child: ElevatedButton(
-                                                                      onPressed: () {
-                                                                        menuListData.qty++;
-                                                                        log(menuListData.qty.toString());
-                                                                        setState(() {});
-                                                                      },
-                                                                      style: ElevatedButton.styleFrom(
-                                                                          backgroundColor: const Color(0xFF3B5998),
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(3),
-                                                                              side: const BorderSide(
-                                                                                width: 2.0,
-                                                                                color: Color(0xFF3B5998),
-                                                                              )),
-                                                                          textStyle: const TextStyle(
-                                                                              fontSize: 18, fontWeight: FontWeight.w500)),
-                                                                      child: Text(
-                                                                        "ADD TO CART",
-                                                                        style: GoogleFonts.poppins(
-                                                                          fontSize: 10,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: Colors.white,
-                                                                        ),
+                                                                  child: ElevatedButton(
+                                                                    onPressed: () {
+                                                                      menuListData.qty++;
+                                                                      log(menuListData.qty.toString());
+                                                                      setState(() {});
+                                                                    },
+                                                                    style: ElevatedButton.styleFrom(
+                                                                        backgroundColor: const Color(0xFF3B5998),
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius: BorderRadius.circular(3),
+                                                                            side: const BorderSide(
+                                                                              width: 2.0,
+                                                                              color: Color(0xFF3B5998),
+                                                                            )),
+                                                                        textStyle: const TextStyle(
+                                                                            fontSize: 18, fontWeight: FontWeight.w500)),
+                                                                    child: Text(
+                                                                      "ADD TO CART",
+                                                                      style: GoogleFonts.poppins(
+                                                                        fontSize: 10,
+                                                                        fontWeight: FontWeight.w500,
+                                                                        color: Colors.white,
                                                                       ),
                                                                     ),
                                                                   ),
+                                                                ),
                                                           ],
                                                         ),
                                                       ),
@@ -1167,9 +1167,14 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    manageCheckOut(widget.restaurantItem!.docid).then((value) {
-                                      Get.to(()=>const CartScreen());
-                                    });
+                                    if(menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList().isNotEmpty){
+                                      manageCheckOut(widget.restaurantItem!.docid).then((value) {
+                                        Get.to(()=>const CartScreen());
+                                      });
+                                    }
+                                    else{
+                                      showToast("Please select menu");
+                                    }
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: AppTheme.primaryColor,
