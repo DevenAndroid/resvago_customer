@@ -76,7 +76,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   DateTime today = DateTime.now();
   List<MenuData>? menuList;
   getMenuList() {
-    print(widget.userId);
     FirebaseFirestore.instance.collection("vendor_menu").where("vendorId", isEqualTo: widget.userId).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
@@ -105,30 +104,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
     });
   }
 
-  FirebaseService firebaseService = FirebaseService();
-
-  Future<void> manageCheckOut(String vendorId) async {
-    OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
-    try {
-      await firebaseService
-          .manageCheckOut(
-        date: today.millisecondsSinceEpoch.toString(),
-        guest: 2,
-        menuList: menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList(),
-        restaurantInfo: restaurantData!.toJson(),
-        slot: slot!,
-        vendorId: vendorId,
-        time: DateTime.now().millisecondsSinceEpoch,
-      )
-          .then((value) {
-        Helper.hideLoader(loader);
-      });
-    } catch (e) {
-      Helper.hideLoader(loader);
-      throw Exception(e);
-    }
-  }
 
   @override
   void initState() {

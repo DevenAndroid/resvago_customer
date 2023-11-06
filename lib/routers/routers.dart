@@ -4,6 +4,7 @@ import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/myorder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
+import '../screen/delivery_screen/delivery_restaurnt_screen.dart';
 import '../screen/cart screen.dart';
 import '../screen/helpcenter.dart';
 import '../screen/login_screen.dart';
@@ -23,6 +24,7 @@ class MyRouters {
   static var loginScreen = "/loginScreen";
   static var signupScreen = "/signupScreen";
   static var homePageScreen = "/homePageScreen";
+  static var deliveryPageScreen = "/deliveryPageScreen";
   static var deliveryScreen = "/deliveryScreen";
   static var oderScreen = "/oderScreen";
   static var profileScreen = "/profileScreen";
@@ -45,6 +47,7 @@ class MyRouters {
     GetPage(name: MyRouters.loginScreen, page: () => const LoginScreen()),
     GetPage(name: MyRouters.signupScreen, page: () => const SignUpScreen()),
     GetPage(name: MyRouters.homePageScreen, page: () => const HomePage()),
+    GetPage(name: MyRouters.deliveryPageScreen, page: () => const DeliveryPage()),
     GetPage(name: MyRouters.deliveryScreen, page: () => const DeliveryScreen()),
     // GetPage(name: MyRouters.oderScreen, page: () => const OderScreen()),
     GetPage(name: MyRouters.profileScreen, page: () => const ProfileScreen()),

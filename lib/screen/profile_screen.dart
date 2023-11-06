@@ -12,6 +12,7 @@ import '../model/profile_model.dart';
 import '../widget/apptheme.dart';
 import '../widget/common_text_field.dart';
 import 'helper.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -44,21 +45,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-
-
   Future<void> updateProfileToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
-      await FirebaseFirestore.instance
-          .collection("customer_users")
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-          .update({
+      await FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).update({
         "userName": firstNameController.text.trim(),
         "email": emailController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
-      Get.back();
       Helper.hideLoader(loader);
     } catch (e) {
       Helper.hideLoader(loader);
@@ -67,6 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Helper.hideLoader(loader);
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -77,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-     return Scaffold(
+    return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       body: SingleChildScrollView(
         child: Form(
@@ -100,8 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Container(
                             padding: const EdgeInsets.only(bottom: 50),
                             clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white)),
+                            decoration: BoxDecoration(border: Border.all(color: Colors.white)),
                             child: Image.asset('assets/images/profilebg.png')),
                         Positioned(
                           top: 90,
@@ -113,19 +108,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10000),
                                 child: Container(
-                                  height: 100,
-                                  width: 100,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xffFAAF40),
-                                    border: Border.all(
-                                        color: const Color(0xff3B5998),
-                                        width: 6),
-                                    borderRadius: BorderRadius.circular(5000),
-                                    // color: Colors.brown
-                                  ),
-                                  child: Image.asset('assets/images/man.png',height: 50,fit: BoxFit.cover,)
-                                ),
+                                    height: 100,
+                                    width: 100,
+                                    clipBehavior: Clip.antiAlias,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffFAAF40),
+                                      border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                      borderRadius: BorderRadius.circular(5000),
+                                      // color: Colors.brown
+                                    ),
+                                    child: Image.asset(
+                                      'assets/images/man.png',
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    )),
                               ),
                             ],
                           ),
@@ -154,21 +150,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                          profileData.userName.toString(),
-                        style: GoogleFonts.poppins(
-                            color: AppTheme.registortext,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                        profileData.userName.toString(),
+                        style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                     ),
                     Align(
                       alignment: Alignment.center,
                       child: Text(
                         profileData.email.toString(),
-                        style: GoogleFonts.poppins(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 12),
+                        style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 12),
                       ),
                     ),
                     const SizedBox(
@@ -181,55 +171,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           Text(
                             'First Name',
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
                           ),
                           RegisterTextFieldWidget(
-                            controller: firstNameController,
-                            validator: RequiredValidator(
-                                errorText:
-                                'Please enter your First name'),
-                            hint:
-                                 "First"
-
-                          ),
+                              controller: firstNameController,
+                              validator: RequiredValidator(errorText: 'Please enter your First name'),
+                              hint: "First"),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
                             "Last name",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
                           ),
                           RegisterTextFieldWidget(
-                            controller: lastNameController,
-                            validator: RequiredValidator(
-                                errorText: 'Please enter your Last name '),
-                            // keyboardType: TextInputType.number,
-                            // textInputAction: TextInputAction.next,
-                            hint:
-                                 "Last name"
-
-                          ),
+                              controller: lastNameController,
+                              validator: RequiredValidator(errorText: 'Please enter your Last name '),
+                              // keyboardType: TextInputType.number,
+                              // textInputAction: TextInputAction.next,
+                              hint: "Last name"),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
                             "Email",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -237,25 +209,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           RegisterTextFieldWidget(
                             controller: emailController,
                             validator: MultiValidator([
-                              RequiredValidator(
-                                  errorText: 'Please enter your email'),
-                              EmailValidator(
-                                  errorText: 'Enter a valid email address'),
+                              RequiredValidator(errorText: 'Please enter your email'),
+                              EmailValidator(errorText: 'Enter a valid email address'),
                             ]),
                             keyboardType: TextInputType.emailAddress,
                             // textInputAction: TextInputAction.next,
-                            hint:  "piyush@yopmail.com"
-                               ,
+                            hint: "piyush@yopmail.com",
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
                             "Mobile Number",
-                            style: GoogleFonts.poppins(
-                                color: AppTheme.registortext,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
                             height: 10,
@@ -263,20 +229,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           RegisterTextFieldWidget(
                             controller: mobileController,
                             length: 10,
-                            validator: RequiredValidator(
-                                errorText: 'Please enter your Mobile Number '),
+                            validator: RequiredValidator(errorText: 'Please enter your Mobile Number '),
                             keyboardType: TextInputType.number,
                             // textInputAction: TextInputAction.next,
-                            hint:  "Mobile Number"
-                            ,
+                            hint: "Mobile Number",
                           ),
                           const SizedBox(
                             height: 20,
                           ),
-
                           CommonButtonBlue(
                             onPressed: () {
-                              if(formKey.currentState!.validate()){
+                              if (formKey.currentState!.validate()) {
                                 updateProfileToFirestore();
                               }
                             },

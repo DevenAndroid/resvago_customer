@@ -12,38 +12,34 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/model/wishListModel.dart';
 import 'package:resvago_customer/routers/routers.dart';
+import 'package:resvago_customer/screen/delivery_screen/single_store_delivery_screen.dart';
 import 'package:resvago_customer/screen/helper.dart';
-import 'package:resvago_customer/screen/addAddress.dart';
-import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
-import 'package:resvago_customer/screen/search_screen/search_singlerestaurant_screen.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
-import '../controller/location_controller.dart';
-import '../controller/wishlist_controller.dart';
-import '../firebase_service/firebase_service.dart';
-import '../model/category_model.dart';
-import '../model/profile_model.dart';
-import '../widget/appassets.dart';
-import '../widget/apptheme.dart';
-import '../widget/custom_textfield.dart';
+import '../../controller/location_controller.dart';
+import '../../controller/wishlist_controller.dart';
+import '../../firebase_service/firebase_service.dart';
+import '../../model/category_model.dart';
+import '../../model/profile_model.dart';
+import '../../widget/appassets.dart';
+import '../../widget/apptheme.dart';
 import 'package:rxdart/rxdart.dart';
-import '../widget/restaurant_timing.dart';
-import 'category/resturant_by_category.dart';
-import 'coupon_list_screen.dart';
-import 'login_screen.dart';
-import 'myAddressList.dart';
+import '../../widget/custom_textfield.dart';
+import '../../widget/restaurant_timing.dart';
+import '../category/resturant_by_category.dart';
+import '../myAddressList.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class DeliveryPage extends StatefulWidget {
+  const DeliveryPage({super.key});
 
-  static var homePageScreen = "/homePageScreen";
+  static var deliveryPageScreen = "/deliveryPageScreen";
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<DeliveryPage> createState() => _DeliveryPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _DeliveryPageState extends State<DeliveryPage> {
   final locationController = Get.put(LocationController());
   final wishListController = Get.put(WishListController());
   bool isDescendingOrder = false;
@@ -225,199 +221,13 @@ class _HomePageState extends State<HomePage> {
     locationController.getLocation();
     locationController.checkGps(context).then((value) {});
   }
+
   int currentDrawer = 0;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      drawer: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.7,
-        child: Drawer(
-            child: Container(
-          // width: MediaQuery.of(context).size.width * 0.8,
-          color: AppTheme.backgroundcolor,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: size.height * 0.30,
-                  width: size.width,
-                  color: AppTheme.primaryColor,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.05,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          // Get.to(navigationPage.elementAt(_currentPage))
-                          // Get.to(MyProfile());
-                        },
-                        child: Card(
-                            elevation: 1,
-                            shape: const CircleBorder(),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: Container(
-                                margin: const EdgeInsets.all(4),
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                decoration: const ShapeDecoration(
-                                  shape: CircleBorder(),
-                                  color: Colors.white,
-                                ),
-                                child: Image.asset(
-                                  AppAssets.profileImage,
-                                  height: 100,
-                                )
-                                //         CachedNetworkImage(
-                                //     imageUrl:
-                                //     profileController.isDataLoading.value
-                                //     ? (profileController.model.value.data!
-                                //         .profileImage ??
-                                //         "")
-                                //         .toString()
-                                //       : "",
-                                //   height: screenSize.height * 0.12,
-                                //   width: screenSize.height * 0.12,
-                                //   errorWidget: (_, __, ___) => const SizedBox(),
-                                //   placeholder: (_, __) => const SizedBox(),
-                                //   fit: BoxFit.cover,
-                                // )
-                                )),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      Text(profileData.userName ?? "",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600)),
-                       Text(profileData.email ?? "",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Column(
-                  children: [
-                    _drawerTile(
-                        active: true,
-                        title: "My Orders".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.order),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () {
-                          Get.toNamed(MyRouters.myOrder);
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "My Profile".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.profilee),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () async {
-                          Get.toNamed(MyRouters.profileScreen);
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "Notification".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.notification),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () {
-                          Get.toNamed(MyRouters.notification);
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "My Address".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.myAddress),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () {
-                          Get.to(()=>MyAddressList());
-                          // Get.back();
-                          // widget.onItemTapped(1);
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "Privacy Policy".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.privacyPolicy),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () async {
-                          Get.toNamed(MyRouters.privacyPolicyScreen);
-
-                          // }
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "Help Center".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.helpCenter),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () async {
-                          Get.toNamed(MyRouters.helpCenterScreen);
-                          // }
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "Logout".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.logOut),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () async {
-                          await FirebaseAuth.instance.signOut();
-                          Get.offAll(const LoginScreen());
-                        }),
-                  ],
-                ),
-                // SizedBox(height:20,)
-              ],
-            ),
-          ),
-        )),
-      ),
       backgroundColor: const Color(0xffF6F6F6),
       appBar: AppBar(
         surfaceTintColor: AppTheme.backgroundcolor,
@@ -481,8 +291,7 @@ class _HomePageState extends State<HomePage> {
             ),
             GestureDetector(
               onTap: () {
-                Get.toNamed(MyRouters.cartScreen);
-                // Get.to(MyAddressList());
+                Get.to(MyAddressList());
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -708,7 +517,7 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.to(() => SingleRestaurantsScreen(
+                                Get.to(() => SingleRestaurantForDeliveryScreen(
                                       restaurantItem: restaurantListItem,
                                       distance: _calculateDistance(
                                         lat1: restaurantListItem.latitude.toString(),
@@ -831,7 +640,7 @@ class _HomePageState extends State<HomePage> {
                                             AppAssets.vector,
                                             height: 16,
                                           ),
-                                          MaxDiscountScreen(docId:restaurantListItem.docid)
+                                          MaxDiscountScreen(docId: restaurantListItem.docid)
                                           // Text(
                                           //   "  40% off up to \$100",
                                           //   style: GoogleFonts.poppins(
@@ -921,7 +730,13 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.toNamed(MyRouters.singleProductScreen);
+                                Get.to(() => SingleRestaurantForDeliveryScreen(
+                                      restaurantItem: restaurantListItem,
+                                      distance: _calculateDistance(
+                                        lat1: restaurantListItem.latitude.toString(),
+                                        lon1: restaurantListItem.longitude.toString(),
+                                      ),
+                                    ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -1060,26 +875,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ListTile(
-        selectedTileColor: AppTheme.primaryColor,
-        leading: icon,
-        minLeadingWidth: 25,
-        title: Text(
-          title,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: AppTheme.drawerColor,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        onTap: active ? onTap : null,
       ),
     );
   }

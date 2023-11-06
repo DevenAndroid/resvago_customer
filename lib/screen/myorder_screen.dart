@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/widget/appassets.dart';
-
 import '../widget/apptheme.dart';
 
 class MyOrder extends StatefulWidget {
