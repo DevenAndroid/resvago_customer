@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -27,6 +31,34 @@ class _BottomNavbarState extends State<BottomNavbar> {
     const ProfileScreen(),
     const ProfileScreen(),
   ];
+
+  updateFCMToken() async {
+    print("updated............");
+    try {
+      String? fcm = await FirebaseMessaging.instance.getToken();
+      FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+        print("updated............     $fcm");
+      final ref = firebaseDatabase.ref(
+          "users/${FirebaseAuth.instance.currentUser!.phoneNumber.toString()}");
+      await ref.update({
+        fcm.toString(): fcm.toString()
+      }).then((value) {
+        print("updated............");
+      }).catchError((e){
+        print("updated............    $e");
+      });
+      print("updated............");
+    } catch(e){
+      print("updated............    $e");
+      throw Exception(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    updateFCMToken();
+  }
 
   @override
   Widget build(BuildContext context) {

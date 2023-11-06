@@ -30,11 +30,11 @@ class ChooseAddress extends StatefulWidget {
   ChooseAddress(
       {super.key,
         required this.isEditMode,
-      this.streetAddress,
-      this.selectedChip,
-      this.name,
-      this.flatAddress,
-      this.docID});
+        this.streetAddress,
+        this.selectedChip,
+        this.name,
+        this.flatAddress,
+        this.docID});
   static var chooseAddressScreen = "/chooseAddressScreen";
 
   @override
@@ -113,12 +113,12 @@ class _ChooseAddressState extends State<ChooseAddress> {
 
   Future<void> _getAddressFromLatLng(Position position) async {
     await placemarkFromCoordinates(
-            _currentPosition!.latitude, _currentPosition!.longitude)
+        _currentPosition!.latitude, _currentPosition!.longitude)
         .then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
       setState(() {
         _address =
-            '${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+        '${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
       });
     }).catchError((e) {
       debugPrint(e.toString());
@@ -165,10 +165,10 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                   shape: CircleBorder()),
                               child: Center(
                                   child: Icon(
-                                Icons.clear,
-                                color: AppTheme.backgroundcolor,
-                                size: AddSize.size30,
-                              )),
+                                    Icons.clear,
+                                    color: AppTheme.backgroundcolor,
+                                    size: AddSize.size30,
+                                  )),
                             ),
                           ),
                           SizedBox(
@@ -200,10 +200,10 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                   ),
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: List.generate(
                                       choiceAddress.length,
-                                      (index) => chipList(choiceAddress[index]),
+                                          (index) => chipList(choiceAddress[index]),
                                     ),
                                   ),
                                   SizedBox(
@@ -222,7 +222,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                     validator: MultiValidator([
                                       RequiredValidator(
                                           errorText:
-                                              'Flat, House no, Floor, Tower,Street'),
+                                          'Flat, House no, Floor, Tower,Street'),
                                     ]).call,
                                   ),
                                   SizedBox(
@@ -275,29 +275,12 @@ class _ChooseAddressState extends State<ChooseAddress> {
   }
 
   AddAddresstofirebase() {
-    if(widget.isEditMode){
-    FirebaseFirestore.instance
-        .collection('Address')
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-        .collection('TotalAddress')
-        .add({
-      "name": nameController.text,
-      "streetAddress": streetAddressController.text,
-      "flatAddress": flatAddressController.text,
-      "AddressType": selectedChip.value,
-      "time": DateTime.now(),
-      "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
-    }).then((value) {
-      Get.to(MyAddressList());
-      Fluttertoast.showToast(msg: 'Address Added');
-    });
-    }else{
+    if(widget.isEditMode == false){
       FirebaseFirestore.instance
           .collection('Address')
           .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
           .collection('TotalAddress')
-      .doc(widget.docID)
-          .update({
+          .add({
         "name": nameController.text,
         "streetAddress": streetAddressController.text,
         "flatAddress": flatAddressController.text,
@@ -308,19 +291,35 @@ class _ChooseAddressState extends State<ChooseAddress> {
         Get.to(MyAddressList());
         Fluttertoast.showToast(msg: 'Address Added');
       });
+    }else{
+
+      FirebaseFirestore.instance
+          .collection('Address')
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .collection('TotalAddress')
+          .doc(widget.docID)
+          .update({
+        "name": nameController.text,
+        "streetAddress": streetAddressController.text,
+        "flatAddress": flatAddressController.text,
+        "AddressType": selectedChip.value,
+        "time": DateTime.now(),
+        "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
+      }).then((value) {
+        Get.to(MyAddressList());
+        Fluttertoast.showToast(msg: 'Address Updated');
+      });
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getCurrentPosition();
     nameController.text = widget.name ?? "";
     streetAddressController.text = widget.streetAddress ?? "";
     flatAddressController.text = widget.flatAddress ?? "";
     selectedChip.value = widget.selectedChip ?? "";
-    print(selectedChip.value);
   }
 
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
@@ -443,8 +442,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                               .textTheme
                                               .headlineSmall!
                                               .copyWith(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: AddSize.font16),
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: AddSize.font16),
                                         ),
                                       )
                                     ],
@@ -477,8 +476,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
   }
 
   chipList(
-    title,
-  ) {
+      title,
+      ) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Obx(() {
@@ -520,3 +519,4 @@ class _ChooseAddressState extends State<ChooseAddress> {
     });
   }
 }
+
