@@ -87,7 +87,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
               child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: 4,
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     return InkWell(
@@ -97,7 +97,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Container(
-                          margin: EdgeInsets.only(right: 12, top: 8, left: 12),
+                          margin: const EdgeInsets.only(right: 12, top: 8, left: 12),
                           decoration: BoxDecoration(
                             color: const Color(0xffFFFFFF),
                             borderRadius: BorderRadius.circular(12),
@@ -150,9 +150,9 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                                       height: 30,
                                       width: 130,
                                       decoration: BoxDecoration(
-                                          color: Color(0xff3B5998).withOpacity(.3),
+                                          color: const Color(0xff3B5998).withOpacity(.3),
                                           // border: Border.all(color: ),
-                                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5))),
                                       child: Center(
                                         child: Text(
                                           'South Indian Food',
@@ -172,13 +172,13 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                                           style: GoogleFonts.poppins(
                                               fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
                                         ),
-                                        Spacer(),
+                                        const Spacer(),
                                         const Icon(
                                           Icons.star,
                                           color: Color(0xffFFC529),
                                           size: 17,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 5,
                                         ),
                                         Text(
@@ -218,7 +218,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                                     const SizedBox(
                                       height: 15,
                                     ),
-                                    DottedLine(
+                                    const DottedLine(
                                       dashColor: Color(0xffBCBCBC),
                                     ),
                                     const SizedBox(

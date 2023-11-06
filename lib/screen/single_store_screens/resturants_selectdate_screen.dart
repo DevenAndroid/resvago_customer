@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:resvago_customer/widget/addsize.dart';
@@ -24,7 +23,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'ras',
           style: TextStyle(color: Colors.black),
         ),

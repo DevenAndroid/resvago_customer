@@ -210,7 +210,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
@@ -263,7 +263,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                             borderSide:
                                 BorderSide(color: Colors.grey.withOpacity(.35)),
                             borderRadius:
-                                BorderRadius.all(Radius.circular(10.0))),
+                                const BorderRadius.all(Radius.circular(10.0))),
                         border: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Colors.grey.withOpacity(.35),
@@ -280,11 +280,11 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                 },
                 title: 'FeedBack',
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
-              CommonButton(title: "FeedBack"),
-              SizedBox(
+              const CommonButton(title: "FeedBack"),
+              const SizedBox(
                 height: 15,
               ),
             ],

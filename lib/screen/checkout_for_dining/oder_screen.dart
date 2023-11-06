@@ -13,6 +13,7 @@ import 'package:resvago_customer/widget/apptheme.dart';
 import '../../model/menu_model.dart';
 import '../../model/resturant_model.dart';
 import '../../widget/appassets.dart';
+import '../../widget/common_text_field.dart';
 
 class OderScreen extends StatefulWidget {
   OderScreen({super.key, this.restaurantItem, this.menuList, this.guest, this.slot, required this.date,this.discountValue});
@@ -68,27 +69,7 @@ class _OderScreenState extends State<OderScreen> {
     log(restaurantData!.toJson().toString());
     log(menuListData!.toString());
     return Scaffold(
-        appBar: AppBar(
-          shadowColor: Color(0xff363539).withOpacity(.1),
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.white,
-          leading: InkWell(
-            onTap: () {
-              Get.back();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(13.0),
-              child: SvgPicture.asset("assets/images/back.svg"),
-            ),
-          ),
-          elevation: 1,
-          title: Text(
-            "Checkout",
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+        appBar: backAppBar(title: "CheckOut", context: context,
         ),
         body: restaurantData != null && menuListData != null
             ? SingleChildScrollView(

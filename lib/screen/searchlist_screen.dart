@@ -213,7 +213,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                     },
                   );
                 }
-                return Center(child: const CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               },
             ),
           ],

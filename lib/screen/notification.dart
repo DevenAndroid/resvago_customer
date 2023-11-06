@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../widget/apptheme.dart';
+import '../widget/common_text_field.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
@@ -18,27 +19,7 @@ class NotificationScreenState extends State<NotificationScreen> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: AppBar(
-          shadowColor: Color(0xff363539).withOpacity(.1),
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.white,
-          leading: InkWell(
-            onTap: () {
-              Get.back();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(13.0),
-              child: SvgPicture.asset("assets/images/back.svg"),
-            ),
-          ),
-          elevation: 1.5,
-          title: Text(
-            "Notification",
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+        appBar: backAppBar(title: "Notification", context: context,
         ),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -67,7 +48,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                                 child: Container(
                                   width: width * .010,
                                   height: height * .08,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     color:Color(0xffFAAF40),
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
                                   ),
@@ -79,7 +60,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                               Row(mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color:Color(0xffFAAF40),
                                       shape: BoxShape.circle
                                     ),
@@ -110,23 +91,23 @@ class NotificationScreenState extends State<NotificationScreen> {
                                         'Date - 17-02-2022',
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.w700,
-                                          color:Color(0xffFAAF40),
+                                          color:const Color(0xffFAAF40),
                                           fontSize: 14,
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 4,
                                       ),
                                       Text(
                                         'Lorem ipsum dolor sit amet',
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.w500,
-                                          color: Color(0xff2A3757),
+                                          color: const Color(0xff2A3757),
                                           fontSize: 14,
                                         ),
                                       ),
                                       //textBold(snapshot.data!.data.notifications[index].title),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 4,
                                       ),
                                       Text(
@@ -135,7 +116,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                                         overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.w400,
-                                          color: Color(0xff797F8F),
+                                          color: const Color(0xff797F8F),
                                           fontSize: 12,
                                         ),
                                       )

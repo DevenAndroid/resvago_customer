@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -355,7 +354,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                               ),
                             )
                           ],
-                        )) : Center(child: Text("No Offer Selected"),),
+                        )) : const Center(child: Text("No Offer Selected"),),
                     const SizedBox(
                       height: 13,
                     ),

@@ -30,7 +30,7 @@ class RegisterTextFieldWidget extends StatelessWidget {
   final length;
 
   const RegisterTextFieldWidget({
-    Key? key,
+    super.key,
     this.suffixIcon,
     this.prefixIcon,
     this.onChanged,
@@ -49,7 +49,7 @@ class RegisterTextFieldWidget extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.length,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -157,10 +157,10 @@ AppBar backAppBar(
     surfaceTintColor: AppTheme.backgroundcolor,
     title: Text(
       title,
-      style: GoogleFonts.poppins(color: Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17),
+      style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17),
     ),
     actions: [
-      icon2 ?? SizedBox.shrink()
+      icon2 ?? const SizedBox.shrink()
     ],
     leading: Padding(
       padding: EdgeInsets.only(left: AddSize.padding10),

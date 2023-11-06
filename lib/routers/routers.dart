@@ -3,8 +3,8 @@ import 'package:resvago_customer/screen/bottomnav_bar.dart';
 import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/myorder_screen.dart';
-import 'package:resvago_customer/screen/checkout_for_dining/oder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
+import '../screen/cart screen.dart';
 import '../screen/helpcenter.dart';
 import '../screen/login_screen.dart';
 import '../screen/notification.dart';
@@ -37,6 +37,7 @@ class MyRouters {
   static var myOrder = "/myOrder";
   static var notification = "/notification";
   static var helpCenterScreen = "/helpCenterScreen";
+  static var cartScreen = "/cartScreen";
 
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
@@ -58,6 +59,6 @@ class MyRouters {
     GetPage(name: MyRouters.myOrder, page: () => const MyOrder()),
     GetPage(name: MyRouters.notification, page: () => const NotificationScreen()),
     GetPage(name: MyRouters.helpCenterScreen, page: () => const HelpCenterScreen()),
-    // GetPage(name: MyRouters.homePageScreen, page: () => const OtpScreen()),
+    GetPage(name: MyRouters.cartScreen, page: () => const CartScreen()),
   ];
 }
