@@ -288,7 +288,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
         "time": DateTime.now(),
         "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
       }).then((value) {
-        Get.to(MyAddressList());
+        Get.back();
+        Get.back();
         Fluttertoast.showToast(msg: 'Address Added');
       });
     }else{
@@ -306,7 +307,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
         "time": DateTime.now(),
         "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
       }).then((value) {
-        Get.to(MyAddressList());
+        Get.back();
+        Get.back();
         Fluttertoast.showToast(msg: 'Address Updated');
       });
     }
