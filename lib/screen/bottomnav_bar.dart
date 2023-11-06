@@ -10,6 +10,7 @@ import '../controller/bottomnavbar_controller.dart';
 
 import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
+import 'delivery_screen/delivery_restaurnt_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({Key? key}) : super(key: key);
@@ -23,8 +24,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
 
   final pages = [
     const HomePage(),
-    const DeliveryScreen(),
-     // OderScreen(),
+    const DeliveryPage(),
+    const ProfileScreen(),
     const ProfileScreen(),
   ];
 
@@ -74,13 +75,13 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
                           bottomController.pageIndex.value == 0
                               ? SvgPicture.asset(
                                   AppAssets.dining,
-                                  color: Color(0xFFFAAF40),
+                                  color: const Color(0xFFFAAF40),
                                 )
                               : SvgPicture.asset(AppAssets.dining),
                           const SizedBox(
@@ -111,7 +112,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 8,
                           ),
                           bottomController.pageIndex.value == 1
-                              ? SvgPicture.asset(AppAssets.delivery, color: Color(0xFFFAAF40))
+                              ? SvgPicture.asset(AppAssets.delivery, color: const Color(0xFFFAAF40))
                               : SvgPicture.asset(
                                   AppAssets.delivery,
                                   color: Colors.black,
@@ -144,7 +145,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 8,
                           ),
                           bottomController.pageIndex.value == 2
-                              ? SvgPicture.asset(AppAssets.oder, color: Color(0xFFFAAF40))
+                              ? SvgPicture.asset(AppAssets.oder, color: const Color(0xFFFAAF40))
                               : SvgPicture.asset(AppAssets.oder),
                           const SizedBox(
                             height: 5,
@@ -174,7 +175,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 8,
                           ),
                           bottomController.pageIndex.value == 3
-                              ? SvgPicture.asset(AppAssets.profile, color: Color(0xFFFAAF40))
+                              ? SvgPicture.asset(AppAssets.profile, color: const Color(0xFFFAAF40))
                               : SvgPicture.asset(AppAssets.profile),
                           const SizedBox(
                             height: 5,

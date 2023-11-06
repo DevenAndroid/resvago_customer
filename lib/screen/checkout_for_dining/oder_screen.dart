@@ -30,19 +30,6 @@ class _OderScreenState extends State<OderScreen> {
   RestaurantModel? get restaurantData => widget.restaurantItem;
   List<MenuData>? get menuListData => widget.menuList;
 
-  increaseQty(qty){
-    qty = qty+1;
-    setState(() {
-
-    });
-  }
-
-  decrementQty(qty){
-    qty = qty-1;
-    setState(() {
-
-    });
-  }
 
   var totalPrice = 0.0;
   getTotalPrice(){

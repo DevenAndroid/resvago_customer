@@ -12,14 +12,15 @@ class MenuData {
   dynamic time;
   dynamic bookingForDining;
   dynamic bookingForDelivery;
-  int qty = 1;
+  int qty = 0;
   bool isCheck = false;
 
-  MenuData({this.dishName, this.category, this.price, this.docid, this.discount, this.description, this.image, this.booking,this.time,this.menuId,this.vendorId,this.bookingForDelivery,this.bookingForDining});
+  MenuData({this.dishName, this.category, this.price, this.docid, this.discount, this.description, this.image, this.booking,this.time,this.menuId,this.vendorId,this.bookingForDelivery,this.bookingForDining,required this.qty});
 
   Map<String, dynamic> toMap() {
     return {
       "menuId": menuId,
+      "qty":qty,
       "vendorId": vendorId,
       "dishName": dishName,
       "category": category,
@@ -38,6 +39,7 @@ class MenuData {
   factory MenuData.fromMap(Map<String, dynamic> map, String menuId) {
     return MenuData(
       dishName: map['dishName'],
+      qty: map['qty'],
       vendorId: map['vendorId'],
       menuId: menuId,
       category: map['category'],

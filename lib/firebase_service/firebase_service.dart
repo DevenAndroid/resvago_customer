@@ -52,18 +52,14 @@ class FirebaseService {
   }
 
  Future manageCheckOut(
-      {required String slot,
-      required int guest,
-      required String date,
+      {required String cartId,
       dynamic vendorId,
       required Map<String, dynamic> restaurantInfo,
       required List<dynamic> menuList,
       dynamic time}) async {
     try {
       await FirebaseFirestore.instance.collection('checkOut').doc(FirebaseAuth.instance.currentUser!.phoneNumber).set({
-        "slot": slot,
-        "guest": guest,
-        "date": date,
+        "cartId": cartId,
         "userId": FirebaseAuth.instance.currentUser!.phoneNumber,
         "vendorId": vendorId,
         "restaurantInfo": restaurantInfo,
