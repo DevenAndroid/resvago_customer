@@ -187,7 +187,7 @@ class _MyOrderState extends State<MyOrder> {
                           Container(
                             margin: const EdgeInsets.symmetric(horizontal: 13,vertical: 7),
                               width: size.width,
-                              padding: const EdgeInsets.all(14),
+                              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
                                 BoxShadow(
                                   color: const Color(0xFF37C666).withOpacity(0.10),
@@ -383,11 +383,13 @@ class _MyOrderState extends State<MyOrder> {
                                   ),
                                 ],
                               ),
+                              SizedBox(height: 13,)
                             ],
                           )
 
 
-                          )
+                          ),
+
                           ]);
                   }),
               ListView.builder(
@@ -402,7 +404,7 @@ class _MyOrderState extends State<MyOrder> {
                           Container(
                               margin: const EdgeInsets.symmetric(horizontal: 13,vertical: 7),
                               width: size.width,
-                              padding: const EdgeInsets.all(14),
+                              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
                                 BoxShadow(
                                   color: const Color(0xFF37C666).withOpacity(0.10),
@@ -533,7 +535,7 @@ class _MyOrderState extends State<MyOrder> {
                                                 ),
                                               ]),
                                         ) ]),
-
+SizedBox(height: 10,)
                                 ],
                               )
 
