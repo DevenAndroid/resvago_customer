@@ -4,6 +4,7 @@ import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/myorder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
+import 'package:resvago_customer/screen/thanku_screen.dart';
 import '../screen/cart screen.dart';
 import '../screen/helpcenter.dart';
 import '../screen/login_screen.dart';
@@ -38,6 +39,7 @@ class MyRouters {
   static var notification = "/notification";
   static var helpCenterScreen = "/helpCenterScreen";
   static var cartScreen = "/cartScreen";
+  static var thankuScreen = "/thankuScreen";
 
   static var route = [
     GetPage(name: '/', page: () => const SplashScreen()),
@@ -60,5 +62,6 @@ class MyRouters {
     GetPage(name: MyRouters.notification, page: () => const NotificationScreen()),
     GetPage(name: MyRouters.helpCenterScreen, page: () => const HelpCenterScreen()),
     GetPage(name: MyRouters.cartScreen, page: () => const CartScreen()),
+    GetPage(name: MyRouters.thankuScreen, page: () => const ThankuScreen()),
   ];
 }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 
 import '../widget/apptheme.dart';
@@ -540,7 +541,9 @@ class _CartScreenState extends State<CartScreen> {
                 width: size.width,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(MyRouters.thankuScreen);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryColor,
                     shape: RoundedRectangleBorder(
