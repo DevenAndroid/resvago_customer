@@ -17,6 +17,7 @@ import 'package:resvago_customer/screen/addAddress.dart';
 import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
 import 'package:resvago_customer/screen/search_screen/search_singlerestaurant_screen.dart';
+import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
 import '../controller/location_controller.dart';
@@ -782,11 +783,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
-                                          Text(
-                                            "25 mins ",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                          ),
+                                          PreparationTimeScreen(docId: restaurantListItem.docid),
                                           const SizedBox(
                                             width: 3,
                                           ),
@@ -989,11 +986,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
-                                          Text(
-                                            "25 mins ",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                          ),
+                                          PreparationTimeScreen(docId: restaurantListItem.docid),
                                           const SizedBox(
                                             width: 3,
                                           ),
@@ -1038,11 +1031,7 @@ class _HomePageState extends State<HomePage> {
                                             AppAssets.vector,
                                             height: 16,
                                           ),
-                                          Text(
-                                            "  40% off up to \$100",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-                                          ),
+                                          MaxDiscountScreen(docId: restaurantListItem.docid)
                                         ],
                                       ),
                                     ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -67,6 +68,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
     "Offer",
   ];
 
+
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = DateTime(day.year, day.month, day.day);
@@ -104,6 +106,37 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
     });
   }
 
+  FirebaseService firebaseService = FirebaseService();
+  // Future<int> order(String vendorId) async {
+  //   String? fcm = await FirebaseMessaging.instance.getToken();
+  //   OverlayEntry loader = Helper.overlayLoader(context);
+  //   Overlay.of(context).insert(loader);
+  //   int gg = DateTime.now().millisecondsSinceEpoch;
+  //   try {
+  //     await firebaseService.manageOrder(
+  //         orderId: gg.toString(),
+  //         menuList: cartModel.menuList!,
+  //         restaurantInfo: restaurantData!.toJson(),
+  //         vendorId: vendorId,
+  //         time: gg,
+  //         address: '',
+  //         couponDiscount: couponDiscount,
+  //         fcm: fcm,
+  //         diningDetails: {
+  //           'date': date,
+  //           'slot': slot,
+  //           'guest': guest,
+  //           'offer': offer}
+  //     ).then((value) {
+  //       Helper.hideLoader(loader);
+  //       return gg;
+  //     });
+  //     return gg;
+  //   } catch (e) {
+  //     Helper.hideLoader(loader);
+  //     throw Exception(e);
+  //   }
+  // }
 
   @override
   void initState() {

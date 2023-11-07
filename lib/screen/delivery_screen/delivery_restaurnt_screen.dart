@@ -29,6 +29,8 @@ import '../../widget/custom_textfield.dart';
 import '../../widget/restaurant_timing.dart';
 import '../category/resturant_by_category.dart';
 import '../myAddressList.dart';
+import '../single_store_screens/setting_for_restaurant.dart';
+import 'cart screen.dart';
 
 class DeliveryPage extends StatefulWidget {
   const DeliveryPage({super.key});
@@ -291,7 +293,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
             ),
             GestureDetector(
               onTap: () {
-                Get.to(MyAddressList());
+                Get.to(const CartScreen());
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -591,11 +593,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
-                                          Text(
-                                            "25 mins ",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                          ),
+                                          PreparationTimeScreen(docId: restaurantListItem.docid),
                                           const SizedBox(
                                             width: 3,
                                           ),
@@ -804,11 +802,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
-                                          Text(
-                                            "25 mins ",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                          ),
+                                          PreparationTimeScreen(docId: restaurantListItem.docid),
                                           const SizedBox(
                                             width: 3,
                                           ),

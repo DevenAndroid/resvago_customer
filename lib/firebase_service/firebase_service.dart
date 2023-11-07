@@ -76,23 +76,29 @@ class FirebaseService {
   Future manageOrder(
       {required String orderId,
         dynamic vendorId,
+        dynamic fcm,
         dynamic address,
+        dynamic date,
+        dynamic slot,
+        dynamic guest,
+        dynamic offer,
         dynamic couponDiscount,
         required Map<String, dynamic> restaurantInfo,
-        // required List<MenuList> menuList,
+        required Map<String, dynamic> diningDetails,
         dynamic time}) async {
     try {
-      await FirebaseFirestore.instance.collection('order').doc(FirebaseAuth.instance.currentUser!.phoneNumber).set({
+      await FirebaseFirestore.instance.collection('order').add({
         "orderId": orderId,
         "userId": FirebaseAuth.instance.currentUser!.phoneNumber,
         "vendorId": vendorId,
-        "restaurantInfo": restaurantInfo,
-        // "menuList": menuList,
+        "order_details": restaurantInfo,
+        "dining_details":diningDetails,
         "address":address,
         "couponDiscount":couponDiscount,
         "time": time,
         "order_type":"COD",
-        "order_status":"Place Order"
+        "order_status":"Place Order",
+        "fcm_token":fcm
       });
       showToast("Order Placed Successfully");
     } catch (e) {
