@@ -1,61 +1,61 @@
 class MyOrderModel {
-  RestaurantInfo? restaurantInfo;
-  dynamic orderStatus;
   dynamic couponDiscount;
+  dynamic orderStatus;
   dynamic address;
   dynamic orderId;
   dynamic fcmToken;
   dynamic vendorId;
   dynamic time;
   dynamic userId;
+  OrderDetails? orderDetails;
   dynamic orderType;
 
   MyOrderModel(
-      {this.restaurantInfo,
+      {this.couponDiscount,
         this.orderStatus,
-        this.couponDiscount,
         this.address,
         this.orderId,
         this.fcmToken,
         this.vendorId,
         this.time,
         this.userId,
+        this.orderDetails,
         this.orderType});
 
   MyOrderModel.fromJson(Map<String, dynamic> json) {
-    restaurantInfo = json['restaurantInfo'] != null
-        ? RestaurantInfo.fromJson(json['restaurantInfo'])
-        : null;
-    orderStatus = json['order_status'];
     couponDiscount = json['couponDiscount'];
+    orderStatus = json['order_status'];
     address = json['address'];
     orderId = json['orderId'];
     fcmToken = json['fcm_token'];
     vendorId = json['vendorId'];
     time = json['time'];
     userId = json['userId'];
+    orderDetails = json['order_details'] != null
+        ? OrderDetails.fromJson(json['order_details'])
+        : null;
     orderType = json['order_type'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (restaurantInfo != null) {
-      data['restaurantInfo'] = restaurantInfo!.toJson();
-    }
-    data['order_status'] = orderStatus;
     data['couponDiscount'] = couponDiscount;
+    data['order_status'] = orderStatus;
     data['address'] = address;
     data['orderId'] = orderId;
     data['fcm_token'] = fcmToken;
     data['vendorId'] = vendorId;
     data['time'] = time;
     data['userId'] = userId;
+    if (orderDetails != null) {
+      data['order_details'] = orderDetails!.toJson();
+    }
     data['order_type'] = orderType;
     return data;
   }
 }
 
-class RestaurantInfo {
+class OrderDetails {
   RestaurantInfo? restaurantInfo;
   List<MenuList>? menuList;
   dynamic cartId;
@@ -63,7 +63,7 @@ class RestaurantInfo {
   dynamic time;
   dynamic userId;
 
-  RestaurantInfo(
+  OrderDetails(
       {this.restaurantInfo,
         this.menuList,
         this.cartId,
@@ -71,7 +71,7 @@ class RestaurantInfo {
         this.time,
         this.userId});
 
-  RestaurantInfo.fromJson(Map<String, dynamic> json) {
+  OrderDetails.fromJson(Map<String, dynamic> json) {
     restaurantInfo = json['restaurantInfo'] != null
         ? RestaurantInfo.fromJson(json['restaurantInfo'])
         : null;
@@ -103,14 +103,86 @@ class RestaurantInfo {
   }
 }
 
+class RestaurantInfo {
+  dynamic aboutUs;
+  dynamic image;
+  dynamic address;
+  dynamic mobileNumber;
+  dynamic docid;
+  dynamic latitude;
+  dynamic userID;
+  dynamic password;
+  dynamic restaurantName;
+  List<String>? restaurantImage;
+  dynamic confirmPassword;
+  List<String>? menuImage;
+  dynamic category;
+  dynamic email;
+  dynamic longitude;
+
+  RestaurantInfo(
+      {this.aboutUs,
+        this.image,
+        this.address,
+        this.mobileNumber,
+        this.docid,
+        this.latitude,
+        this.userID,
+        this.password,
+        this.restaurantName,
+        this.restaurantImage,
+        this.confirmPassword,
+        this.menuImage,
+        this.category,
+        this.email,
+        this.longitude});
+
+  RestaurantInfo.fromJson(Map<String, dynamic> json) {
+    aboutUs = json['aboutUs'];
+    image = json['image'];
+    address = json['address'];
+    mobileNumber = json['mobileNumber'];
+    docid = json['docid'];
+    latitude = json['latitude'];
+    userID = json['userID'];
+    password = json['password'];
+    restaurantName = json['restaurantName'];
+    restaurantImage = json['restaurantImage'].cast<String>();
+    confirmPassword = json['confirmPassword'];
+    menuImage = json['menuImage'].cast<String>();
+    category = json['category'];
+    email = json['email'];
+    longitude = json['longitude'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['aboutUs'] = aboutUs;
+    data['image'] = image;
+    data['address'] = address;
+    data['mobileNumber'] = mobileNumber;
+    data['docid'] = docid;
+    data['latitude'] = latitude;
+    data['userID'] = userID;
+    data['password'] = password;
+    data['restaurantName'] = restaurantName;
+    data['restaurantImage'] = restaurantImage;
+    data['confirmPassword'] = confirmPassword;
+    data['menuImage'] = menuImage;
+    data['category'] = category;
+    data['email'] = email;
+    data['longitude'] = longitude;
+    return data;
+  }
+}
 
 class MenuList {
   dynamic image;
   dynamic booking;
   dynamic docid;
-  dynamic discount;
   dynamic vendorId;
   dynamic description;
+  dynamic discount;
   dynamic bookingForDining;
   dynamic price;
   dynamic qty;
@@ -124,9 +196,9 @@ class MenuList {
       {this.image,
         this.booking,
         this.docid,
-        this.discount,
         this.vendorId,
         this.description,
+        this.discount,
         this.bookingForDining,
         this.price,
         this.qty,
@@ -140,9 +212,9 @@ class MenuList {
     image = json['image'];
     booking = json['booking'];
     docid = json['docid'];
-    discount = json['discount'];
     vendorId = json['vendorId'];
     description = json['description'];
+    discount = json['discount'];
     bookingForDining = json['bookingForDining'];
     price = json['price'];
     qty = json['qty'];
@@ -158,9 +230,9 @@ class MenuList {
     data['image'] = image;
     data['booking'] = booking;
     data['docid'] = docid;
-    data['discount'] = discount;
     data['vendorId'] = vendorId;
     data['description'] = description;
+    data['discount'] = discount;
     data['bookingForDining'] = bookingForDining;
     data['price'] = price;
     data['qty'] = qty;

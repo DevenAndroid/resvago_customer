@@ -3,7 +3,7 @@ import 'package:resvago_customer/screen/bottomnav_bar.dart';
 import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
-import 'package:resvago_customer/screen/myorder_screen.dart';
+import 'package:resvago_customer/screen/order/myorder_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import '../screen/delivery_screen/delivery_restaurnt_screen.dart';
 import '../screen/delivery_screen/cart screen.dart';

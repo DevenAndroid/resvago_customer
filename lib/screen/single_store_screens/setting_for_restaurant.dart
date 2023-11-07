@@ -43,3 +43,41 @@ class _SettingDataScreenState extends State<SettingDataScreen> {
     );
   }
 }
+
+
+
+class PreparationTimeScreen extends StatefulWidget {
+  const PreparationTimeScreen({super.key, required this.docId});
+  final String docId;
+
+  @override
+  State<PreparationTimeScreen> createState() => _PreparationTimeScreenState();
+}
+class _PreparationTimeScreenState extends State<PreparationTimeScreen> {
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection("Vendor_Setting").doc(widget.docId).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+        if(snapshot.hasData && snapshot.data!.data() != null){
+          SettingModel settingData = SettingModel.fromJson(snapshot.data!.data()!);
+          return InkWell(
+            onTap: (){
+              Get.to(()=>RestaurantTimingScreenList(docId: widget.docId));
+            },
+            child: Text(
+              "${settingData.preparationTime.toString()} mins",
+              style: GoogleFonts.poppins(
+                  fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+            ),
+          );
+        }
+        return Text("",
+          style: GoogleFonts.poppins(
+              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+        );
+      },
+    );
+  }
+}

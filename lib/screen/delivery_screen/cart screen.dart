@@ -82,17 +82,18 @@ class _CartScreenState extends State<CartScreen> {
     Overlay.of(context).insert(loader);
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
-      await firebaseService
-          .manageOrder(
-              orderId: gg.toString(),
-              // menuList: cartModel.menuList!,
-              restaurantInfo: cartModel.toJson(),
-              vendorId: vendorId,
-              time: gg,
-              address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
-              couponDiscount: couponDiscount,
-              fcm: fcm)
-          .then((value) {
+      await firebaseService.manageOrder(
+          orderId: gg.toString(),
+          // menuList: cartModel.menuList!,
+          restaurantInfo: cartModel.toJson(),
+          vendorId: vendorId,
+          time: gg,
+          address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
+          couponDiscount: couponDiscount,
+          fcm: fcm,
+          diningDetails: {}
+
+         ).then((value) {
         Helper.hideLoader(loader);
         return gg;
       });
@@ -111,7 +112,7 @@ class _CartScreenState extends State<CartScreen> {
           title: "CheckOut",
           context: context,
         ),
-        body: cartModel.menuList != null
+        body: cartModel.menuList != null && cartModel.menuList!.isNotEmpty
             ? SingleChildScrollView(
                 child: Column(children: [
                 Padding(
@@ -677,8 +678,7 @@ class _CartScreenState extends State<CartScreen> {
                                   .collection("checkOut")
                                   .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                                   .delete();
-
-                              Get.offAllNamed(MyRouters.myOrder,arguments: [DateTime.fromMillisecondsSinceEpoch(value)]);
+                              Get.offAllNamed(MyRouters.thankYouScreen, arguments: [DateTime.fromMillisecondsSinceEpoch(value)]);
                             });
                           }
                         },
@@ -703,7 +703,7 @@ class _CartScreenState extends State<CartScreen> {
                   height: 100,
                 )
               ]))
-            :  Center(
+            : Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -717,7 +717,7 @@ class _CartScreenState extends State<CartScreen> {
                           height: 50,
                           child: ElevatedButton(
                             onPressed: () {
-                              Get.to(()=>const HomePage());
+                              Get.to(() => const HomePage());
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.primaryColor,

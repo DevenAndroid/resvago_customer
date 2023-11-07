@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:resvago_customer/screen/order/myorder_screen.dart';
 
 import '../../widget/apptheme.dart';
 
@@ -26,7 +27,9 @@ class _ThankuScreenState extends State<ThankuScreen> {
                 width: size.width,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(()=>const MyOrder());
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     surfaceTintColor: Colors.white,
@@ -99,7 +102,6 @@ class _ThankuScreenState extends State<ThankuScreen> {
                         fontWeight: FontWeight.w500),
                   )),
                 ),
-// SizedBox(height: size.height*2,),
               ],
             ),
           ),
