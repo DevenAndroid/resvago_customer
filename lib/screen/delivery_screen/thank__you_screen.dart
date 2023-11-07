@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/screen/order/myorder_screen.dart';
-
 import '../../widget/apptheme.dart';
 
 class ThankuScreen extends StatefulWidget {
@@ -12,8 +11,8 @@ class ThankuScreen extends StatefulWidget {
   @override
   State<ThankuScreen> createState() => _ThankuScreenState();
 }
-
 class _ThankuScreenState extends State<ThankuScreen> {
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -28,7 +27,7 @@ class _ThankuScreenState extends State<ThankuScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(()=>const MyOrder());
+                    Get.to(() => const MyOrder());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,

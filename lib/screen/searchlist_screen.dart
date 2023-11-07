@@ -141,8 +141,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
               stream: FirebaseFirestore.instance
                   .collection('vendor_menu')
                   .where("bookingForDelivery" , isEqualTo: true)
-                  .where('category',
-                  isGreaterThanOrEqualTo: searchKeyword)
+                  .where('category', isGreaterThanOrEqualTo: searchKeyword)
                   .where('category', isLessThan: '${searchKeyword}z')
                   .snapshots(),
               builder: (context, snapshot) {

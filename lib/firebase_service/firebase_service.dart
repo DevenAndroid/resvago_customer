@@ -83,8 +83,8 @@ class FirebaseService {
         dynamic guest,
         dynamic offer,
         dynamic couponDiscount,
+        dynamic total,
         required Map<String, dynamic> restaurantInfo,
-        required Map<String, dynamic> diningDetails,
         dynamic time}) async {
     try {
       await FirebaseFirestore.instance.collection('order').add({
@@ -92,13 +92,13 @@ class FirebaseService {
         "userId": FirebaseAuth.instance.currentUser!.phoneNumber,
         "vendorId": vendorId,
         "order_details": restaurantInfo,
-        "dining_details":diningDetails,
         "address":address,
         "couponDiscount":couponDiscount,
         "time": time,
         "order_type":"COD",
         "order_status":"Place Order",
-        "fcm_token":fcm
+        "fcm_token":fcm,
+        "total":total
       });
       showToast("Order Placed Successfully");
     } catch (e) {
@@ -107,6 +107,42 @@ class FirebaseService {
   }
 
 
+  Future manageOrderForDining(
+      {required String orderId,
+        dynamic vendorId,
+        dynamic fcm,
+        dynamic address,
+        dynamic date,
+        dynamic slot,
+        dynamic guest,
+        dynamic offer,
+        dynamic total,
+        dynamic couponDiscount,
+        required Map<String, dynamic> restaurantInfo,
+        required List<dynamic> menuList,
+        dynamic time}) async {
+    try {
+      await FirebaseFirestore.instance.collection('dining_order').add({
+        "orderId": orderId,
+        "userId": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "vendorId": vendorId,
+        "restaurantInfo": restaurantInfo,
+        "menuList": menuList,
+        "time": time,
+        "date":date.toString(),
+        "slot":slot,
+        "guest":guest,
+        "offer":"20%",
+        "order_type":"COD",
+        "order_status":"Place Order",
+        "fcm_token":fcm,
+        "total":total
+      });
+      showToast("Order Placed Successfully");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 
 
   Future<RegisterData?> getUserInfo({required String uid}) async {

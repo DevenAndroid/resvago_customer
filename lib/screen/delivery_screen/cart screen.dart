@@ -82,18 +82,18 @@ class _CartScreenState extends State<CartScreen> {
     Overlay.of(context).insert(loader);
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
-      await firebaseService.manageOrder(
-          orderId: gg.toString(),
-          // menuList: cartModel.menuList!,
-          restaurantInfo: cartModel.toJson(),
-          vendorId: vendorId,
-          time: gg,
-          address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
-          couponDiscount: couponDiscount,
-          fcm: fcm,
-          diningDetails: {}
-
-         ).then((value) {
+      await firebaseService
+          .manageOrder(
+              orderId: gg.toString(),
+              // menuList: cartModel.menuList!,
+              restaurantInfo: cartModel.toJson(),
+              vendorId: vendorId,
+              time: gg,
+              address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
+              couponDiscount: couponDiscount,
+              fcm: fcm,
+              total: totalPrice)
+          .then((value) {
         Helper.hideLoader(loader);
         return gg;
       });

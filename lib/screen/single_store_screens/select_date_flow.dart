@@ -21,26 +21,6 @@ import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../checkout_for_dining/oder_screen.dart';
 
-// extension GetTotalDates on List<ModelStoreSlots> {
-//   Map<DateTime, ModelStoreSlots> get totalDates {
-//     var kk = DateFormat("dd-MMM-yyyy");
-//     Map<DateTime, ModelStoreSlots> slotsDate = {};
-//     for (var element in this) {
-//       DateTime initialDate = kk.parse(element.startDateForLunch);
-//       if ((element.endDateForLunch ?? "").toString().isEmpty) {
-//         slotsDate[initialDate] = element;
-//       } else {
-//         DateTime lastDate = kk.parse(element.endDateForLunch);
-//         while (initialDate.isBefore(lastDate.add(const Duration(days: 1)))) {
-//           slotsDate[initialDate] = element;
-//           initialDate = initialDate.add(const Duration(days: 1));
-//         }
-//       }
-//     }
-//     return slotsDate;
-//   }
-// }
-
 extension ChangeToDate on String {
   DateTime get formatDate {
     var kk = DateFormat("dd-MMM-yyyy");
@@ -106,37 +86,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
     });
   }
 
-  FirebaseService firebaseService = FirebaseService();
-  // Future<int> order(String vendorId) async {
-  //   String? fcm = await FirebaseMessaging.instance.getToken();
-  //   OverlayEntry loader = Helper.overlayLoader(context);
-  //   Overlay.of(context).insert(loader);
-  //   int gg = DateTime.now().millisecondsSinceEpoch;
-  //   try {
-  //     await firebaseService.manageOrder(
-  //         orderId: gg.toString(),
-  //         menuList: cartModel.menuList!,
-  //         restaurantInfo: restaurantData!.toJson(),
-  //         vendorId: vendorId,
-  //         time: gg,
-  //         address: '',
-  //         couponDiscount: couponDiscount,
-  //         fcm: fcm,
-  //         diningDetails: {
-  //           'date': date,
-  //           'slot': slot,
-  //           'guest': guest,
-  //           'offer': offer}
-  //     ).then((value) {
-  //       Helper.hideLoader(loader);
-  //       return gg;
-  //     });
-  //     return gg;
-  //   } catch (e) {
-  //     Helper.hideLoader(loader);
-  //     throw Exception(e);
-  //   }
-  // }
 
   @override
   void initState() {
@@ -396,6 +345,14 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                         onChanged: (newValue) {
                                           setState(() {
                                             menuListData.isCheck = newValue!;
+                                            if(menuListData.isCheck == true){
+                                              menuListData.qty++;
+                                              log(menuListData.qty.toString());
+                                            }
+                                            else{
+                                              menuListData.qty = 0;
+                                              log(menuListData.qty.toString());
+                                            }
                                             setState(() {});
                                           });
                                         }),

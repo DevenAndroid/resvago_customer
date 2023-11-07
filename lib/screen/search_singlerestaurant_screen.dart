@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/controller/location_controller.dart';
 import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
-
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/custom_textfield.dart';
@@ -38,9 +36,8 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
         .then((value) {
       for (var element in value.docs) {
         var gg = element.data();
-        categoryList ??= [];
         log(categoryList.toString());
-        categoryList!.add(RestaurantModel.fromJson(gg,element.id.toString()));
+        categoryList.add(RestaurantModel.fromJson(gg,element.id.toString()));
       }
       setState(() {});
     });
