@@ -14,7 +14,8 @@ import '../../widget/apptheme.dart';
 import 'order_details_screen.dart';
 
 class MyOrder extends StatefulWidget {
-  const MyOrder({super.key});
+  final String? orderId;
+  const MyOrder({super.key, this.orderId});
 
   @override
   State<MyOrder> createState() => _MyOrderState();

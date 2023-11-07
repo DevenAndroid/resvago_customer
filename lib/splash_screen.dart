@@ -14,10 +14,9 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   FirebaseService service = FirebaseService();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   Future<void> checkUserAuth() async {
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    User? user = _auth.currentUser;
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
     if (user != null) {
       Navigator.pushReplacement(
         context,

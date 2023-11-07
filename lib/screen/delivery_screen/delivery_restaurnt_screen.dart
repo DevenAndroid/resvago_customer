@@ -17,6 +17,7 @@ import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
+import '../../controller/bottomnavbar_controller.dart';
 import '../../controller/location_controller.dart';
 import '../../controller/wishlist_controller.dart';
 import '../../firebase_service/firebase_service.dart';
@@ -44,6 +45,7 @@ class DeliveryPage extends StatefulWidget {
 class _DeliveryPageState extends State<DeliveryPage> {
   final locationController = Get.put(LocationController());
   final wishListController = Get.put(WishListController());
+  final bottomController = Get.put(BottomNavBarController());
   bool isDescendingOrder = false;
   List<String>? sliderList;
   getSliders() {
@@ -239,7 +241,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
           children: [
             GestureDetector(
               onTap: () {
-                // profileController.scaffoldKey.currentState!.openDrawer();
+                bottomController.scaffoldKey.currentState!.openDrawer();
               },
               child: Image.asset(
                 'assets/images/customerprofile.png',
