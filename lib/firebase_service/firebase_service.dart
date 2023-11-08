@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import '../model/checkout_model.dart';
 import '../model/menu_model.dart';
+import '../model/model_store_slots.dart';
 import '../model/registerData.dart';
 import '../screen/helper.dart';
 
@@ -67,7 +68,7 @@ class FirebaseService {
         "menuList": menuList,
         "time": time
       });
-      showToast("Checkout Successfully");
+      showToast("Added To Cart Successfully");
     } catch (e) {
       throw Exception(e);
     }
@@ -113,6 +114,7 @@ class FirebaseService {
         dynamic fcm,
         dynamic address,
         dynamic date,
+        required bool lunchSelected,
         dynamic slot,
         dynamic guest,
         dynamic offer,
@@ -122,7 +124,47 @@ class FirebaseService {
         required List<dynamic> menuList,
         dynamic time}) async {
     try {
-      await FirebaseFirestore.instance.collection('dining_order').add({
+      final slotDocument = firestore.collection("vendor_slot").doc(vendorId.toString()).collection("slot").doc(date.toString());
+      await firestore.runTransaction((transaction) {
+      return transaction.get(slotDocument).then((transactionDoc) {
+        log("transaction data.......        ${transactionDoc.data()}");
+        CreateSlotData createSlotData = CreateSlotData.fromMap(transactionDoc.data() ?? {});
+        createSlotData.morningSlots = createSlotData.morningSlots ?? {};
+        createSlotData.eveningSlots = createSlotData.eveningSlots ?? {};
+        log("transaction data.......        ${createSlotData.toMap()}");
+        // log("transaction data.......        $slot");
+
+        int? availableSeats = lunchSelected ?
+        createSlotData.morningSlots![slot.toString()] :
+        createSlotData.eveningSlots![slot.toString()];
+        log("transaction data.......        ${slot}    ${guest}    $lunchSelected     $availableSeats   ");
+
+        if(availableSeats != null){
+          if(availableSeats < int.parse("$guest")){
+            showToast("Some seats are booked\nPlease select seats again");
+            throw Exception();
+          } else {
+            if(lunchSelected){
+              createSlotData.morningSlots![slot.toString()] = availableSeats - int.parse("$guest");
+            } else {
+              createSlotData.eveningSlots![slot.toString()] = availableSeats - int.parse("$guest");
+            }
+          }
+        } else {
+          showToast("Seats not available");
+          throw Exception();
+        }
+
+        log("transaction data.......        ${createSlotData.toMap()}");
+        // throw Exception();
+        transaction.update(slotDocument, createSlotData.toMap());
+      });
+    }).then((newPopulation) => print("Population increased to $newPopulation"),
+      onError: (e) {
+      throw Exception(e);
+      },
+    );
+      await firestore.collection('dining_order').add({
         "orderId": orderId,
         "userId": FirebaseAuth.instance.currentUser!.phoneNumber,
         "vendorId": vendorId,

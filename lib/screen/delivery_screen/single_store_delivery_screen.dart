@@ -42,7 +42,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
   getMenuList() {
     FirebaseFirestore.instance
         .collection("vendor_menu")
-        .where("vendorId", isEqualTo: widget.restaurantItem!.docid)
+        .where("vendorId", isEqualTo: widget.restaurantItem!.docid).where("bookingForDelivery" , isEqualTo: true)
         .get()
         .then((value) {
       for (var element in value.docs) {
@@ -500,7 +500,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     padding: const EdgeInsets.symmetric(horizontal: 2),
                                                     child: Image.network(
                                                       widget.restaurantItem!.menuGalleryImages![index],
-                                                      fit: BoxFit.contain,
+                                                      fit: BoxFit.cover,
                                                     ));
                                               },
                                             ),

@@ -37,22 +37,10 @@ class _MyOrderState extends State<MyOrder> {
         myOrder ??= [];
         myOrder!.add(MyOrderModel.fromJson(gg));
       }
-      log(jsonEncode(value.docs.first.data()));
     });
     setState(() {});
   }
 
-  // List<MyOrderModel>? myOrder;
-  // getOrderList() {
-  //   FirebaseFirestore.instance
-  //       .collection("dining_order")
-  //       .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
-  //       .get()
-  //       .then((value) {
-  //     log("kkk....     ${jsonEncode(value.docs.first.data())}");
-  //   });
-  //   setState(() {});
-  // }
 
   Stream<List<MyOrderModel>> getActiveOrder() {
     return FirebaseFirestore.instance
@@ -323,7 +311,7 @@ class _MyOrderState extends State<MyOrder> {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
                                       onTap: () {
-                                        Get.to(() => OderDetailsScreen(myOrderDetails: orderItem, orderType: 'Delivery',));
+                                        Get.to(() => OderDetailsScreen(myOrderDetails: orderItem, orderType: 'Delivery', orderId: orderItem.orderId,));
                                       },
                                       child: Container(
                                           margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
@@ -421,7 +409,7 @@ class _MyOrderState extends State<MyOrder> {
                                                               height: 5,
                                                             ),
                                                             Text(
-                                                              "\$" + orderItem.total,
+                                                              "\$${orderItem.total}",
                                                               style: GoogleFonts.poppins(
                                                                   fontSize: 12,
                                                                   fontWeight: FontWeight.w300,
@@ -465,7 +453,7 @@ class _MyOrderState extends State<MyOrder> {
                                                     height: 28,
                                                     child: ElevatedButton(
                                                       onPressed: () {
-                                                        Get.to(() => OderDetailsScreen(myOrderDetails: orderItem, orderType: 'Delivery'));
+                                                        Get.to(() => OderDetailsScreen(myOrderDetails: orderItem, orderType: 'Delivery', orderId: '',));
                                                       },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: AppTheme.primaryColor,
@@ -843,7 +831,7 @@ class _MyOrderState extends State<MyOrder> {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
                                       onTap: () {
-                                        Get.to(() => OderDetailsScreen(myDiningOrderDetails: orderItem, orderType: 'Dining',));
+                                        Get.to(() => OderDetailsScreen(myDiningOrderDetails: orderItem, orderType: 'Dining', orderId: orderItem.orderId,));
                                       },
                                       child: Container(
                                           margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),

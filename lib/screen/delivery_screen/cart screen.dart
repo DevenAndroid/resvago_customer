@@ -85,7 +85,6 @@ class _CartScreenState extends State<CartScreen> {
       await firebaseService
           .manageOrder(
               orderId: gg.toString(),
-              // menuList: cartModel.menuList!,
               restaurantInfo: cartModel.toJson(),
               vendorId: vendorId,
               time: gg,
@@ -678,7 +677,7 @@ class _CartScreenState extends State<CartScreen> {
                                   .collection("checkOut")
                                   .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                                   .delete();
-                              Get.offAllNamed(MyRouters.thankYouScreen, arguments: [DateTime.fromMillisecondsSinceEpoch(value)]);
+                              Get.offAll(ThankuScreen(orderType: "Delivery",orderId: DateTime.now().millisecondsSinceEpoch.toString(),));
                             });
                           }
                         },

@@ -1,31 +1,28 @@
-import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/widget/apptheme.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/menu_model.dart';
 import '../../model/resturant_model.dart';
-import '../../routers/routers.dart';
-import '../../widget/appassets.dart';
 import '../../widget/common_text_field.dart';
 import '../helper.dart';
 
 class OderScreen extends StatefulWidget {
-  OderScreen({super.key, this.restaurantItem, this.menuList, this.guest, this.slot, required this.date, this.discountValue});
+  OderScreen({super.key, this.restaurantItem, this.menuList, this.guest, this.slot, required this.date, this.discountValue, required this.lunchSelected});
   final RestaurantModel? restaurantItem;
   final List<MenuData>? menuList;
   DateTime date;
   int? guest;
   String? slot;
+  final bool lunchSelected;
   dynamic discountValue;
   @override
   State<OderScreen> createState() => _OderScreenState();
@@ -46,25 +43,26 @@ class _OderScreenState extends State<OderScreen> {
   }
 
   FirebaseService firebaseService = FirebaseService();
+
   Future<int> order(String vendorId) async {
-    String? fcm = await FirebaseMessaging.instance.getToken();
     OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
+    // Overlay.of(context).insert(loader);
+    String? fcm = await FirebaseMessaging.instance.getToken();
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
       await firebaseService
           .manageOrderForDining(
-        orderId: gg.toString(),
-        menuList: menuListData!.where((e) => e.qty > 0).map((e) => e.toMap()).toList(),
-        restaurantInfo: restaurantData!.toJson(),
-        vendorId: vendorId,
-        time: gg,
-        fcm: fcm,
-        slot: widget.slot,
-        guest: widget.guest,
-        date: widget.date,
-        total: totalPrice
-      )
+              orderId: gg.toString(),
+              lunchSelected: widget.lunchSelected,
+              menuList: menuListData!.where((e) => e.qty > 0).map((e) => e.toMap()).toList(),
+              restaurantInfo: restaurantData!.toJson(),
+              vendorId: vendorId,
+              time: gg,
+              fcm: fcm,
+              slot: widget.slot,
+              guest: widget.guest,
+              date: widget.date,
+              total: totalPrice)
           .then((value) {
         Helper.hideLoader(loader);
         return gg;
@@ -642,11 +640,16 @@ class _OderScreenState extends State<OderScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           order(restaurantData!.docid).then((value) {
-                            FirebaseFirestore.instance
-                                .collection("checkOut")
-                                .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-                                .delete();
-                            Get.offAllNamed(MyRouters.thankYouScreen, arguments: [DateTime.fromMillisecondsSinceEpoch(value)]);
+                            // FirebaseFirestore.instance
+                            //     .collection("checkOut")
+                            //     .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                            //     .delete();
+                            // Get.offAll(ThankuScreen(
+                            //   date: widget.date.toString(),
+                            //   guestNo: widget.guest,
+                            //   orderType: "Dining",
+                            //   orderId: DateTime.now().millisecondsSinceEpoch.toString(),
+                            // ));
                           });
                         },
                         style: ElevatedButton.styleFrom(

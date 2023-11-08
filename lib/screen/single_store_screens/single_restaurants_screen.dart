@@ -31,24 +31,15 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
   int currentMenu = 0;
   int currentStep = 0;
   DateTime today = DateTime.now();
-
-  void _onDaySelected(DateTime day, DateTime focusedDay) {
-    setState(() {
-      today = day;
-    });
-  }
-
   bool value = false;
 
   List<MenuData>? menuList;
   getMenuList() {
-    print("kkkkkk......     "+widget.restaurantItem!.docid);
     FirebaseFirestore.instance
         .collection("vendor_menu")
         .where("vendorId", isEqualTo: widget.restaurantItem!.docid)
         .get()
         .then((value) {
-      print("kkkkkk......     ${value.docs}");
       for (var element in value.docs) {
         var gg = element.data();
         menuList ??= [];
@@ -64,7 +55,6 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
     getMenuList();
     if (widget.restaurantItem != null) {
       log(widget.restaurantItem!.image.toString());
-      // getWeekSchedule(widget.restaurantItem!.userID);
     }
   }
 
@@ -75,23 +65,6 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
     "Guest",
     "Offer",
   ];
-  List<Map<String, dynamic>> weekSchedule1 = [];
-  Future<List<Map<String, dynamic>>> getWeekSchedule(String userId) async {
-    try {
-      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection('week_schedules').doc(userId).get();
-      if (documentSnapshot.exists) {
-        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
-        List<Map<String, dynamic>> weekSchedule = List.from(data['schedule']);
-        weekSchedule1 = weekSchedule;
-        log(weekSchedule1.toString());
-        return weekSchedule;
-      } else {
-        return [];
-      }
-    } catch (error) {
-      rethrow;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -574,7 +547,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                     padding: const EdgeInsets.symmetric(horizontal: 2),
                                                     child: Image.network(
                                                       widget.restaurantItem!.menuGalleryImages![index],
-                                                      fit: BoxFit.contain,
+                                                      fit: BoxFit.cover,
                                                     ));
                                               },
                                             ),
@@ -587,7 +560,9 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                               itemBuilder: (context, index) {
                                                 var menuListData = menuList![index];
                                                 return Column(children: [
-                                                  const SizedBox(height: 10,),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -688,14 +663,15 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       )
                                                     ],
                                                   ),
-                                                  const SizedBox(height: 10,),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
                                                   index != 4
                                                       ? const DottedLine(
                                                           dashColor: Color(0xffBCBCBC),
-                                                    dashGapLength: 1,
+                                                          dashGapLength: 1,
                                                         )
                                                       : const SizedBox(),
-
                                                 ]);
                                               }),
                                       ],
@@ -1172,7 +1148,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                       ],
                     ),
                   if (currentDrawer == 0)
-                    SelectDateFlowScreen(userId: widget.restaurantItem!.docid,restaurantItem:widget.restaurantItem!),
+                    SelectDateFlowScreen(userId: widget.restaurantItem!.docid, restaurantItem: widget.restaurantItem!),
                 ]),
                 const SizedBox(
                   height: 20,
