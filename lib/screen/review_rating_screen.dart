@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,13 +9,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/homepage.dart';
-
+import 'package:resvago_customer/widget/apptheme.dart';
+import '../widget/addsize.dart';
 import '../widget/common_text_field.dart';
 import '../widget/custom_textfield.dart';
 
 class ReviewAndRatingScreen extends StatefulWidget {
-  const ReviewAndRatingScreen({super.key});
-
+  ReviewAndRatingScreen({super.key, required this.orderId, required this.vendorId});
+  String? orderId;
+  String? vendorId;
   @override
   State<ReviewAndRatingScreen> createState() => _ReviewAndRatingScreenState();
 }
@@ -27,11 +30,23 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
   bool hygieneValue = false;
   TextEditingController aboutController = TextEditingController();
   String userName = '';
+  String profileImage = '';
+
+  void checkFirstore() async {
+    final result =
+    await  FirebaseFirestore.instance
+        .collection('Review').where('userID', isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber).get();
+
+    if (result.docs.isNotEmpty) {
+      Fluttertoast.showToast(msg: 'Review already added');
+      return;
+    }
+    Addreviewdatatofirebase();
+  }
+
   Addreviewdatatofirebase() {
     FirebaseFirestore.instance
         .collection('Review')
-    .doc()
-    .collection('TotalReviews')
         .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
         .set({
       "fullRating": fullRating,
@@ -40,30 +55,33 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
       "communicationValue": communicationValue,
       "hygieneValue": hygieneValue,
       "about": aboutController.text,
-      "time": DateTime.now(),
-      "userName":userName,
+      "time": DateTime.now().millisecondsSinceEpoch.toString(),
+      "userName": userName,
       "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
+      "vendorID": widget.vendorId,
+      "orderID": widget.orderId,
     }).then((value) {
-      Get.to(const HomePage());
-
-      Fluttertoast.showToast(msg: 'Review Updated');
+      Get.back();
+      Fluttertoast.showToast(msg: 'Review Added Successfully');
     });
   }
 
   Future<String> getUserName() async {
     try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('customer_users')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-          .get();
+      DocumentSnapshot userDoc =
+          await FirebaseFirestore.instance.collection('customer_users').doc(FirebaseAuth.instance.currentUser!.phoneNumber).get();
       if (userDoc.exists) {
+        userName = userDoc.get('userName');
         userName = userDoc.get('userName');
       }
     } catch (e) {
-      print('Error fetching user data: $e');
+      if (kDebugMode) {
+        print('Error fetching user data: $e');
+      }
     }
     return userName;
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -74,33 +92,14 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Get.back();
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(13.0),
-            child: SvgPicture.asset("assets/images/back.svg"),
-          ),
-        ),
-        elevation: 1,
-        title: Text(
-          "Review",
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
+      appBar: backAppBar(title: "Review", context: context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 height: 240,
                 width: Get.width,
                 decoration: const BoxDecoration(color: Colors.white),
@@ -116,11 +115,11 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                       height: 20,
                     ),
                     RatingBar.builder(
-                      initialRating: 4,
+                      initialRating: 0,
                       minRating: 1,
                       unratedColor: const Color(0xFF698EDE).withOpacity(.2),
                       itemCount: 5,
-                      itemSize: 40.0,
+                      itemSize: 30.0,
                       itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                       updateOnDrag: true,
                       itemBuilder: (context, index) => Image.asset(
@@ -141,9 +140,10 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Checkbox(
+                                  activeColor: AppTheme.primaryColor,
                                   value: foodQualityValue,
                                   onChanged: (value) {
                                     setState(() {
@@ -152,13 +152,11 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                   }),
                               const Text(
                                 'food quality',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 20),
+                                style: TextStyle(color: Colors.black, fontSize: 20),
                               ),
-                              const SizedBox(
-                                  width:
-                                      20), // Add some space between checkboxes
+                              const SizedBox(width: 20), // Add some space between checkboxes
                               Checkbox(
+                                  activeColor: AppTheme.primaryColor,
                                   value: foodQuantityValue,
                                   onChanged: (value) {
                                     setState(() {
@@ -167,15 +165,15 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                   }),
                               const Text(
                                 'food quantity',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 20),
+                                style: TextStyle(color: Colors.black, fontSize: 20),
                               ),
                             ],
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Checkbox(
+                                  activeColor: AppTheme.primaryColor,
                                   value: communicationValue,
                                   onChanged: (value) {
                                     setState(() {
@@ -184,13 +182,11 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                   }),
                               const Text(
                                 'communication',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 20),
+                                style: TextStyle(color: Colors.black, fontSize: 20),
                               ),
-                              const SizedBox(
-                                  width:
-                                      20), // Add some space between checkboxes
+                              const SizedBox(width: 20), // Add some space between checkboxes
                               Checkbox(
+                                  activeColor: AppTheme.primaryColor,
                                   value: hygieneValue,
                                   onChanged: (value) {
                                     setState(() {
@@ -199,8 +195,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                   }),
                               const Text(
                                 'hygiene',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 20),
+                                style: TextStyle(color: Colors.black, fontSize: 20),
                               ),
                             ],
                           ),
@@ -212,8 +207,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
               ),
               const SizedBox(height: 20),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 height: 300,
                 width: Get.width,
                 decoration: const BoxDecoration(color: Colors.white),
@@ -250,24 +244,18 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                           fontWeight: FontWeight.w300,
                         ),
                         filled: true,
-                        fillColor: Colors.grey.withOpacity(.10),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 18, vertical: 18),
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
                         // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.grey.withOpacity(.35)),
+                          borderSide: BorderSide(color: Colors.grey.withOpacity(.35)),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey.withOpacity(.35)),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10.0))),
+                            borderSide: BorderSide(color: Colors.grey.withOpacity(.35)),
+                            borderRadius: const BorderRadius.all(Radius.circular(10.0))),
                         border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.grey.withOpacity(.35),
-                                width: 3.0),
+                            borderSide: BorderSide(color: Colors.grey.withOpacity(.35), width: 3.0),
                             borderRadius: BorderRadius.circular(15.0)),
                       ),
                     ),
@@ -276,14 +264,31 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
               ),
               CommonButtonBlue(
                 onPressed: () {
-                  Addreviewdatatofirebase();
+                  checkFirstore();
                 },
                 title: 'FeedBack',
               ),
               const SizedBox(
                 height: 15,
               ),
-              const CommonButton(title: "FeedBack"),
+              ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    minimumSize: Size(AddSize.screenWidth, AddSize.size50),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(3),
+                        side: const BorderSide(
+                          color: Color(0xFF3B5998),
+                        )),
+                    textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                child: Text(
+                  "Leave a review",
+                  style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.primaryColor),
+                ),
+              ),
               const SizedBox(
                 height: 15,
               ),

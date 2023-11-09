@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:resvago_customer/model/dinig_order.dart';
 import 'package:resvago_customer/model/order_model.dart';
+import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import 'order_details_screen.dart';
@@ -41,6 +41,16 @@ class _MyOrderState extends State<MyOrder> {
     setState(() {});
   }
 
+  getDiningOrderList() {
+    FirebaseFirestore.instance
+        .collection("dining_order")
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get()
+        .then((value) {
+      log(jsonEncode(value.docs[1].data()));
+    });
+    setState(() {});
+  }
 
   Stream<List<MyOrderModel>> getActiveOrder() {
     return FirebaseFirestore.instance
@@ -66,7 +76,7 @@ class _MyOrderState extends State<MyOrder> {
     return FirebaseFirestore.instance
         .collection("order")
         .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
-        .where('order_status', isEqualTo: "Completed")
+        .where('order_status', isEqualTo: "Order Completed")
         .snapshots()
         .map((querySnapshot) {
       List<MyOrderModel> menuList = [];
@@ -86,7 +96,7 @@ class _MyOrderState extends State<MyOrder> {
     return FirebaseFirestore.instance
         .collection("order")
         .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
-        .where('order_status', isEqualTo: "Reject")
+        .where('order_status', isEqualTo: "Order Rejected")
         .snapshots()
         .map((querySnapshot) {
       List<MyOrderModel> menuList = [];
@@ -126,7 +136,7 @@ class _MyOrderState extends State<MyOrder> {
     return FirebaseFirestore.instance
         .collection("dining_order")
         .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
-        .where('order_status', isEqualTo: "Completed")
+        .where('order_status', isEqualTo: "Order Completed")
         .snapshots()
         .map((querySnapshot) {
       List<MyDiningOrderModel> menuList = [];
@@ -146,7 +156,7 @@ class _MyOrderState extends State<MyOrder> {
     return FirebaseFirestore.instance
         .collection("dining_order")
         .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
-        .where('order_status', isEqualTo: "Reject")
+        .where('order_status', isEqualTo: "Order Rejected")
         .snapshots()
         .map((querySnapshot) {
       List<MyDiningOrderModel> menuList = [];
@@ -166,6 +176,7 @@ class _MyOrderState extends State<MyOrder> {
   void initState() {
     super.initState();
     getOrderList();
+    getDiningOrderList();
     // getOrderList();
   }
 
@@ -266,24 +277,24 @@ class _MyOrderState extends State<MyOrder> {
                     child: Text(
                       "Active",
                       style: currentDrawer == 0
-                          ? GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500)
-                          : GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500),
+                          ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
+                          : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                   ),
                   Tab(
                     child: Text(
                       "Completed",
                       style: currentDrawer == 1
-                          ? GoogleFonts.poppins(color: Colors.cyan, fontSize: 16, fontWeight: FontWeight.w500)
-                          : GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500),
+                          ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
+                          : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                   ),
                   Tab(
                     child: Text(
                       "Cancelled",
                       style: currentDrawer == 1
-                          ? GoogleFonts.poppins(color: Colors.cyan, fontSize: 16, fontWeight: FontWeight.w500)
-                          : GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500),
+                          ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
+                          : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -311,7 +322,11 @@ class _MyOrderState extends State<MyOrder> {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
                                       onTap: () {
-                                        Get.to(() => OderDetailsScreen(myOrderDetails: orderItem, orderType: 'Delivery', orderId: orderItem.orderId,));
+                                        Get.to(() => OderDetailsScreen(
+                                              orderType: 'Delivery',
+                                              orderId: orderItem.orderId,
+                                              data: '',
+                                            ));
                                       },
                                       child: Container(
                                           margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
@@ -437,8 +452,7 @@ class _MyOrderState extends State<MyOrder> {
                                                               side: const BorderSide(
                                                                 color: Colors.red,
                                                               )),
-                                                          textStyle:
-                                                              const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
                                                         "Cancel Order",
                                                         style: GoogleFonts.poppins(
@@ -453,21 +467,22 @@ class _MyOrderState extends State<MyOrder> {
                                                     height: 28,
                                                     child: ElevatedButton(
                                                       onPressed: () {
-                                                        Get.to(() => OderDetailsScreen(myOrderDetails: orderItem, orderType: 'Delivery', orderId: '',));
+                                                        Get.to(() => OderDetailsScreen(
+                                                              orderType: 'Delivery',
+                                                              orderId: '',
+                                                              data: '',
+                                                            ));
                                                       },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: AppTheme.primaryColor,
                                                           shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(20),
-                                                              ),
-                                                          textStyle:
-                                                              const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                            borderRadius: BorderRadius.circular(20),
+                                                          ),
+                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
                                                         "See Details",
                                                         style: GoogleFonts.poppins(
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: Colors.white),
+                                                            fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                                                       ),
                                                     ),
                                                   ),
@@ -533,9 +548,16 @@ class _MyOrderState extends State<MyOrder> {
                                   itemCount: myOrder.length,
                                   itemBuilder: (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
-                                    return Column(children: [
-                                      Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => OderDetailsScreen(
+                                              orderType: 'Delivery',
+                                              orderId: orderItem.orderId,
+                                              data: '',
+                                            ));
+                                      },
+                                      child: Container(
+                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
                                           width: size.width,
                                           padding: const EdgeInsets.all(14),
                                           decoration: BoxDecoration(
@@ -582,34 +604,121 @@ class _MyOrderState extends State<MyOrder> {
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 15),
+                                                      child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              orderItem.orderDetails!.restaurantInfo!.restaurantName.toString(),
+                                                              style: GoogleFonts.poppins(
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight.w500,
+                                                                  color: const Color(0xFF1A2E33)),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 3,
+                                                            ),
+                                                            IntrinsicHeight(
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    "${orderItem.orderDetails!.menuList!.length} Items",
+                                                                    style: GoogleFonts.poppins(
+                                                                        fontSize: 12,
+                                                                        fontWeight: FontWeight.w300,
+                                                                        color: const Color(0xFF74848C)),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 5,
+                                                                  ),
+                                                                  const VerticalDivider(),
+                                                                  Text(
+                                                                    orderItem.orderType,
+                                                                    style: GoogleFonts.poppins(
+                                                                        fontSize: 12,
+                                                                        fontWeight: FontWeight.w300,
+                                                                        color: const Color(0xFF74848C)),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .06,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  "\$${orderItem.total}",
+                                                                  style: GoogleFonts.poppins(
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.w300,
+                                                                      color: const Color(0xFF3B5998)),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 10,
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 28,
+                                                                  child: ElevatedButton(
+                                                                    onPressed: () {},
+                                                                    style: ElevatedButton.styleFrom(
+                                                                        backgroundColor: const Color(0xff65CD90),
+                                                                        shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(20),
+                                                                        ),
+                                                                        textStyle: const TextStyle(
+                                                                            fontSize: 18, fontWeight: FontWeight.w500)),
+                                                                    child: Text(
+                                                                      orderItem.orderStatus.toString(),
+                                                                      style: GoogleFonts.poppins(
+                                                                          fontSize: 12,
+                                                                          fontWeight: FontWeight.w500,
+                                                                          color: Colors.white),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ]),
+                                                    )
                                                   ]),
                                               const Divider(
-                                                height: 40,
+                                                height: 20,
                                                 color: Color(0xffE8E8E8),
                                                 thickness: 1,
                                               ),
                                               Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
                                                   SizedBox(
-                                                    // width: size.width,
                                                     height: 28,
-
                                                     child: ElevatedButton(
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        Get.to(() => ReviewAndRatingScreen(
+                                                              orderId: orderItem.orderId,
+                                                              vendorId: orderItem.vendorId,
+                                                            ));
+                                                      },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: Colors.white,
                                                           shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(3),
+                                                              borderRadius: BorderRadius.circular(20),
                                                               side: const BorderSide(
-                                                                color: Color(0xFF3B5998),
+                                                                color: Color(0xffFAAF40),
                                                               )),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
-                                                        "Leave a review",
+                                                        "Leave Review",
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12,
                                                             fontWeight: FontWeight.w500,
-                                                            color: AppTheme.primaryColor),
+                                                            color: const Color(0xffFAAF40)),
                                                       ),
                                                     ),
                                                   ),
@@ -617,35 +726,33 @@ class _MyOrderState extends State<MyOrder> {
                                                     width: 20,
                                                   ),
                                                   SizedBox(
-                                                    // width: size.width,
                                                     height: 28,
-
                                                     child: ElevatedButton(
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        // Get.to(() => OderDetailsScreen(
+                                                        //   myOrderDetails: orderItem,
+                                                        //   orderType: 'Delivery',
+                                                        //   orderId: '',
+                                                        // ));
+                                                      },
                                                       style: ElevatedButton.styleFrom(
-                                                          backgroundColor: const Color(0xFF3B5998),
+                                                          backgroundColor: AppTheme.primaryColor,
                                                           shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(3),
-                                                              side: const BorderSide(
-                                                                width: 2.0,
-                                                                color: Color(0xFF3B5998),
-                                                              )),
+                                                            borderRadius: BorderRadius.circular(20),
+                                                          ),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
                                                         "Order Again",
                                                         style: GoogleFonts.poppins(
-                                                          fontSize: 12,
-                                                          fontWeight: FontWeight.w500,
-                                                          color: Colors.white,
-                                                        ),
+                                                            fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                                                       ),
                                                     ),
                                                   ),
                                                 ],
                                               ),
                                             ],
-                                          ))
-                                    ]);
+                                          )),
+                                    );
                                   })
                               : Column(
                                   children: [
@@ -701,11 +808,18 @@ class _MyOrderState extends State<MyOrder> {
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: myOrder.length,
-                                  itemBuilder: (context, index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
-                                    return Column(children: [
-                                      Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => OderDetailsScreen(
+                                              orderType: 'Delivery',
+                                              orderId: orderItem.orderId,
+                                              data: '',
+                                            ));
+                                      },
+                                      child: Container(
+                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
                                           width: size.width,
                                           padding: const EdgeInsets.all(14),
                                           decoration: BoxDecoration(
@@ -743,10 +857,14 @@ class _MyOrderState extends State<MyOrder> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Image.asset(
-                                                      'assets/images/bowl pasta.png',
-                                                      height: 70,
-                                                      width: 70,
+                                                    ClipRRect(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      child: Image.network(
+                                                        orderItem.orderDetails!.restaurantInfo!.image,
+                                                        height: 70,
+                                                        width: 70,
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only(left: 15),
@@ -755,7 +873,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Text(
-                                                              "Golden Kitchen",
+                                                              orderItem.orderDetails!.restaurantInfo!.restaurantName.toString(),
                                                               style: GoogleFonts.poppins(
                                                                   fontSize: 16,
                                                                   fontWeight: FontWeight.w500,
@@ -764,12 +882,78 @@ class _MyOrderState extends State<MyOrder> {
                                                             const SizedBox(
                                                               height: 3,
                                                             ),
+                                                            IntrinsicHeight(
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    "${orderItem.orderDetails!.menuList!.length} Items",
+                                                                    style: GoogleFonts.poppins(
+                                                                        fontSize: 12,
+                                                                        fontWeight: FontWeight.w300,
+                                                                        color: const Color(0xFF74848C)),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 5,
+                                                                  ),
+                                                                  const VerticalDivider(),
+                                                                  Text(
+                                                                    orderItem.orderType,
+                                                                    style: GoogleFonts.poppins(
+                                                                        fontSize: 12,
+                                                                        fontWeight: FontWeight.w300,
+                                                                        color: const Color(0xFF74848C)),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .06,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  "\$${orderItem.total}",
+                                                                  style: GoogleFonts.poppins(
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.w300,
+                                                                      color: const Color(0xFF3B5998)),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 10,
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 28,
+                                                                  child: ElevatedButton(
+                                                                    onPressed: () {},
+                                                                    style: ElevatedButton.styleFrom(
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius: BorderRadius.circular(20),
+                                                                            side: const BorderSide(
+                                                                              color: Colors.red,
+                                                                            )),
+                                                                        textStyle: const TextStyle(
+                                                                            fontSize: 18, fontWeight: FontWeight.w500)),
+                                                                    child: Text(
+                                                                      "Cancelled",
+                                                                      style: GoogleFonts.poppins(
+                                                                          fontSize: 12,
+                                                                          fontWeight: FontWeight.w500,
+                                                                          color: Colors.red),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ]),
                                                     )
                                                   ]),
                                             ],
-                                          ))
-                                    ]);
+                                          )),
+                                    );
                                   })
                               : Column(
                                   children: [
@@ -831,7 +1015,11 @@ class _MyOrderState extends State<MyOrder> {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
                                       onTap: () {
-                                        Get.to(() => OderDetailsScreen(myDiningOrderDetails: orderItem, orderType: 'Dining', orderId: orderItem.orderId,));
+                                        Get.to(() => OderDetailsScreen(
+                                              orderType: 'Dining',
+                                              orderId: orderItem.orderId,
+                                              data: '',
+                                            ));
                                       },
                                       child: Container(
                                           margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
@@ -883,124 +1071,129 @@ class _MyOrderState extends State<MyOrder> {
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 15),
-                                                      child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(
-                                                              orderItem.restaurantInfo!.restaurantName.toString(),
-                                                              style: GoogleFonts.poppins(
-                                                                  fontSize: 16,
-                                                                  fontWeight: FontWeight.w500,
-                                                                  color: const Color(0xFF1A2E33)),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 3,
-                                                            ),
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Date",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(left: 10),
+                                                        child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                orderItem.restaurantInfo!.restaurantName.toString(),
+                                                                style: GoogleFonts.poppins(
+                                                                    fontSize: 16,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    color: const Color(0xFF1A2E33)),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 3,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Date",
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w300,
+                                                                            color: const Color(0xFF74848C)),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        DateFormat("dd-MMM-yyyy")
+                                                                            .format(DateTime.parse(orderItem.date.toString())),
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: const Color(0xFF384953)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .04,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Text(
+                                                                          "Time",
+                                                                          style: GoogleFonts.poppins(
+                                                                              fontSize: 11,
+                                                                              fontWeight: FontWeight.w300,
+                                                                              color: const Color(0xFF74848C)),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height: 5,
+                                                                        ),
+                                                                        Text(
+                                                                          orderItem.slot,
+                                                                          style: GoogleFonts.poppins(
+                                                                              fontSize: 11,
+                                                                              fontWeight: FontWeight.w500,
+                                                                              color: const Color(0xFF384953)),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      DateFormat("dd-MMM-yyyy").format(DateTime.parse(orderItem.date.toString())),
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: size.width * .06,
-                                                                ),
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Time",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      orderItem.slot,
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: size.width * .06,
-                                                                ),
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Guest",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      orderItem.guest.toString(),
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: size.width * .06,
-                                                                ),
-                                                                Column(
-                                                                  children: [
-                                                                    Text(
-                                                                      "offer",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      orderItem.offer,
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ]),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .02,
+                                                                  ),
+                                                                  Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Guest",
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w300,
+                                                                            color: const Color(0xFF74848C)),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        orderItem.guest.toString(),
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: const Color(0xFF384953)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .02,
+                                                                  ),
+                                                                  Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        "offer",
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w300,
+                                                                            color: const Color(0xFF74848C)),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        orderItem.offer,
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: const Color(0xFF384953)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ]),
+                                                      ),
                                                     )
                                                   ]),
                                               const Divider(
@@ -1022,8 +1215,7 @@ class _MyOrderState extends State<MyOrder> {
                                                               side: const BorderSide(
                                                                 color: Color(0xFF3B5998),
                                                               )),
-                                                          textStyle:
-                                                              const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
                                                         "Cancel Order",
                                                         style: GoogleFonts.poppins(
@@ -1144,124 +1336,129 @@ class _MyOrderState extends State<MyOrder> {
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 15),
-                                                      child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(
-                                                              orderItem.restaurantInfo!.restaurantName,
-                                                              style: GoogleFonts.poppins(
-                                                                  fontSize: 16,
-                                                                  fontWeight: FontWeight.w500,
-                                                                  color: const Color(0xFF1A2E33)),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 3,
-                                                            ),
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Date",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(left: 10),
+                                                        child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                orderItem.restaurantInfo!.restaurantName.toString(),
+                                                                style: GoogleFonts.poppins(
+                                                                    fontSize: 16,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    color: const Color(0xFF1A2E33)),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 3,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Date",
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w300,
+                                                                            color: const Color(0xFF74848C)),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        DateFormat("dd-MMM-yyyy")
+                                                                            .format(DateTime.parse(orderItem.date.toString())),
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: const Color(0xFF384953)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .04,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Text(
+                                                                          "Time",
+                                                                          style: GoogleFonts.poppins(
+                                                                              fontSize: 11,
+                                                                              fontWeight: FontWeight.w300,
+                                                                              color: const Color(0xFF74848C)),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height: 5,
+                                                                        ),
+                                                                        Text(
+                                                                          orderItem.slot,
+                                                                          style: GoogleFonts.poppins(
+                                                                              fontSize: 11,
+                                                                              fontWeight: FontWeight.w500,
+                                                                              color: const Color(0xFF384953)),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      "24 Oct 23",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: size.width * .06,
-                                                                ),
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Time",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      "6:30PM",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: size.width * .06,
-                                                                ),
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Guest",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      "12",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: size.width * .06,
-                                                                ),
-                                                                Column(
-                                                                  children: [
-                                                                    Text(
-                                                                      "offer",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      "-20%",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ]),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .02,
+                                                                  ),
+                                                                  Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Guest",
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w300,
+                                                                            color: const Color(0xFF74848C)),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        orderItem.guest.toString(),
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: const Color(0xFF384953)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .02,
+                                                                  ),
+                                                                  Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        "offer",
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w300,
+                                                                            color: const Color(0xFF74848C)),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        orderItem.offer,
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: const Color(0xFF384953)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ]),
+                                                      ),
                                                     )
                                                   ]),
                                               const Divider(
@@ -1276,7 +1473,12 @@ class _MyOrderState extends State<MyOrder> {
                                                     height: 28,
 
                                                     child: ElevatedButton(
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        Get.to(() => ReviewAndRatingScreen(
+                                                              orderId: orderItem.orderId,
+                                                              vendorId: orderItem.vendorId,
+                                                            ));
+                                                      },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: Colors.white,
                                                           shape: RoundedRectangleBorder(
@@ -1382,11 +1584,18 @@ class _MyOrderState extends State<MyOrder> {
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: myOrder.length,
-                                  itemBuilder: (context, index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
-                                    return Column(children: [
-                                      Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => OderDetailsScreen(
+                                              orderType: 'Dining',
+                                              orderId: orderItem.orderId,
+                                              data: '',
+                                            ));
+                                      },
+                                      child: Container(
+                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
                                           width: size.width,
                                           padding: const EdgeInsets.all(14),
                                           decoration: BoxDecoration(
@@ -1404,11 +1613,13 @@ class _MyOrderState extends State<MyOrder> {
                                                 ),
                                               ]),
                                           child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             crossAxisAlignment: CrossAxisAlignment.end,
                                             children: [
                                               Container(
                                                 height: 25,
                                                 width: 25,
+                                                margin: EdgeInsets.zero,
                                                 decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(5),
                                                     color: Colors.white,
@@ -1424,134 +1635,143 @@ class _MyOrderState extends State<MyOrder> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Image.asset(
-                                                      'assets/images/bowl pasta.png',
-                                                      height: 70,
-                                                      width: 70,
+                                                    ClipRRect(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      child: Image.network(
+                                                        orderItem.restaurantInfo!.image,
+                                                        height: 70,
+                                                        width: 70,
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                     ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 15),
-                                                      child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(
-                                                              "Golden Kitchen",
-                                                              style: GoogleFonts.poppins(
-                                                                  fontSize: 16,
-                                                                  fontWeight: FontWeight.w500,
-                                                                  color: const Color(0xFF1A2E33)),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 3,
-                                                            ),
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Date",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(left: 10),
+                                                        child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                orderItem.restaurantInfo!.restaurantName.toString(),
+                                                                style: GoogleFonts.poppins(
+                                                                    fontSize: 16,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    color: const Color(0xFF1A2E33)),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 3,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Date",
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w300,
+                                                                            color: const Color(0xFF74848C)),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        DateFormat("dd-MMM-yyyy")
+                                                                            .format(DateTime.parse(orderItem.date.toString())),
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: const Color(0xFF384953)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .04,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Text(
+                                                                          "Time",
+                                                                          style: GoogleFonts.poppins(
+                                                                              fontSize: 11,
+                                                                              fontWeight: FontWeight.w300,
+                                                                              color: const Color(0xFF74848C)),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height: 5,
+                                                                        ),
+                                                                        Text(
+                                                                          orderItem.slot,
+                                                                          style: GoogleFonts.poppins(
+                                                                              fontSize: 11,
+                                                                              fontWeight: FontWeight.w500,
+                                                                              color: const Color(0xFF384953)),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      "24 Oct 23",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: size.width * .06,
-                                                                ),
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Time",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      "6:30PM",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: size.width * .06,
-                                                                ),
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Guest",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      "12",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: size.width * .06,
-                                                                ),
-                                                                Column(
-                                                                  children: [
-                                                                    Text(
-                                                                      "offer",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: const Color(0xFF74848C)),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      "-20%",
-                                                                      style: GoogleFonts.poppins(
-                                                                          fontSize: 11,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: const Color(0xFF384953)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ]),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .02,
+                                                                  ),
+                                                                  Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Guest",
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w300,
+                                                                            color: const Color(0xFF74848C)),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        orderItem.guest.toString(),
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: const Color(0xFF384953)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: size.width * .02,
+                                                                  ),
+                                                                  Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        "offer",
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w300,
+                                                                            color: const Color(0xFF74848C)),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        orderItem.offer,
+                                                                        style: GoogleFonts.poppins(
+                                                                            fontSize: 11,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: const Color(0xFF384953)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ]),
+                                                      ),
                                                     )
                                                   ]),
                                             ],
-                                          ))
-                                    ]);
+                                          )),
+                                    );
                                   })
                               : Column(
                                   children: [

@@ -9,7 +9,7 @@ import '../../widget/apptheme.dart';
 import '../order/order_details_screen.dart';
 
 class ThankuScreen extends StatefulWidget {
-   ThankuScreen({super.key,this.date,this.orderType,this.guestNo,this.orderId});
+  ThankuScreen({super.key, this.date, this.orderType, this.guestNo, this.orderId});
   String? date;
   String? orderType;
   int? guestNo;
@@ -18,8 +18,8 @@ class ThankuScreen extends StatefulWidget {
   @override
   State<ThankuScreen> createState() => _ThankuScreenState();
 }
-class _ThankuScreenState extends State<ThankuScreen> {
 
+class _ThankuScreenState extends State<ThankuScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -35,7 +35,12 @@ class _ThankuScreenState extends State<ThankuScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.offAll(()=>OderDetailsScreen(orderId: widget.orderId,orderType: widget.orderType));
+                    log(widget.orderId.toString());
+                    Get.offAll(() => OderDetailsScreen(
+                          orderId: widget.orderId.toString(),
+                          orderType: widget.orderType,
+                          data: 'Data',
+                        ));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -100,31 +105,36 @@ class _ThankuScreenState extends State<ThankuScreen> {
                       // color: Color()
                       ),
                   child: Center(
-                      child: widget.orderType == "Dining" ? Row(
-                        children: [
-                          Text(widget.guestNo.toString(),
+                    child: widget.orderType == "Dining"
+                        ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("${widget.guestNo.toString()} Guest, ",
+                                style: GoogleFonts.poppins(
+                                    color: const Color(
+                                      0xffFAAF40,
+                                    ),
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                DateFormat("MMM-dd-yyyy").format(DateTime.parse(widget.date.toString())),
+                                style: GoogleFonts.poppins(
+                                    color: const Color(
+                                      0xffFAAF40,
+                                    ),
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            "Your OrderId: #${widget.orderId.toString()}",
                             style: GoogleFonts.poppins(
                                 color: const Color(
                                   0xffFAAF40,
                                 ),
                                 fontWeight: FontWeight.w500),
                           ),
-                          Text(
-                            DateFormat("dd-MMM-yyyy").format(DateTime.parse(widget.date.toString())),
-                            style: GoogleFonts.poppins(
-                                color: const Color(
-                                  0xffFAAF40,
-                                ),
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ],
-                      ): Text("Your OrderId: #${widget.orderId.toString()}",
-                        style: GoogleFonts.poppins(
-                            color: const Color(
-                              0xffFAAF40,
-                            ),
-                            fontWeight: FontWeight.w500),
-                      ),),
+                  ),
                 ),
               ],
             ),

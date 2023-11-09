@@ -11,6 +11,7 @@ import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/widget/apptheme.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/menu_model.dart';
+import '../../model/profile_model.dart';
 import '../../model/resturant_model.dart';
 import '../../widget/common_text_field.dart';
 import '../helper.dart';
@@ -43,6 +44,20 @@ class _OderScreenState extends State<OderScreen> {
   }
 
   FirebaseService firebaseService = FirebaseService();
+  ProfileData? profileData;
+  void fetchdata() {
+    FirebaseFirestore.instance
+        .collection("customer_users")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        if (value.data() == null) return;
+        profileData = ProfileData.fromJson(value.data()!);
+        setState(() {});
+      }
+    });
+  }
 
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
@@ -56,6 +71,7 @@ class _OderScreenState extends State<OderScreen> {
               lunchSelected: widget.lunchSelected,
               menuList: menuListData!.where((e) => e.qty > 0).map((e) => e.toMap()).toList(),
               restaurantInfo: restaurantData!.toJson(),
+              profileData: profileData!.toJson(),
               vendorId: vendorId,
               time: gg,
               fcm: fcm,
@@ -78,6 +94,7 @@ class _OderScreenState extends State<OderScreen> {
   void initState() {
     super.initState();
     getTotalPrice();
+    fetchdata();
   }
 
   @override
@@ -640,16 +657,16 @@ class _OderScreenState extends State<OderScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           order(restaurantData!.docid).then((value) {
-                            // FirebaseFirestore.instance
-                            //     .collection("checkOut")
-                            //     .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-                            //     .delete();
-                            // Get.offAll(ThankuScreen(
-                            //   date: widget.date.toString(),
-                            //   guestNo: widget.guest,
-                            //   orderType: "Dining",
-                            //   orderId: DateTime.now().millisecondsSinceEpoch.toString(),
-                            // ));
+                            FirebaseFirestore.instance
+                                .collection("checkOut")
+                                .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                                .delete();
+                            Get.offAll(ThankuScreen(
+                              date: widget.date.toString(),
+                              guestNo: widget.guest,
+                              orderType: "Dining",
+                              orderId: value.toString(),
+                            ));
                           });
                         },
                         style: ElevatedButton.styleFrom(

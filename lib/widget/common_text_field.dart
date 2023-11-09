@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/screen/homepage.dart';
 import 'addsize.dart';
 import 'appassets.dart';
 import 'apptheme.dart';
@@ -166,6 +167,9 @@ AppBar backAppBar(
       padding: EdgeInsets.only(left: AddSize.padding10),
       child: GestureDetector(
           onTap: () {
+            if(dispose == 'Data'){
+              Get.offAll(const HomePage());
+            }
             Get.back();
           },
           child: icon ??

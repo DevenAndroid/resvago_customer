@@ -1,55 +1,56 @@
-class SettingModel {
+class ReviewModel {
+  dynamic hygieneValue;
+  dynamic orderID;
   dynamic fullRating;
   dynamic about;
-  bool? foodQualityValue;
-  bool? foodQuantityValue;
-  bool? communicationValue;
-  bool? hygieneValue;
-  dynamic docid;
+  dynamic vendorID;
+  dynamic foodQualityValue;
   dynamic time;
-  dynamic userID;
+  dynamic foodQuantityValue;
   dynamic userName;
+  dynamic userID;
+  dynamic communicationValue;
 
-  SettingModel({
-    this.fullRating,
-    this.foodQualityValue,
-    this.foodQuantityValue,
-    this.communicationValue,
-    this.docid,
-    this.hygieneValue,
-    this.about,
-    this.time,
-    this.userID,
-    this.userName
-  });
+  ReviewModel(
+      {this.hygieneValue,
+        this.orderID,
+        this.fullRating,
+        this.about,
+        this.vendorID,
+        this.foodQualityValue,
+        this.time,
+        this.foodQuantityValue,
+        this.userName,
+        this.userID,
+        this.communicationValue});
 
-  Map<String, dynamic> toMap() {
-    return {
-      "fullRating": fullRating,
-      "foodQualityValue": foodQualityValue,
-      "foodQuantityValue": foodQuantityValue,
-      "communicationValue": communicationValue,
-      "hygieneValue": hygieneValue,
-      "docid": docid,
-      "about": about,
-      "time": time,
-      "userID": userID,
-      "userName": userName,
-    };
+  ReviewModel.fromJson(Map<String, dynamic> json) {
+    hygieneValue = json['hygieneValue'];
+    orderID = json['orderID'];
+    fullRating = json['fullRating'];
+    about = json['about'];
+    vendorID = json['vendorID'];
+    foodQualityValue = json['foodQualityValue'];
+    time = json['time'];
+    foodQuantityValue = json['foodQuantityValue'];
+    userName = json['userName'];
+    userID = json['userID'];
+    communicationValue = json['communicationValue'];
   }
 
-  factory SettingModel.fromMap(Map<String, dynamic> map, String menuId) {
-    return SettingModel(
-      fullRating: map['fullRating'],
-      foodQualityValue: map['foodQualityValue'],
-      foodQuantityValue: map['foodQuantityValue'],
-      communicationValue: map['communicationValue'],
-      docid: map['docid'],
-      hygieneValue: map['hygieneValue'],
-      about: map['about'],
-      time: map['time'],
-      userID: map['userID'],
-      userName: map['userName'],
-    );
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['hygieneValue'] = hygieneValue;
+    data['orderID'] = orderID;
+    data['fullRating'] = fullRating;
+    data['about'] = about;
+    data['vendorID'] = vendorID;
+    data['foodQualityValue'] = foodQualityValue;
+    data['time'] = time;
+    data['foodQuantityValue'] = foodQuantityValue;
+    data['userName'] = userName;
+    data['userID'] = userID;
+    data['communicationValue'] = communicationValue;
+    return data;
   }
 }

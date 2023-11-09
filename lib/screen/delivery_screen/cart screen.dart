@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/model/profile_model.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
@@ -70,10 +71,25 @@ class _CartScreenState extends State<CartScreen> {
     super.initState();
     getCheckOutData();
     getTotalPrice();
+    fetchdata();
   }
 
   CouponData? couponData;
   AddressModel? addressData;
+  ProfileData? profileData;
+  void fetchdata() {
+    FirebaseFirestore.instance
+        .collection("customer_users")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        if (value.data() == null) return;
+        profileData = ProfileData.fromJson(value.data()!);
+        setState(() {});
+      }
+    });
+  }
 
   FirebaseService firebaseService = FirebaseService();
   Future<int> order(String vendorId) async {
@@ -84,6 +100,7 @@ class _CartScreenState extends State<CartScreen> {
     try {
       await firebaseService
           .manageOrder(
+              profileData: profileData!.toJson(),
               orderId: gg.toString(),
               restaurantInfo: cartModel.toJson(),
               vendorId: vendorId,
@@ -102,6 +119,8 @@ class _CartScreenState extends State<CartScreen> {
       throw Exception(e);
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -677,7 +696,7 @@ class _CartScreenState extends State<CartScreen> {
                                   .collection("checkOut")
                                   .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                                   .delete();
-                              Get.offAll(ThankuScreen(orderType: "Delivery",orderId: DateTime.now().millisecondsSinceEpoch.toString(),));
+                              Get.offAll(ThankuScreen(orderType: "Delivery",orderId: value.toString()));
                             });
                           }
                         },

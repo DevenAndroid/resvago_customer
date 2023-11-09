@@ -86,6 +86,7 @@ class FirebaseService {
         dynamic couponDiscount,
         dynamic total,
         required Map<String, dynamic> restaurantInfo,
+        required Map<String, dynamic> profileData,
         dynamic time}) async {
     try {
       await FirebaseFirestore.instance.collection('order').add({
@@ -93,6 +94,7 @@ class FirebaseService {
         "userId": FirebaseAuth.instance.currentUser!.phoneNumber,
         "vendorId": vendorId,
         "order_details": restaurantInfo,
+        "user_data": profileData,
         "address":address,
         "couponDiscount":couponDiscount,
         "time": time,
@@ -121,6 +123,7 @@ class FirebaseService {
         dynamic total,
         dynamic couponDiscount,
         required Map<String, dynamic> restaurantInfo,
+        required Map<String, dynamic> profileData,
         required List<dynamic> menuList,
         dynamic time}) async {
     try {
@@ -169,6 +172,7 @@ class FirebaseService {
         "userId": FirebaseAuth.instance.currentUser!.phoneNumber,
         "vendorId": vendorId,
         "restaurantInfo": restaurantInfo,
+        "user_data": profileData,
         "menuList": menuList,
         "time": time,
         "date":date.toString(),

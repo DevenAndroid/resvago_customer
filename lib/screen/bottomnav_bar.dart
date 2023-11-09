@@ -14,6 +14,7 @@ import '../controller/bottomnavbar_controller.dart';
 import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
 import 'delivery_screen/delivery_restaurnt_screen.dart';
+import 'order/myorder_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({Key? key}) : super(key: key);
@@ -28,7 +29,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   final pages = [
     const HomePage(),
     const DeliveryPage(),
-    const ProfileScreen(),
+    const MyOrder(),
     const ProfileScreen(),
   ];
 
