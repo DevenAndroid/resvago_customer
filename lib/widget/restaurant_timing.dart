@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../model/coupon_modal.dart';
 import '../model/model_store_timing.dart';
+import '../model/review_model.dart';
 import '../screen/single_store_screens/timimg_list.dart';
 
 class RestaurantTimingScreen extends StatefulWidget {
@@ -98,6 +99,70 @@ class _MaxDiscountScreenState extends State<MaxDiscountScreen> {
           );
         }
         return const SizedBox();
+      },
+    );
+  }
+}
+
+
+class MaxRatingScreen extends StatefulWidget {
+  const MaxRatingScreen({super.key, required this.docId});
+  final String docId;
+
+  @override
+  State<MaxRatingScreen> createState() => _MaxRatingScreenState();
+}
+
+class _MaxRatingScreenState extends State<MaxRatingScreen> {
+
+  @override
+  Widget build(BuildContext context) {
+    if (kDebugMode) {
+      print("ffgghdfh"+widget.docId);
+    }
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection("Review").where("vendorID", isEqualTo: widget.docId).orderBy("fullRating",descending: true).limit(1).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        if(snapshot.hasData){
+          if(snapshot.data == null){
+            return const SizedBox();
+          }
+          log(snapshot.data!.docs.map((e) => e.data()).toList().toString());
+          if(snapshot.data!.docs.isEmpty){
+            return const SizedBox.shrink();
+          }
+          ReviewModel ratingData = ReviewModel.fromJson(snapshot.data!.docs.first.data());
+          return Row(
+            children: [
+              const SizedBox(width: 5),
+              const Icon(
+                Icons.star,
+                color: Color(0xff2C4D61),
+                size: 17,
+              ),
+              Text(
+                " ${ratingData.fullRating}",
+                style: GoogleFonts.ibmPlexSansArabic(
+                    fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
+              ),
+            ],
+          );
+        }
+        return Row(
+          children: [
+            const SizedBox(width: 5),
+            const Icon(
+              Icons.star,
+              color:Colors.amber,
+              size: 17,
+            ),
+            Text(
+              " 0.0",
+              style: GoogleFonts.ibmPlexSansArabic(
+                  fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
+            ),
+          ],
+        );
       },
     );
   }

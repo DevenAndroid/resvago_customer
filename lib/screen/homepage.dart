@@ -763,16 +763,7 @@ class _HomePageState extends State<HomePage> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          const Icon(
-                                            Icons.star,
-                                            color: Color(0xff2C4D61),
-                                            size: 17,
-                                          ),
-                                          Text(
-                                            "4.4",
-                                            style: GoogleFonts.ibmPlexSansArabic(
-                                                fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
-                                          ),
+                                          MaxRatingScreen(docId: restaurantListItem.docid,)
                                         ],
                                       ),
                                     ),
@@ -966,16 +957,7 @@ class _HomePageState extends State<HomePage> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          const Icon(
-                                            Icons.star,
-                                            color: Color(0xff2C4D61),
-                                            size: 17,
-                                          ),
-                                          Text(
-                                            "4.4",
-                                            style: GoogleFonts.ibmPlexSansArabic(
-                                                fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
-                                          ),
+                                          MaxRatingScreen(docId: restaurantListItem.docid,)
                                         ],
                                       ),
                                     ),
