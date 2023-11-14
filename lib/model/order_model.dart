@@ -10,6 +10,7 @@ class MyOrderModel {
   dynamic total;
   OrderDetails? orderDetails;
   dynamic orderType;
+  CustomerData? customerData;
 
   MyOrderModel(
       {this.couponDiscount,
@@ -22,6 +23,7 @@ class MyOrderModel {
       this.userId,
       this.orderDetails,
       this.total,
+      this.customerData,
       this.orderType});
 
   MyOrderModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class MyOrderModel {
     userId = json['userId'];
     total = json['total'];
     orderDetails = json['order_details'] != null ? OrderDetails.fromJson(json['order_details']) : null;
+    customerData = json['user_data'] != null ? CustomerData.fromJson(json['user_data']) : null;
     orderType = json['order_type'];
   }
 
@@ -52,7 +55,45 @@ class MyOrderModel {
     if (orderDetails != null) {
       data['order_details'] = orderDetails!.toJson();
     }
+    if (customerData != null) {
+      data['user_data'] = customerData!.toJson();
+    }
     data['order_type'] = orderType;
+    return data;
+  }
+}
+
+class CustomerData {
+  dynamic userName;
+  dynamic userId;
+  dynamic docid;
+  dynamic mobileNumber;
+  dynamic email;
+
+
+  CustomerData(
+      {this.userId,
+        this.userName,
+        this.email,
+        this.mobileNumber,
+        this.docid,
+      });
+
+  CustomerData.fromJson(Map<String, dynamic> json) {
+    userId = json['userId'];
+    userName = json['userName'];
+    docid = json['docid'];
+    email = json['email'];
+    mobileNumber = json['mobileNumber'];
+
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['userId'] = userId;
+    data['userName'] = userName;
+    data['docid'] = docid;
+    data['email'] = email;
     return data;
   }
 }

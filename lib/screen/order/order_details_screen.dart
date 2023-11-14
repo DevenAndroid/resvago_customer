@@ -18,6 +18,7 @@ class OderDetailsScreen extends StatefulWidget {
   @override
   State<OderDetailsScreen> createState() => _OderDetailsScreenState();
 }
+
 class _OderDetailsScreenState extends State<OderDetailsScreen> {
   // MyOrderModel? get orderDetailsData => widget.myOrderDetails;
   // MyDiningOrderModel? get myDiningOrderDetails => widget.myDiningOrderDetails;
@@ -68,6 +69,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
     getDeliveryOrderData();
     getDiningOrderData();
   }
+
   _makingPhoneCall(call) async {
     var url = Uri.parse(call);
     if (await canLaunchUrl(url)) {
@@ -76,12 +78,22 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
       throw 'Could not launch $url';
     }
   }
+
+  Future<void> openMap(double latitude, double longitude) async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     log(widget.orderId.toString());
     return Scaffold(
-      appBar: backAppBar(title: "Orders Details", context: context,dispose: widget.data!),
+      appBar: backAppBar(title: "Orders Details", context: context, dispose: widget.data!),
       body: widget.orderType == "Delivery" && myOrderModel.orderDetails != null
           ? SingleChildScrollView(
               child: Column(
@@ -277,31 +289,38 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                 const SizedBox(
                                                   width: 15,
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(top: 8.0),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        menuData.dishName,
-                                                        style: GoogleFonts.poppins(
-                                                            color: const Color(0xFF1A2E33),
-                                                            fontWeight: FontWeight.w600,
-                                                            fontSize: 15),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 6,
-                                                      ),
-                                                      Text(
-                                                        "\$${menuData.price}",
-                                                        style: GoogleFonts.poppins(
-                                                            color: const Color(0xFF384953),
-                                                            fontWeight: FontWeight.w300,
-                                                            fontSize: 15),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      menuData.dishName,
+                                                      style: GoogleFonts.poppins(
+                                                          color: const Color(0xFF1A2E33),
+                                                          fontWeight: FontWeight.w600,
+                                                          fontSize: 15),
+                                                    ),
+                                                    const SizedBox(height: 3),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          "Qty: ${menuData.qty}",
+                                                          style: GoogleFonts.poppins(
+                                                              fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xFF3B5998)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      "\$${menuData.price}",
+                                                      style: GoogleFonts.poppins(
+                                                          color: const Color(0xFF384953),
+                                                          fontWeight: FontWeight.w300,
+                                                          fontSize: 15),
+                                                    ),
+                                                  ],
                                                 )
                                               ],
                                             ),
@@ -412,10 +431,9 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                       ),
                                     ),
                                     GestureDetector(
-                                      onTap: (){
+                                      onTap: () {
                                         _makingPhoneCall(
-                                            "tel:+91${ myOrderModel.orderDetails!.restaurantInfo!.mobileNumber ?? ""}"
-                                                .toString());
+                                            "tel:+91${myOrderModel.orderDetails!.restaurantInfo!.mobileNumber ?? ""}".toString());
                                       },
                                       child: Image.asset(
                                         AppAssets.call,
@@ -457,9 +475,18 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                         ],
                                       ),
                                     ),
-                                    Image.asset(
-                                      AppAssets.contact,
-                                      height: 40,
+                                    GestureDetector(
+                                      onTap: () {
+                                        openMap(
+                                            double.parse(
+                                                (myOrderModel.orderDetails!.restaurantInfo!.latitude ?? "0.0").toString()),
+                                            double.parse(
+                                                (myOrderModel.orderDetails!.restaurantInfo!.longitude ?? "0.0").toString()));
+                                      },
+                                      child: Image.asset(
+                                        AppAssets.contact,
+                                        height: 40,
+                                      ),
                                     )
                                   ],
                                 ),

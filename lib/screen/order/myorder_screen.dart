@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -10,9 +11,13 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:resvago_customer/model/dinig_order.dart';
 import 'package:resvago_customer/model/order_model.dart';
+import 'package:resvago_customer/screen/delivery_screen/cart%20screen.dart';
 import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/widget/appassets.dart';
+import '../../firebase_service/firebase_service.dart';
+import '../../model/menu_model.dart';
 import '../../widget/apptheme.dart';
+import '../helper.dart';
 import 'order_details_screen.dart';
 
 class MyOrder extends StatefulWidget {
@@ -40,14 +45,14 @@ class _MyOrderState extends State<MyOrder> {
     });
     setState(() {});
   }
-
+  List<MyDiningOrderModel>? myDiningOrder;
   getDiningOrderList() {
     FirebaseFirestore.instance
         .collection("dining_order")
         .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
         .get()
         .then((value) {
-      log(jsonEncode(value.docs[1].data()));
+      log(jsonEncode(value.docs.first.data()));
     });
     setState(() {});
   }
@@ -80,6 +85,7 @@ class _MyOrderState extends State<MyOrder> {
         .snapshots()
         .map((querySnapshot) {
       List<MyOrderModel> menuList = [];
+
       try {
         for (var doc in querySnapshot.docs) {
           var gg = doc.data();
@@ -172,6 +178,7 @@ class _MyOrderState extends State<MyOrder> {
     });
   }
 
+  FirebaseService firebaseService = FirebaseService();
   @override
   void initState() {
     super.initState();
@@ -728,12 +735,33 @@ class _MyOrderState extends State<MyOrder> {
                                                   SizedBox(
                                                     height: 28,
                                                     child: ElevatedButton(
-                                                      onPressed: () {
-                                                        // Get.to(() => OderDetailsScreen(
-                                                        //   myOrderDetails: orderItem,
-                                                        //   orderType: 'Delivery',
-                                                        //   orderId: '',
-                                                        // ));
+                                                      onPressed: () async {
+                                                        log(myOrder[index]
+                                                            .orderDetails!
+                                                            .menuList!
+                                                            .where((e) => e.qty > 0)
+                                                            .toList()
+                                                            .toString());
+                                                        try {
+                                                          await firebaseService
+                                                              .manageCheckOut(
+                                                            cartId: FirebaseAuth.instance.currentUser!.phoneNumber!,
+                                                            menuList: myOrder[index]
+                                                                .orderDetails!
+                                                                .menuList!
+                                                                .where((e) => e.qty > 0)
+                                                                .map((e) => e.toJson())
+                                                                .toList(),
+                                                            restaurantInfo: myOrder[index].orderDetails!.restaurantInfo!.toJson(),
+                                                            vendorId: myOrder[index].orderDetails!.restaurantInfo!.userID,
+                                                            time: DateTime.now().millisecondsSinceEpoch,
+                                                          )
+                                                              .then((value) {
+                                                            Get.to(() => const CartScreen());
+                                                          });
+                                                        } catch (e) {
+                                                          throw Exception(e);
+                                                        }
                                                       },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: AppTheme.primaryColor,
@@ -1504,7 +1532,31 @@ class _MyOrderState extends State<MyOrder> {
                                                     height: 28,
 
                                                     child: ElevatedButton(
-                                                      onPressed: () {},
+                                                      onPressed: () async {
+                                                        int gg = DateTime.now().millisecondsSinceEpoch;
+                                                        String? fcm = await FirebaseMessaging.instance.getToken();
+                                                        try {
+                                                          await firebaseService
+                                                              .manageOrderForDining(
+                                                              orderId: gg.toString(),
+                                                              menuList: myDiningOrder![index].menuList!.where((e) => e.qty > 0).map((e) => e.toJson()).toList(),
+                                                              restaurantInfo:  myDiningOrder![index].restaurantInfo!.toJson(),
+                                                              profileData:  myDiningOrder![index].customerData!.toJson(),
+                                                              vendorId: myDiningOrder![index].restaurantInfo!.userID,
+                                                              time: gg,
+                                                              fcm: fcm,
+                                                              slot: myDiningOrder![index].slot,
+                                                              guest: myDiningOrder![index].guest,
+                                                              date: myDiningOrder![index].date,
+                                                              total: myDiningOrder![index].total,
+                                                              lunchSelected: true)
+                                                              .then((value) {
+                                                            return gg;
+                                                          });
+                                                        } catch (e) {
+                                                          throw Exception(e);
+                                                        }
+                                                      },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: const Color(0xFF3B5998),
                                                           shape: RoundedRectangleBorder(

@@ -17,7 +17,15 @@ import '../../widget/common_text_field.dart';
 import '../helper.dart';
 
 class OderScreen extends StatefulWidget {
-  OderScreen({super.key, this.restaurantItem, this.menuList, this.guest, this.slot, required this.date, this.discountValue, required this.lunchSelected});
+  OderScreen(
+      {super.key,
+      this.restaurantItem,
+      this.menuList,
+      this.guest,
+      this.slot,
+      required this.date,
+      this.discountValue,
+      required this.lunchSelected});
   final RestaurantModel? restaurantItem;
   final List<MenuData>? menuList;
   DateTime date;
@@ -61,7 +69,7 @@ class _OderScreenState extends State<OderScreen> {
 
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
-    // Overlay.of(context).insert(loader);
+    Overlay.of(context).insert(loader);
     String? fcm = await FirebaseMessaging.instance.getToken();
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {

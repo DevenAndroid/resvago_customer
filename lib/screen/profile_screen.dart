@@ -6,6 +6,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 
 import '../model/profile_model.dart';
@@ -27,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   ProfileData profileData = ProfileData();
+  String code = "+91";
   void fetchdata() {
     FirebaseFirestore.instance
         .collection("customer_users")
@@ -36,10 +38,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
-        mobileController.text = profileData.mobileNumber.toString();
-        firstNameController.text = profileData.userName.toString();
-        lastNameController.text = profileData.userName.toString();
-        emailController.text = profileData.email.toString();
+        mobileController.text = (profileData.mobileNumber ?? "").toString();
+        firstNameController.text = (profileData.userName ?? "").toString();
+        lastNameController.text = (profileData.userName ?? "").toString();
+        emailController.text = (profileData.email ?? "").toString();
         setState(() {});
       }
     });
@@ -52,9 +54,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).update({
         "userName": firstNameController.text.trim(),
         "email": emailController.text.trim(),
-        "mobileNumber": mobileController.text.trim(),
+        "mobileNumber": code + mobileController.text.trim(),
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       Helper.hideLoader(loader);
+      fetchdata();
     } catch (e) {
       Helper.hideLoader(loader);
       throw Exception(e);
@@ -178,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           RegisterTextFieldWidget(
                               controller: firstNameController,
-                              validator: RequiredValidator(errorText: 'Please enter your First name'),
+                              validator: RequiredValidator(errorText: 'Please enter your First name').call,
                               hint: "First"),
                           const SizedBox(
                             height: 20,
@@ -192,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           RegisterTextFieldWidget(
                               controller: lastNameController,
-                              validator: RequiredValidator(errorText: 'Please enter your Last name '),
+                              validator: RequiredValidator(errorText: 'Please enter your Last name ').call,
                               // keyboardType: TextInputType.number,
                               // textInputAction: TextInputAction.next,
                               hint: "Last name"),
@@ -211,10 +214,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             validator: MultiValidator([
                               RequiredValidator(errorText: 'Please enter your email'),
                               EmailValidator(errorText: 'Enter a valid email address'),
-                            ]),
+                            ]).call,
                             keyboardType: TextInputType.emailAddress,
                             // textInputAction: TextInputAction.next,
-                            hint: "piyush@yopmail.com",
+                            hint: "abc@gmail.com",
                           ),
                           const SizedBox(
                             height: 20,
@@ -226,13 +229,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(
                             height: 10,
                           ),
-                          RegisterTextFieldWidget(
+                          IntlPhoneField(
+                            cursorColor: Colors.black,
+                            dropdownIcon: const Icon(
+                              Icons.arrow_drop_down_rounded,
+                              color: Colors.black,
+                            ),
+                            dropdownTextStyle: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
+                            flagsButtonPadding: const EdgeInsets.all(8),
+                            dropdownIconPosition: IconPosition.trailing,
                             controller: mobileController,
-                            length: 10,
-                            validator: RequiredValidator(errorText: 'Please enter your Mobile Number '),
-                            keyboardType: TextInputType.number,
-                            // textInputAction: TextInputAction.next,
-                            hint: "Mobile Number",
+                            decoration: const InputDecoration(
+                                hintStyle: TextStyle(color: Colors.black),
+                                labelText: 'Phone Number',
+                                labelStyle: TextStyle(color: Colors.black),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(),
+                                ),
+                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black))),
+                            initialCountryCode: 'IN',
+                            onChanged: (phone) {
+                              code = phone.countryCode.toString();
+                              setState(() {});
+                            },
                           ),
                           const SizedBox(
                             height: 20,

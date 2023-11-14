@@ -65,9 +65,6 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
         reviewModel!.add(ReviewModel.fromJson(gg));
       }
       log(jsonEncode(value.docs.first.data()));
-      int unixTimestamp = 1699528810090;
-      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(unixTimestamp ~/ 1000);
-      String formattedDate = DateFormat('dd-MM-yyyy').format(dateTime);
       setState(() {});
     });
   }

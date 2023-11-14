@@ -21,14 +21,14 @@ class FirebaseService {
   }) async {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('customer_users');
-      var DocumentReference = collection.doc("+91$mobileNumber");
+      var DocumentReference = collection.doc(mobileNumber);
 
       DocumentReference.set({
         "userName": userName,
         "email": email,
         "docid": docid,
         "mobileNumber": mobileNumber,
-        "userID": "+91$mobileNumber",
+        "userID": mobileNumber,
       }).then((value) {});
     } catch (e) {
       throw Exception(e);

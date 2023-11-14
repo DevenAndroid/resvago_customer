@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -585,7 +586,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
       final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b.split(",").last));
       return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
     });
-    print(eveningSlots);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -621,7 +621,9 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                             selectSlotDinner = -1;
                             guestNo = slotData!.morningSlots![morningSlots[index]]!;
                             slot = morningSlots[index];
-                            print(slot);
+                            if (kDebugMode) {
+                              print(slot);
+                            }
                             log(guestNo.toString());
                             setState(() {});
                           },

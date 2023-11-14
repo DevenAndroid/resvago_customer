@@ -26,15 +26,16 @@ class _RestaurantTimingScreenState extends State<RestaurantTimingScreen> {
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection("week_schedules").doc(widget.docId).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-        if(snapshot.hasData && snapshot.data!.data() != null){
+        if (snapshot.hasData && snapshot.data!.data() != null) {
           ModelStoreTime modelStoreTime = ModelStoreTime.fromJson(snapshot.data!.data()!);
           Schedule? schedule;
-          int index = modelStoreTime.schedule!.indexWhere((element) => element.day.toString() == DateFormat("EEE").format(DateTime.now()));
-          if(index != -1){
+          int index = modelStoreTime.schedule!
+              .indexWhere((element) => element.day.toString() == DateFormat("EEE").format(DateTime.now()));
+          if (index != -1) {
             schedule = modelStoreTime.schedule![index];
             return InkWell(
-              onTap: (){
-                Get.to(()=>RestaurantTimingScreenList(docId: widget.docId));
+              onTap: () {
+                Get.to(() => RestaurantTimingScreenList(docId: widget.docId));
               },
               child: Text(
                 schedule.status == true ? "Open (${schedule.startTime} to ${schedule.endTime})" : "Closed",
@@ -52,7 +53,6 @@ class _RestaurantTimingScreenState extends State<RestaurantTimingScreen> {
   }
 }
 
-
 class MaxDiscountScreen extends StatefulWidget {
   const MaxDiscountScreen({super.key, required this.docId});
   final String docId;
@@ -62,22 +62,25 @@ class MaxDiscountScreen extends StatefulWidget {
 }
 
 class _MaxDiscountScreenState extends State<MaxDiscountScreen> {
-
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
       print(widget.docId);
     }
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("Coupon_data").where("userID", isEqualTo: widget.docId).orderBy("maxDiscount",descending: true).limit(1).snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection("Coupon_data")
+          .where("userID", isEqualTo: widget.docId)
+          .orderBy("maxDiscount", descending: true)
+          .limit(1)
+          .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-        if(snapshot.hasData){
-
-          if(snapshot.data == null){
+        if (snapshot.hasData) {
+          if (snapshot.data == null) {
             return const SizedBox();
           }
           log(snapshot.data!.docs.map((e) => e.data()).toList().toString());
-          if(snapshot.data!.docs.isEmpty){
+          if (snapshot.data!.docs.isEmpty) {
             return const SizedBox.shrink();
           }
           CouponData couponData = CouponData.fromMap(snapshot.data!.docs.first.data());
@@ -104,7 +107,6 @@ class _MaxDiscountScreenState extends State<MaxDiscountScreen> {
   }
 }
 
-
 class MaxRatingScreen extends StatefulWidget {
   const MaxRatingScreen({super.key, required this.docId});
   final String docId;
@@ -114,52 +116,63 @@ class MaxRatingScreen extends StatefulWidget {
 }
 
 class _MaxRatingScreenState extends State<MaxRatingScreen> {
-
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      print("ffgghdfh"+widget.docId);
+      print("ffgghdfh${widget.docId}");
     }
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("Review").where("vendorID", isEqualTo: widget.docId).orderBy("fullRating",descending: true).limit(1).snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection("Review")
+          .where("vendorID", isEqualTo: widget.docId)
+          // .orderBy("fullRating", descending: true)
+          .limit(1)
+          .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-        if(snapshot.hasData){
-          if(snapshot.data == null){
+        if (snapshot.hasData) {
+          if (snapshot.data == null) {
             return const SizedBox();
           }
-          log(snapshot.data!.docs.map((e) => e.data()).toList().toString());
-          if(snapshot.data!.docs.isEmpty){
-            return const SizedBox.shrink();
+          if (snapshot.data!.docs.isNotEmpty) {
+            ReviewModel reviewData = ReviewModel.fromJson(snapshot.data!.docs.first.data());
+            log(snapshot.data!.docs.first.data().toString());
+            return Row(
+              children: [
+                const SizedBox(width: 5),
+                const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
+                const SizedBox(width: 2),
+                Text(
+                  "${reviewData.fullRating}",
+                  style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+                ),
+              ],
+            );
+          } else {
+            return Row(
+              children: [
+                const Icon(
+                  Icons.star_rounded,
+                  color: Colors.amber,
+                  size: 20,
+                ),
+                Text(
+                  "0.0",
+                  style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+                ),
+              ],
+            );
           }
-          ReviewModel ratingData = ReviewModel.fromJson(snapshot.data!.docs.first.data());
-          return Row(
-            children: [
-              const SizedBox(width: 5),
-              const Icon(
-                Icons.star,
-                color: Color(0xff2C4D61),
-                size: 17,
-              ),
-              Text(
-                " ${ratingData.fullRating}",
-                style: GoogleFonts.ibmPlexSansArabic(
-                    fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
-              ),
-            ],
-          );
         }
         return Row(
           children: [
-            const SizedBox(width: 5),
             const Icon(
-              Icons.star,
-              color:Colors.amber,
-              size: 17,
+              Icons.star_rounded,
+              color: Colors.amber,
+              size: 20,
             ),
             Text(
-              " 0.0",
-              style: GoogleFonts.ibmPlexSansArabic(
-                  fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
+              "0.0",
+              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
             ),
           ],
         );

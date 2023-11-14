@@ -630,11 +630,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                             height: 16,
                                           ),
                                           MaxDiscountScreen(docId: restaurantListItem.docid)
-                                          // Text(
-                                          //   "  40% off up to \$100",
-                                          //   style: GoogleFonts.poppins(
-                                          //       fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-                                          // ),
                                         ],
                                       ),
                                     ),

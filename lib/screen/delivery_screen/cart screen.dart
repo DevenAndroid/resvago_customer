@@ -93,9 +93,9 @@ class _CartScreenState extends State<CartScreen> {
 
   FirebaseService firebaseService = FirebaseService();
   Future<int> order(String vendorId) async {
-    String? fcm = await FirebaseMessaging.instance.getToken();
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
+    String? fcm = await FirebaseMessaging.instance.getToken();
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
       await firebaseService
@@ -119,8 +119,6 @@ class _CartScreenState extends State<CartScreen> {
       throw Exception(e);
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -696,7 +694,7 @@ class _CartScreenState extends State<CartScreen> {
                                   .collection("checkOut")
                                   .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                                   .delete();
-                              Get.offAll(ThankuScreen(orderType: "Delivery",orderId: value.toString()));
+                              Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
                             });
                           }
                         },
