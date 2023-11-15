@@ -14,6 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../widget/like_button.dart';
 import '../../widget/restaurant_timing.dart';
 import '../single_store_screens/setting_for_restaurant.dart';
 import '../single_store_screens/single_restaurants_screen.dart';
@@ -139,20 +140,10 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                       fit: BoxFit.cover,
                                     ),
                                     Positioned(
-                                        top: 11,
-                                        right: 10,
-                                        child: InkWell(
-                                          onTap: () {},
-                                          child: Container(
-                                            height: 25,
-                                            width: 25,
-                                            decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                                            child: const Icon(
-                                              Icons.favorite_border,
-                                              color: AppTheme.primaryColor,
-                                              size: 18,
-                                            ),
-                                          ),
+                                        top: 0,
+                                        right: 0,
+                                        child: LikeButtonWidget(
+                                          restaurantModel: restaurantListItem,
                                         )),
                                   ]),
                                 ),

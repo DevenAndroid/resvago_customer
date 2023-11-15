@@ -1533,29 +1533,29 @@ class _MyOrderState extends State<MyOrder> {
 
                                                     child: ElevatedButton(
                                                       onPressed: () async {
-                                                        int gg = DateTime.now().millisecondsSinceEpoch;
-                                                        String? fcm = await FirebaseMessaging.instance.getToken();
-                                                        try {
-                                                          await firebaseService
-                                                              .manageOrderForDining(
-                                                              orderId: gg.toString(),
-                                                              menuList: myDiningOrder![index].menuList!.where((e) => e.qty > 0).map((e) => e.toJson()).toList(),
-                                                              restaurantInfo:  myDiningOrder![index].restaurantInfo!.toJson(),
-                                                              profileData:  myDiningOrder![index].customerData!.toJson(),
-                                                              vendorId: myDiningOrder![index].restaurantInfo!.userID,
-                                                              time: gg,
-                                                              fcm: fcm,
-                                                              slot: myDiningOrder![index].slot,
-                                                              guest: myDiningOrder![index].guest,
-                                                              date: myDiningOrder![index].date,
-                                                              total: myDiningOrder![index].total,
-                                                              lunchSelected: true)
-                                                              .then((value) {
-                                                            return gg;
-                                                          });
-                                                        } catch (e) {
-                                                          throw Exception(e);
-                                                        }
+                                                        // int gg = DateTime.now().millisecondsSinceEpoch;
+                                                        // String? fcm = await FirebaseMessaging.instance.getToken();
+                                                        // try {
+                                                        //   await firebaseService
+                                                        //       .manageOrderForDining(
+                                                        //       orderId: gg.toString(),
+                                                        //       menuList: myDiningOrder![index].menuList!.where((e) => e.qty > 0).map((e) => e.toJson()).toList(),
+                                                        //       restaurantInfo:  myDiningOrder![index].restaurantInfo!.toJson(),
+                                                        //       profileData:  myDiningOrder![index].customerData!.toJson(),
+                                                        //       vendorId: myDiningOrder![index].restaurantInfo!.userID,
+                                                        //       time: gg,
+                                                        //       fcm: fcm,
+                                                        //       slot: myDiningOrder![index].slot,
+                                                        //       guest: myDiningOrder![index].guest,
+                                                        //       date: myDiningOrder![index].date,
+                                                        //       total: myDiningOrder![index].total,
+                                                        //       lunchSelected: true)
+                                                        //       .then((value) {
+                                                        //     return gg;
+                                                        //   });
+                                                        // } catch (e) {
+                                                        //   throw Exception(e);
+                                                        // }
                                                       },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: const Color(0xFF3B5998),

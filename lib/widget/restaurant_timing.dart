@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import '../model/coupon_modal.dart';
 import '../model/model_store_timing.dart';
 import '../model/review_model.dart';
 import '../screen/single_store_screens/timimg_list.dart';
+import 'appassets.dart';
 
 class RestaurantTimingScreen extends StatefulWidget {
   const RestaurantTimingScreen({super.key, required this.docId});
@@ -87,6 +89,10 @@ class _MaxDiscountScreenState extends State<MaxDiscountScreen> {
           return Row(
             children: [
               const SizedBox(width: 5),
+              SvgPicture.asset(
+                AppAssets.vector,
+                height: 16,
+              ),
               Text(
                 "${couponData.discount}% Off",
                 // schedule.status == true ? "Open (${schedule.startTime} to ${schedule.endTime})" : "Closed",

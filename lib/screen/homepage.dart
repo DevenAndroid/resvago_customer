@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,6 +25,7 @@ import '../controller/location_controller.dart';
 import '../controller/wishlist_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/category_model.dart';
+import '../model/checkout_model.dart';
 import '../model/profile_model.dart';
 import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
@@ -109,7 +111,7 @@ class _HomePageState extends State<HomePage> {
     double distanceInMeters = Geolocator.distanceBetween(double.parse(lat1), double.parse(lon1),
         double.parse(locationController.lat.toString()), double.parse(locationController.long.toString()));
     if ((distanceInMeters / 1000) < 1) {
-      return "${distanceInMeters.toInt()} Meter away";
+      return "${distanceInMeters.toInt()} Meter";
     }
     return "${(distanceInMeters / 1000).toStringAsFixed(2)} KM";
   }
@@ -223,11 +225,20 @@ class _HomePageState extends State<HomePage> {
     getSliders();
     getVendorCategories();
     getRestaurantList();
+    getCheckOutData();
     locationController.getLocation();
     locationController.checkGps(context).then((value) {});
   }
 
   int currentDrawer = 0;
+  CheckOutModel cartModel = CheckOutModel();
+  getCheckOutData() {
+    FirebaseFirestore.instance.collection("checkOut").doc(FirebaseAuth.instance.currentUser!.phoneNumber).get().then((value) {
+      log("checkOut${jsonEncode(value.data())}");
+      cartModel = CheckOutModel.fromJson(value.data() ?? {});
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -815,10 +826,6 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Row(
                                         children: [
-                                          SvgPicture.asset(
-                                            AppAssets.vector,
-                                            height: 16,
-                                          ),
                                           MaxDiscountScreen(docId: restaurantListItem.docid)
                                           // Text(
                                           //   "  40% off up to \$100",
@@ -909,7 +916,13 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.toNamed(MyRouters.singleProductScreen);
+                                Get.to(() => SingleRestaurantsScreen(
+                                  restaurantItem: restaurantListItem,
+                                  distance: _calculateDistance(
+                                    lat1: restaurantListItem.latitude.toString(),
+                                    lon1: restaurantListItem.longitude.toString(),
+                                  ),
+                                ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
