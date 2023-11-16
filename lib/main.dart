@@ -18,10 +18,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xffF6F6F6)
-      ),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+          scaffoldBackgroundColor: const Color(0xffF6F6F6)),
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
       getPages: MyRouters.route,

@@ -14,6 +14,11 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../widget/like_button.dart';
+import '../../widget/restaurant_timing.dart';
+import '../single_store_screens/setting_for_restaurant.dart';
+import '../single_store_screens/single_restaurants_screen.dart';
+
 class RestaurantByCategory extends StatefulWidget {
   String categoryName;
   RestaurantByCategory({super.key, required this.categoryName});
@@ -105,7 +110,13 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
                           onTap: () {
-                            Get.toNamed(MyRouters.singleProductScreen);
+                            Get.to(() => SingleRestaurantsScreen(
+                              restaurantItem: restaurantListItem,
+                              distance: _calculateDistance(
+                                lat1: restaurantListItem.latitude.toString(),
+                                lon1: restaurantListItem.longitude.toString(),
+                              ),
+                            ));
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -129,20 +140,10 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                       fit: BoxFit.cover,
                                     ),
                                     Positioned(
-                                        top: 11,
-                                        right: 10,
-                                        child: InkWell(
-                                          onTap: () {},
-                                          child: Container(
-                                            height: 25,
-                                            width: 25,
-                                            decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                                            child: const Icon(
-                                              Icons.favorite_border,
-                                              color: AppTheme.primaryColor,
-                                              size: 18,
-                                            ),
-                                          ),
+                                        top: 0,
+                                        right: 0,
+                                        child: LikeButtonWidget(
+                                          restaurantModel: restaurantListItem,
                                         )),
                                   ]),
                                 ),
@@ -162,20 +163,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.star,
-                                            color: Color(0xff2C4D61),
-                                            size: 17,
-                                          ),
-                                          Text(
-                                            "4.4",
-                                            style: GoogleFonts.ibmPlexSansArabic(
-                                                fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
-                                          ),
-                                        ],
-                                      )
+                                      MaxRatingScreen(docId: restaurantListItem.docid,)
                                     ],
                                   ),
                                 ),
@@ -186,11 +174,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Row(
                                     children: [
-                                      Text(
-                                        "25 mins ",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                      ),
+                                      PreparationTimeScreen(docId: restaurantListItem.docid),
                                       const SizedBox(
                                         width: 3,
                                       ),
@@ -212,37 +196,27 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                     ],
                                   ),
                                 ),
-                                Row(
-                                  children: List.generate(
-                                      17,
-                                      (index) => Padding(
-                                            padding: const EdgeInsets.only(left: 2, right: 2),
-                                            child: Container(
-                                              color: Colors.grey[200],
-                                              height: 2,
-                                              width: 10,
-                                            ),
-                                          )),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                FittedBox(
+                                  child: Row(
+                                    children: List.generate(
+                                        29,
+                                        (index) => Padding(
+                                              padding: const EdgeInsets.only(left: 2, right: 2),
+                                              child: Container(
+                                                color: Colors.grey[200],
+                                                height: 2,
+                                                width: 10,
+                                              ),
+                                            )),
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        AppAssets.vector,
-                                        height: 16,
-                                      ),
-                                      Text(
-                                        "  40% off up to \$100",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                MaxDiscountScreen(docId: restaurantListItem.docid),
                                 const SizedBox(height: 5),
                               ],
                             ),

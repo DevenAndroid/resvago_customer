@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import '../controller/logn_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../routers/routers.dart';
@@ -32,7 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final _formKey = GlobalKey<FormState>();
   late Geoflutterfire geo;
-
+  String code = "+91";
   String verificationId = "";
   bool value = false;
   bool showValidation = false;
@@ -41,21 +41,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    await firebaseService
-        .manageRegisterUsers(
-      userName: userNameController.text.trim(),
-      email: emailController.text.trim(),
-      mobileNumber: phoneNumberController.text.trim(),
-    ).then((value) {
-      Helper.hideLoader(loader);
-      Get.toNamed(MyRouters.loginScreen);
-    });
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+        email: emailController.text.trim(), password: "123456");
+    if(FirebaseAuth.instance.currentUser != null) {
+      await firebaseService
+          .manageRegisterUsers(
+        userName: userNameController.text.trim(),
+        email: emailController.text.trim(),
+        mobileNumber: code + phoneNumberController.text.trim(),
+      )
+          .then((value) {
+        Helper.hideLoader(loader);
+        Get.toNamed(MyRouters.loginScreen);
+      });
+    }
   }
-
 
   void checkEmailInFirestore() async {
     final QuerySnapshot result =
-    await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
+        await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
 
     if (result.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Email already exits');
@@ -72,6 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
     addUserToFirestore();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,7 +132,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             hint: 'Enter Your Name',
                             validator: MultiValidator([
                               RequiredValidator(errorText: 'Please enter your name'),
-                            ]),
+                            ]).call,
                             keyboardType: TextInputType.text,
                           ),
                           const SizedBox(
@@ -144,18 +150,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             height: 15,
                           ),
                           CommonTextFieldWidget(
-                            controller: emailController,
-                            textInputAction: TextInputAction.next,
-                            hint: 'Enter your Email',
-                            keyboardType: TextInputType.text,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return "Email required";
-                              } else {
-                                return null;
-                              }
-                            },
-                          ),
+                              controller: emailController,
+                              textInputAction: TextInputAction.next,
+                              hint: 'Enter your Email',
+                              keyboardType: TextInputType.text,
+                              validator: MultiValidator([EmailValidator(errorText: "Valid Email is required"),
+                                RequiredValidator(errorText: "Email is required")
+                              ]).call),
                           const SizedBox(
                             height: 15,
                           ),
@@ -170,16 +171,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           const SizedBox(
                             height: 15,
                           ),
-                          CommonTextFieldWidget(
-                            controller: phoneNumberController,
-
-                            hint: 'Enter your Mobile number',
-                            // length: 10,
-                            validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter your phone number'),
-                              MinLengthValidator(10, errorText: 'Please enter valid phone number'),
-                            ]),
-                            keyboardType: TextInputType.number,
+                          IntlPhoneField(
+                            flagsButtonPadding: const EdgeInsets.all(8),
+                            dropdownIconPosition: IconPosition.trailing,
+                            cursorColor: Colors.white,
+                            dropdownIcon: const Icon(Icons.arrow_drop_down_rounded,color: Colors.white,),
+                            dropdownTextStyle:const TextStyle(color: Colors.white),
+                            style:  const TextStyle(color: Colors.white),
+                            controller:phoneNumberController,
+                            decoration: const InputDecoration(
+                                hintStyle:  TextStyle(color: Colors.white),
+                                labelText: 'Phone Number',
+                                labelStyle: TextStyle(color: Colors.white),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white)
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white)
+                                )
+                            ),
+                            initialCountryCode: 'IN',
+                            onChanged: (phone) {
+                              code = phone.countryCode.toString();
+                            },
                           ),
                           Row(
                             children: [
@@ -210,8 +227,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           CommonButton(
                             onPressed: () {
-                              if(_formKey.currentState!.validate()){
-                                checkEmailInFirestore();
+                              if (_formKey.currentState!.validate()) {
+                                if(value == true){
+                                  checkEmailInFirestore();
+                                }
+                                else{
+                                  showToast("Please accept term and conditions");
+                                }
                               }
                             },
                             title: 'Create Account',

@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/controller/location_controller.dart';
 import 'package:resvago_customer/model/resturant_model.dart';
+import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
-
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/custom_textfield.dart';
@@ -31,21 +30,17 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
   List<RestaurantModel> categoryList = [];
 
   getRestaurantCategories() {
-    FirebaseFirestore.instance
-        .collection("vendor_users")
-        .where("category", isEqualTo: widget.category)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("vendor_users").where("category", isEqualTo: widget.category).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
-        categoryList ??= [];
         log(categoryList.toString());
-        categoryList!.add(RestaurantModel.fromJson(gg,element.id.toString()));
+        categoryList.add(RestaurantModel.fromJson(gg, element.id.toString()));
       }
       setState(() {});
     });
   }
-final locationController = Get.put(LocationController());
+
+  final locationController = Get.put(LocationController());
   String _calculateDistance({dynamic lat1, dynamic lon1}) {
     if (double.tryParse(lat1) == null ||
         double.tryParse(lon1) == null ||
@@ -185,28 +180,16 @@ final locationController = Get.put(LocationController());
                 child: Text(
                   "Restaurants",
                   style: currentDrawer == 0
-                      ? GoogleFonts.poppins(
-                          color: const Color(0xff1A2E33),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500)
-                      : GoogleFonts.poppins(
-                          color: AppTheme.primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
+                      ? GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500)
+                      : GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               ),
               Tab(
                 child: Text(
                   "Dishes",
                   style: currentDrawer == 1
-                      ? GoogleFonts.poppins(
-                          color: Colors.cyan,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500)
-                      : GoogleFonts.poppins(
-                          color: const Color(0xff1A2E33),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
+                      ? GoogleFonts.poppins(color: Colors.cyan, fontSize: 16, fontWeight: FontWeight.w500)
+                      : GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               ),
             ],
@@ -224,12 +207,12 @@ final locationController = Get.put(LocationController());
                     return InkWell(
                       onTap: () {
                         Get.to(() => SingleRestaurantsScreen(
-                          restaurantItem: categoryList[index],
-                          distance: _calculateDistance(
-                            lat1: categoryList[index].latitude.toString(),
-                            lon1: categoryList[index].longitude.toString(),
-                          ),
-                        ));
+                              restaurantItem: categoryList[index],
+                              distance: _calculateDistance(
+                                lat1: categoryList[index].latitude.toString(),
+                                lon1: categoryList[index].longitude.toString(),
+                              ),
+                            ));
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
@@ -268,8 +251,7 @@ final locationController = Get.put(LocationController());
                                 height: 10,
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
+                                padding: const EdgeInsets.symmetric(horizontal: 15),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -277,18 +259,14 @@ final locationController = Get.put(LocationController());
                                       height: 30,
                                       // width: 130,
                                       decoration: BoxDecoration(
-                                          color:
-                                              const Color(0xff3B5998).withOpacity(.3),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(5))),
+                                          color: const Color(0xff8facea).withOpacity(.2),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5))),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                         child: Text(
-                                            categoryList[index].category ?? "",
+                                          categoryList[index].category ?? "",
                                           style: GoogleFonts.poppins(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppTheme.primaryColor),
+                                              fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.primaryColor),
                                         ),
                                       ),
                                     ),
@@ -296,32 +274,15 @@ final locationController = Get.put(LocationController());
                                       height: 5,
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           categoryList[index].restaurantName ?? "",
                                           style: GoogleFonts.poppins(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: const Color(0xff08141B)),
+                                              fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
                                         ),
                                         const Spacer(),
-                                        const Icon(
-                                          Icons.star,
-                                          color: Color(0xffFFC529),
-                                          size: 17,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          "4.5",
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w300,
-                                              color: const Color(0xff08141B)),
-                                        ),
+                                        MaxRatingScreen(docId: categoryList[index].docid)
                                       ],
                                     ),
                                     const SizedBox(
@@ -329,18 +290,11 @@ final locationController = Get.put(LocationController());
                                     ),
                                     Row(
                                       children: [
-                                        Text(
-                                          "25 Mins ",
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w300,
-                                              color: const Color(0xff384953)),
-                                        ),
+                                        PreparationTimeScreen(docId: categoryList[index].docid),
                                         const SizedBox(
                                           width: 3,
                                         ),
-                                        const Icon(Icons.circle,
-                                            size: 5, color: Color(0xff384953)),
+                                        const Icon(Icons.circle, size: 5, color: Color(0xff384953)),
                                         const SizedBox(
                                           width: 5,
                                         ),
@@ -364,16 +318,10 @@ final locationController = Get.put(LocationController());
                                       dashColor: Color(0xffBCBCBC),
                                     ),
                                     const SizedBox(
-                                      height:10,
+                                      height: 10,
                                     ),
                                     Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          AppAssets.vector,
-                                          height: 16,
-                                        ),
-                                        MaxDiscountScreen(docId:categoryList[index].docid)
-                                      ],
+                                      children: [MaxDiscountScreen(docId: categoryList[index].docid)],
                                     ),
                                     const SizedBox(
                                       height: 15,

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resvago_customer/screen/search_singlerestaurant_screen.dart';
-
 import '../widget/custom_textfield.dart';
 
 class SerachListScreen extends StatefulWidget {
@@ -141,8 +141,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
               stream: FirebaseFirestore.instance
                   .collection('vendor_menu')
                   .where("bookingForDelivery" , isEqualTo: true)
-                  .where('category',
-                  isGreaterThanOrEqualTo: searchKeyword)
+                  .where('category', isGreaterThanOrEqualTo: searchKeyword)
                   .where('category', isLessThan: '${searchKeyword}z')
                   .snapshots(),
               builder: (context, snapshot) {
@@ -151,7 +150,9 @@ class _SerachListScreenState extends State<SerachListScreen> {
                   var products = snapshot.data!.docs;
                   List<String> kk = products.map((e) => e.data()['category'].toString()).toList().toSet().toList();
                   List<String> image = products.map((e) => e.data()['image'].toString()).toList().toSet().toList();
-                  print(products);
+                  if (kDebugMode) {
+                    print(products);
+                  }
                   return ListView.builder(
                     itemCount: kk.length,
                     itemBuilder: (context, index) {
@@ -186,7 +187,6 @@ class _SerachListScreenState extends State<SerachListScreen> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-
                   var products = snapshot.data!.docs;
                   List<String> kk = products.map((e) => e.data()['category'].toString()).toList().toSet().toList();
                   List<String> name = products.map((e) => e.data()['name'].toString()).toList().toSet().toList();

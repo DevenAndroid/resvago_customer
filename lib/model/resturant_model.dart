@@ -14,23 +14,34 @@ class RestaurantModel {
   dynamic email;
   dynamic aboutUs;
   dynamic image;
+  dynamic preparationTime;
+  dynamic averageMealForMember;
+  dynamic setDelivery;
+  dynamic cancellation;
+  dynamic menuSelection;
 
-  RestaurantModel(
-      {this.restaurantImage,
-      this.menuGalleryImages,
-      this.password,
-      this.image,
-      this.address,
-      this.latitude,
-      this.longitude,
-      this.restaurantName,
-      this.docid,
-      this.mobileNumber,
-      this.confirmPassword,
-      this.category,
-      this.userID,
-      this.email,
-      this.aboutUs});
+  RestaurantModel({
+    this.restaurantImage,
+    this.menuGalleryImages,
+    this.password,
+    this.image,
+    this.address,
+    this.latitude,
+    this.longitude,
+    this.restaurantName,
+    this.docid,
+    this.mobileNumber,
+    this.confirmPassword,
+    this.category,
+    this.userID,
+    this.email,
+    this.aboutUs,
+    this.preparationTime,
+    this.averageMealForMember,
+    this.setDelivery,
+    this.cancellation,
+    this.menuSelection,
+  });
 
   RestaurantModel.fromJson(Map<String, dynamic> json, String docId) {
     restaurantImage = json['restaurantImage'] != null ? json['restaurantImage'].cast<String>() : [];
@@ -48,6 +59,11 @@ class RestaurantModel {
     userID = json['userID'];
     email = json['email'];
     aboutUs = json['aboutUs'];
+    preparationTime = json['preparationTime'];
+    averageMealForMember = json['averageMealForMember'];
+    setDelivery = json['setDelivery'];
+    cancellation = json['cancellation'];
+    menuSelection = json['menuSelection'];
   }
 
   Map<String, dynamic> toJson() {
@@ -67,6 +83,11 @@ class RestaurantModel {
     data['userID'] = userID;
     data['email'] = email;
     data['aboutUs'] = aboutUs;
+    data['preparationTime'] = preparationTime;
+    data['averageMealForMember'] = averageMealForMember;
+    data['setDelivery'] = setDelivery;
+    data['cancellation'] = cancellation;
+    data['menuSelection'] = menuSelection;
     return data;
   }
 }

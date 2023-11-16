@@ -65,6 +65,5 @@ class MyRouters {
     GetPage(name: MyRouters.notification, page: () => const NotificationScreen()),
     GetPage(name: MyRouters.helpCenterScreen, page: () => const HelpCenterScreen()),
     GetPage(name: MyRouters.cartScreen, page: () => const CartScreen()),
-    GetPage(name: MyRouters.thankYouScreen, page: () => const ThankuScreen()),
   ];
 }

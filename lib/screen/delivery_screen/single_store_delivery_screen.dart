@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -42,7 +43,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
   getMenuList() {
     FirebaseFirestore.instance
         .collection("vendor_menu")
-        .where("vendorId", isEqualTo: widget.restaurantItem!.docid)
+        .where("vendorId", isEqualTo: widget.restaurantItem!.docid).where("bookingForDelivery" , isEqualTo: true)
         .get()
         .then((value) {
       for (var element in value.docs) {
@@ -93,6 +94,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
   Future<void> manageCheckOut(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
+
     try {
       await firebaseService
           .manageCheckOut(
@@ -500,7 +502,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     padding: const EdgeInsets.symmetric(horizontal: 2),
                                                     child: Image.network(
                                                       widget.restaurantItem!.menuGalleryImages![index],
-                                                      fit: BoxFit.contain,
+                                                      fit: BoxFit.cover,
                                                     ));
                                               },
                                             ),

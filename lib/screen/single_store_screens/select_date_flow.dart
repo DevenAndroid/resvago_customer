@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -12,7 +12,6 @@ import 'package:resvago_customer/model/coupon_modal.dart';
 import 'package:resvago_customer/screen/coupon_list_screen.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../../firebase_service/firebase_service.dart';
 import '../../model/menu_model.dart';
 import '../../model/model_store_slots.dart';
 import '../../model/resturant_model.dart';
@@ -20,26 +19,6 @@ import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../checkout_for_dining/oder_screen.dart';
-
-// extension GetTotalDates on List<ModelStoreSlots> {
-//   Map<DateTime, ModelStoreSlots> get totalDates {
-//     var kk = DateFormat("dd-MMM-yyyy");
-//     Map<DateTime, ModelStoreSlots> slotsDate = {};
-//     for (var element in this) {
-//       DateTime initialDate = kk.parse(element.startDateForLunch);
-//       if ((element.endDateForLunch ?? "").toString().isEmpty) {
-//         slotsDate[initialDate] = element;
-//       } else {
-//         DateTime lastDate = kk.parse(element.endDateForLunch);
-//         while (initialDate.isBefore(lastDate.add(const Duration(days: 1)))) {
-//           slotsDate[initialDate] = element;
-//           initialDate = initialDate.add(const Duration(days: 1));
-//         }
-//       }
-//     }
-//     return slotsDate;
-//   }
-// }
 
 extension ChangeToDate on String {
   DateTime get formatDate {
@@ -68,7 +47,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
     "Offer",
   ];
 
-
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = DateTime(day.year, day.month, day.day);
@@ -78,7 +56,12 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   DateTime today = DateTime.now();
   List<MenuData>? menuList;
   getMenuList() {
-    FirebaseFirestore.instance.collection("vendor_menu").where("vendorId", isEqualTo: widget.userId).get().then((value) {
+    FirebaseFirestore.instance
+        .collection("vendor_menu")
+        .where("vendorId", isEqualTo: widget.userId)
+        .where("bookingForDining", isEqualTo: true)
+        .get()
+        .then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         menuList ??= [];
@@ -100,43 +83,11 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         .get()
         .then((value) {
       log(value.data().toString());
-      if(value.exists == false)return;
+      if (value.exists == false) return;
       slotData = CreateSlotData.fromMap(value.data()!);
       setState(() {});
     });
   }
-
-  FirebaseService firebaseService = FirebaseService();
-  // Future<int> order(String vendorId) async {
-  //   String? fcm = await FirebaseMessaging.instance.getToken();
-  //   OverlayEntry loader = Helper.overlayLoader(context);
-  //   Overlay.of(context).insert(loader);
-  //   int gg = DateTime.now().millisecondsSinceEpoch;
-  //   try {
-  //     await firebaseService.manageOrder(
-  //         orderId: gg.toString(),
-  //         menuList: cartModel.menuList!,
-  //         restaurantInfo: restaurantData!.toJson(),
-  //         vendorId: vendorId,
-  //         time: gg,
-  //         address: '',
-  //         couponDiscount: couponDiscount,
-  //         fcm: fcm,
-  //         diningDetails: {
-  //           'date': date,
-  //           'slot': slot,
-  //           'guest': guest,
-  //           'offer': offer}
-  //     ).then((value) {
-  //       Helper.hideLoader(loader);
-  //       return gg;
-  //     });
-  //     return gg;
-  //   } catch (e) {
-  //     Helper.hideLoader(loader);
-  //     throw Exception(e);
-  //   }
-  // }
 
   @override
   void initState() {
@@ -202,19 +153,15 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                             if (slot != null) {
                               kk = .66666666;
                               setState(() {});
-                            }
-                            else {
+                            } else {
                               showToast("Please select slot number");
                             }
-                            setState(() {
-
-                            });
+                            setState(() {});
                           }
                           if (index == 3) {
                             if (guest != null) {
                               kk = 1;
-                            }
-                            else {
+                            } else {
                               showToast("Please select guest number");
                             }
                           }
@@ -268,12 +215,14 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InkWell(
-                      onTap: (){
-                        Get.to(()=>PromoCodeList(id:widget.restaurantItem!.docid,
-                          couponData: (CouponData coupon) {
-                            couponData = coupon;
-                            setState(() {});
-                          },));
+                      onTap: () {
+                        Get.to(() => PromoCodeList(
+                              id: widget.restaurantItem!.docid,
+                              couponData: (CouponData coupon) {
+                                couponData = coupon;
+                                setState(() {});
+                              },
+                            ));
                       },
                       child: Container(
                           decoration: BoxDecoration(
@@ -302,67 +251,71 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                     const SizedBox(
                       height: 13,
                     ),
-                    couponData != null ?
-                    Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: const Color(0xFFC7C7C7), width: 1.0)),
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-                        width: AddSize.screenWidth,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${couponData!.discount}% Off On “A La Carte” Menu',
-                                    style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Discount available for the booked timeslot preset menus and drinks not inclused',
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF384953), fontWeight: FontWeight.w300, fontSize: 13),
-                                    maxLines: 5,
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  Container(
-                                    width: 90,
-                                    padding: const EdgeInsets.symmetric(vertical: 6),
-                                    decoration:
-                                        BoxDecoration(color: AppTheme.primaryColor, borderRadius: BorderRadius.circular(5)),
-                                    child: Center(
-                                      child: Text(
-                                        '${couponData!.discount}% off',
+                    couponData != null
+                        ? Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(color: const Color(0xFFC7C7C7), width: 1.0)),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+                            width: AddSize.screenWidth,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${couponData!.discount}% Off On “A La Carte” Menu',
                                         style:
-                                            GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                                            GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
                                       ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppTheme.primaryColor,
-                              ),
-                              child: const Icon(
-                                Icons.check,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            )
-                          ],
-                        )) : const Center(child: Text("No Offer Selected"),),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        'Discount available for the booked timeslot preset menus and drinks not inclused',
+                                        style: GoogleFonts.poppins(
+                                            color: const Color(0xFF384953), fontWeight: FontWeight.w300, fontSize: 13),
+                                        maxLines: 5,
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Container(
+                                        width: 90,
+                                        padding: const EdgeInsets.symmetric(vertical: 6),
+                                        decoration:
+                                            BoxDecoration(color: AppTheme.primaryColor, borderRadius: BorderRadius.circular(5)),
+                                        child: Center(
+                                          child: Text(
+                                            '${couponData!.discount}% off',
+                                            style: GoogleFonts.poppins(
+                                                color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppTheme.primaryColor,
+                                  ),
+                                  child: const Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                )
+                              ],
+                            ))
+                        : const Center(
+                            child: Text("No Offer Selected"),
+                          ),
                     const SizedBox(
                       height: 13,
                     ),
@@ -396,6 +349,13 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                         onChanged: (newValue) {
                                           setState(() {
                                             menuListData.isCheck = newValue!;
+                                            if (menuListData.isCheck == true) {
+                                              menuListData.qty++;
+                                              log(menuListData.qty.toString());
+                                            } else {
+                                              menuListData.qty = 0;
+                                              log(menuListData.qty.toString());
+                                            }
                                             setState(() {});
                                           });
                                         }),
@@ -459,14 +419,15 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                               if (menuList!.where((e) => e.isCheck == true).toList().isNotEmpty) {
                                 log("aaaaaaa-----${jsonEncode(menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList())}");
                                 dynamic discountValue = 0;
-                                if(couponData !=null){
+                                if (couponData != null) {
                                   discountValue = couponData!.discount;
                                 }
                                 Get.to(() => OderScreen(
-                                    discountValue:discountValue,
-                                    slot:slot,
-                                    guest:guest,
-                                    date:today,
+                                    discountValue: discountValue,
+                                    lunchSelected: lunchSelected,
+                                    slot: slot,
+                                    guest: guest,
+                                    date: today,
                                     restaurantItem: widget.restaurantItem,
                                     menuList: menuList!.where((e) => e.isCheck == true).toList()));
                               } else {
@@ -481,7 +442,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                       width: 2.0,
                                       color: AppTheme.primaryColor,
                                     )),
-                                primary: AppTheme.primaryColor,
                                 textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                             child: Text(
                               "Checkout".toUpperCase(),
@@ -589,7 +549,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                             width: 2.0,
                             color: AppTheme.primaryColor,
                           )),
-                      primary: AppTheme.primaryColor,
                       textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                   child: Text(
                     "Next".toUpperCase(),
@@ -611,7 +570,22 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   String? slot;
   int? guest;
 
+  bool lunchSelected = false;
+
   slotsWidget() {
+    final DateFormat timeFormat = DateFormat("hh:mm a");
+    List<String> morningSlots = slotData!.morningSlots!.entries.map((e) => e.key).toList();
+    List<String> eveningSlots = slotData!.eveningSlots!.entries.map((e) => e.key).toList();
+    morningSlots.sort((a, b) {
+      final timeA = TimeOfDay.fromDateTime(timeFormat.parse(a.split(",").last));
+      final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b.split(",").last));
+      return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
+    });
+    eveningSlots.sort((a, b) {
+      final timeA = TimeOfDay.fromDateTime(timeFormat.parse(a.split(",").last));
+      final timeB = TimeOfDay.fromDateTime(timeFormat.parse(b.split(",").last));
+      return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
+    });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -628,47 +602,80 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         const SizedBox(
           height: 10,
         ),
-        GridView.builder(
-          itemCount: slotData!.morningSlots!.entries.toList().length,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
-          itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    selectSlot = index;
-                    selectSlotDinner = -1;
-                    guestNo = slotData!.morningSlots!.entries.toList()[index].value;
-                    slot = slotData!.eveningSlots!.entries.toList()[index].key.split(",").first;
-                    log(guestNo.toString());
-                    setState(() {});
-                  },
-                  child: Container(
-                    height: 48,
-                    width: 66,
-                    decoration: BoxDecoration(
-                        color: selectSlot == index ? AppTheme.primaryColor : Colors.white,
-                        border: Border.all(
-                          color: Colors.grey,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: GridView.builder(
+            itemCount: morningSlots.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
+            itemBuilder: (BuildContext context, int index) {
+              return Column(
+                children: [
+                  slotData!.morningSlots![morningSlots[index]] != 0
+                      ? InkWell(
+                          onTap: () {
+                            lunchSelected = true;
+                            selectSlot = index;
+                            selectSlotDinner = -1;
+                            guestNo = slotData!.morningSlots![morningSlots[index]]!;
+                            slot = morningSlots[index];
+                            if (kDebugMode) {
+                              print(slot);
+                            }
+                            log(guestNo.toString());
+                            setState(() {});
+                          },
+                          child: FittedBox(
+                            child: Container(
+                              height: 48,
+                              // width: 70,
+                              decoration: BoxDecoration(
+                                  color: selectSlot == index ? AppTheme.primaryColor : Colors.white,
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    morningSlots[index].split(",").first,
+                                    style: GoogleFonts.poppins(color: selectSlot == index ? Colors.white : AppTheme.primaryColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : FittedBox(
+                          child: Container(
+                            height: 48,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
+                                  morningSlots[index].split(",").first,
+                                  style: GoogleFonts.poppins(color: Colors.grey),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: Center(
-                      child: Text(
-                        slotData!.morningSlots!.entries.toList()[index].key.split(",").first,
-                        style: GoogleFonts.poppins(color: selectSlot == index ? Colors.white : AppTheme.primaryColor),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
         const SizedBox(
-          height: 20,
+          height: 10,
         ),
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
@@ -680,44 +687,75 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         const SizedBox(
           height: 10,
         ),
-        GridView.builder(
-          itemCount: slotData!.eveningSlots!.entries.toList().length,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
-          itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    selectSlotDinner = index;
-                    selectSlot = -1;
-                    guestNo = slotData!.eveningSlots!.entries.toList()[index].value;
-                    slot = slotData!.eveningSlots!.entries.toList()[index].key.split(",").first;
-                    log(guestNo.toString());
-                    setState(() {});
-                  },
-                  child: Container(
-                    height: 48,
-                    width: 66,
-                    decoration: BoxDecoration(
-                        color: selectSlotDinner == index ? AppTheme.primaryColor : Colors.white,
-                        border: Border.all(
-                          color: Colors.grey,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: GridView.builder(
+            itemCount: eveningSlots.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
+            itemBuilder: (BuildContext context, int index) {
+              return Column(
+                children: [
+                  slotData!.eveningSlots![eveningSlots[index]] != 0
+                      ? InkWell(
+                          onTap: () {
+                            lunchSelected = false;
+                            selectSlotDinner = index;
+                            selectSlot = -1;
+                            guestNo = slotData!.eveningSlots![eveningSlots[index]]!;
+                            slot = slotData!.eveningSlots!.entries.toList()[index].key;
+                            log(guestNo.toString());
+                            log(slot.toString());
+                            setState(() {});
+                          },
+                          child: FittedBox(
+                            child: Container(
+                              height: 48,
+                              decoration: BoxDecoration(
+                                  color: selectSlotDinner == index ? AppTheme.primaryColor : Colors.white,
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Text(
+                                    eveningSlots[index].split(",").first,
+                                    style: GoogleFonts.poppins(
+                                        color: selectSlotDinner == index ? Colors.white : AppTheme.primaryColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : FittedBox(
+                          child: Container(
+                            height: 48,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
+                                  eveningSlots[index].split(",").first,
+                                  style: GoogleFonts.poppins(color: Colors.grey),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: Center(
-                      child: Text(
-                        slotData!.eveningSlots!.entries.toList()[index].key.split(",").first,
-                        style: GoogleFonts.poppins(color: selectSlotDinner == index ? Colors.white : AppTheme.primaryColor),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -739,7 +777,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                             width: 2.0,
                             color: AppTheme.primaryColor,
                           )),
-                      primary: AppTheme.primaryColor,
                       textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                   child: Text(
                     "Next".toUpperCase(),

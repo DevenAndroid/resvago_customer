@@ -75,7 +75,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
   Future getRestaurantList() async {
     restaurantList ??= [];
     restaurantList!.clear();
-    await FirebaseFirestore.instance.collection("vendor_users").get().then((value) {
+    await FirebaseFirestore.instance.collection("vendor_users").where("setDelivery", isEqualTo: true).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
@@ -573,16 +573,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          const Icon(
-                                            Icons.star,
-                                            color: Color(0xff2C4D61),
-                                            size: 17,
-                                          ),
-                                          Text(
-                                            "4.4",
-                                            style: GoogleFonts.ibmPlexSansArabic(
-                                                fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
-                                          ),
+                                          MaxRatingScreen(docId: restaurantListItem.docid)
                                         ],
                                       ),
                                     ),
@@ -639,11 +630,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                             height: 16,
                                           ),
                                           MaxDiscountScreen(docId: restaurantListItem.docid)
-                                          // Text(
-                                          //   "  40% off up to \$100",
-                                          //   style: GoogleFonts.poppins(
-                                          //       fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-                                          // ),
                                         ],
                                       ),
                                     ),
@@ -782,16 +768,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          const Icon(
-                                            Icons.star,
-                                            color: Color(0xff2C4D61),
-                                            size: 17,
-                                          ),
-                                          Text(
-                                            "4.4",
-                                            style: GoogleFonts.ibmPlexSansArabic(
-                                                fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff08141B)),
-                                          ),
+                                          MaxRatingScreen(docId: restaurantListItem.docid,)
                                         ],
                                       ),
                                     ),

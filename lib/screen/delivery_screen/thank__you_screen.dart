@@ -1,13 +1,19 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:resvago_customer/model/order_model.dart';
 import 'package:resvago_customer/screen/order/myorder_screen.dart';
-
 import '../../widget/apptheme.dart';
+import '../order/order_details_screen.dart';
 
 class ThankuScreen extends StatefulWidget {
-  const ThankuScreen({super.key});
+  ThankuScreen({super.key, this.date, this.orderType, this.guestNo, this.orderId});
+  String? date;
+  String? orderType;
+  int? guestNo;
+  String? orderId;
 
   @override
   State<ThankuScreen> createState() => _ThankuScreenState();
@@ -17,6 +23,7 @@ class _ThankuScreenState extends State<ThankuScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    log(widget.date.toString());
     return Scaffold(
         backgroundColor: Colors.white,
         bottomNavigationBar: Padding(
@@ -28,7 +35,12 @@ class _ThankuScreenState extends State<ThankuScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(()=>const MyOrder());
+                    log(widget.orderId.toString());
+                    Get.offAll(() => OderDetailsScreen(
+                          orderId: widget.orderId.toString(),
+                          orderType: widget.orderType,
+                          data: 'Data',
+                        ));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -93,14 +105,36 @@ class _ThankuScreenState extends State<ThankuScreen> {
                       // color: Color()
                       ),
                   child: Center(
-                      child: Text(
-                    DateFormat("dd-MMM-yyyy").format(DateTime.parse(Get.arguments[0].toString())),
-                    style: GoogleFonts.poppins(
-                        color: const Color(
-                          0xffFAAF40,
-                        ),
-                        fontWeight: FontWeight.w500),
-                  )),
+                    child: widget.orderType == "Dining"
+                        ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("${widget.guestNo.toString()} Guest, ",
+                                style: GoogleFonts.poppins(
+                                    color: const Color(
+                                      0xffFAAF40,
+                                    ),
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                DateFormat("MMM-dd-yyyy").format(DateTime.parse(widget.date.toString())),
+                                style: GoogleFonts.poppins(
+                                    color: const Color(
+                                      0xffFAAF40,
+                                    ),
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            "Your OrderId: #${widget.orderId.toString()}",
+                            style: GoogleFonts.poppins(
+                                color: const Color(
+                                  0xffFAAF40,
+                                ),
+                                fontWeight: FontWeight.w500),
+                          ),
+                  ),
                 ),
               ],
             ),

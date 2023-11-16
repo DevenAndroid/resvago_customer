@@ -1,27 +1,37 @@
-import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/widget/apptheme.dart';
+import '../../firebase_service/firebase_service.dart';
 import '../../model/menu_model.dart';
+import '../../model/profile_model.dart';
 import '../../model/resturant_model.dart';
-import '../../widget/appassets.dart';
 import '../../widget/common_text_field.dart';
+import '../helper.dart';
 
 class OderScreen extends StatefulWidget {
-  OderScreen({super.key, this.restaurantItem, this.menuList, this.guest, this.slot, required this.date,this.discountValue});
+  OderScreen(
+      {super.key,
+      this.restaurantItem,
+      this.menuList,
+      this.guest,
+      this.slot,
+      required this.date,
+      this.discountValue,
+      required this.lunchSelected});
   final RestaurantModel? restaurantItem;
   final List<MenuData>? menuList;
   DateTime date;
   int? guest;
   String? slot;
+  final bool lunchSelected;
   dynamic discountValue;
   @override
   State<OderScreen> createState() => _OderScreenState();
@@ -32,13 +42,59 @@ class _OderScreenState extends State<OderScreen> {
   List<MenuData>? get menuListData => widget.menuList;
 
   var totalPrice = 0.0;
-  getTotalPrice(){
+  getTotalPrice() {
     totalPrice = 0;
-    for(int i = 0; i< menuListData!.length;i++){
+    for (int i = 0; i < menuListData!.length; i++) {
       totalPrice = totalPrice + double.parse(menuListData![i].qty.toString()) * double.parse(menuListData![i].price);
       log(totalPrice.toString());
-      setState(() {
+      setState(() {});
+    }
+  }
+
+  FirebaseService firebaseService = FirebaseService();
+  ProfileData? profileData;
+  void fetchdata() {
+    FirebaseFirestore.instance
+        .collection("customer_users")
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        if (value.data() == null) return;
+        profileData = ProfileData.fromJson(value.data()!);
+        setState(() {});
+      }
+    });
+  }
+
+  Future<int> order(String vendorId) async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
+    String? fcm = await FirebaseMessaging.instance.getToken();
+    int gg = DateTime.now().millisecondsSinceEpoch;
+    try {
+      await firebaseService
+          .manageOrderForDining(
+              orderId: gg.toString(),
+              lunchSelected: widget.lunchSelected,
+              menuList: menuListData!.where((e) => e.qty > 0).map((e) => e.toMap()).toList(),
+              restaurantInfo: restaurantData!.toJson(),
+              profileData: profileData!.toJson(),
+              vendorId: vendorId,
+              time: gg,
+              fcm: fcm,
+              slot: widget.slot,
+              guest: widget.guest,
+              date: widget.date,
+              total: totalPrice)
+          .then((value) {
+        Helper.hideLoader(loader);
+        return gg;
       });
+      return gg;
+    } catch (e) {
+      Helper.hideLoader(loader);
+      throw Exception(e);
     }
   }
 
@@ -46,8 +102,8 @@ class _OderScreenState extends State<OderScreen> {
   void initState() {
     super.initState();
     getTotalPrice();
+    fetchdata();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +111,9 @@ class _OderScreenState extends State<OderScreen> {
     log(restaurantData!.toJson().toString());
     log(menuListData!.toString());
     return Scaffold(
-        appBar: backAppBar(title: "CheckOut", context: context,
+        appBar: backAppBar(
+          title: "CheckOut",
+          context: context,
         ),
         body: restaurantData != null && menuListData != null
             ? SingleChildScrollView(
@@ -312,21 +370,25 @@ class _OderScreenState extends State<OderScreen> {
                                                       Radius.circular(20),
                                                     )),
                                                 child: InkWell(
-                                                  onTap: (){
-                                                    if(menuListItem.qty<1)return;
-                                                    menuListItem.qty--;
-                                                    getTotalPrice();
-                                                    setState(() {
-
-                                                    });
-                                                  },
-                                                    child: const Icon(Icons.remove,size: 18,)),
+                                                    onTap: () {
+                                                      if (menuListItem.qty == 1) {
+                                                        null;
+                                                      } else {
+                                                        menuListItem.qty--;
+                                                        getTotalPrice();
+                                                      }
+                                                      setState(() {});
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.remove,
+                                                      size: 18,
+                                                    )),
                                               ),
                                               const SizedBox(
                                                 width: 8,
                                               ),
                                               Text(
-                                               menuListItem.qty.toString(),
+                                                menuListItem.qty.toString(),
                                                 style: GoogleFonts.alegreyaSans(
                                                   fontSize: 16,
                                                 ),
@@ -345,12 +407,10 @@ class _OderScreenState extends State<OderScreen> {
                                                           Radius.circular(20),
                                                         )),
                                                     child: InkWell(
-                                                      onTap: (){
+                                                      onTap: () {
                                                         menuListItem.qty++;
                                                         getTotalPrice();
-                                                        setState(() {
-
-                                                        });
+                                                        setState(() {});
                                                       },
                                                       child: const Icon(
                                                         Icons.add,
@@ -603,7 +663,20 @@ class _OderScreenState extends State<OderScreen> {
                       width: size.width,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          order(restaurantData!.docid).then((value) {
+                            FirebaseFirestore.instance
+                                .collection("checkOut")
+                                .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                                .delete();
+                            Get.offAll(ThankuScreen(
+                              date: widget.date.toString(),
+                              guestNo: widget.guest,
+                              orderType: "Dining",
+                              orderId: value.toString(),
+                            ));
+                          });
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.primaryColor,
                           shape: RoundedRectangleBorder(

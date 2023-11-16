@@ -1,14 +1,18 @@
+import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:resvago_customer/widget/appassets.dart';
-
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import '../model/profile_model.dart';
+import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
 import '../widget/common_text_field.dart';
 import 'helper.dart';
@@ -27,6 +31,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   ProfileData profileData = ProfileData();
+  String code = "+91";
+  File categoryFile = File("");
+
   void fetchdata() {
     FirebaseFirestore.instance
         .collection("customer_users")
@@ -36,10 +43,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
-        mobileController.text = profileData.mobileNumber.toString();
-        firstNameController.text = profileData.userName.toString();
-        lastNameController.text = profileData.userName.toString();
-        emailController.text = profileData.email.toString();
+        categoryFile = File(profileData.profile_image.toString());
+        mobileController.text = (profileData.mobileNumber ?? "").toString();
+        firstNameController.text = (profileData.userName ?? "").toString();
+        lastNameController.text = (profileData.userName ?? "").toString();
+        emailController.text = (profileData.email ?? "").toString();
         setState(() {});
       }
     });
@@ -48,13 +56,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> updateProfileToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
+    String imageUrlProfile = categoryFile.path;
+    if (!categoryFile.path.contains("http")) {
+      UploadTask uploadTask = FirebaseStorage.instance
+          .ref("profileImage/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+          .child("profile_image")
+          .putFile(categoryFile);
+      TaskSnapshot snapshot = await uploadTask;
+      imageUrlProfile = await snapshot.ref.getDownloadURL();
+    }
     try {
       await FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).update({
         "userName": firstNameController.text.trim(),
         "email": emailController.text.trim(),
-        "mobileNumber": mobileController.text.trim(),
+        "mobileNumber": code + mobileController.text.trim(),
+        "profile_image": imageUrlProfile
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       Helper.hideLoader(loader);
+      fetchdata();
     } catch (e) {
       Helper.hideLoader(loader);
       throw Exception(e);
@@ -94,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Stack(
                       children: [
                         Container(
-                            padding: const EdgeInsets.only(bottom: 50),
+                            padding: const EdgeInsets.only(bottom: 30),
                             clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(border: Border.all(color: Colors.white)),
                             child: Image.asset('assets/images/profilebg.png')),
@@ -108,47 +127,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10000),
                                 child: Container(
-                                    height: 100,
-                                    width: 100,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffFAAF40),
-                                      border: Border.all(color: const Color(0xff3B5998), width: 6),
-                                      borderRadius: BorderRadius.circular(5000),
-                                      // color: Colors.brown
-                                    ),
-                                    child: Image.asset(
-                                      'assets/images/man.png',
-                                      height: 50,
+                                  height: 100,
+                                  width: 100,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffFAAF40),
+                                    border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                    borderRadius: BorderRadius.circular(5000),
+                                    // color: Colors.brown
+                                  ),
+                                  child: Image.file(
+                                    categoryFile,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => CachedNetworkImage(
                                       fit: BoxFit.cover,
-                                    )),
+                                      imageUrl: categoryFile.path,
+                                      height: AddSize.size30,
+                                      width: AddSize.size30,
+                                      errorWidget: (_, __, ___) => const Icon(
+                                        Icons.person,
+                                        size: 60,
+                                      ),
+                                      placeholder: (_, __) => const SizedBox(),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
                         ),
                         Positioned(
                           top: 150,
-                          left: 210,
-                          right: 122,
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff04666E),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 15,
+                          left: 215,
+                          right: 130,
+                          child: GestureDetector(
+                            onTap: () {
+                              showActionSheet(context);
+                            },
+                            child: Container(
+                              height: 30,
+                              width: 30,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                color: const Color(0xff04666E),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                                size: 15,
+                              ),
                             ),
                           ),
                         )
                       ],
                     ),
                     Align(
-                      alignment: Alignment.center,
+                      alignment: Alignment.topCenter,
                       child: Text(
                         profileData.userName.toString(),
                         style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.bold, fontSize: 20),
@@ -178,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           RegisterTextFieldWidget(
                               controller: firstNameController,
-                              validator: RequiredValidator(errorText: 'Please enter your First name'),
+                              validator: RequiredValidator(errorText: 'Please enter your First name').call,
                               hint: "First"),
                           const SizedBox(
                             height: 20,
@@ -192,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           RegisterTextFieldWidget(
                               controller: lastNameController,
-                              validator: RequiredValidator(errorText: 'Please enter your Last name '),
+                              validator: RequiredValidator(errorText: 'Please enter your Last name ').call,
                               // keyboardType: TextInputType.number,
                               // textInputAction: TextInputAction.next,
                               hint: "Last name"),
@@ -207,14 +242,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: 10,
                           ),
                           RegisterTextFieldWidget(
+                            readOnly: true,
                             controller: emailController,
                             validator: MultiValidator([
                               RequiredValidator(errorText: 'Please enter your email'),
                               EmailValidator(errorText: 'Enter a valid email address'),
-                            ]),
+                            ]).call,
                             keyboardType: TextInputType.emailAddress,
                             // textInputAction: TextInputAction.next,
-                            hint: "piyush@yopmail.com",
+                            hint: "abc@gmail.com",
                           ),
                           const SizedBox(
                             height: 20,
@@ -227,13 +263,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: 10,
                           ),
                           RegisterTextFieldWidget(
-                            controller: mobileController,
-                            length: 10,
-                            validator: RequiredValidator(errorText: 'Please enter your Mobile Number '),
-                            keyboardType: TextInputType.number,
-                            // textInputAction: TextInputAction.next,
-                            hint: "Mobile Number",
-                          ),
+                              readOnly: true,
+                              controller: mobileController,
+                              validator: RequiredValidator(errorText: 'Please enter your mobile number ').call,
+                              keyboardType: TextInputType.number,
+                              // textInputAction: TextInputAction.next,
+                              hint: "Mobile number"),
                           const SizedBox(
                             height: 20,
                           ),
@@ -257,6 +292,100 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void showActionSheet(BuildContext context) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text(
+          'Select Picture from',
+          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+        ),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 50).then((value) async {
+                CroppedFile? croppedFile = await ImageCropper().cropImage(
+                  sourcePath: value.path,
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
+                  uiSettings: [
+                    AndroidUiSettings(
+                        toolbarTitle: 'Cropper',
+                        toolbarColor: Colors.deepOrange,
+                        toolbarWidgetColor: Colors.white,
+                        initAspectRatio: CropAspectRatioPreset.original,
+                        lockAspectRatio: false),
+                    IOSUiSettings(
+                      title: 'Cropper',
+                    ),
+                    WebUiSettings(
+                      context: context,
+                    ),
+                  ],
+                );
+                if (croppedFile != null) {
+                  categoryFile = File(croppedFile.path);
+                  setState(() {});
+                }
+                Get.back();
+              });
+            },
+            child: const Text("Camera"),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 50).then((value) async {
+                CroppedFile? croppedFile = await ImageCropper().cropImage(
+                  sourcePath: value.path,
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
+                  uiSettings: [
+                    AndroidUiSettings(
+                        toolbarTitle: 'Cropper',
+                        toolbarColor: Colors.deepOrange,
+                        toolbarWidgetColor: Colors.white,
+                        initAspectRatio: CropAspectRatioPreset.original,
+                        lockAspectRatio: false),
+                    IOSUiSettings(
+                      title: 'Cropper',
+                    ),
+                    WebUiSettings(
+                      context: context,
+                    ),
+                  ],
+                );
+                if (croppedFile != null) {
+                  categoryFile = File(croppedFile.path);
+                  setState(() {});
+                }
+
+                Get.back();
+              });
+            },
+            child: const Text('Gallery'),
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('Cancel'),
+          ),
+        ],
       ),
     );
   }
