@@ -17,6 +17,7 @@ class FirebaseService {
     dynamic email,
     dynamic docid,
     dynamic mobileNumber,
+    dynamic password,
     dynamic userID,
   }) async {
     try {

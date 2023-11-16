@@ -32,6 +32,36 @@
   <title>resvago_customer</title>
   <link rel="manifest" href="manifest.json">
 
+
+
+  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js"></script>
+
+  <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+ const firebaseConfig = {
+    apiKey: "AIzaSyBCol-O-qoqmOCLI_aRN0PeJ5KPvGPVQB8",
+    authDomain: "resvago-b7bd4.firebaseapp.com",
+    databaseURL: "https://resvago-b7bd4-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "resvago-b7bd4",
+    storageBucket: "resvago-b7bd4.appspot.com",
+    messagingSenderId: "671324938172",
+    appId: "1:671324938172:web:d017a2cf72416c24aed5b9",
+    measurementId: "G-9HV9Z78N42"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>
+
+
+
   <script>
     // The value below is injected by flutter build, do not touch.
     const serviceWorkerVersion = null;

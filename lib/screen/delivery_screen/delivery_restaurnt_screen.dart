@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -87,7 +87,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
   final radius = BehaviorSubject<double>.seeded(1.0);
   final _firestore = FirebaseFirestore.instance;
   Stream<List<DocumentSnapshot>>? stream;
-  Geoflutterfire? geo;
+  GeoFlutterFire? geo;
 
   String _calculateDistance({dynamic lat1, dynamic lon1}) {
     if (kDebugMode) {
@@ -206,7 +206,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
   void initState() {
     super.initState();
     wishListController.startListener();
-    geo = Geoflutterfire();
+    geo = GeoFlutterFire();
     GeoFirePoint center = geo!.point(
         latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
     stream = radius.switchMap((rad) {
