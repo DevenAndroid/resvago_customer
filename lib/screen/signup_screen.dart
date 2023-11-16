@@ -68,7 +68,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
     final QuerySnapshot phoneResult = await FirebaseFirestore.instance
         .collection('customer_users')
-        .where('mobileNumber', isEqualTo: phoneNumberController.text.trim())
+        .where('mobileNumber', isEqualTo: code + phoneNumberController.text.trim())
         .get();
 
     if (phoneResult.docs.isNotEmpty) {

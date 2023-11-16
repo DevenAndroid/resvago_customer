@@ -22,7 +22,6 @@ class FirebaseService {
     try {
       CollectionReference collection = FirebaseFirestore.instance.collection('customer_users');
       var DocumentReference = collection.doc(mobileNumber);
-
       DocumentReference.set({
         "userName": userName,
         "email": email,
