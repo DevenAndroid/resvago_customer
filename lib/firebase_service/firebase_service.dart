@@ -29,6 +29,8 @@ class FirebaseService {
         "docid": docid,
         "mobileNumber": mobileNumber,
         "userID": mobileNumber,
+        "profile_image":"",
+        "password": "123456",
       }).then((value) {});
     } catch (e) {
       throw Exception(e);

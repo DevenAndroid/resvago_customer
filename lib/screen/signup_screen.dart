@@ -41,16 +41,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    await firebaseService
-        .manageRegisterUsers(
-      userName: userNameController.text.trim(),
-      email: emailController.text.trim(),
-      mobileNumber: code + phoneNumberController.text.trim(),
-    )
-        .then((value) {
-      Helper.hideLoader(loader);
-      Get.toNamed(MyRouters.loginScreen);
-    });
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+        email: emailController.text.trim(), password: "123456");
+    if(FirebaseAuth.instance.currentUser != null) {
+      await firebaseService
+          .manageRegisterUsers(
+        userName: userNameController.text.trim(),
+        email: emailController.text.trim(),
+        mobileNumber: code + phoneNumberController.text.trim(),
+      )
+          .then((value) {
+        Helper.hideLoader(loader);
+        Get.toNamed(MyRouters.loginScreen);
+      });
+    }
   }
 
   void checkEmailInFirestore() async {

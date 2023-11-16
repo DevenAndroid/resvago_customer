@@ -1,7 +1,5 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:email_auth/email_auth.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +24,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String verificationId = "";
+  bool showOtpField = false;
+  EmailOTP myauth = EmailOTP();
   final _formKey = GlobalKey<FormState>();
   final loginController = Get.put(LoginController());
   void checkPhoneNumberInFirestore() async {
@@ -35,21 +35,27 @@ class _LoginScreenState extends State<LoginScreen> {
         .where('mobileNumber', isEqualTo: code + loginController.mobileController.text.trim())
         .get();
     if (result.docs.isNotEmpty) {
-      login();
+      print(result.docs.first.data());
+      Map kk = result.docs.first.data() as Map;
+      print(kk["email"]);
+      login(kk["email"].toString());
     } else {
       Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
     }
   }
 
-  login() async {
-    log(code + loginController.mobileController.text.trim());
+  login(String email) async {
+    await FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: "123456");
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
       final String phoneNumber = code + loginController.mobileController.text.trim();
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationCompleted: (PhoneAuthCredential credential) {
+          log("Verification Failed: $credential");
+        },
         verificationFailed: (FirebaseAuthException e) {
           log("Verification Failed: $e");
         },
@@ -72,61 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> sendOtpEmail(String email) async {
-    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('sendOtpEmail');
-    try {
-      final result = await callable.call({'email': email});
-      print(result.data);
-    } catch (error) {
-      print('Error sending OTP email: $error');
-    }
-  }
-
-  // Future<void> sendVerificationEmail() async {
-  //   try {
-  //     print('Verification email sent.');
-  //     User? user = FirebaseAuth.instance.currentUser;
-  //     print('Verification email sent.${user!.phoneNumber}');
-  //     if (user != null && !user.emailVerified) {
-  //       await user.sendEmailVerification();
-  //       print('Verification email sent.');
-  //     }
-  //   } catch (error) {
-  //     print('Error sending verification email: $error');
-  //   }
-  // }
-  Future<void> sendVerificationEmail() async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-
-      if (user != null) {
-        await user.sendEmailVerification();
-        print('Verification email sent to ${user.email}');
-      } else {
-        print('User not signed in.');
-      }
-    } catch (error) {
-      print('Error sending verification email: $error');
-    }
-  }
-
-  void checkEmailVerification() {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      if (user.emailVerified) {
-        print('Email is verified.');
-        // Proceed with your application logic
-      } else {
-        print('Email is not verified.');
-        // Show a message to the user to check their email for verification
-      }
-    } else {
-      print('User not signed in.');
-    }
-  }
-
-  EmailOTP myauth = EmailOTP();
 
   String code = "+91";
   @override
@@ -283,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       appEmail: "contact@hdevcoder.com",
                                       appName: "Email OTP",
                                       userEmail: "anjalikumari5845@gmail.com",
-                                      otpLength:6,
+                                      otpLength: 6,
                                       otpType: OTPType.digitsOnly);
                                   if (await myauth.sendOTP() == true) {
                                     showToast("OTP has been sent");
@@ -319,9 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () {
-                                  sendVerificationEmail();
-                                },
+                                onTap: () {},
                                 child: Container(
                                   width: 152,
                                   height: 60,

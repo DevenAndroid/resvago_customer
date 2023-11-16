@@ -225,20 +225,11 @@ class _HomePageState extends State<HomePage> {
     getSliders();
     getVendorCategories();
     getRestaurantList();
-    getCheckOutData();
     locationController.getLocation();
     locationController.checkGps(context).then((value) {});
   }
 
   int currentDrawer = 0;
-  CheckOutModel cartModel = CheckOutModel();
-  getCheckOutData() {
-    FirebaseFirestore.instance.collection("checkOut").doc(FirebaseAuth.instance.currentUser!.phoneNumber).get().then((value) {
-      log("checkOut${jsonEncode(value.data())}");
-      cartModel = CheckOutModel.fromJson(value.data() ?? {});
-      setState(() {});
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -492,15 +483,38 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                Get.toNamed(MyRouters.cartScreen);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  'assets/images/shoppinbag.png',
-                  height: 30,
+            Badge(
+              label: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('vendor_menu')
+                    .where('userID', isLessThan: FirebaseAuth.instance.currentUser!.phoneNumber)
+                    .snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data == null) {
+                      return const Text(" 0 ");
+                    }
+                    if (snapshot.data!.docs.isEmpty) {
+                      return const Text(" 0 ");
+                    }
+                    CheckOutModel cartData = CheckOutModel.fromJson(snapshot.data!.docs.first.data());
+                    return  Text(" ${cartData.menuList!.length}");
+                  }
+                  return const Center(child: Text(" 0 "));
+                },
+              ),
+              backgroundColor: Colors.black,
+              padding: EdgeInsets.zero,
+              child: GestureDetector(
+                onTap: () {
+                  Get.toNamed(MyRouters.cartScreen);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/images/shoppinbag.png',
+                    height: 30,
+                  ),
                 ),
               ),
             ),
@@ -774,7 +788,9 @@ class _HomePageState extends State<HomePage> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          MaxRatingScreen(docId: restaurantListItem.docid,)
+                                          MaxRatingScreen(
+                                            docId: restaurantListItem.docid,
+                                          )
                                         ],
                                       ),
                                     ),
@@ -917,12 +933,12 @@ class _HomePageState extends State<HomePage> {
                             child: InkWell(
                               onTap: () {
                                 Get.to(() => SingleRestaurantsScreen(
-                                  restaurantItem: restaurantListItem,
-                                  distance: _calculateDistance(
-                                    lat1: restaurantListItem.latitude.toString(),
-                                    lon1: restaurantListItem.longitude.toString(),
-                                  ),
-                                ));
+                                      restaurantItem: restaurantListItem,
+                                      distance: _calculateDistance(
+                                        lat1: restaurantListItem.latitude.toString(),
+                                        lon1: restaurantListItem.longitude.toString(),
+                                      ),
+                                    ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -970,7 +986,9 @@ class _HomePageState extends State<HomePage> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          MaxRatingScreen(docId: restaurantListItem.docid,)
+                                          MaxRatingScreen(
+                                            docId: restaurantListItem.docid,
+                                          )
                                         ],
                                       ),
                                     ),
