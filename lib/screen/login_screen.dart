@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
   login(String email) async {
     await FirebaseAuth.instance.signOut();
     await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: "123456");
