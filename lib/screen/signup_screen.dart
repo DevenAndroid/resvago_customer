@@ -50,6 +50,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         userName: userNameController.text.trim(),
         email: emailController.text.trim(),
         mobileNumber: code + phoneNumberController.text.trim(),
+        password: "123456"
       )
           .then((value) {
         Helper.hideLoader(loader);
