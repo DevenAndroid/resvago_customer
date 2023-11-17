@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -96,18 +97,15 @@ class _HomePageState extends State<HomePage> {
 
   String _calculateDistance({dynamic lat1, dynamic lon1}) {
     if (kDebugMode) {
-      print(double.tryParse(locationController.lat.toString()));
+      print("fsdfsdf${double.tryParse(locationController.lat.toString())}");
     }
     if (kDebugMode) {
-      print(double.tryParse(locationController.long.toString()));
+      print("fsdfsdf${double.tryParse(locationController.long.toString())}");
     }
-    if (double.tryParse(lat1) == null ||
-        double.tryParse(lon1) == null ||
-        double.tryParse(locationController.lat.toString()) == null ||
+    if (double.tryParse(lat1) == null || double.tryParse(lon1) == null || double.tryParse(locationController.lat.toString()) == null ||
         double.tryParse(locationController.long.toString()) == null) {
       return "Not Available";
     }
-
     double distanceInMeters = Geolocator.distanceBetween(double.parse(lat1), double.parse(lon1),
         double.parse(locationController.lat.toString()), double.parse(locationController.long.toString()));
     if ((distanceInMeters / 1000) < 1) {
@@ -123,7 +121,7 @@ class _HomePageState extends State<HomePage> {
     try {
       await FirebaseFirestore.instance
           .collection('wishlist')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection("wishlist_list")
           .doc()
           .set({
@@ -149,7 +147,7 @@ class _HomePageState extends State<HomePage> {
           .manageWishlist(
               time: DateTime.now().millisecondsSinceEpoch,
               wishlistId: DateTime.now().microsecondsSinceEpoch.toString(),
-              userId: FirebaseAuth.instance.currentUser!.phoneNumber,
+              userId: FirebaseAuth.instance.currentUser!.uid,
               vendorId: vendorId)
           .then((value) {
         Get.back();
@@ -178,7 +176,7 @@ class _HomePageState extends State<HomePage> {
   Future getWishList() async {
     await FirebaseFirestore.instance
         .collection('wishlist')
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("wishlist_list")
         .get()
         .then((value) {
@@ -194,11 +192,7 @@ class _HomePageState extends State<HomePage> {
 
   ProfileData profileData = ProfileData();
   void getProfileData() {
-    FirebaseFirestore.instance
-        .collection("customer_users")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
@@ -210,6 +204,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    locationController.checkGps(context).then((value) {});
+    locationController.getLocation();
     wishListController.startListener();
     geo = Geoflutterfire();
     GeoFirePoint center = geo!.point(
@@ -225,8 +221,6 @@ class _HomePageState extends State<HomePage> {
     getSliders();
     getVendorCategories();
     getRestaurantList();
-    locationController.getLocation();
-    locationController.checkGps(context).then((value) {});
   }
 
   int currentDrawer = 0;
@@ -260,38 +254,30 @@ class _HomePageState extends State<HomePage> {
                           // Get.to(MyProfile());
                         },
                         child: Card(
-                            elevation: 1,
-                            shape: const CircleBorder(),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                          elevation: 1,
+                          shape: const CircleBorder(),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: SizedBox(
+                            height: 100,
+                            width: 100,
                             child: Container(
-                                margin: const EdgeInsets.all(4),
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                decoration: const ShapeDecoration(
-                                  shape: CircleBorder(),
-                                  color: Colors.white,
+                              decoration:
+                                  BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: profileData.profile_image.toString(),
+                                  errorWidget: (_, __, ___) => const Icon(Icons.person),
+                                  placeholder: (_, __) => const SizedBox(),
                                 ),
-                                child: Image.asset(
-                                  AppAssets.profileImage,
-                                  height: 100,
-                                )
-                                //         CachedNetworkImage(
-                                //     imageUrl:
-                                //     profileController.isDataLoading.value
-                                //     ? (profileController.model.value.data!
-                                //         .profileImage ??
-                                //         "")
-                                //         .toString()
-                                //       : "",
-                                //   height: screenSize.height * 0.12,
-                                //   width: screenSize.height * 0.12,
-                                //   errorWidget: (_, __, ___) => const SizedBox(),
-                                //   placeholder: (_, __) => const SizedBox(),
-                                //   fit: BoxFit.cover,
-                                // )
-                                )),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       SizedBox(
-                        height: size.height * 0.02,
+                        height: size.height * 0.01,
                       ),
                       Text(profileData.userName ?? "",
                           textAlign: TextAlign.center,
@@ -433,9 +419,21 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 // profileController.scaffoldKey.currentState!.openDrawer();
               },
-              child: Image.asset(
-                'assets/images/customerprofile.png',
+              child: SizedBox(
                 height: 40,
+                width: 40,
+                child: Container(
+                  decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: profileData.profile_image.toString(),
+                      errorWidget: (_, __, ___) => const Icon(Icons.person),
+                      placeholder: (_, __) => const SizedBox(),
+                    ),
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -487,7 +485,7 @@ class _HomePageState extends State<HomePage> {
               label: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('vendor_menu')
-                    .where('userID', isLessThan: FirebaseAuth.instance.currentUser!.phoneNumber)
+                    .where('userID', isLessThan: FirebaseAuth.instance.currentUser!.uid)
                     .snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                   if (snapshot.hasData) {
@@ -498,7 +496,7 @@ class _HomePageState extends State<HomePage> {
                       return const Text(" 0 ");
                     }
                     CheckOutModel cartData = CheckOutModel.fromJson(snapshot.data!.docs.first.data());
-                    return  Text(" ${cartData.menuList!.length}");
+                    return Text(" ${cartData.menuList!.length}");
                   }
                   return const Center(child: Text(" 0 "));
                 },
@@ -789,7 +787,7 @@ class _HomePageState extends State<HomePage> {
                                             width: 10,
                                           ),
                                           MaxRatingScreen(
-                                            docId: restaurantListItem.docid,
+                                            docId: restaurantListItem.userID,
                                           )
                                         ],
                                       ),
@@ -801,7 +799,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
-                                          PreparationTimeScreen(docId: restaurantListItem.docid),
+                                          PreparationTimeScreen(docId: restaurantListItem.userID),
                                           const SizedBox(
                                             width: 3,
                                           ),
@@ -842,7 +840,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Row(
                                         children: [
-                                          MaxDiscountScreen(docId: restaurantListItem.docid)
+                                          MaxDiscountScreen(docId: restaurantListItem.userID)
                                           // Text(
                                           //   "  40% off up to \$100",
                                           //   style: GoogleFonts.poppins(
@@ -987,7 +985,7 @@ class _HomePageState extends State<HomePage> {
                                             width: 10,
                                           ),
                                           MaxRatingScreen(
-                                            docId: restaurantListItem.docid,
+                                            docId: restaurantListItem.userID,
                                           )
                                         ],
                                       ),
@@ -999,7 +997,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
-                                          PreparationTimeScreen(docId: restaurantListItem.docid),
+                                          PreparationTimeScreen(docId: restaurantListItem.userID),
                                           const SizedBox(
                                             width: 3,
                                           ),
@@ -1040,11 +1038,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Row(
                                         children: [
-                                          SvgPicture.asset(
-                                            AppAssets.vector,
-                                            height: 16,
-                                          ),
-                                          MaxDiscountScreen(docId: restaurantListItem.docid)
+                                          MaxDiscountScreen(docId: restaurantListItem.userID)
                                         ],
                                       ),
                                     ),

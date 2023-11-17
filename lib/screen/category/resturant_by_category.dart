@@ -120,7 +120,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xffFFFFFF),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Column(

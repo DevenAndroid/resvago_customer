@@ -41,17 +41,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-        email: emailController.text.trim(), password: "123456");
-    if(FirebaseAuth.instance.currentUser != null) {
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: "123456");
+    if (FirebaseAuth.instance.currentUser != null) {
       await firebaseService
           .manageRegisterUsers(
-        userName: userNameController.text.trim(),
-        email: emailController.text.trim(),
-        mobileNumber: code + phoneNumberController.text.trim(),
-        password: "123456"
-      )
+              userName: userNameController.text.trim(),
+              email: emailController.text.trim(),
+              mobileNumber: code + phoneNumberController.text.trim(),
+              password: "123456")
           .then((value) {
         Helper.hideLoader(loader);
         Get.toNamed(MyRouters.loginScreen);
@@ -155,7 +152,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               textInputAction: TextInputAction.next,
                               hint: 'Enter your Email',
                               keyboardType: TextInputType.text,
-                              validator: MultiValidator([EmailValidator(errorText: "Valid Email is required"),
+                              validator: MultiValidator([
+                                EmailValidator(errorText: "Valid Email is required"),
                                 RequiredValidator(errorText: "Email is required")
                               ]).call),
                           const SizedBox(
@@ -176,24 +174,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             flagsButtonPadding: const EdgeInsets.all(8),
                             dropdownIconPosition: IconPosition.trailing,
                             cursorColor: Colors.white,
-                            dropdownIcon: const Icon(Icons.arrow_drop_down_rounded,color: Colors.white,),
-                            dropdownTextStyle:const TextStyle(color: Colors.white),
-                            style:  const TextStyle(color: Colors.white),
-                            controller:phoneNumberController,
+                            dropdownIcon: const Icon(
+                              Icons.arrow_drop_down_rounded,
+                              color: Colors.white,
+                            ),
+                            dropdownTextStyle: const TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
+                            controller: phoneNumberController,
                             decoration: const InputDecoration(
-                                hintStyle:  TextStyle(color: Colors.white),
+                                hintStyle: TextStyle(color: Colors.white),
                                 labelText: 'Phone Number',
                                 labelStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(),
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white)
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white)
-                                )
-                            ),
+                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white))),
                             initialCountryCode: 'IN',
                             onChanged: (phone) {
                               code = phone.countryCode.toString();
@@ -229,10 +225,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           CommonButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                if(value == true){
+                                if (value == true) {
                                   checkEmailInFirestore();
-                                }
-                                else{
+                                } else {
                                   showToast("Please accept term and conditions");
                                 }
                               }

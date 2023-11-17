@@ -88,13 +88,12 @@ class _MaxDiscountScreenState extends State<MaxDiscountScreen> {
           CouponData couponData = CouponData.fromMap(snapshot.data!.docs.first.data());
           return Row(
             children: [
-              const SizedBox(width: 5),
               SvgPicture.asset(
                 AppAssets.vector,
                 height: 16,
               ),
               Text(
-                "${couponData.discount}% Off",
+                " ${couponData.discount}% Off",
                 // schedule.status == true ? "Open (${schedule.startTime} to ${schedule.endTime})" : "Closed",
                 style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
               ),

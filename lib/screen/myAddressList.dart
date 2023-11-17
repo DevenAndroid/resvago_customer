@@ -187,7 +187,7 @@ class _MyAddressListState extends State<MyAddressList> {
                                                                 onPressed: () {
                                                                   FirebaseFirestore.instance
                                                                       .collection('Address')
-                                                                      .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                                                                      .doc(FirebaseAuth.instance.currentUser!.uid)
                                                                       .collection('TotalAddress')
                                                                       .doc(item.docid)
                                                                       .delete()
@@ -261,7 +261,7 @@ class _MyAddressListState extends State<MyAddressList> {
   Stream<List<AddressModel>> getPagesStream() {
     return  FirebaseFirestore.instance
         .collection('Address')
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('TotalAddress')
         .orderBy('time', descending: isDescendingOrder)
         .snapshots()

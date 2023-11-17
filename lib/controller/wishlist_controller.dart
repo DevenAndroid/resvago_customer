@@ -14,7 +14,7 @@ class WishListController extends GetxController{
   startListener(){
     streamSubscription ??= FirebaseFirestore.instance
         .collection("wishlist")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("my_wishlist").snapshots().listen(updateChanges);
   }
   
@@ -36,7 +36,7 @@ class WishListController extends GetxController{
   Future addToWishList({required Map<String, dynamic> restaurantInfo, required String docId}) async {
     await FirebaseFirestore.instance
         .collection("wishlist")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("my_wishlist")
         .doc(docId)
         .set(restaurantInfo);
@@ -45,7 +45,7 @@ class WishListController extends GetxController{
   Future removeFromWishList({required String docId}) async {
     await FirebaseFirestore.instance
         .collection("wishlist")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("my_wishlist")
         .doc(docId).delete();
   }

@@ -40,7 +40,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
   getMenuList() {
     FirebaseFirestore.instance
         .collection("vendor_menu")
-        .where("vendorId", isEqualTo: widget.restaurantItem!.docid)
+        .where("vendorId", isEqualTo: widget.restaurantItem!.userID)
         .get()
         .then((value) {
       for (var element in value.docs) {
@@ -56,7 +56,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
   getReviewList() {
     FirebaseFirestore.instance
         .collection("Review")
-        .where("vendorID", isEqualTo: widget.restaurantItem!.docid)
+        .where("vendorID", isEqualTo: widget.restaurantItem!.userID)
         .get()
         .then((value) {
       for (var element in value.docs) {
@@ -64,7 +64,6 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
         reviewModel ??= [];
         reviewModel!.add(ReviewModel.fromJson(gg));
       }
-      log(jsonEncode(value.docs.first.data()));
       setState(() {});
     });
   }

@@ -35,11 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   File categoryFile = File("");
 
   void fetchdata() {
-    FirebaseFirestore.instance
-        .collection("customer_users")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
@@ -59,14 +55,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String imageUrlProfile = categoryFile.path;
     if (!categoryFile.path.contains("http")) {
       UploadTask uploadTask = FirebaseStorage.instance
-          .ref("profileImage/${FirebaseAuth.instance.currentUser!.phoneNumber}")
+          .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
           .child("profile_image")
           .putFile(categoryFile);
       TaskSnapshot snapshot = await uploadTask;
       imageUrlProfile = await snapshot.ref.getDownloadURL();
     }
     try {
-      await FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.phoneNumber).update({
+      await FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).update({
         "userName": firstNameController.text.trim(),
         "email": emailController.text.trim(),
         "mobileNumber": code + mobileController.text.trim(),
@@ -158,8 +154,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Positioned(
                           top: 150,
-                          left: 215,
-                          right: 130,
+                          left: 210,
+                          right: 120,
                           child: GestureDetector(
                             onTap: () {
                               showActionSheet(context);
@@ -205,7 +201,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'First Name',
+                            'Name',
                             style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                           ),
                           const SizedBox(
@@ -213,24 +209,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           RegisterTextFieldWidget(
                               controller: firstNameController,
-                              validator: RequiredValidator(errorText: 'Please enter your First name').call,
-                              hint: "First"),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Last name",
-                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          RegisterTextFieldWidget(
-                              controller: lastNameController,
-                              validator: RequiredValidator(errorText: 'Please enter your Last name ').call,
-                              // keyboardType: TextInputType.number,
-                              // textInputAction: TextInputAction.next,
-                              hint: "Last name"),
+                              validator: RequiredValidator(errorText: 'Please enter your name').call,
+                              hint: "Name"),
+                          // const SizedBox(
+                          //   height: 20,
+                          // ),
+                          // Text(
+                          //   "Last name",
+                          //   style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                          // ),
+                          // const SizedBox(
+                          //   height: 10,
+                          // ),
+                          // RegisterTextFieldWidget(
+                          //     controller: lastNameController,
+                          //     validator: RequiredValidator(errorText: 'Please enter your Last name ').call,
+                          //     // keyboardType: TextInputType.number,
+                          //     // textInputAction: TextInputAction.next,
+                          //     hint: "Last name"),
                           const SizedBox(
                             height: 20,
                           ),
@@ -308,32 +304,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.camera, imageQuality: 50).then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  categoryFile = File(croppedFile.path);
+                // CroppedFile? croppedFile = await ImageCropper().cropImage(
+                //   sourcePath: value.path,
+                //   aspectRatioPresets: [
+                //     CropAspectRatioPreset.square,
+                //     CropAspectRatioPreset.ratio3x2,
+                //     CropAspectRatioPreset.original,
+                //     CropAspectRatioPreset.ratio4x3,
+                //     CropAspectRatioPreset.ratio16x9
+                //   ],
+                //   uiSettings: [
+                //     AndroidUiSettings(
+                //         toolbarTitle: 'Cropper',
+                //         toolbarColor: Colors.deepOrange,
+                //         toolbarWidgetColor: Colors.white,
+                //         initAspectRatio: CropAspectRatioPreset.ratio4x3,
+                //         lockAspectRatio: false),
+                //     IOSUiSettings(
+                //       title: 'Cropper',
+                //     ),
+                //     WebUiSettings(
+                //       context: context,
+                //     ),
+                //   ],
+                // );
+                if (value != null) {
+                  categoryFile = File(value.path);
                   setState(() {});
                 }
                 Get.back();
@@ -344,32 +340,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
           CupertinoActionSheetAction(
             onPressed: () {
               Helper.addImagePicker(imageSource: ImageSource.gallery, imageQuality: 50).then((value) async {
-                CroppedFile? croppedFile = await ImageCropper().cropImage(
-                  sourcePath: value.path,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  uiSettings: [
-                    AndroidUiSettings(
-                        toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.deepOrange,
-                        toolbarWidgetColor: Colors.white,
-                        initAspectRatio: CropAspectRatioPreset.original,
-                        lockAspectRatio: false),
-                    IOSUiSettings(
-                      title: 'Cropper',
-                    ),
-                    WebUiSettings(
-                      context: context,
-                    ),
-                  ],
-                );
-                if (croppedFile != null) {
-                  categoryFile = File(croppedFile.path);
+                // CroppedFile? croppedFile = await ImageCropper().cropImage(
+                //   sourcePath: value.path,
+                //   aspectRatioPresets: [
+                //     CropAspectRatioPreset.square,
+                //     CropAspectRatioPreset.ratio3x2,
+                //     CropAspectRatioPreset.original,
+                //     CropAspectRatioPreset.ratio4x3,
+                //     CropAspectRatioPreset.ratio16x9
+                //   ],
+                //   uiSettings: [
+                //     AndroidUiSettings(
+                //         toolbarTitle: 'Cropper',
+                //         toolbarColor: Colors.deepOrange,
+                //         toolbarWidgetColor: Colors.white,
+                //         initAspectRatio: CropAspectRatioPreset.ratio4x3,
+                //         lockAspectRatio: false),
+                //     IOSUiSettings(
+                //       title: 'Cropper',
+                //     ),
+                //     WebUiSettings(
+                //       context: context,
+                //     ),
+                //   ],
+                // );
+                if (value != null) {
+                  categoryFile = File(value.path);
                   setState(() {});
                 }
 

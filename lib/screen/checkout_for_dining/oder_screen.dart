@@ -56,7 +56,7 @@ class _OderScreenState extends State<OderScreen> {
   void fetchdata() {
     FirebaseFirestore.instance
         .collection("customer_users")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
       if (value.exists) {
@@ -667,7 +667,7 @@ class _OderScreenState extends State<OderScreen> {
                           order(restaurantData!.docid).then((value) {
                             FirebaseFirestore.instance
                                 .collection("checkOut")
-                                .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
                                 .delete();
                             Get.offAll(ThankuScreen(
                               date: widget.date.toString(),
