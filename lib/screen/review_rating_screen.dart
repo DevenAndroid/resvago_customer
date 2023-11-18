@@ -32,9 +32,10 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
   final formKey = GlobalKey<FormState>();
 
   void checkFirstore() async {
-    final result =
-    await  FirebaseFirestore.instance
-        .collection('Review').where('userID', isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber).get();
+    final result = await FirebaseFirestore.instance
+        .collection('Review')
+        .where('userID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
 
     if (result.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Review already added');
@@ -44,10 +45,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
   }
 
   Addreviewdatatofirebase() {
-    FirebaseFirestore.instance
-        .collection('Review')
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-        .set({
+    FirebaseFirestore.instance.collection('Review').doc(FirebaseAuth.instance.currentUser!.uid).set({
       "fullRating": fullRating,
       "foodQualityValue": foodQualityValue,
       "foodQuantityValue": foodQuantityValue,
@@ -56,7 +54,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
       "about": aboutController.text,
       "time": DateTime.now().millisecondsSinceEpoch.toString(),
       "userName": userName,
-      "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
+      "userID": FirebaseAuth.instance.currentUser!.uid,
       "vendorID": widget.vendorId,
       "orderID": widget.orderId,
     }).then((value) {
@@ -68,7 +66,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
   Future<String> getUserName() async {
     try {
       DocumentSnapshot userDoc =
-          await FirebaseFirestore.instance.collection('customer_users').doc(FirebaseAuth.instance.currentUser!.phoneNumber).get();
+          await FirebaseFirestore.instance.collection('customer_users').doc(FirebaseAuth.instance.currentUser!.uid).get();
       if (userDoc.exists) {
         userName = userDoc.get('userName');
         userName = userDoc.get('userName');
@@ -265,11 +263,10 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                 ),
                 CommonButtonBlue(
                   onPressed: () {
-                    if(formKey.currentState!.validate()){
-                      if(fullRating == 0.0){
+                    if (formKey.currentState!.validate()) {
+                      if (fullRating == 0.0) {
                         showToast("Please enter review");
-                      }
-                      else{
+                      } else {
                         checkFirstore();
                       }
                     }

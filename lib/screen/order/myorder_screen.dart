@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -15,9 +14,7 @@ import 'package:resvago_customer/screen/delivery_screen/cart%20screen.dart';
 import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 import '../../firebase_service/firebase_service.dart';
-import '../../model/menu_model.dart';
 import '../../widget/apptheme.dart';
-import '../helper.dart';
 import 'order_details_screen.dart';
 
 class MyOrder extends StatefulWidget {
@@ -34,7 +31,7 @@ class _MyOrderState extends State<MyOrder> {
   getOrderList() {
     FirebaseFirestore.instance
         .collection("order")
-        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
       for (var element in value.docs) {
@@ -45,11 +42,12 @@ class _MyOrderState extends State<MyOrder> {
     });
     setState(() {});
   }
+
   List<MyDiningOrderModel>? myDiningOrder;
   getDiningOrderList() {
     FirebaseFirestore.instance
         .collection("dining_order")
-        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
       log(jsonEncode(value.docs.first.data()));
@@ -60,7 +58,7 @@ class _MyOrderState extends State<MyOrder> {
   Stream<List<MyOrderModel>> getActiveOrder() {
     return FirebaseFirestore.instance
         .collection("order")
-        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .where('order_status', isEqualTo: "Place Order")
         .snapshots()
         .map((querySnapshot) {
@@ -80,7 +78,7 @@ class _MyOrderState extends State<MyOrder> {
   Stream<List<MyOrderModel>> getCompletedOrder() {
     return FirebaseFirestore.instance
         .collection("order")
-        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .where('order_status', isEqualTo: "Order Completed")
         .snapshots()
         .map((querySnapshot) {
@@ -101,7 +99,7 @@ class _MyOrderState extends State<MyOrder> {
   Stream<List<MyOrderModel>> getCancelledOrder() {
     return FirebaseFirestore.instance
         .collection("order")
-        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .where('order_status', isEqualTo: "Order Rejected")
         .snapshots()
         .map((querySnapshot) {
@@ -121,7 +119,7 @@ class _MyOrderState extends State<MyOrder> {
   Stream<List<MyDiningOrderModel>> getActiveDiningOrder() {
     return FirebaseFirestore.instance
         .collection("dining_order")
-        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .where('order_status', isEqualTo: "Place Order")
         .snapshots()
         .map((querySnapshot) {
@@ -141,7 +139,7 @@ class _MyOrderState extends State<MyOrder> {
   Stream<List<MyDiningOrderModel>> getCompletedDiningOrder() {
     return FirebaseFirestore.instance
         .collection("dining_order")
-        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .where('order_status', isEqualTo: "Order Completed")
         .snapshots()
         .map((querySnapshot) {
@@ -161,7 +159,7 @@ class _MyOrderState extends State<MyOrder> {
   Stream<List<MyDiningOrderModel>> getCancelledDiningOrder() {
     return FirebaseFirestore.instance
         .collection("dining_order")
-        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .where('order_status', isEqualTo: "Order Rejected")
         .snapshots()
         .map((querySnapshot) {
@@ -190,7 +188,7 @@ class _MyOrderState extends State<MyOrder> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    log("sdsadfsf${FirebaseAuth.instance.currentUser!.phoneNumber}");
+    log("sdsadfsf${FirebaseAuth.instance.currentUser!.uid}");
     return DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -745,7 +743,7 @@ class _MyOrderState extends State<MyOrder> {
                                                         try {
                                                           await firebaseService
                                                               .manageCheckOut(
-                                                            cartId: FirebaseAuth.instance.currentUser!.phoneNumber!,
+                                                            cartId: FirebaseAuth.instance.currentUser!.uid,
                                                             menuList: myOrder[index]
                                                                 .orderDetails!
                                                                 .menuList!

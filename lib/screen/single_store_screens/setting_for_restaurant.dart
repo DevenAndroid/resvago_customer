@@ -18,7 +18,7 @@ class _SettingDataScreenState extends State<SettingDataScreen> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("Vendor_Setting").doc(widget.docId).snapshots(),
+      stream: FirebaseFirestore.instance.collection("vendor_users").doc(widget.docId).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
         if(snapshot.hasData && snapshot.data!.data() != null){
           SettingModel settingData = SettingModel.fromJson(snapshot.data!.data()!);
@@ -56,7 +56,7 @@ class _PreparationTimeScreenState extends State<PreparationTimeScreen> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("Vendor_Setting").doc(widget.docId).snapshots(),
+      stream: FirebaseFirestore.instance.collection("vendor_users").doc(widget.docId).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
         if(snapshot.hasData && snapshot.data!.data() != null){
           SettingModel settingData = SettingModel.fromJson(snapshot.data!.data()!);

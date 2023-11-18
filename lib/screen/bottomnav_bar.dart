@@ -40,7 +40,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
       FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
         print("updated............     $fcm");
       final ref = firebaseDatabase.ref(
-          "users/${FirebaseAuth.instance.currentUser!.phoneNumber.toString()}");
+          "users/${FirebaseAuth.instance.currentUser!.uid.toString()}");
       await ref.update({
         fcm.toString(): fcm.toString()
       }).then((value) {

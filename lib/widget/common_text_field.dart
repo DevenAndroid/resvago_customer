@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/screen/bottomnav_bar.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'addsize.dart';
 import 'appassets.dart';
@@ -168,7 +169,7 @@ AppBar backAppBar(
       child: GestureDetector(
           onTap: () {
             if(dispose == 'Data'){
-              Get.offAll(const HomePage());
+              Get.offAll(const BottomNavbar());
             }
             Get.back();
           },

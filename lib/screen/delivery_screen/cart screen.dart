@@ -33,7 +33,7 @@ class _CartScreenState extends State<CartScreen> {
   CheckOutModel cartModel = CheckOutModel();
 
   getCheckOutData() {
-    FirebaseFirestore.instance.collection("checkOut").doc(FirebaseAuth.instance.currentUser!.phoneNumber).get().then((value) {
+    FirebaseFirestore.instance.collection("checkOut").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       log("checkOut${jsonEncode(value.data())}");
       cartModel = CheckOutModel.fromJson(value.data() ?? {});
       setState(() {});
@@ -43,7 +43,7 @@ class _CartScreenState extends State<CartScreen> {
   Future updateFirebaseValues() async {
     await FirebaseFirestore.instance
         .collection("checkOut")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .update({"menuList": cartModel.menuList!.map((e) => e.toJson()).toList()});
   }
 
@@ -80,7 +80,7 @@ class _CartScreenState extends State<CartScreen> {
   void fetchdata() {
     FirebaseFirestore.instance
         .collection("customer_users")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
       if (value.exists) {
@@ -692,7 +692,7 @@ class _CartScreenState extends State<CartScreen> {
                             order(cartModel.vendorId).then((value) {
                               FirebaseFirestore.instance
                                   .collection("checkOut")
-                                  .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
                                   .delete();
                               Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
                             });

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -118,7 +119,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
     try {
       await FirebaseFirestore.instance
           .collection('wishlist')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection("wishlist_list")
           .doc()
           .set({
@@ -144,7 +145,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
           .manageWishlist(
               time: DateTime.now().millisecondsSinceEpoch,
               wishlistId: DateTime.now().microsecondsSinceEpoch.toString(),
-              userId: FirebaseAuth.instance.currentUser!.phoneNumber,
+              userId: FirebaseAuth.instance.currentUser!.uid,
               vendorId: vendorId)
           .then((value) {
         Get.back();
@@ -173,7 +174,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
   Future getWishList() async {
     await FirebaseFirestore.instance
         .collection('wishlist')
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("wishlist_list")
         .get()
         .then((value) {
@@ -189,11 +190,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
 
   ProfileData profileData = ProfileData();
   void getProfileData() {
-    FirebaseFirestore.instance
-        .collection("customer_users")
-        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
@@ -241,9 +238,21 @@ class _DeliveryPageState extends State<DeliveryPage> {
               onTap: () {
                 // profileController.scaffoldKey.currentState!.openDrawer();
               },
-              child: Image.asset(
-                'assets/images/customerprofile.png',
+              child: SizedBox(
                 height: 40,
+                width: 40,
+                child: Container(
+                  decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: profileData.profile_image.toString(),
+                      errorWidget: (_, __, ___) => const Icon(Icons.person),
+                      placeholder: (_, __) => const SizedBox(),
+                    ),
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -573,7 +582,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          MaxRatingScreen(docId: restaurantListItem.docid)
+                                          MaxRatingScreen(docId: restaurantListItem.userID)
                                         ],
                                       ),
                                     ),
@@ -584,7 +593,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
-                                          PreparationTimeScreen(docId: restaurantListItem.docid),
+                                          PreparationTimeScreen(docId: restaurantListItem.userID),
                                           const SizedBox(
                                             width: 3,
                                           ),
@@ -625,11 +634,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Row(
                                         children: [
-                                          SvgPicture.asset(
-                                            AppAssets.vector,
-                                            height: 16,
-                                          ),
-                                          MaxDiscountScreen(docId: restaurantListItem.docid)
+                                          MaxDiscountScreen(docId: restaurantListItem.userID)
                                         ],
                                       ),
                                     ),
@@ -768,7 +773,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          MaxRatingScreen(docId: restaurantListItem.docid,)
+                                          MaxRatingScreen(
+                                            docId: restaurantListItem.userID,
+                                          )
                                         ],
                                       ),
                                     ),
@@ -779,7 +786,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
-                                          PreparationTimeScreen(docId: restaurantListItem.docid),
+                                          PreparationTimeScreen(docId: restaurantListItem.userID),
                                           const SizedBox(
                                             width: 3,
                                           ),
@@ -820,15 +827,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Row(
                                         children: [
-                                          SvgPicture.asset(
-                                            AppAssets.vector,
-                                            height: 16,
-                                          ),
-                                          Text(
-                                            "  40% off up to \$100",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-                                          ),
+                                          MaxDiscountScreen(docId: restaurantListItem.userID)
                                         ],
                                       ),
                                     ),

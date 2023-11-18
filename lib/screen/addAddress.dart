@@ -278,7 +278,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
     if(widget.isEditMode == false){
       FirebaseFirestore.instance
           .collection('Address')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('TotalAddress')
           .add({
         "name": nameController.text,
@@ -286,7 +286,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
         "flatAddress": flatAddressController.text,
         "AddressType": selectedChip.value,
         "time": DateTime.now(),
-        "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "userID": FirebaseAuth.instance.currentUser!.uid,
       }).then((value) {
         Get.back();
         Get.back();
@@ -296,7 +296,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
 
       FirebaseFirestore.instance
           .collection('Address')
-          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('TotalAddress')
           .doc(widget.docID)
           .update({
@@ -305,7 +305,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
         "flatAddress": flatAddressController.text,
         "AddressType": selectedChip.value,
         "time": DateTime.now(),
-        "userID": FirebaseAuth.instance.currentUser!.phoneNumber,
+        "userID": FirebaseAuth.instance.currentUser!.uid,
       }).then((value) {
         Get.back();
         Get.back();
