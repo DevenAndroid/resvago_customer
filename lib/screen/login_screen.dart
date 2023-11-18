@@ -82,6 +82,37 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void checkEmailInFirestore() async {
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('vendor_users')
+        .where('email', isEqualTo: emailController.text)
+        .get();
+    if (result.docs.isNotEmpty) {
+      myauth.setConfig(
+          appEmail: "contact@hdevcoder.com",
+          appName: "Email OTP",
+          userEmail: emailController.text,
+          otpLength: 4,
+          otpType: OTPType.digitsOnly);
+      if (await myauth.sendOTP() == true) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("OTP has been sent"),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Oops, OTP send failed"),
+        ));
+      }
+      setState(() {
+        showOtpField = true;
+      });      return;
+    }else{
+      Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
+
+    }
+
+  }
+
   login(String email) async {
     await FirebaseAuth.instance.signOut();
     await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: "123456");
@@ -314,6 +345,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     borderRadius: BorderRadius.circular(6.0),
                                   ),
                                   enabledBorder: OutlineInputBorder(
+
                                       borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
                                       borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                   border: OutlineInputBorder(
