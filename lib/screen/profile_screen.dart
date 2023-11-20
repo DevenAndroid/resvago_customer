@@ -132,20 +132,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(5000),
                                     // color: Colors.brown
                                   ),
-                                  child: Image.file(
+                                  child: categoryFile.path ==
+                                      ""?
+                                      profileData
+                                          .profile_image == ""
+                                      ? SizedBox()
+                                      : Image.network(
+                                    profileData.profile_image
+                                        .toString(),
+                                    fit: BoxFit.cover,
+                                  )
+                                      : Image.file(
                                     categoryFile,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      imageUrl: categoryFile.path,
-                                      height: AddSize.size30,
-                                      width: AddSize.size30,
-                                      errorWidget: (_, __, ___) => const Icon(
-                                        Icons.person,
-                                        size: 60,
-                                      ),
-                                      placeholder: (_, __) => const SizedBox(),
-                                    ),
+                                    height: 100,
+                                    width: 100,
                                   ),
                                 ),
                               ),

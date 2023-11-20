@@ -652,6 +652,7 @@ class _HomePageState extends State<HomePage> {
                               sliderList![index],
                               fit: BoxFit.cover,
                               height: 80,
+                              errorBuilder: (_, __, ___) => SizedBox(height: 80,),
                             ),
                           ),
                         );
@@ -692,6 +693,10 @@ class _HomePageState extends State<HomePage> {
                                     fit: BoxFit.cover,
                                     height: 70,
                                     width: 70,
+                                    errorBuilder: (_, __, ___) => SizedBox(
+                                        height: 70,
+                                        width: 70,
+                                        child: Icon(Icons.error,color: Colors.red,)),
                                   ),
                                 ),
                                 const SizedBox(
@@ -761,6 +766,10 @@ class _HomePageState extends State<HomePage> {
                                               height: 150,
                                               width: 250,
                                               fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => SizedBox(
+                                                  height: 150,
+                                                  width: 250,
+                                                  child: Icon(Icons.error,color: Colors.red,)),
                                             )),
                                         Positioned(
                                             top: 0,
@@ -890,6 +899,10 @@ class _HomePageState extends State<HomePage> {
                                     fit: BoxFit.cover,
                                     height: 70,
                                     width: 70,
+                                    errorBuilder: (_, __, ___) => SizedBox(
+                                        height: 70,
+                                        width: 70,
+                                        child: Icon(Icons.error,color: Colors.red,)),
                                   ),
                                 ),
                                 const SizedBox(
@@ -931,12 +944,12 @@ class _HomePageState extends State<HomePage> {
                             child: InkWell(
                               onTap: () {
                                 Get.to(() => SingleRestaurantsScreen(
-                                      restaurantItem: restaurantListItem,
-                                      distance: _calculateDistance(
-                                        lat1: restaurantListItem.latitude.toString(),
-                                        lon1: restaurantListItem.longitude.toString(),
-                                      ),
-                                    ));
+                                  restaurantItem: restaurantListItem,
+                                  distance: _calculateDistance(
+                                    lat1: restaurantListItem.latitude.toString(),
+                                    lon1: restaurantListItem.longitude.toString(),
+                                  ),
+                                ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -959,6 +972,10 @@ class _HomePageState extends State<HomePage> {
                                               height: 150,
                                               width: 250,
                                               fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => SizedBox(
+                                                  height: 150,
+                                                  width: 250,
+                                                  child: Icon(Icons.error,color: Colors.red,)),
                                             )),
                                         Positioned(
                                             top: 0,
@@ -1022,14 +1039,14 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: List.generate(
                                           17,
-                                          (index) => Padding(
-                                                padding: const EdgeInsets.only(left: 2, right: 2),
-                                                child: Container(
-                                                  color: Colors.grey[200],
-                                                  height: 2,
-                                                  width: 10,
-                                                ),
-                                              )),
+                                              (index) => Padding(
+                                            padding: const EdgeInsets.only(left: 2, right: 2),
+                                            child: Container(
+                                              color: Colors.grey[200],
+                                              height: 2,
+                                              width: 10,
+                                            ),
+                                          )),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -1039,6 +1056,11 @@ class _HomePageState extends State<HomePage> {
                                       child: Row(
                                         children: [
                                           MaxDiscountScreen(docId: restaurantListItem.userID)
+                                          // Text(
+                                          //   "  40% off up to \$100",
+                                          //   style: GoogleFonts.poppins(
+                                          //       fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+                                          // ),
                                         ],
                                       ),
                                     ),

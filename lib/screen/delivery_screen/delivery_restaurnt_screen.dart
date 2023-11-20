@@ -448,6 +448,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                               sliderList![index],
                               fit: BoxFit.cover,
                               height: 80,
+                              errorBuilder: (_, __, ___) => SizedBox(height: 80,),
                             ),
                           ),
                         );
@@ -488,6 +489,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                     fit: BoxFit.cover,
                                     height: 70,
                                     width: 70,
+                                    errorBuilder: (_, __, ___) => SizedBox(
+                                        height: 70,
+                                        width: 70,
+                                        child: Icon(Icons.error,color: Colors.red,)),
                                   ),
                                 ),
                                 const SizedBox(
@@ -528,204 +533,13 @@ class _DeliveryPageState extends State<DeliveryPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.to(() => SingleRestaurantForDeliveryScreen(
-                                      restaurantItem: restaurantListItem,
-                                      distance: _calculateDistance(
-                                        lat1: restaurantListItem.latitude.toString(),
-                                        lon1: restaurantListItem.longitude.toString(),
-                                      ),
-                                    ));
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xffFFFFFF),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Stack(
-                                      children: [
-                                        ClipRRect(
-                                            borderRadius: const BorderRadius.only(
-                                              topRight: Radius.circular(10),
-                                              topLeft: Radius.circular(10),
-                                            ),
-                                            child: Image.network(
-                                              restaurantListItem.image.toString(),
-                                              height: 150,
-                                              width: 250,
-                                              fit: BoxFit.cover,
-                                            )),
-                                        Positioned(
-                                            top: 0,
-                                            right: 0,
-                                            child: LikeButtonWidget(
-                                              restaurantModel: restaurantListItem,
-                                            )),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            restaurantListItem.restaurantName.toString(),
-                                            style: GoogleFonts.ibmPlexSansArabic(
-                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          MaxRatingScreen(docId: restaurantListItem.userID)
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 3,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                      child: Row(
-                                        children: [
-                                          PreparationTimeScreen(docId: restaurantListItem.userID),
-                                          const SizedBox(
-                                            width: 3,
-                                          ),
-                                          const Icon(Icons.circle, size: 5, color: Color(0xff384953)),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            _calculateDistance(
-                                              lat1: restaurantListItem.latitude.toString(),
-                                              lon1: restaurantListItem.longitude.toString(),
-                                            ),
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                          ),
-                                          const SizedBox(
-                                            width: 3,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Row(
-                                      children: List.generate(
-                                          17,
-                                          (index) => Padding(
-                                                padding: const EdgeInsets.only(left: 2, right: 2),
-                                                child: Container(
-                                                  color: Colors.grey[200],
-                                                  height: 2,
-                                                  width: 10,
-                                                ),
-                                              )),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Row(
-                                        children: [
-                                          MaxDiscountScreen(docId: restaurantListItem.userID)
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                  ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  '  Explore Now',
-                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                if (categoryList != null)
-                  SizedBox(
-                    height: 100,
-                    // width: size.width,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: categoryList!.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () {
-                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Column(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.network(
-                                    categoryList![index].image,
-                                    fit: BoxFit.cover,
-                                    height: 70,
-                                    width: 70,
+                                Get.to(() => SingleRestaurantsScreen(
+                                  restaurantItem: restaurantListItem,
+                                  distance: _calculateDistance(
+                                    lat1: restaurantListItem.latitude.toString(),
+                                    lon1: restaurantListItem.longitude.toString(),
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  categoryList![index].name ?? "",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  '  Popular restaurants in Madrid',
-                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                if (restaurantList != null)
-                  SizedBox(
-                    height: 260,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: restaurantList!.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          var restaurantListItem = restaurantList![index];
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: InkWell(
-                              onTap: () {
-                                Get.to(() => SingleRestaurantForDeliveryScreen(
-                                      restaurantItem: restaurantListItem,
-                                      distance: _calculateDistance(
-                                        lat1: restaurantListItem.latitude.toString(),
-                                        lon1: restaurantListItem.longitude.toString(),
-                                      ),
-                                    ));
+                                ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -748,6 +562,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                               height: 150,
                                               width: 250,
                                               fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => SizedBox(
+                                                  height: 150,
+                                                  width: 250,
+                                                  child: Icon(Icons.error,color: Colors.red,)),
                                             )),
                                         Positioned(
                                             top: 0,
@@ -811,14 +629,14 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                     Row(
                                       children: List.generate(
                                           17,
-                                          (index) => Padding(
-                                                padding: const EdgeInsets.only(left: 2, right: 2),
-                                                child: Container(
-                                                  color: Colors.grey[200],
-                                                  height: 2,
-                                                  width: 10,
-                                                ),
-                                              )),
+                                              (index) => Padding(
+                                            padding: const EdgeInsets.only(left: 2, right: 2),
+                                            child: Container(
+                                              color: Colors.grey[200],
+                                              height: 2,
+                                              width: 10,
+                                            ),
+                                          )),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -828,6 +646,217 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       child: Row(
                                         children: [
                                           MaxDiscountScreen(docId: restaurantListItem.userID)
+                                          // Text(
+                                          //   "  40% off up to \$100",
+                                          //   style: GoogleFonts.poppins(
+                                          //       fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+                                          // ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '  Explore Now',
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                if (categoryList != null)
+                  SizedBox(
+                    height: 100,
+                    // width: size.width,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: categoryList!.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(
+                                    categoryList![index].image,
+                                    fit: BoxFit.cover,
+                                    height: 70,
+                                    width: 70,
+                                    errorBuilder: (_, __, ___) => SizedBox(
+                                        height: 70,
+                                        width: 70,
+                                        child: Icon(Icons.error,color: Colors.red,)),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  categoryList![index].name ?? "",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '  Popular restaurants in Madrid',
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                if (restaurantList != null)
+                  SizedBox(
+                    height: 260,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: restaurantList!.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          var restaurantListItem = restaurantList![index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Get.to(() => SingleRestaurantsScreen(
+                                  restaurantItem: restaurantListItem,
+                                  distance: _calculateDistance(
+                                    lat1: restaurantListItem.latitude.toString(),
+                                    lon1: restaurantListItem.longitude.toString(),
+                                  ),
+                                ));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xffFFFFFF),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        ClipRRect(
+                                            borderRadius: const BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              topLeft: Radius.circular(10),
+                                            ),
+                                            child: Image.network(
+                                              restaurantListItem.image.toString(),
+                                              height: 150,
+                                              width: 250,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => SizedBox(
+                                                  height: 150,
+                                                  width: 250,
+                                                  child: Icon(Icons.error,color: Colors.red,)),
+                                            )),
+                                        Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: LikeButtonWidget(
+                                              restaurantModel: restaurantListItem,
+                                            )),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            restaurantListItem.restaurantName.toString(),
+                                            style: GoogleFonts.ibmPlexSansArabic(
+                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          MaxRatingScreen(
+                                            docId: restaurantListItem.userID,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Row(
+                                        children: [
+                                          PreparationTimeScreen(docId: restaurantListItem.userID),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                          const Icon(Icons.circle, size: 5, color: Color(0xff384953)),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            _calculateDistance(
+                                              lat1: restaurantListItem.latitude.toString(),
+                                              lon1: restaurantListItem.longitude.toString(),
+                                            ),
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                          ),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: List.generate(
+                                          17,
+                                              (index) => Padding(
+                                            padding: const EdgeInsets.only(left: 2, right: 2),
+                                            child: Container(
+                                              color: Colors.grey[200],
+                                              height: 2,
+                                              width: 10,
+                                            ),
+                                          )),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Row(
+                                        children: [
+                                          MaxDiscountScreen(docId: restaurantListItem.userID)
+                                          // Text(
+                                          //   "  40% off up to \$100",
+                                          //   style: GoogleFonts.poppins(
+                                          //       fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+                                          // ),
                                         ],
                                       ),
                                     ),
