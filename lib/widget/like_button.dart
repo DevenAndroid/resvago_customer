@@ -18,7 +18,7 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
 
   final wishListController = Get.put(WishListController());
 
-  bool get isInWishlist => wishListController.wishListRestaurants[info.docid] != null;
+  bool get isInWishlist => wishListController.wishListRestaurants[info.userID] != null;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +27,9 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
       return IconButton(
         onPressed: () {
           if(isInWishlist) {
-            wishListController.removeFromWishList(docId: info.docid.toString());
+            wishListController.removeFromWishList(docId: info.userID.toString());
           } else {
-            wishListController.addToWishList(restaurantInfo: info.toJson(), docId: info.docid.toString());
+            wishListController.addToWishList(restaurantInfo: info.toJson(), docId: info.userID.toString());
           }
         },
         icon: Container(

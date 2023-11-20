@@ -308,7 +308,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                 ],
                               ),
                             ),
-                            Positioned(top: 120, bottom: 0, left: 93, child: Center(child: SvgPicture.asset(AppAssets.code))),
+                            Positioned(top: 120, bottom: 0, left: 0,right: 0, child: Center(child: SvgPicture.asset(AppAssets.code))),
                           ]),
                         ],
                       ),
@@ -592,8 +592,8 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                           fit: BoxFit.cover,
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(left: 15),
+                                                      SizedBox(width: 10),
+                                                      Expanded(
                                                         child: Column(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -654,7 +654,6 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                           ],
                                                         ),
                                                       ),
-                                                      const Spacer(),
                                                       Column(
                                                         crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
@@ -682,7 +681,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                   const SizedBox(
                                                     height: 10,
                                                   ),
-                                                  index != 4
+                                                  index != menuList!.length -1
                                                       ? const DottedLine(
                                                           dashColor: Color(0xffBCBCBC),
                                                           dashGapLength: 1,

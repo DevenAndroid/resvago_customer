@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,6 +20,7 @@ import '../../widget/addsize.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../checkout_for_dining/oder_screen.dart';
+import '../login_screen.dart';
 
 extension ChangeToDate on String {
   DateTime get formatDate {
@@ -422,14 +424,23 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                 if (couponData != null) {
                                   discountValue = couponData!.discount;
                                 }
-                                Get.to(() => OderScreen(
-                                    discountValue: discountValue,
-                                    lunchSelected: lunchSelected,
-                                    slot: slot,
-                                    guest: guest,
-                                    date: today,
-                                    restaurantItem: widget.restaurantItem,
-                                    menuList: menuList!.where((e) => e.isCheck == true).toList()));
+                                else{
+
+                                }
+                                FirebaseAuth _auth = FirebaseAuth.instance;
+                                User? user = _auth.currentUser;
+                                if (user != null) {
+                                  Get.to(() => OderScreen(
+                                      discountValue: discountValue,
+                                      lunchSelected: lunchSelected,
+                                      slot: slot,
+                                      guest: guest,
+                                      date: today,
+                                      restaurantItem: widget.restaurantItem,
+                                      menuList: menuList!.where((e) => e.isCheck == true).toList()));
+                                } else {
+                                  Get.to(() => LoginScreen());
+                                }
                               } else {
                                 showToast("Please select menu");
                               }
@@ -608,8 +619,14 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
             itemCount: morningSlots.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
+            gridDelegate: kIsWeb
+                ? SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 150,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 0,
+                  )
+                : SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
             itemBuilder: (BuildContext context, int index) {
               return Column(
                 children: [
@@ -693,8 +710,14 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
             itemCount: eveningSlots.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
+            gridDelegate: kIsWeb
+                ? SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 150,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 0,
+                  )
+                : SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .080),
             itemBuilder: (BuildContext context, int index) {
               return Column(
                 children: [

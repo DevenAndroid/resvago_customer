@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
           appEmail: "contact@hdevcoder.com",
           appName: "Email OTP",
           userEmail: emailController.text,
-          otpLength: 4,
+          otpLength: 6,
           otpType: OTPType.digitsOnly);
       if (await myauth.sendOTP() == true) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -268,11 +268,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               decoration: InputDecoration(
                                 hintText: 'Enter Email',
                                 hintStyle: const TextStyle(color: Colors.white),
-                                suffix: GestureDetector(
-                                  onTap: () {
+                                suffixIcon: TextButton(
+                                  onPressed: () {
                                     checkEmailInFirestore();
                                   },
-                                  child: const Text('send'),
+                                  child: const Text('send',style: TextStyle(color: Colors.white),),
                                 ),
                                 filled: true,
                                 fillColor: Colors.white.withOpacity(.10),
@@ -356,6 +356,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
+
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                       child: Column(

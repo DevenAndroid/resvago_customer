@@ -8,15 +8,18 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:resvago_customer/model/menu_model.dart';
 import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/resturant_model.dart';
+import '../../model/review_model.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/restaurant_timing.dart';
 import '../helper.dart';
+import '../login_screen.dart';
 import 'cart screen.dart';
 
 class SingleRestaurantForDeliveryScreen extends StatefulWidget {
@@ -43,7 +46,8 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
   getMenuList() {
     FirebaseFirestore.instance
         .collection("vendor_menu")
-        .where("vendorId", isEqualTo: widget.restaurantItem!.docid).where("bookingForDelivery" , isEqualTo: true)
+        .where("vendorId", isEqualTo: widget.restaurantItem!.docid)
+        .where("bookingForDelivery", isEqualTo: true)
         .get()
         .then((value) {
       for (var element in value.docs) {
@@ -53,16 +57,6 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
       }
       setState(() {});
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getMenuList();
-    if (widget.restaurantItem != null) {
-      log(widget.restaurantItem!.image.toString());
-      // getWeekSchedule(widget.restaurantItem!.userID);
-    }
   }
 
   double kk = 0.0;
@@ -90,6 +84,22 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
     }
   }
 
+  List<ReviewModel>? reviewModel;
+  getReviewList() {
+    FirebaseFirestore.instance
+        .collection("Review")
+        .where("vendorID", isEqualTo: widget.restaurantItem!.userID)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        var gg = element.data();
+        reviewModel ??= [];
+        reviewModel!.add(ReviewModel.fromJson(gg));
+      }
+      setState(() {});
+    });
+  }
+
   FirebaseService firebaseService = FirebaseService();
   Future<void> manageCheckOut(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
@@ -109,6 +119,17 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
     } catch (e) {
       Helper.hideLoader(loader);
       throw Exception(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getMenuList();
+    getReviewList();
+    if (widget.restaurantItem != null) {
+      log(widget.restaurantItem!.image.toString());
+      // getWeekSchedule(widget.restaurantItem!.userID);
     }
   }
 
@@ -135,21 +156,6 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
               fontWeight: FontWeight.w500,
             ),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: GestureDetector(
-                onTap: () {},
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/images/shoppinbag.png',
-                    height: 30,
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
         body: widget.restaurantItem != null
             ? SingleChildScrollView(
@@ -334,7 +340,8 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                 ],
                               ),
                             ),
-                            Positioned(top: 120, bottom: 0, left: 93, child: Center(child: SvgPicture.asset(AppAssets.code))),
+                            Positioned(
+                                top: 120, bottom: 0, left: 0, right: 0, child: Center(child: SvgPicture.asset(AppAssets.code))),
                           ]),
                         ],
                       ),
@@ -422,7 +429,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                 ),
                                 if (currentMenu == 0)
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,8 +537,10 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                           fit: BoxFit.cover,
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(left: 15),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Expanded(
                                                         child: Column(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,101 +566,100 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                               height: 10,
                                                             ),
                                                             menuListData.qty > 0
-                                                              ? Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  children: [
-                                                                    Container(
-                                                                      height: 28,
-                                                                      width: 28,
-                                                                      decoration: BoxDecoration(
-                                                                          border: Border.all(color: Colors.black),
-                                                                          borderRadius: const BorderRadius.all(
-                                                                            Radius.circular(20),
-                                                                          )),
-                                                                      child: InkWell(
-                                                                          onTap: () {
-                                                                            menuListData.qty--;
-                                                                            log(menuListData.qty.toString());
-                                                                            setState(() {});
-                                                                          },
-                                                                          child: const Icon(
-                                                                            Icons.remove,
-                                                                            size: 18,
-                                                                          )),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 8,
-                                                                    ),
-                                                                    Text(
-                                                                      menuListData.qty.toString(),
-                                                                      style: GoogleFonts.alegreyaSans(
-                                                                        fontSize: 16,
-                                                                      ),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 8,
-                                                                    ),
-                                                                    Row(
-                                                                      children: [
-                                                                        Container(
-                                                                          height: 28,
-                                                                          width: 28,
-                                                                          decoration: const BoxDecoration(
-                                                                              color: AppTheme.primaryColor,
-                                                                              borderRadius: BorderRadius.all(
-                                                                                Radius.circular(20),
-                                                                              )),
-                                                                          child: InkWell(
+                                                                ? Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Container(
+                                                                        height: 28,
+                                                                        width: 28,
+                                                                        decoration: BoxDecoration(
+                                                                            border: Border.all(color: Colors.black),
+                                                                            borderRadius: const BorderRadius.all(
+                                                                              Radius.circular(20),
+                                                                            )),
+                                                                        child: InkWell(
                                                                             onTap: () {
-                                                                              menuListData.qty++;
+                                                                              menuListData.qty--;
                                                                               log(menuListData.qty.toString());
                                                                               setState(() {});
                                                                             },
                                                                             child: const Icon(
-                                                                              Icons.add,
-                                                                              color: Colors.white,
+                                                                              Icons.remove,
                                                                               size: 18,
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                      ],
-                                                                    )
-                                                                  ],
-                                                                )
-                                                              : SizedBox(
-                                                                  // width: size.width,
-                                                                  height: 23,
-
-                                                                  child: ElevatedButton(
-                                                                    onPressed: () {
-                                                                      menuListData.qty++;
-                                                                      log(menuListData.qty.toString());
-                                                                      setState(() {});
-                                                                    },
-                                                                    style: ElevatedButton.styleFrom(
-                                                                        backgroundColor: const Color(0xFF3B5998),
-                                                                        shape: RoundedRectangleBorder(
-                                                                            borderRadius: BorderRadius.circular(3),
-                                                                            side: const BorderSide(
-                                                                              width: 2.0,
-                                                                              color: Color(0xFF3B5998),
                                                                             )),
-                                                                        textStyle: const TextStyle(
-                                                                            fontSize: 18, fontWeight: FontWeight.w500)),
-                                                                    child: Text(
-                                                                      "ADD TO CART",
-                                                                      style: GoogleFonts.poppins(
-                                                                        fontSize: 10,
-                                                                        fontWeight: FontWeight.w500,
-                                                                        color: Colors.white,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width: 8,
+                                                                      ),
+                                                                      Text(
+                                                                        menuListData.qty.toString(),
+                                                                        style: GoogleFonts.alegreyaSans(
+                                                                          fontSize: 16,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width: 8,
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          Container(
+                                                                            height: 28,
+                                                                            width: 28,
+                                                                            decoration: const BoxDecoration(
+                                                                                color: AppTheme.primaryColor,
+                                                                                borderRadius: BorderRadius.all(
+                                                                                  Radius.circular(20),
+                                                                                )),
+                                                                            child: InkWell(
+                                                                              onTap: () {
+                                                                                menuListData.qty++;
+                                                                                log(menuListData.qty.toString());
+                                                                                setState(() {});
+                                                                              },
+                                                                              child: const Icon(
+                                                                                Icons.add,
+                                                                                color: Colors.white,
+                                                                                size: 18,
+                                                                              ),
+                                                                            ),
+                                                                          )
+                                                                        ],
+                                                                      )
+                                                                    ],
+                                                                  )
+                                                                : SizedBox(
+                                                                    // width: size.width,
+                                                                    height: 23,
+
+                                                                    child: ElevatedButton(
+                                                                      onPressed: () {
+                                                                        menuListData.qty++;
+                                                                        log(menuListData.qty.toString());
+                                                                        setState(() {});
+                                                                      },
+                                                                      style: ElevatedButton.styleFrom(
+                                                                          backgroundColor: const Color(0xFF3B5998),
+                                                                          shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(3),
+                                                                              side: const BorderSide(
+                                                                                width: 2.0,
+                                                                                color: Color(0xFF3B5998),
+                                                                              )),
+                                                                          textStyle: const TextStyle(
+                                                                              fontSize: 18, fontWeight: FontWeight.w500)),
+                                                                      child: Text(
+                                                                        "ADD TO CART",
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontSize: 10,
+                                                                          fontWeight: FontWeight.w500,
+                                                                          color: Colors.white,
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ),
                                                           ],
                                                         ),
                                                       ),
-                                                      const Spacer(),
                                                       Column(
                                                         crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
@@ -679,7 +687,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                   const SizedBox(
                                                     height: 10,
                                                   ),
-                                                  index != 4
+                                                  index != menuList!.length - 1
                                                       ? const DottedLine(
                                                           dashColor: Color(0xffBCBCBC),
                                                           dashGapLength: 1,
@@ -691,350 +699,355 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                     ),
                                   ),
                                 if (currentMenu == 2)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                    child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Review(5)",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "Overall Rating",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF969AA3)),
-                                          ),
-                                          Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
-                                              child: Column(children: [
-                                                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                                  const Text(
-                                                    '4.8',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF1B233A),
-                                                      fontSize: 48,
-                                                      fontWeight: FontWeight.w600,
+                                  if (reviewModel != null)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
+                                      child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Review(${reviewModel!.length})",
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              "Overall Rating",
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF969AA3)),
+                                            ),
+                                            Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
+                                                child: Column(children: [
+                                                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                                    const Text(
+                                                      '4.8',
+                                                      style: TextStyle(
+                                                        color: Color(0xFF1B233A),
+                                                        fontSize: 48,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                      RatingBar.builder(
+                                                        initialRating: 4,
+                                                        minRating: 1,
+                                                        unratedColor: const Color(0xFF698EDE).withOpacity(.2),
+                                                        itemCount: 5,
+                                                        itemSize: 16.0,
+                                                        itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                        updateOnDrag: true,
+                                                        itemBuilder: (context, index) => Image.asset(
+                                                          'assets/icons/star.png',
+                                                          color: const Color(0xff3B5998),
+                                                        ),
+                                                        onRatingUpdate: (ratingvalue) {
+                                                          setState(() {
+                                                            fullRating = ratingvalue;
+                                                          });
+                                                        },
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 8,
+                                                      ),
+                                                      const Padding(
+                                                        padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                        child: Text(
+                                                          'basad on 23 reviews',
+                                                          style: TextStyle(
+                                                            color: Color(0xFF969AA3),
+                                                            fontSize: 13,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                  ]),
+                                                ])),
+                                            Column(children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Excellent',
+                                                      style: TextStyle(
+                                                        color: Color(0xFF969AA3),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: LinearPercentIndicator(
+                                                      lineHeight: 6.0,
+                                                      barRadius: const Radius.circular(16),
+                                                      backgroundColor: const Color(0xFFE6F9ED),
+                                                      animation: true,
+                                                      progressColor: const Color(0xFF5DAF5E),
+                                                      percent: 0.9,
+                                                      animationDuration: 1200,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Good',
+                                                      style: TextStyle(
+                                                        color: Color(0xFF969AA3),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: LinearPercentIndicator(
+                                                      lineHeight: 6.0,
+                                                      barRadius: const Radius.circular(16),
+                                                      backgroundColor: const Color(0xFFF2FFCF),
+                                                      animation: true,
+                                                      progressColor: const Color(0xFFA4D131),
+                                                      percent: 0.7,
+                                                      animationDuration: 1200,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Average',
+                                                      style: TextStyle(
+                                                        color: Color(0xFF969AA3),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: LinearPercentIndicator(
+                                                      lineHeight: 6.0,
+                                                      barRadius: const Radius.circular(16),
+                                                      backgroundColor: const Color(0xFFF5FFDB),
+                                                      animation: true,
+                                                      progressColor: const Color(0xFFF7E742),
+                                                      percent: 0.6,
+                                                      animationDuration: 1200,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Below Average',
+                                                      style: TextStyle(
+                                                        color: Color(0xFF969AA3),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: LinearPercentIndicator(
+                                                      lineHeight: 6.0,
+                                                      barRadius: const Radius.circular(16),
+                                                      backgroundColor: const Color(0xFFFFF5E5),
+                                                      animation: true,
+                                                      progressColor: const Color(0xFFF8B859),
+                                                      percent: 0.5,
+                                                      animationDuration: 1200,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Poor',
+                                                      style: TextStyle(
+                                                        color: Color(0xFF969AA3),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: LinearPercentIndicator(
+                                                      lineHeight: 6.0,
+                                                      barRadius: const Radius.circular(16),
+                                                      backgroundColor: const Color(0xFFFFE9E4),
+                                                      animation: true,
+                                                      progressColor: const Color(0xFFEE3D1C),
+                                                      percent: 0.3,
+                                                      animationDuration: 1200,
                                                     ),
                                                   ),
                                                   const SizedBox(
-                                                    width: 20,
+                                                    height: 5,
                                                   ),
-                                                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                    RatingBar.builder(
-                                                      initialRating: 4,
-                                                      minRating: 1,
-                                                      unratedColor: const Color(0xFF698EDE).withOpacity(.2),
-                                                      itemCount: 5,
-                                                      itemSize: 16.0,
-                                                      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                      updateOnDrag: true,
-                                                      itemBuilder: (context, index) => Image.asset(
-                                                        'assets/icons/star.png',
-                                                        color: const Color(0xff3B5998),
-                                                      ),
-                                                      onRatingUpdate: (ratingvalue) {
-                                                        setState(() {
-                                                          fullRating = ratingvalue;
-                                                        });
-                                                      },
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 8,
-                                                    ),
-                                                    const Padding(
-                                                      padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                      child: Text(
-                                                        'basad on 23 reviews',
-                                                        style: TextStyle(
-                                                          color: Color(0xFF969AA3),
-                                                          fontSize: 13,
-                                                          fontWeight: FontWeight.w400,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ]),
-                                                ]),
-                                              ])),
-                                          Column(children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                const Expanded(
-                                                  child: Text(
-                                                    'Excellent',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF969AA3),
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 3,
-                                                  child: LinearPercentIndicator(
-                                                    lineHeight: 6.0,
-                                                    barRadius: const Radius.circular(16),
-                                                    backgroundColor: const Color(0xFFE6F9ED),
-                                                    animation: true,
-                                                    progressColor: const Color(0xFF5DAF5E),
-                                                    percent: 0.9,
-                                                    animationDuration: 1200,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                                ],
+                                              ),
+                                            ]),
                                             const SizedBox(
                                               height: 5,
                                             ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                const Expanded(
-                                                  child: Text(
-                                                    'Good',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF969AA3),
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 3,
-                                                  child: LinearPercentIndicator(
-                                                    lineHeight: 6.0,
-                                                    barRadius: const Radius.circular(16),
-                                                    backgroundColor: const Color(0xFFF2FFCF),
-                                                    animation: true,
-                                                    progressColor: const Color(0xFFA4D131),
-                                                    percent: 0.7,
-                                                    animationDuration: 1200,
-                                                  ),
-                                                ),
-                                              ],
+                                            Divider(
+                                              color: const Color(0xFF698EDE).withOpacity(.1),
+                                              thickness: 2,
                                             ),
                                             const SizedBox(
-                                              height: 5,
+                                              height: 8,
                                             ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                const Expanded(
-                                                  child: Text(
-                                                    'Average',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF969AA3),
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 3,
-                                                  child: LinearPercentIndicator(
-                                                    lineHeight: 6.0,
-                                                    barRadius: const Radius.circular(16),
-                                                    backgroundColor: const Color(0xFFF5FFDB),
-                                                    animation: true,
-                                                    progressColor: const Color(0xFFF7E742),
-                                                    percent: 0.6,
-                                                    animationDuration: 1200,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                const Expanded(
-                                                  child: Text(
-                                                    'Below Average',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF969AA3),
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 3,
-                                                  child: LinearPercentIndicator(
-                                                    lineHeight: 6.0,
-                                                    barRadius: const Radius.circular(16),
-                                                    backgroundColor: const Color(0xFFFFF5E5),
-                                                    animation: true,
-                                                    progressColor: const Color(0xFFF8B859),
-                                                    percent: 0.5,
-                                                    animationDuration: 1200,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                const Expanded(
-                                                  child: Text(
-                                                    'Poor',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF969AA3),
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 3,
-                                                  child: LinearPercentIndicator(
-                                                    lineHeight: 6.0,
-                                                    barRadius: const Radius.circular(16),
-                                                    backgroundColor: const Color(0xFFFFE9E4),
-                                                    animation: true,
-                                                    progressColor: const Color(0xFFEE3D1C),
-                                                    percent: 0.3,
-                                                    animationDuration: 1200,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                              ],
-                                            ),
-                                          ]),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          Divider(
-                                            color: const Color(0xFF698EDE).withOpacity(.1),
-                                            thickness: 2,
-                                          ),
-                                          const SizedBox(
-                                            height: 8,
-                                          ),
-                                          ListView.builder(
-                                              shrinkWrap: true,
-                                              itemCount: 3,
-                                              physics: const NeverScrollableScrollPhysics(),
-                                              itemBuilder: (context, index) {
-                                                return Column(
-                                                  children: [
-                                                    Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Image.asset(
-                                                          'assets/images/Ellipse 1563.png',
-                                                          height: 50,
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 20,
-                                                        ),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Padding(
-                                                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                                                child: Text(
-                                                                  'Abhishek Jangid',
-                                                                  style: GoogleFonts.poppins(
-                                                                    color: const Color(0xFF1B233A),
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight.w600,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 6,
-                                                              ),
-                                                              RatingBar.builder(
-                                                                initialRating: 4,
-                                                                minRating: 1,
-                                                                unratedColor: const Color(0xff3B5998).withOpacity(.2),
-                                                                itemCount: 5,
-                                                                itemSize: 16.0,
-                                                                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                                updateOnDrag: true,
-                                                                itemBuilder: (context, index) => Image.asset(
-                                                                  'assets/icons/star.png',
-                                                                  color: const Color(0xff3B5998),
-                                                                ),
-                                                                onRatingUpdate: (ratingvalue) {
-                                                                  setState(() {
-                                                                    fullRating = ratingvalue;
-                                                                  });
-                                                                },
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 8,
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                                                child: RichText(
-                                                                  text: TextSpan(children: [
-                                                                    TextSpan(
-                                                                        text:
-                                                                            'It is a long established fact that a reader will be distracted by the readable content of a page when looking...',
-                                                                        style: GoogleFonts.poppins(
-                                                                          color: const Color(0xFF969AA3),
-                                                                          fontSize: 14,
-                                                                          fontWeight: FontWeight.w300,
-                                                                        )),
-                                                                    TextSpan(
-                                                                        text: 'read more',
-                                                                        style: GoogleFonts.poppins(
-                                                                            fontSize: 14,
-                                                                            fontWeight: FontWeight.w400,
-                                                                            color: const Color(0xFF567DF4)))
-                                                                  ]),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        // const Spacer(),
-                                                        const Padding(
-                                                          padding: EdgeInsets.symmetric(vertical: 3.0),
-                                                          child: Text(
-                                                            'Oct 23, 2022',
-                                                            style: TextStyle(
-                                                              color: Color(0xFF969AA3),
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.w400,
+                                            ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: reviewModel!.length,
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                itemBuilder: (context, index) {
+                                                  var reviewList = reviewModel![index];
+                                                  return Column(
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          ClipRRect(
+                                                            borderRadius: BorderRadius.circular(20),
+                                                            child: const SizedBox(
+                                                              height: 40,
+                                                              width: 40,
+                                                              child: Icon(Icons.person),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    index != 2
-                                                        ? Divider(
-                                                            color: const Color(0xFF698EDE).withOpacity(.1),
-                                                            thickness: 2,
-                                                          )
-                                                        : const SizedBox(),
-                                                    const SizedBox(
-                                                      height: 12,
-                                                    ),
-                                                  ],
-                                                );
-                                              })
-                                        ]),
-                                  ),
+                                                          const SizedBox(
+                                                            width: 20,
+                                                          ),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                                                  child: Text(
+                                                                    reviewList.userName.toString(),
+                                                                    style: GoogleFonts.poppins(
+                                                                      color: const Color(0xFF1B233A),
+                                                                      fontSize: 16,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 6,
+                                                                ),
+                                                                RatingBar.builder(
+                                                                  initialRating: reviewList.fullRating,
+                                                                  minRating: 1,
+                                                                  unratedColor: const Color(0xff3B5998).withOpacity(.2),
+                                                                  itemCount: 5,
+                                                                  itemSize: 16.0,
+                                                                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                                  updateOnDrag: true,
+                                                                  itemBuilder: (context, index) => Image.asset(
+                                                                    'assets/icons/star.png',
+                                                                    color: const Color(0xff3B5998),
+                                                                  ),
+                                                                  onRatingUpdate: (ratingvalue) {
+                                                                    null;
+                                                                  },
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 8,
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                                                  child: RichText(
+                                                                    text: TextSpan(children: [
+                                                                      TextSpan(
+                                                                          text: reviewList.about,
+                                                                          style: GoogleFonts.poppins(
+                                                                            color: const Color(0xFF969AA3),
+                                                                            fontSize: 14,
+                                                                            fontWeight: FontWeight.w300,
+                                                                          )),
+                                                                      // TextSpan(
+                                                                      //     text: 'read more',
+                                                                      //     style: GoogleFonts.poppins(
+                                                                      //         fontSize: 14,
+                                                                      //         fontWeight: FontWeight.w400,
+                                                                      //         color: const Color(0xFF567DF4)))
+                                                                    ]),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          // const Spacer(),
+                                                          Padding(
+                                                            padding: const EdgeInsets.symmetric(vertical: 3.0),
+                                                            child: Text(
+                                                              DateFormat.yMMMd().format(DateTime.parse(
+                                                                  DateTime.fromMillisecondsSinceEpoch(int.parse(reviewList.time))
+                                                                      .toString())),
+                                                              style: const TextStyle(
+                                                                color: Color(0xFF969AA3),
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.w400,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      index != 2
+                                                          ? Divider(
+                                                              color: const Color(0xFF698EDE).withOpacity(.1),
+                                                              thickness: 2,
+                                                            )
+                                                          : const SizedBox(),
+                                                      const SizedBox(
+                                                        height: 12,
+                                                      ),
+                                                    ],
+                                                  );
+                                                })
+                                          ]),
+                                    )
                               ],
                             )),
                       ),
@@ -1168,12 +1181,17 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    if(menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList().isNotEmpty){
-                                      manageCheckOut(widget.restaurantItem!.docid).then((value) {
-                                        Get.to(()=>const CartScreen());
-                                      });
-                                    }
-                                    else{
+                                    if (menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList().isNotEmpty) {
+                                      FirebaseAuth _auth = FirebaseAuth.instance;
+                                      User? user = _auth.currentUser;
+                                      if (user != null) {
+                                        manageCheckOut(widget.restaurantItem!.docid).then((value) {
+                                          Get.to(() => const CartScreen());
+                                        });
+                                      } else {
+                                        Get.to(() => LoginScreen());
+                                      }
+                                    } else {
                                       showToast("Please select menu");
                                     }
                                   },

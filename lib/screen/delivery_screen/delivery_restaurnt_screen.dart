@@ -18,17 +18,21 @@ import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
+import '../../controller/bottomnavbar_controller.dart';
 import '../../controller/location_controller.dart';
 import '../../controller/wishlist_controller.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/category_model.dart';
+import '../../model/checkout_model.dart';
 import '../../model/profile_model.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../widget/custom_textfield.dart';
 import '../../widget/restaurant_timing.dart';
+import '../bottomnav_bar.dart';
 import '../category/resturant_by_category.dart';
+import '../login_screen.dart';
 import '../myAddressList.dart';
 import '../single_store_screens/setting_for_restaurant.dart';
 import 'cart screen.dart';
@@ -43,6 +47,7 @@ class DeliveryPage extends StatefulWidget {
 }
 
 class _DeliveryPageState extends State<DeliveryPage> {
+  final bottomController = Get.put(BottomNavBarController());
   final locationController = Get.put(LocationController());
   final wishListController = Get.put(WishListController());
   bool isDescendingOrder = false;
@@ -202,7 +207,12 @@ class _DeliveryPageState extends State<DeliveryPage> {
   @override
   void initState() {
     super.initState();
-    wishListController.startListener();
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    if (user != null) {
+      wishListController.startListener();
+      getProfileData();
+    }
     geo = GeoFlutterFire();
     GeoFirePoint center = geo!.point(
         latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
@@ -213,7 +223,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
           .collection(collectionRef: collectionReference)
           .within(center: center, radius: rad, field: 'restaurant_position', strictMode: true);
     });
-    getProfileData();
     getSliders();
     getVendorCategories();
     getRestaurantList();
@@ -235,26 +244,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: () {
-                // profileController.scaffoldKey.currentState!.openDrawer();
-              },
-              child: SizedBox(
-                height: 40,
-                width: 40,
-                child: Container(
-                  decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      imageUrl: profileData.profile_image.toString(),
-                      errorWidget: (_, __, ___) => const Icon(Icons.person),
-                      placeholder: (_, __) => const SizedBox(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+                onTap: () {
+                  bottomController.scaffoldKey.currentState!.openDrawer();
+                },
+                child: Icon(Icons.menu)),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -300,15 +293,84 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 ],
               ),
             ),
+            // Badge(
+            //   label: StreamBuilder(
+            //     stream: FirebaseFirestore.instance
+            //         .collection('vendor_menu')
+            //         .where('userID', isLessThan: FirebaseAuth.instance.currentUser!.uid)
+            //         .snapshots(),
+            //     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+            //       if (snapshot.hasData) {
+            //         if (snapshot.data == null) {
+            //           return const Text(" 0 ");
+            //         }
+            //         if (snapshot.data!.docs.isEmpty) {
+            //           return const Text(" 0 ");
+            //         }
+            //         CheckOutModel cartData = CheckOutModel.fromJson(snapshot.data!.docs.first.data());
+            //         return Text(" ${cartData.menuList!.length}");
+            //       }
+            //       return const Center(child: Text(" 0 "));
+            //     },
+            //   ),
+            //   backgroundColor: Colors.black,
+            //   padding: EdgeInsets.zero,
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       Get.toNamed(MyRouters.cartScreen);
+            //     },
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: Image.asset(
+            //         'assets/images/shoppinbag.png',
+            //         height: 30,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             GestureDetector(
               onTap: () {
-                Get.to(const CartScreen());
+                FirebaseAuth _auth = FirebaseAuth.instance;
+                User? user = _auth.currentUser;
+                if (user != null) {
+                  Get.toNamed(MyRouters.cartScreen);
+                } else {
+                  Get.to(() => LoginScreen());
+                }
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
                   'assets/images/shoppinbag.png',
                   height: 30,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                FirebaseAuth _auth = FirebaseAuth.instance;
+                User? user = _auth.currentUser;
+                if (user != null) {
+                  Get.offAll(const BottomNavbar());
+                  bottomController.updateIndexValue(3);
+                } else {
+                  Get.to(() => LoginScreen());
+                }
+              },
+              child: SizedBox(
+                height: 40,
+                width: 40,
+                child: Container(
+                  decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: profileData.profile_image.toString(),
+                      errorWidget: (_, __, ___) => const Icon(Icons.person),
+                      placeholder: (_, __) => const SizedBox(),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -448,7 +510,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
                               sliderList![index],
                               fit: BoxFit.cover,
                               height: 80,
-                              errorBuilder: (_, __, ___) => SizedBox(height: 80,),
+                              errorBuilder: (_, __, ___) => SizedBox(
+                                height: 80,
+                              ),
                             ),
                           ),
                         );
@@ -492,7 +556,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                     errorBuilder: (_, __, ___) => SizedBox(
                                         height: 70,
                                         width: 70,
-                                        child: Icon(Icons.error,color: Colors.red,)),
+                                        child: Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                        )),
                                   ),
                                 ),
                                 const SizedBox(
@@ -533,13 +600,13 @@ class _DeliveryPageState extends State<DeliveryPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.to(() => SingleRestaurantsScreen(
-                                  restaurantItem: restaurantListItem,
-                                  distance: _calculateDistance(
-                                    lat1: restaurantListItem.latitude.toString(),
-                                    lon1: restaurantListItem.longitude.toString(),
-                                  ),
-                                ));
+                                Get.to(() => SingleRestaurantForDeliveryScreen(
+                                      restaurantItem: restaurantListItem,
+                                      distance: _calculateDistance(
+                                        lat1: restaurantListItem.latitude.toString(),
+                                        lon1: restaurantListItem.longitude.toString(),
+                                      ),
+                                    ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -565,7 +632,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                               errorBuilder: (_, __, ___) => SizedBox(
                                                   height: 150,
                                                   width: 250,
-                                                  child: Icon(Icons.error,color: Colors.red,)),
+                                                  child: Icon(
+                                                    Icons.error,
+                                                    color: Colors.red,
+                                                  )),
                                             )),
                                         Positioned(
                                             top: 0,
@@ -629,14 +699,14 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                     Row(
                                       children: List.generate(
                                           17,
-                                              (index) => Padding(
-                                            padding: const EdgeInsets.only(left: 2, right: 2),
-                                            child: Container(
-                                              color: Colors.grey[200],
-                                              height: 2,
-                                              width: 10,
-                                            ),
-                                          )),
+                                          (index) => Padding(
+                                                padding: const EdgeInsets.only(left: 2, right: 2),
+                                                child: Container(
+                                                  color: Colors.grey[200],
+                                                  height: 2,
+                                                  width: 10,
+                                                ),
+                                              )),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -698,7 +768,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                     errorBuilder: (_, __, ___) => SizedBox(
                                         height: 70,
                                         width: 70,
-                                        child: Icon(Icons.error,color: Colors.red,)),
+                                        child: Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                        )),
                                   ),
                                 ),
                                 const SizedBox(
@@ -739,13 +812,13 @@ class _DeliveryPageState extends State<DeliveryPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.to(() => SingleRestaurantsScreen(
-                                  restaurantItem: restaurantListItem,
-                                  distance: _calculateDistance(
-                                    lat1: restaurantListItem.latitude.toString(),
-                                    lon1: restaurantListItem.longitude.toString(),
-                                  ),
-                                ));
+                                Get.to(() => SingleRestaurantForDeliveryScreen(
+                                      restaurantItem: restaurantListItem,
+                                      distance: _calculateDistance(
+                                        lat1: restaurantListItem.latitude.toString(),
+                                        lon1: restaurantListItem.longitude.toString(),
+                                      ),
+                                    ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -771,7 +844,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                               errorBuilder: (_, __, ___) => SizedBox(
                                                   height: 150,
                                                   width: 250,
-                                                  child: Icon(Icons.error,color: Colors.red,)),
+                                                  child: Icon(
+                                                    Icons.error,
+                                                    color: Colors.red,
+                                                  )),
                                             )),
                                         Positioned(
                                             top: 0,
@@ -835,14 +911,14 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                     Row(
                                       children: List.generate(
                                           17,
-                                              (index) => Padding(
-                                            padding: const EdgeInsets.only(left: 2, right: 2),
-                                            child: Container(
-                                              color: Colors.grey[200],
-                                              height: 2,
-                                              width: 10,
-                                            ),
-                                          )),
+                                          (index) => Padding(
+                                                padding: const EdgeInsets.only(left: 2, right: 2),
+                                                child: Container(
+                                                  color: Colors.grey[200],
+                                                  height: 2,
+                                                  width: 10,
+                                                ),
+                                              )),
                                     ),
                                     const SizedBox(
                                       height: 10,

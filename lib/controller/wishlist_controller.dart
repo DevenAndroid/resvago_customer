@@ -53,6 +53,10 @@ class WishListController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    startListener();
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    if (user != null) {
+      startListener();
+    }
   }
 }

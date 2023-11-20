@@ -92,19 +92,19 @@ class LocationController extends GetxController {
     });
   }
 
-  getApiLocation() async {
-    log("Getting user location.........");
-    await placemarkFromCoordinates(
-        double.parse(lat.value == '' ? "0" : lat.value),
-        double.parse(long.value == '' ? "0" : long.value))
-        .then((value) {
-      locality.value = 'Locality: ${value.first.locality}';
-      country.value = 'Country : ${value.last.country}';
-      log(value.map((e) => e.locality).toList().toString());
-      log(locality.value);
-      log(country.value);
-    });
-  }
+  // getApiLocation() async {
+  //   log("Getting user location.........");
+  //   await placemarkFromCoordinates(
+  //       double.parse(lat.value == '' ? "0" : lat.value),
+  //       double.parse(long.value == '' ? "0" : long.value))
+  //       .then((value) {
+  //     locality.value = 'Locality: ${value.first.locality}';
+  //     country.value = 'Country : ${value.last.country}';
+  //     log(value.map((e) => e.locality).toList().toString());
+  //     log(locality.value);
+  //     log(country.value);
+  //   });
+  // }
 
 
 
