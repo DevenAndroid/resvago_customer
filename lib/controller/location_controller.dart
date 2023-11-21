@@ -9,6 +9,8 @@ class LocationController extends GetxController {
   RxBool servicestatus = false.obs;
   RxBool haspermission = false.obs;
   late LocationPermission permission;
+  String? location;
+  String? addressType;
   late Position position;
   RxString long = "0.0".obs, lat = "0.0".obs;
   var locality = 'No location set'.obs;

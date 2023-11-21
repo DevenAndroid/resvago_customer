@@ -22,6 +22,7 @@ import '../../controller/bottomnavbar_controller.dart';
 import '../../controller/location_controller.dart';
 import '../../controller/wishlist_controller.dart';
 import '../../firebase_service/firebase_service.dart';
+import '../../model/add_address_modal.dart';
 import '../../model/category_model.dart';
 import '../../model/checkout_model.dart';
 import '../../model/profile_model.dart';
@@ -231,7 +232,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
   }
 
   int currentDrawer = 0;
-
+  AddressModel? addressData;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -254,7 +255,16 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(() => MyAddressList(
+                        addressChanged: (AddressModel address) {
+                          addressData = address;
+                          locationController.location = addressData!.streetAddress ?? "";
+                          locationController.addressType = addressData!.AddressType ?? "";
+                          setState(() {});
+                        },
+                      ));
+                    },
                     child: Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -263,7 +273,14 @@ class _DeliveryPageState extends State<DeliveryPage> {
                           height: 15,
                         ),
                         const SizedBox(width: 4),
-                        Flexible(
+                        addressData != null
+                            ? Flexible(
+                          child: Text(
+                            ( locationController.addressType ?? "").toString(),
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+                          ),
+                        )
+                            : Flexible(
                           child: Text(
                             'Home',
                             style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
@@ -280,7 +297,14 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   const SizedBox(
                     height: 6,
                   ),
-                  Obx(() {
+                  addressData != null
+                      ? Text(( locationController.location ?? "").toString(),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF1E2538),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                      ))
+                      : Obx(() {
                     return Text(
                       locationController.locality.value.toString(),
                       style: GoogleFonts.poppins(

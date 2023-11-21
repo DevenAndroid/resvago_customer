@@ -262,6 +262,8 @@ class _HomePageState extends State<HomePage> {
                       Get.to(() => MyAddressList(
                             addressChanged: (AddressModel address) {
                               addressData = address;
+                              locationController.location = addressData!.streetAddress ?? "";
+                              locationController.addressType = addressData!.AddressType ?? "";
                               setState(() {});
                             },
                           ));
@@ -274,12 +276,19 @@ class _HomePageState extends State<HomePage> {
                           height: 15,
                         ),
                         const SizedBox(width: 4),
-                        Flexible(
-                          child: Text(
-                            'Home',
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                        ),
+                        addressData != null
+                            ? Flexible(
+                                child: Text(
+                                  ( locationController.addressType ?? "").toString(),
+                                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                              )
+                            : Flexible(
+                                child: Text(
+                                  'Home',
+                                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                              ),
                         const SizedBox(width: 5),
                         Image.asset(
                           'assets/icons/dropdown.png',
@@ -291,16 +300,23 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     height: 6,
                   ),
-                  Obx(() {
-                    return Text(
-                      locationController.locality.value.toString(),
-                      style: GoogleFonts.poppins(
-                        color: const Color(0xFF1E2538),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    );
-                  })
+                  addressData != null
+                      ? Text(( locationController.location ?? "").toString(),
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF1E2538),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w300,
+                          ))
+                      : Obx(() {
+                          return Text(
+                            locationController.locality.value.toString(),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF1E2538),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          );
+                        })
                 ],
               ),
             ),
