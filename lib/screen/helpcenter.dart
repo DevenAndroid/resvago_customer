@@ -9,7 +9,7 @@ import '../widget/common_text_field.dart';
 
 class HelpCenterScreen extends StatefulWidget {
   const HelpCenterScreen({Key? key}) : super(key: key);
-  static var helpCenterScreen="/helpCenterScreen";
+  static var helpCenterScreen ="/helpCenterScreen";
   @override
   State<HelpCenterScreen> createState() => _HelpCenterScreenState();
 }

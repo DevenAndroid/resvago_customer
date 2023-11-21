@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
+import 'package:resvago_customer/widget/appStrings.dart';
 
 import '../controller/bottomnavbar_controller.dart';
 
@@ -153,7 +154,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                     children: [
                       drawerTile(
                           active: true,
-                          title: "My Orders".tr,
+                          title: AppStrings.myOrders.tr,
                           icon: const ImageIcon(
                             AssetImage(AppAssets.order),
                             size: 22,
@@ -174,7 +175,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       ),
                       drawerTile(
                           active: true,
-                          title: "My Profile".tr,
+                          title: AppStrings.myProfile.tr,
                           icon: const ImageIcon(
                             AssetImage(AppAssets.profilee),
                             size: 22,
@@ -195,7 +196,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       ),
                       drawerTile(
                           active: true,
-                          title: "Notification".tr,
+                          title: AppStrings.notification.tr,
                           icon: const ImageIcon(
                             AssetImage(AppAssets.notification),
                             size: 22,
@@ -210,7 +211,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       ),
                       drawerTile(
                           active: true,
-                          title: "My Address".tr,
+                          title: AppStrings.myAddress.tr,
                           icon: const ImageIcon(
                             AssetImage(AppAssets.myAddress),
                             size: 22,
@@ -233,7 +234,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       ),
                       drawerTile(
                           active: true,
-                          title: "Privacy Policy".tr,
+                          title: AppStrings.privacyPolicy.tr,
                           icon: const ImageIcon(
                             AssetImage(AppAssets.privacyPolicy),
                             size: 22,
@@ -250,7 +251,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       ),
                       drawerTile(
                           active: true,
-                          title: "Help Center".tr,
+                          title: AppStrings.helpCenter.tr,
                           icon: const ImageIcon(
                             AssetImage(AppAssets.helpCenter),
                             size: 22,
@@ -266,7 +267,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       ),
                       drawerTile(
                           active: true,
-                          title: "Logout".tr,
+                          title: AppStrings.logOut.tr,
                           icon: const ImageIcon(
                             AssetImage(AppAssets.logOut),
                             size: 22,
@@ -339,12 +340,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 0
-                              ? const Text(
-                                  "Dining",
+                              ?  Text(
+                            AppStrings.dining.tr,
                                   style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Dining",
+                              :  Text(
+                            AppStrings.dining.tr,
                                   style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -372,13 +373,13 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 1
-                              ? const Text(
-                                  "Delivery",
+                              ?  Text(
+                              AppStrings.delivery.tr,
                                   style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Delivery",
-                                  style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
+                              :  Text(
+                            AppStrings.delivery.tr,
+                            style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
                       ),
@@ -408,12 +409,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 2
-                              ? const Text(
-                                  "Oders",
+                              ?  Text(
+                            AppStrings.orders.tr,
                                   style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Oders",
+                              :  Text(
+                            AppStrings.orders.tr,
                                   style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -444,12 +445,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 3
-                              ? const Text(
-                                  "Profile",
+                              ?  Text(
+                            AppStrings.profile.tr,
                                   style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Profile",
+                              :  Text(
+                            AppStrings.profile.tr,
                                   style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],

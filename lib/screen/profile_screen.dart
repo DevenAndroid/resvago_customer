@@ -14,6 +14,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import '../model/profile_model.dart';
 import '../widget/addsize.dart';
+import '../widget/appStrings.dart';
 import '../widget/apptheme.dart';
 import '../widget/common_text_field.dart';
 import 'helper.dart';
@@ -223,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Name',
+                                 AppStrings.name.tr,
                                   style: GoogleFonts.poppins(
                                       color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                                 ),
@@ -232,8 +233,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 RegisterTextFieldWidget(
                                     controller: firstNameController,
-                                    validator: RequiredValidator(errorText: 'Please enter your name').call,
-                                    hint: "Name"),
+                                    validator: RequiredValidator(errorText:    AppStrings.pleaseEnterYourName.tr).call,
+                                    hint: AppStrings.name.tr),
                                 // const SizedBox(
                                 //   height: 20,
                                 // ),
@@ -254,7 +255,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   height: 20,
                                 ),
                                 Text(
-                                  "Email",
+                                  AppStrings.email.tr,
                                   style: GoogleFonts.poppins(
                                       color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                                 ),
@@ -265,8 +266,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   readOnly: true,
                                   controller: emailController,
                                   validator: MultiValidator([
-                                    RequiredValidator(errorText: 'Please enter your email'),
-                                    EmailValidator(errorText: 'Enter a valid email address'),
+                                    RequiredValidator(errorText:    AppStrings.pleaseEnterYrMail.tr),
+                                    EmailValidator(errorText:    AppStrings.enterAValidEmail.tr),
                                   ]).call,
                                   keyboardType: TextInputType.emailAddress,
                                   // textInputAction: TextInputAction.next,
@@ -276,7 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   height: 20,
                                 ),
                                 Text(
-                                  "Mobile Number",
+                                  AppStrings.mobileNumber.tr,
                                   style: GoogleFonts.poppins(
                                       color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                                 ),
@@ -286,10 +287,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 RegisterTextFieldWidget(
                                     readOnly: true,
                                     controller: mobileController,
-                                    validator: RequiredValidator(errorText: 'Please enter your mobile number ').call,
+                                    validator: RequiredValidator(errorText:    AppStrings.pleaseEnterPh.tr).call,
                                     keyboardType: TextInputType.number,
                                     // textInputAction: TextInputAction.next,
-                                    hint: "Mobile number"),
+                                    hint:    AppStrings.mobileNumber.tr),
                                 const SizedBox(
                                   height: 20,
                                 ),
@@ -299,7 +300,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       updateProfileToFirestore();
                                     }
                                   },
-                                  title: 'Save',
+                                  title: AppStrings.save.tr,
                                 ),
                               ],
                             ),
@@ -324,8 +325,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Select Picture from',
+        title:  Text(
+          AppStrings.selectPictureFrom.tr,
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
@@ -363,7 +364,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Get.back();
               });
             },
-            child: const Text("Camera"),
+            child:  Text( AppStrings.camera.tr),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -400,14 +401,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Get.back();
               });
             },
-            child: const Text('Gallery'),
+            child:  Text( AppStrings.gallery.tr),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Get.back();
             },
-            child: const Text('Cancel'),
+            child:  Text( AppStrings.cancel.tr),
           ),
         ],
       ),

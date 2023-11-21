@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:resvago_customer/screen/myAddressList.dart';
+import 'package:resvago_customer/widget/appStrings.dart';
 import 'package:resvago_customer/widget/custom_textfield.dart';
 
 import '../widget/addsize.dart';
@@ -43,7 +44,7 @@ class ChooseAddress extends StatefulWidget {
 
 class _ChooseAddressState extends State<ChooseAddress> {
   final _formKey = GlobalKey<FormState>();
-  final List<String> choiceAddress = ["Home", "Office", "Hotel", "Other"];
+  final List<String> choiceAddress = [AppStrings.home.tr, AppStrings.office.tr, AppStrings.hotel.tr ,AppStrings.other.tr];
   final RxBool _isValue = false.obs;
   RxBool customTip = false.obs;
   RxString selectedChip = "Home".obs;
@@ -188,8 +189,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "Enter complete address",
+                                   Text(
+                                     AppStrings.enterCompleteAdd.tr,
                                     style: TextStyle(
                                         color: AppTheme.blackcolor,
                                         fontWeight: FontWeight.w600,
@@ -210,19 +211,19 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                     height: AddSize.size20,
                                   ),
                                   if (customTip.value)
-                                    const CommonTextFiel1dWidget(
-                                      hint: "Other",
+                                     CommonTextFiel1dWidget(
+                                      hint: AppStrings.other.tr,
                                     ),
                                   SizedBox(
                                     height: AddSize.size20,
                                   ),
                                   CommonTextFiel1dWidget(
                                     controller: streetAddressController,
-                                    hint: "Flat, House no, Floor, Tower,Street",
+                                    hint: AppStrings.flatHouseNoFloor.tr,
                                     validator: MultiValidator([
                                       RequiredValidator(
                                           errorText:
-                                          'Flat, House no, Floor, Tower,Street'),
+                                          AppStrings.flatHouseNoFloor.tr),
                                     ]).call,
                                   ),
                                   SizedBox(
@@ -230,28 +231,28 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                   ),
                                   CommonTextFiel1dWidget(
                                     controller: flatAddressController,
-                                    hint: "Street, Society, Landmark",
+                                    hint: AppStrings.streetSociety.tr,
                                     validator: MultiValidator([
                                       RequiredValidator(
-                                          errorText: 'Select city'),
+                                          errorText: AppStrings.selectCity.tr),
                                     ]).call,
                                   ),
                                   SizedBox(
                                     height: AddSize.size20,
                                   ),
                                   CommonTextFiel1dWidget(
-                                    hint: "Recipient’s name",
+                                    hint: AppStrings.recipientName.tr,
                                     controller: nameController,
                                     validator: MultiValidator([
                                       RequiredValidator(
-                                          errorText: 'Recipient’s name'),
+                                          errorText: AppStrings.recipientName.tr),
                                     ]).call,
                                   ),
                                   SizedBox(
                                     height: AddSize.size20,
                                   ),
                                   CommonButtonBlue(
-                                    title: 'save address'.toUpperCase(),
+                                    title: AppStrings.saveAddress.tr.toUpperCase(),
                                     onPressed: () {
                                       AddAddresstofirebase();
                                     },
@@ -290,7 +291,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
       }).then((value) {
         Get.back();
         Get.back();
-        Fluttertoast.showToast(msg: 'Address Added');
+        Fluttertoast.showToast(msg: AppStrings.addressAdded.tr);
       });
     }else{
 
@@ -373,8 +374,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
         child: Scaffold(
             appBar: backAppBar(
                 title: _isValue.value == true
-                    ? "Complete Address"
-                    : "Choose Address",
+                    ? AppStrings.completeAddress.tr
+                    : AppStrings.chooseAddress.tr,
                 context: context,
                 dispose: "dispose",
                 disposeController: () {
@@ -457,7 +458,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                               height: AddSize.size30,
                             ),
                             CommonButtonBlue(
-                              title: "Enter complete address",
+                              title: AppStrings.enterCompleteAdd.tr,
                               onPressed: () {
                                 setState(() {
                                   _isValue.value = !_isValue.value;

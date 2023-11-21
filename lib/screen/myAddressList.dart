@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resvago_customer/screen/addAddress.dart';
+import 'package:resvago_customer/widget/appStrings.dart';
 import '../model/add_address_modal.dart';
 import '../widget/common_text_field.dart';
 
@@ -36,7 +37,7 @@ class _MyAddressListState extends State<MyAddressList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "My Address", context: context,
+      appBar: backAppBar(title: AppStrings.myAddress.tr, context: context,
           icon2: GestureDetector(
             onTap: (){
                Get.to(ChooseAddress(isEditMode: false,));
@@ -63,7 +64,7 @@ class _MyAddressListState extends State<MyAddressList> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No Address Found"));
+                  return  Center(child: Text(AppStrings.noAddressFound.tr));
                 } else {
                   List<AddressModel>? pages = snapshot.data;
                   final filteredPages = filterUsers(pages!, searchQuery);
@@ -143,7 +144,7 @@ class _MyAddressListState extends State<MyAddressList> {
                                                       docID: item.docid,
                                                     ));
                                                   },
-                                                  child: const Text("Edit"),
+                                                  child:  Text(AppStrings.edit.tr),
                                                 ),
                                                 PopupMenuItem(
                                                   value: 1,
@@ -152,10 +153,9 @@ class _MyAddressListState extends State<MyAddressList> {
                                                       context: context,
                                                       builder: (ctx) =>
                                                           AlertDialog(
-                                                            title: const Text(
-                                                                "Delete Address"),
-                                                            content: const Text(
-                                                                "Are you sure you want to delete this Address"),
+                                                            title:  Text(AppStrings.delete.tr),
+                                                            content:  Text(
+                                                                AppStrings.areYouSureDelete.tr),
                                                             actions: <Widget>[
                                                               TextButton(
                                                                 onPressed: () {
@@ -174,9 +174,9 @@ class _MyAddressListState extends State<MyAddressList> {
                                                                   padding:
                                                                   const EdgeInsets
                                                                       .all(14),
-                                                                  child: const Center(
+                                                                  child:  Center(
                                                                       child: Text(
-                                                                        "Cancel",
+                                                                        AppStrings.cancel.tr,
                                                                         style: TextStyle(
                                                                             color: Colors
                                                                                 .white),
@@ -209,9 +209,9 @@ class _MyAddressListState extends State<MyAddressList> {
                                                                   padding:
                                                                   const EdgeInsets
                                                                       .all(14),
-                                                                  child: const Center(
+                                                                  child:  Center(
                                                                       child: Text(
-                                                                        "okay",
+                                                                       AppStrings.okay.tr,
                                                                         style: TextStyle(
                                                                             color: Colors
                                                                                 .white),
@@ -222,7 +222,7 @@ class _MyAddressListState extends State<MyAddressList> {
                                                           ),
                                                     );
                                                   },
-                                                  child: const Text("Delete"),
+                                                  child:  Text(AppStrings.delete.tr),
                                                 ),
                                               ];
                                             }),
@@ -231,8 +231,8 @@ class _MyAddressListState extends State<MyAddressList> {
                           ),
                         );
                       })
-                      : const Center(
-                    child: Text("No Address Found"),
+                      :  Center(
+                    child: Text(AppStrings.noAddressFound.tr),
                   );
                 }
                 return const Center(child: CircularProgressIndicator());

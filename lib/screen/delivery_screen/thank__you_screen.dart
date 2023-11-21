@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/model/order_model.dart';
 import 'package:resvago_customer/screen/order/myorder_screen.dart';
+import 'package:resvago_customer/widget/appStrings.dart';
 import '../../widget/apptheme.dart';
 import '../order/order_details_screen.dart';
 
@@ -53,7 +54,7 @@ class _ThankuScreenState extends State<ThankuScreen> {
                     textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                   child: Text(
-                    "Check Order Details".toUpperCase(),
+                    AppStrings.checkOrderDetails.tr.toUpperCase(),
                     style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: AppTheme.primaryColor),
                   ),
                 ),
@@ -82,14 +83,14 @@ class _ThankuScreenState extends State<ThankuScreen> {
                   height: 13,
                 ),
                 Text(
-                  'Thank you '.toUpperCase(),
+                  AppStrings.thankYou.tr.toUpperCase(),
                   style: GoogleFonts.poppins(fontSize: 40, fontWeight: FontWeight.w600, color: Colors.white),
                 ),
                 const SizedBox(
                   height: 5,
                 ),
                 Text(
-                  'your reservation is confirmed',
+                  AppStrings.yourReservationIs.tr,
                   style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
                 ),
                 const SizedBox(
@@ -127,7 +128,7 @@ class _ThankuScreenState extends State<ThankuScreen> {
                             ],
                           )
                         : Text(
-                            "Your OrderId: #${widget.orderId.toString()}",
+                            "${AppStrings.yourOrderId.tr} #${widget.orderId.toString()}",
                             style: GoogleFonts.poppins(
                                 color: const Color(
                                   0xffFAAF40,

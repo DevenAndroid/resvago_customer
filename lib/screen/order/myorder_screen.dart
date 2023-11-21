@@ -14,6 +14,7 @@ import 'package:resvago_customer/screen/delivery_screen/cart%20screen.dart';
 import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 import '../../firebase_service/firebase_service.dart';
+import '../../widget/appStrings.dart';
 import '../../widget/apptheme.dart';
 import 'order_details_screen.dart';
 
@@ -206,7 +207,7 @@ class _MyOrderState extends State<MyOrder> {
               ),
               elevation: 1,
               title: Text(
-                "My Orders",
+                AppStrings.myOrders.tr,
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -243,8 +244,8 @@ class _MyOrderState extends State<MyOrder> {
                                     log(orderType.toString());
                                     setState(() {});
                                   },
-                                  child: const Column(
-                                    children: [Text("Dining Orders"), Divider()],
+                                  child:  Column(
+                                    children: [Text( AppStrings.diningOrders.tr), Divider()],
                                   ),
                                 ),
                                 PopupMenuItem(
@@ -254,9 +255,9 @@ class _MyOrderState extends State<MyOrder> {
                                     log(orderType.toString());
                                     setState(() {});
                                   },
-                                  child: const Column(
+                                  child:  Column(
                                     children: [
-                                      Text("Delivery Orders"),
+                                      Text(AppStrings.deliveryOrders.tr),
                                       Divider(
                                         color: Colors.white,
                                       )
@@ -280,7 +281,7 @@ class _MyOrderState extends State<MyOrder> {
                 tabs: [
                   Tab(
                     child: Text(
-                      "Active",
+                      AppStrings.active.tr,
                       style: currentDrawer == 0
                           ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
                           : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
@@ -288,7 +289,7 @@ class _MyOrderState extends State<MyOrder> {
                   ),
                   Tab(
                     child: Text(
-                      "Completed",
+                      AppStrings.complete.tr,
                       style: currentDrawer == 1
                           ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
                           : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
@@ -296,7 +297,7 @@ class _MyOrderState extends State<MyOrder> {
                   ),
                   Tab(
                     child: Text(
-                      "Cancelled",
+                      AppStrings.cancelled.tr,
                       style: currentDrawer == 1
                           ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
                           : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
@@ -459,7 +460,7 @@ class _MyOrderState extends State<MyOrder> {
                                                               )),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
-                                                        "Cancel Order",
+                                                        AppStrings.cancelOrder.tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12, fontWeight: FontWeight.w500, color: Colors.red),
                                                       ),
@@ -485,7 +486,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           ),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
-                                                        "See Details",
+                                                        AppStrings.seeDetails.tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                                                       ),
@@ -512,14 +513,14 @@ class _MyOrderState extends State<MyOrder> {
                                         children: [
                                           Image.asset(AppAssets.orderEmpty),
                                           Text(
-                                            'Empty',
+                                            AppStrings.empty.tr,
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            AppStrings.youDontHaveAnActive.tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
                                           ),
@@ -719,7 +720,7 @@ class _MyOrderState extends State<MyOrder> {
                                                               )),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
-                                                        "Leave Review",
+                                                        AppStrings.leaveReview.tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12,
                                                             fontWeight: FontWeight.w500,
@@ -768,7 +769,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           ),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
-                                                        "Order Again",
+                                                        AppStrings.orderAgain.tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                                                       ),
@@ -795,14 +796,14 @@ class _MyOrderState extends State<MyOrder> {
                                         children: [
                                           Image.asset(AppAssets.orderEmpty),
                                           Text(
-                                            'Empty',
+                                            AppStrings.empty.tr,
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            AppStrings.youDontHaveAnActive.tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
                                           ),
@@ -913,7 +914,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 children: [
                                                                   Text(
-                                                                    "${orderItem.orderDetails!.menuList!.length} Items",
+                                                                    "${orderItem.orderDetails!.menuList!.length} ${AppStrings.items.tr}",
                                                                     style: GoogleFonts.poppins(
                                                                         fontSize: 12,
                                                                         fontWeight: FontWeight.w300,
@@ -964,7 +965,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                         textStyle: const TextStyle(
                                                                             fontSize: 18, fontWeight: FontWeight.w500)),
                                                                     child: Text(
-                                                                      "Cancelled",
+                                                                      AppStrings.cancelled.tr,
                                                                       style: GoogleFonts.poppins(
                                                                           fontSize: 12,
                                                                           fontWeight: FontWeight.w500,
@@ -996,14 +997,14 @@ class _MyOrderState extends State<MyOrder> {
                                         children: [
                                           Image.asset(AppAssets.orderEmpty),
                                           Text(
-                                            'Empty',
+                                            AppStrings.empty.tr,
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            AppStrings.youDontHaveAnActive.tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
                                           ),
@@ -1121,7 +1122,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
                                                                       Text(
-                                                                        "Date",
+                                                                        AppStrings.date.tr,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w300,
@@ -1148,7 +1149,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
                                                                         Text(
-                                                                          "Time",
+                                                                          AppStrings.time.tr,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w300,
@@ -1174,7 +1175,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
                                                                       Text(
-                                                                        "Guest",
+                                                                        AppStrings.guest.tr,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w300,
@@ -1198,7 +1199,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                   Column(
                                                                     children: [
                                                                       Text(
-                                                                        "offer",
+                                                                        AppStrings.offer.tr,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w300,
@@ -1243,7 +1244,7 @@ class _MyOrderState extends State<MyOrder> {
                                                               )),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
-                                                        "Cancel Order",
+                                                        AppStrings.cancelOrder.tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12,
                                                             fontWeight: FontWeight.w500,
@@ -1272,14 +1273,14 @@ class _MyOrderState extends State<MyOrder> {
                                         children: [
                                           Image.asset(AppAssets.orderEmpty),
                                           Text(
-                                            'Empty',
+                                            AppStrings.empty.tr,
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            AppStrings.youDontHaveAnActive.tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
                                           ),
@@ -1386,7 +1387,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
                                                                       Text(
-                                                                        "Date",
+                                                                        AppStrings.date.tr,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w300,
@@ -1413,7 +1414,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
                                                                         Text(
-                                                                          "Time",
+                                                                          AppStrings.time.tr,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w300,
@@ -1439,7 +1440,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
                                                                       Text(
-                                                                        "Guest",
+                                                                        AppStrings.guest.tr,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w300,
@@ -1463,7 +1464,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                   Column(
                                                                     children: [
                                                                       Text(
-                                                                        "offer",
+                                                                        AppStrings.offer.tr,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w300,
@@ -1514,7 +1515,7 @@ class _MyOrderState extends State<MyOrder> {
                                                               )),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
-                                                        "Leave a review",
+                                                        AppStrings.leaveReview.tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12,
                                                             fontWeight: FontWeight.w500,
@@ -1565,7 +1566,7 @@ class _MyOrderState extends State<MyOrder> {
                                                               )),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
-                                                        "Order Again",
+                                                        AppStrings.orderAgain.tr,
                                                         style: GoogleFonts.poppins(
                                                           fontSize: 12,
                                                           fontWeight: FontWeight.w500,
@@ -1595,14 +1596,14 @@ class _MyOrderState extends State<MyOrder> {
                                         children: [
                                           Image.asset(AppAssets.orderEmpty),
                                           Text(
-                                            'Empty',
+                                            AppStrings.empty.tr,
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            AppStrings.youDontHaveAnActive.tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
                                           ),
@@ -1718,7 +1719,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
                                                                       Text(
-                                                                        "Date",
+                                                                        AppStrings.date.tr,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w300,
@@ -1745,7 +1746,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
                                                                         Text(
-                                                                          "Time",
+                                                                          AppStrings.time.tr,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w300,
@@ -1771,7 +1772,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
                                                                       Text(
-                                                                        "Guest",
+                                                                        AppStrings.guest.tr,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w300,
@@ -1795,7 +1796,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                   Column(
                                                                     children: [
                                                                       Text(
-                                                                        "offer",
+                                                                        AppStrings.offer.tr,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w300,
@@ -1838,14 +1839,14 @@ class _MyOrderState extends State<MyOrder> {
                                         children: [
                                           Image.asset(AppAssets.orderEmpty),
                                           Text(
-                                            'Empty',
+                                            AppStrings.empty.tr,
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            AppStrings.youDontHaveAnActive.tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
                                           ),
