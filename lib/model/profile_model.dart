@@ -22,7 +22,7 @@ class ProfileData {
     email = json['email'];
     mobileNumber = json['mobileNumber'];
     docid = json['docid'];
-    profile_image = json['profile_image'];
+    profile_image = json['profile_image'] ?? "";
   }
 
   Map<String, dynamic> toJson() {

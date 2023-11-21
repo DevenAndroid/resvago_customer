@@ -9,6 +9,8 @@ class LocationController extends GetxController {
   RxBool servicestatus = false.obs;
   RxBool haspermission = false.obs;
   late LocationPermission permission;
+  String? location;
+  String? addressType;
   late Position position;
   RxString long = "0.0".obs, lat = "0.0".obs;
   var locality = 'No location set'.obs;
@@ -92,19 +94,19 @@ class LocationController extends GetxController {
     });
   }
 
-  getApiLocation() async {
-    log("Getting user location.........");
-    await placemarkFromCoordinates(
-        double.parse(lat.value == '' ? "0" : lat.value),
-        double.parse(long.value == '' ? "0" : long.value))
-        .then((value) {
-      locality.value = 'Locality: ${value.first.locality}';
-      country.value = 'Country : ${value.last.country}';
-      log(value.map((e) => e.locality).toList().toString());
-      log(locality.value);
-      log(country.value);
-    });
-  }
+  // getApiLocation() async {
+  //   log("Getting user location.........");
+  //   await placemarkFromCoordinates(
+  //       double.parse(lat.value == '' ? "0" : lat.value),
+  //       double.parse(long.value == '' ? "0" : long.value))
+  //       .then((value) {
+  //     locality.value = 'Locality: ${value.first.locality}';
+  //     country.value = 'Country : ${value.last.country}';
+  //     log(value.map((e) => e.locality).toList().toString());
+  //     log(locality.value);
+  //     log(country.value);
+  //   });
+  // }
 
 
 

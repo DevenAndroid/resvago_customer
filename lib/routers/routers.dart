@@ -11,6 +11,7 @@ import '../screen/helpcenter.dart';
 import '../screen/login_screen.dart';
 import '../screen/notification.dart';
 import '../screen/onboarding_screen.dart';
+import '../screen/otpscreen.dart';
 import '../screen/privacypolicy.dart';
 import '../screen/restaurant_category_screen.dart';
 import '../screen/search_screen/search_singlerestaurant_screen.dart';
@@ -44,6 +45,7 @@ class MyRouters {
   static var cartScreen = "/cartScreen";
 
   static var route = [
+    // GetPage(name: '/', page: () => OtpScreen(verificationId: '',email: "",code: "",)),
     GetPage(name: '/', page: () => const SplashScreen()),
     GetPage(name: '/onBoardingScreen', page: () => const OnBoardingScreen()),
     GetPage(name: MyRouters.loginScreen, page: () => const LoginScreen()),

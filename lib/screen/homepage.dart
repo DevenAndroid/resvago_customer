@@ -16,15 +16,18 @@ import 'package:resvago_customer/model/wishListModel.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/addAddress.dart';
+import 'package:resvago_customer/screen/profile_screen.dart';
 import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
 import 'package:resvago_customer/screen/search_screen/search_singlerestaurant_screen.dart';
 import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
+import '../controller/bottomnavbar_controller.dart';
 import '../controller/location_controller.dart';
 import '../controller/wishlist_controller.dart';
 import '../firebase_service/firebase_service.dart';
+import '../model/add_address_modal.dart';
 import '../model/category_model.dart';
 import '../model/checkout_model.dart';
 import '../model/profile_model.dart';
@@ -33,6 +36,7 @@ import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'package:rxdart/rxdart.dart';
 import '../widget/restaurant_timing.dart';
+import 'bottomnav_bar.dart';
 import 'category/resturant_by_category.dart';
 import 'coupon_list_screen.dart';
 import 'login_screen.dart';
@@ -50,6 +54,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final locationController = Get.put(LocationController());
   final wishListController = Get.put(WishListController());
+  final bottomController = Get.put(BottomNavBarController());
   bool isDescendingOrder = false;
   List<String>? sliderList;
   getSliders() {
@@ -102,7 +107,9 @@ class _HomePageState extends State<HomePage> {
     if (kDebugMode) {
       print("fsdfsdf${double.tryParse(locationController.long.toString())}");
     }
-    if (double.tryParse(lat1) == null || double.tryParse(lon1) == null || double.tryParse(locationController.lat.toString()) == null ||
+    if (double.tryParse(lat1) == null ||
+        double.tryParse(lon1) == null ||
+        double.tryParse(locationController.lat.toString()) == null ||
         double.tryParse(locationController.long.toString()) == null) {
       return "Not Available";
     }
@@ -206,7 +213,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     locationController.checkGps(context).then((value) {});
     locationController.getLocation();
-    wishListController.startListener();
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    if (user != null) {
+      wishListController.startListener();
+      getProfileData();
+    }
     geo = GeoFlutterFire();
     GeoFirePoint center = geo!.point(
         latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
@@ -217,197 +229,17 @@ class _HomePageState extends State<HomePage> {
           .collection(collectionRef: collectionReference)
           .within(center: center, radius: rad, field: 'restaurant_position', strictMode: true);
     });
-    getProfileData();
     getSliders();
     getVendorCategories();
     getRestaurantList();
   }
 
   int currentDrawer = 0;
-
+  AddressModel? addressData;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      drawer: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.7,
-        child: Drawer(
-            child: Container(
-          // width: MediaQuery.of(context).size.width * 0.8,
-          color: AppTheme.backgroundcolor,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: size.height * 0.30,
-                  width: size.width,
-                  color: AppTheme.primaryColor,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.05,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          // Get.to(navigationPage.elementAt(_currentPage))
-                          // Get.to(MyProfile());
-                        },
-                        child: Card(
-                          elevation: 1,
-                          shape: const CircleBorder(),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Container(
-                              decoration:
-                                  BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  imageUrl: profileData.profile_image.toString(),
-                                  errorWidget: (_, __, ___) => const Icon(Icons.person),
-                                  placeholder: (_, __) => const SizedBox(),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.01,
-                      ),
-                      Text(profileData.userName ?? "",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600)),
-                      Text(profileData.email ?? "",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Column(
-                  children: [
-                    _drawerTile(
-                        active: true,
-                        title: "My Orders".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.order),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () {
-                          Get.toNamed(MyRouters.myOrder);
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "My Profile".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.profilee),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () async {
-                          Get.toNamed(MyRouters.profileScreen);
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "Notification".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.notification),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () {
-                          Get.toNamed(MyRouters.notification);
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "My Address".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.myAddress),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () {
-                          Get.to(() => MyAddressList());
-                          // Get.back();
-                          // widget.onItemTapped(1);
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "Privacy Policy".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.privacyPolicy),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () async {
-                          Get.toNamed(MyRouters.privacyPolicyScreen);
-
-                          // }
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "Help Center".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.helpCenter),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () async {
-                          Get.toNamed(MyRouters.helpCenterScreen);
-                          // }
-                        }),
-                    const Divider(
-                      height: 5,
-                      color: Color(0xffF2F2F2),
-                    ),
-                    _drawerTile(
-                        active: true,
-                        title: "Logout".tr,
-                        icon: const ImageIcon(
-                          AssetImage(AppAssets.logOut),
-                          size: 22,
-                          color: AppTheme.drawerColor,
-                        ),
-                        onTap: () async {
-                          await FirebaseAuth.instance.signOut();
-                          Get.offAll(const LoginScreen());
-                        }),
-                  ],
-                ),
-                // SizedBox(height:20,)
-              ],
-            ),
-          ),
-        )),
-      ),
       backgroundColor: const Color(0xffF6F6F6),
       appBar: AppBar(
         surfaceTintColor: AppTheme.backgroundcolor,
@@ -416,8 +248,106 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
+                onTap: () {
+                  bottomController.scaffoldKey.currentState!.openDrawer();
+                },
+                child: Icon(Icons.menu)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => MyAddressList(
+                            addressChanged: (AddressModel address) {
+                              addressData = address;
+                              locationController.location = addressData!.streetAddress ?? "";
+                              locationController.addressType = addressData!.AddressType ?? "";
+                              setState(() {});
+                            },
+                          ));
+                    },
+                    child: Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Image.asset(
+                          'assets/icons/location.png',
+                          height: 15,
+                        ),
+                        const SizedBox(width: 4),
+                        addressData != null
+                            ? Flexible(
+                                child: Text(
+                                  ( locationController.addressType ?? "").toString(),
+                                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                              )
+                            : Flexible(
+                                child: Text(
+                                  'Home',
+                                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                              ),
+                        const SizedBox(width: 5),
+                        Image.asset(
+                          'assets/icons/dropdown.png',
+                          height: 8,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  addressData != null
+                      ? Text(( locationController.location ?? "").toString(),
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFF1E2538),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w300,
+                          ))
+                      : Obx(() {
+                          return Text(
+                            locationController.locality.value.toString(),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF1E2538),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          );
+                        })
+                ],
+              ),
+            ),
+            GestureDetector(
               onTap: () {
-                // profileController.scaffoldKey.currentState!.openDrawer();
+                FirebaseAuth _auth = FirebaseAuth.instance;
+                User? user = _auth.currentUser;
+                if (user != null) {
+                  Get.toNamed(MyRouters.cartScreen);
+                } else {
+                  Get.to(() => LoginScreen());
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  'assets/images/shoppinbag.png',
+                  height: 30,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                FirebaseAuth _auth = FirebaseAuth.instance;
+                User? user = _auth.currentUser;
+                if (user != null) {
+                  Get.offAll(const BottomNavbar());
+                  bottomController.updateIndexValue(3);
+                } else {
+                  Get.to(() => LoginScreen());
+                }
               },
               child: SizedBox(
                 height: 40,
@@ -436,86 +366,41 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image.asset(
-                          'assets/icons/location.png',
-                          height: 15,
-                        ),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Text(
-                            'Home',
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Image.asset(
-                          'assets/icons/dropdown.png',
-                          height: 8,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  Obx(() {
-                    return Text(
-                      locationController.locality.value.toString(),
-                      style: GoogleFonts.poppins(
-                        color: const Color(0xFF1E2538),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    );
-                  })
-                ],
-              ),
-            ),
-            Badge(
-              label: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('vendor_menu')
-                    .where('userID', isLessThan: FirebaseAuth.instance.currentUser!.uid)
-                    .snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data == null) {
-                      return const Text(" 0 ");
-                    }
-                    if (snapshot.data!.docs.isEmpty) {
-                      return const Text(" 0 ");
-                    }
-                    CheckOutModel cartData = CheckOutModel.fromJson(snapshot.data!.docs.first.data());
-                    return Text(" ${cartData.menuList!.length}");
-                  }
-                  return const Center(child: Text(" 0 "));
-                },
-              ),
-              backgroundColor: Colors.black,
-              padding: EdgeInsets.zero,
-              child: GestureDetector(
-                onTap: () {
-                  Get.toNamed(MyRouters.cartScreen);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/images/shoppinbag.png',
-                    height: 30,
-                  ),
-                ),
-              ),
-            ),
+            // Badge(
+            //   label: StreamBuilder(
+            //     stream: FirebaseFirestore.instance
+            //         .collection('vendor_menu')
+            //         .where('userID', isLessThan: FirebaseAuth.instance.currentUser!.uid)
+            //         .snapshots(),
+            //     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+            //       if (snapshot.hasData) {
+            //         if (snapshot.data == null) {
+            //           return const Text(" 0 ");
+            //         }
+            //         if (snapshot.data!.docs.isEmpty) {
+            //           return const Text(" 0 ");
+            //         }
+            //         CheckOutModel cartData = CheckOutModel.fromJson(snapshot.data!.docs.first.data());
+            //         return Text(" ${cartData.menuList!.length}");
+            //       }
+            //       return const Center(child: Text(" 0 "));
+            //     },
+            //   ),
+            //   backgroundColor: Colors.black,
+            //   padding: EdgeInsets.zero,
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       Get.toNamed(MyRouters.cartScreen);
+            //     },
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: Image.asset(
+            //         'assets/images/shoppinbag.png',
+            //         height: 30,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
         automaticallyImplyLeading: false,
@@ -652,7 +537,9 @@ class _HomePageState extends State<HomePage> {
                               sliderList![index],
                               fit: BoxFit.cover,
                               height: 80,
-                              errorBuilder: (_, __, ___) => SizedBox(height: 80,),
+                              errorBuilder: (_, __, ___) => SizedBox(
+                                height: 80,
+                              ),
                             ),
                           ),
                         );
@@ -696,7 +583,10 @@ class _HomePageState extends State<HomePage> {
                                     errorBuilder: (_, __, ___) => SizedBox(
                                         height: 70,
                                         width: 70,
-                                        child: Icon(Icons.error,color: Colors.red,)),
+                                        child: Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                        )),
                                   ),
                                 ),
                                 const SizedBox(
@@ -769,7 +659,10 @@ class _HomePageState extends State<HomePage> {
                                               errorBuilder: (_, __, ___) => SizedBox(
                                                   height: 150,
                                                   width: 250,
-                                                  child: Icon(Icons.error,color: Colors.red,)),
+                                                  child: Icon(
+                                                    Icons.error,
+                                                    color: Colors.red,
+                                                  )),
                                             )),
                                         Positioned(
                                             top: 0,
@@ -902,7 +795,10 @@ class _HomePageState extends State<HomePage> {
                                     errorBuilder: (_, __, ___) => SizedBox(
                                         height: 70,
                                         width: 70,
-                                        child: Icon(Icons.error,color: Colors.red,)),
+                                        child: Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                        )),
                                   ),
                                 ),
                                 const SizedBox(
@@ -944,12 +840,12 @@ class _HomePageState extends State<HomePage> {
                             child: InkWell(
                               onTap: () {
                                 Get.to(() => SingleRestaurantsScreen(
-                                  restaurantItem: restaurantListItem,
-                                  distance: _calculateDistance(
-                                    lat1: restaurantListItem.latitude.toString(),
-                                    lon1: restaurantListItem.longitude.toString(),
-                                  ),
-                                ));
+                                      restaurantItem: restaurantListItem,
+                                      distance: _calculateDistance(
+                                        lat1: restaurantListItem.latitude.toString(),
+                                        lon1: restaurantListItem.longitude.toString(),
+                                      ),
+                                    ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -975,7 +871,10 @@ class _HomePageState extends State<HomePage> {
                                               errorBuilder: (_, __, ___) => SizedBox(
                                                   height: 150,
                                                   width: 250,
-                                                  child: Icon(Icons.error,color: Colors.red,)),
+                                                  child: Icon(
+                                                    Icons.error,
+                                                    color: Colors.red,
+                                                  )),
                                             )),
                                         Positioned(
                                             top: 0,
@@ -1039,14 +938,14 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: List.generate(
                                           17,
-                                              (index) => Padding(
-                                            padding: const EdgeInsets.only(left: 2, right: 2),
-                                            child: Container(
-                                              color: Colors.grey[200],
-                                              height: 2,
-                                              width: 10,
-                                            ),
-                                          )),
+                                          (index) => Padding(
+                                                padding: const EdgeInsets.only(left: 2, right: 2),
+                                                child: Container(
+                                                  color: Colors.grey[200],
+                                                  height: 2,
+                                                  width: 10,
+                                                ),
+                                              )),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -1082,23 +981,43 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ListTile(
-        selectedTileColor: AppTheme.primaryColor,
-        leading: icon,
-        minLeadingWidth: 25,
-        title: Text(
-          title,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: AppTheme.drawerColor,
-            fontWeight: FontWeight.w400,
-          ),
+  // Widget _drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
+  //     child: ListTile(
+  //       selectedTileColor: AppTheme.primaryColor,
+  //       leading: icon,
+  //       minLeadingWidth: 25,
+  //       title: Text(
+  //         title,
+  //         style: GoogleFonts.poppins(
+  //           fontSize: 14,
+  //           color: AppTheme.drawerColor,
+  //           fontWeight: FontWeight.w400,
+  //         ),
+  //       ),
+  //       onTap: active ? onTap : null,
+  //     ),
+  //   );
+  // }
+}
+
+Widget drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    child: ListTile(
+      selectedTileColor: AppTheme.primaryColor,
+      leading: icon,
+      minLeadingWidth: 25,
+      title: Text(
+        title,
+        style: GoogleFonts.poppins(
+          fontSize: 14,
+          color: AppTheme.drawerColor,
+          fontWeight: FontWeight.w400,
         ),
-        onTap: active ? onTap : null,
       ),
-    );
-  }
+      onTap: active ? onTap : null,
+    ),
+  );
 }

@@ -1,14 +1,16 @@
-
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/routers/routers.dart';
-import 'package:resvago_customer/screen/login_screen.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import '../controller/logn_controller.dart';
+import '../widget/custom_textfield.dart';
 import 'bottomnav_bar.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -56,7 +58,7 @@ class _OtpScreenState extends State<OtpScreen> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: widget.email, password: "123456");
       PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
         verificationId: widget.verificationId,
-        smsCode: otpController.text.trim(),
+        smsCode: kIsWeb ? otpControllers.map((e) => e.text.trim()).join(""): otpController.text.trim(),
       );
       if (FirebaseAuth.instance.currentUser!.phoneNumber == null) {
         UserCredential userCredential = await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential);
@@ -69,9 +71,14 @@ class _OtpScreenState extends State<OtpScreen> {
         Get.offAllNamed(MyRouters.bottomNavbar);
       }
     } catch (e) {
+      otpControllers.forEach((element) {
+        element.text = "";
+      });
       log("Error: $e");
     }
   }
+
+  List<TextEditingController> otpControllers = List.generate(6, (index) => TextEditingController());
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +123,45 @@ class _OtpScreenState extends State<OtpScreen> {
                               const SizedBox(
                                 height: 20,
                               ),
+                              if(kIsWeb)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: otpControllers.asMap().entries.map((e) => Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                            maxWidth: 50
+                                        ),
+                                        child: CommonTextFieldWidget(
+                                          controller: e.value,
+                                          textAlign: TextAlign.center,
+                                          textAlignVertical: TextAlignVertical.center,
+                                          textInputAction: TextInputAction.next,
+                                          hint: '*',
+                                          maxLength: 1,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.digitsOnly
+                                          ],
+                                          onChanged: (v){
+                                            if(v.isNotEmpty){
+                                              FocusManager.instance.primaryFocus!.nextFocus();
+                                            } else {
+                                              FocusManager.instance.primaryFocus!.previousFocus();
+                                            }
+                                            if(otpControllers.map((e) => e.text.trim()).join("").length == 6){
+                                              verifyOtp();
+                                            }
+                                          },
+                                          validator: MultiValidator([
+                                            RequiredValidator(errorText: 'Please enter your otp'),
+                                          ]).call,
+                                          keyboardType: TextInputType.text,
+                                        ),
+                                      ),
+                                    ),
+                                  )).toList(),
+                                ) else
                               PinCodeFields(
                                   length: 6,
                                   controller: otpController,

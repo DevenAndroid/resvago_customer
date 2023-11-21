@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/screen/bottomnav_bar.dart';
 import '../routers/routers.dart';
 import '../widget/apptheme.dart';
 import 'login_screen.dart';
@@ -59,16 +62,21 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               itemBuilder: (context, index) {
                 if (OnBoardingData.length == index) {
                   loginLoaded = true;
-                  return const LoginScreen();
+                  Future.delayed(Duration(milliseconds: 100)).then((value) {
+                    Get.offAll(()=> BottomNavbar());
+                  });
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => const BottomNavbar()),
+                  // );
                 }
-
                 loginLoaded = false;
                 return OnboardContent(
                   controller: controller,
                   indexValue: _pageIndex.value,
-                  image: OnBoardingData[index].image.toString(),
-                  title: OnBoardingData[index].title.toString(),
-                  description: OnBoardingData[index].description.toString(),
+                  image: OnBoardingData[min(index, OnBoardingData.length-1)].image.toString(),
+                  title: OnBoardingData[min(index, OnBoardingData.length-1)].title.toString(),
+                  description: OnBoardingData[min(index, OnBoardingData.length-1)].description.toString(),
                 );
               }),
         ],

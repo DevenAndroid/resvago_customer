@@ -23,8 +23,12 @@ class CommonTextFieldWidget extends StatelessWidget {
   final dynamic value = 0;
   final dynamic minLines;
   final dynamic maxLines;
+  final int? maxLength;
   final bool? obscureText;
+  final TextAlignVertical? textAlignVertical;
+  final TextAlign? textAlign;
   final VoidCallback? onTap;
+  final List<TextInputFormatter>? inputFormatters;
   final length;
 
   const CommonTextFieldWidget({
@@ -46,7 +50,7 @@ class CommonTextFieldWidget extends StatelessWidget {
     this.obscureText = false,
     this.readOnly = false,
     this.onTap,
-    this.length,
+    this.length, this.maxLength, this.textAlignVertical, this.textAlign, this.inputFormatters,
   });
 
   @override
@@ -54,7 +58,10 @@ class CommonTextFieldWidget extends StatelessWidget {
     return TextFormField(
       onTap: onTap,
       onChanged: onChanged,
+      textAlign: textAlign ?? TextAlign.start,
+      textAlignVertical: textAlignVertical,
       readOnly: readOnly!,
+      maxLength: maxLength,
       controller: controller,
       obscureText: hint == hint ? obscureText! : false,
       autofillHints: autofillHints,
@@ -67,6 +74,7 @@ class CommonTextFieldWidget extends StatelessWidget {
       style: const TextStyle(color: Colors.white),
       inputFormatters: [
         LengthLimitingTextInputFormatter(length),
+        if(inputFormatters != null)...inputFormatters!
       ],
       decoration: InputDecoration(
           hintText: hint,

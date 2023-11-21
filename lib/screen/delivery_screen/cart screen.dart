@@ -13,12 +13,14 @@ import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/myAddressList.dart';
+import '../../controller/bottomnavbar_controller.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/add_address_modal.dart';
 import '../../model/checkout_model.dart';
 import '../../model/coupon_modal.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/common_text_field.dart';
+import '../bottomnav_bar.dart';
 import '../coupon_list_screen.dart';
 import '../helper.dart';
 
@@ -30,6 +32,8 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  final bottomController = Get.put(BottomNavBarController());
+
   CheckOutModel cartModel = CheckOutModel();
 
   getCheckOutData() {
@@ -78,11 +82,7 @@ class _CartScreenState extends State<CartScreen> {
   AddressModel? addressData;
   ProfileData? profileData;
   void fetchdata() {
-    FirebaseFirestore.instance
-        .collection("customer_users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
@@ -486,7 +486,7 @@ class _CartScreenState extends State<CartScreen> {
                           style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                         ),
                         Text(
-                          '\$20.00',
+                          '\$0.00',
                           style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
                         ),
                       ],
@@ -508,7 +508,7 @@ class _CartScreenState extends State<CartScreen> {
                           style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                         ),
                         Text(
-                          "\$20.00",
+                          "\$0.00",
                           style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
                         ),
                       ],
@@ -733,7 +733,8 @@ class _CartScreenState extends State<CartScreen> {
                           height: 50,
                           child: ElevatedButton(
                             onPressed: () {
-                              Get.to(() => const HomePage());
+                              Get.offAll(const BottomNavbar());
+                              bottomController.updateIndexValue(1);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.primaryColor,

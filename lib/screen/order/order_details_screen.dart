@@ -131,15 +131,17 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                             ],
                           ),
                           const Spacer(),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF65CD90),
-                              borderRadius: BorderRadius.circular(9),
-                            ),
-                            child: Text(
-                              myOrderModel.orderStatus.toString(),
-                              style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 11),
+                          FittedBox(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF65CD90),
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              child: Text(
+                                myOrderModel.orderStatus.toString(),
+                                style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 11),
+                              ),
                             ),
                           )
                         ],
