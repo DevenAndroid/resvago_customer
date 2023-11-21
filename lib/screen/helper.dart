@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -80,6 +81,73 @@ loading() {
     size: 40,
   ));
 }
+
+
+extension CheckDesktop on BuildContext{
+
+  bool get isWebApp{
+    return MediaQuery.of(this).size.width > 450;
+  }
+
+
+  double get paddingWidth{
+    return (MediaQuery.of(this).size.width-700 )/ 2;
+
+  }
+
+}
+
+extension AddPaddingtoAll on Widget{
+
+  Widget get appPadding{
+    if(kIsWeb){
+      return Center(
+        child: SizedBox(
+          width: 700,
+          child: this,
+        ),
+      );
+    }
+    return this;
+  }
+
+  Widget get appPaddingForScreen{
+    if(kIsWeb){
+      return Center(
+        child: SizedBox(
+          width: 1000,
+          child: this,
+        ),
+      );
+    }
+    return this;
+  }
+
+  Widget addPadding(EdgeInsetsGeometry padding){
+    return Padding(padding: padding,child: this,);
+  }
+
+}
+
+extension AddPaddingTextField on Widget{
+
+  Widget get appPaddingTextField{
+    if(kIsWeb){
+      return Center(
+
+
+        child: SizedBox(
+          width:  560,
+          child: this,
+        ),
+      );
+    }
+    return this;
+  }
+
+}
+
+
 
 extension DateOnlyCompare on DateTime {
   bool isSmallerThen(DateTime other) {

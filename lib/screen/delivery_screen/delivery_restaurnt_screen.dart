@@ -20,6 +20,7 @@ import 'package:resvago_customer/screen/single_store_screens/single_restaurants_
 import 'package:resvago_customer/widget/like_button.dart';
 import '../../controller/bottomnavbar_controller.dart';
 import '../../controller/location_controller.dart';
+import '../../controller/profile_controller.dart';
 import '../../controller/wishlist_controller.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/add_address_modal.dart';
@@ -36,6 +37,7 @@ import '../category/resturant_by_category.dart';
 import '../login_screen.dart';
 import '../myAddressList.dart';
 import '../single_store_screens/setting_for_restaurant.dart';
+import '../widgets/address_widget.dart';
 import 'cart screen.dart';
 
 class DeliveryPage extends StatefulWidget {
@@ -205,6 +207,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
     });
   }
 
+  final profileController = Get.put(ProfileController());
   @override
   void initState() {
     super.initState();
@@ -212,7 +215,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
     User? user = _auth.currentUser;
     if (user != null) {
       wishListController.startListener();
-      getProfileData();
+      profileController.getProfileData();
     }
     geo = GeoFlutterFire();
     GeoFirePoint center = geo!.point(
@@ -251,71 +254,54 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 child: Icon(Icons.menu)),
             const SizedBox(width: 10),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => MyAddressList(
-                        addressChanged: (AddressModel address) {
-                          addressData = address;
-                          locationController.location = addressData!.streetAddress ?? "";
-                          locationController.addressType = addressData!.AddressType ?? "";
-                          setState(() {});
-                        },
-                      ));
-                    },
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image.asset(
-                          'assets/icons/location.png',
-                          height: 15,
-                        ),
-                        const SizedBox(width: 4),
-                        addressData != null
-                            ? Flexible(
-                          child: Text(
-                            ( locationController.addressType ?? "").toString(),
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+              child: Obx(() {
+                if (profileController.refreshInt.value > 0) {}
+                return profileController.profileData != null && profileController.profileData!.selected_address != null
+                    ? AddressWidget(addressId: profileController.profileData!.selected_address)
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                              onTap: () {
+                                Get.to(() => MyAddressList(
+                                      addressChanged: (AddressModel address) {},
+                                    ));
+                              },
+                              behavior: HitTestBehavior.translucent,
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/icons/location.png',
+                                    height: 15,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      'Home',
+                                      style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Image.asset(
+                                    'assets/icons/dropdown.png',
+                                    height: 8,
+                                  ),
+                                ],
+                              )),
+                          const SizedBox(
+                            height: 6,
                           ),
-                        )
-                            : Flexible(
-                          child: Text(
-                            'Home',
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Image.asset(
-                          'assets/icons/dropdown.png',
-                          height: 8,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  addressData != null
-                      ? Text(( locationController.location ?? "").toString(),
-                      style: GoogleFonts.poppins(
-                        color: const Color(0xFF1E2538),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                      ))
-                      : Obx(() {
-                    return Text(
-                      locationController.locality.value.toString(),
-                      style: GoogleFonts.poppins(
-                        color: const Color(0xFF1E2538),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    );
-                  })
-                ],
-              ),
+                          Text(
+                            locationController.locality.value.toString(),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF1E2538),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          )
+                        ],
+                      );
+              }),
             ),
             // Badge(
             //   label: StreamBuilder(
@@ -377,6 +363,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 if (user != null) {
                   Get.offAll(const BottomNavbar());
                   bottomController.updateIndexValue(3);
+                  Get.back();
                 } else {
                   Get.to(() => LoginScreen());
                 }

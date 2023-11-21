@@ -5,13 +5,16 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
+import '../model/add_address_modal.dart';
+
 class LocationController extends GetxController {
   RxBool servicestatus = false.obs;
   RxBool haspermission = false.obs;
   late LocationPermission permission;
-  String? location;
-  String? addressType;
+  RxString? location;
+  RxString? addressType;
   late Position position;
+  AddressModel? addressData;
   RxString long = "0.0".obs, lat = "0.0".obs;
   var locality = 'No location set'.obs;
   var country = 'Getting Country..'.obs;
@@ -93,6 +96,7 @@ class LocationController extends GetxController {
       print(country.value);
     });
   }
+
 
   // getApiLocation() async {
   //   log("Getting user location.........");

@@ -191,6 +191,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
                                 focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white))),
                             initialCountryCode: 'IN',
+                            onCountryChanged: (phone){
+                              setState(() {
+                                code = "+${phone.dialCode}";
+                                log(code.toString());
+                              });
+                            },
                             onChanged: (phone) {
                               code = phone.countryCode.toString();
                             },
@@ -347,7 +353,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     )
                   ]),
                 ),
-              )),
+              )).appPadding,
         ));
   }
 }

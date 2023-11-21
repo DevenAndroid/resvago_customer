@@ -435,7 +435,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         _makingPhoneCall(
-                                            "tel:+91${myOrderModel.orderDetails!.restaurantInfo!.mobileNumber ?? ""}".toString());
+                                            "tel:${myOrderModel.orderDetails!.restaurantInfo!.mobileNumber ?? ""}".toString());
                                       },
                                       child: Image.asset(
                                         AppAssets.call,

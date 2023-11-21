@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:resvago_customer/model/menu_model.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 import '../../model/resturant_model.dart';
@@ -1173,7 +1174,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                 const SizedBox(
                   height: 20,
                 )
-              ]))
+              ]).appPadding)
             : const SizedBox.shrink());
   }
 }

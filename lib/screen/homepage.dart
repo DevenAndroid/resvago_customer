@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -6,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -15,30 +13,24 @@ import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/model/wishListModel.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/helper.dart';
-import 'package:resvago_customer/screen/addAddress.dart';
-import 'package:resvago_customer/screen/profile_screen.dart';
-import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
-import 'package:resvago_customer/screen/search_screen/search_singlerestaurant_screen.dart';
 import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
+import 'package:resvago_customer/screen/widgets/address_widget.dart';
 import 'package:resvago_customer/widget/like_button.dart';
 import '../controller/bottomnavbar_controller.dart';
 import '../controller/location_controller.dart';
+import '../controller/profile_controller.dart';
 import '../controller/wishlist_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/add_address_modal.dart';
 import '../model/category_model.dart';
-import '../model/checkout_model.dart';
-import '../model/profile_model.dart';
-import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'package:rxdart/rxdart.dart';
 import '../widget/restaurant_timing.dart';
 import 'bottomnav_bar.dart';
 import 'category/resturant_by_category.dart';
-import 'coupon_list_screen.dart';
 import 'login_screen.dart';
 import 'myAddressList.dart';
 
@@ -57,6 +49,7 @@ class _HomePageState extends State<HomePage> {
   final bottomController = Get.put(BottomNavBarController());
   bool isDescendingOrder = false;
   List<String>? sliderList;
+
   getSliders() {
     FirebaseFirestore.instance.collection("slider").orderBy('timestamp', descending: isDescendingOrder).get().then((value) {
       for (var element in value.docs) {
@@ -71,6 +64,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<CategoryData>? categoryList;
+
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isNotEqualTo: true).get().then((value) {
       for (var element in value.docs) {
@@ -83,6 +77,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<RestaurantModel>? restaurantList;
+
   Future getRestaurantList() async {
     restaurantList ??= [];
     restaurantList!.clear();
@@ -146,6 +141,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   FirebaseService firebaseService = FirebaseService();
+
   Future<bool> addWishlistToFirestore(vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
@@ -169,6 +165,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool? addedToWishlist;
+
   addWishlist(
     String vendorId,
   ) async {
@@ -180,6 +177,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<WishListModel>? wishList;
+
   Future getWishList() async {
     await FirebaseFirestore.instance
         .collection('wishlist')
@@ -197,16 +195,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  ProfileData profileData = ProfileData();
-  void getProfileData() {
-    FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
-      if (value.exists) {
-        if (value.data() == null) return;
-        profileData = ProfileData.fromJson(value.data()!);
-        setState(() {});
-      }
-    });
-  }
+  final profileController = Get.put(ProfileController());
 
   @override
   void initState() {
@@ -217,7 +206,7 @@ class _HomePageState extends State<HomePage> {
     User? user = _auth.currentUser;
     if (user != null) {
       wishListController.startListener();
-      getProfileData();
+      profileController.getProfileData();
     }
     geo = GeoFlutterFire();
     GeoFirePoint center = geo!.point(
@@ -235,7 +224,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   int currentDrawer = 0;
-  AddressModel? addressData;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -254,71 +243,60 @@ class _HomePageState extends State<HomePage> {
                 child: Icon(Icons.menu)),
             const SizedBox(width: 10),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => MyAddressList(
-                            addressChanged: (AddressModel address) {
-                              addressData = address;
-                              locationController.location = addressData!.streetAddress ?? "";
-                              locationController.addressType = addressData!.AddressType ?? "";
-                              setState(() {});
-                            },
-                          ));
-                    },
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image.asset(
-                          'assets/icons/location.png',
-                          height: 15,
-                        ),
-                        const SizedBox(width: 4),
-                        addressData != null
-                            ? Flexible(
-                                child: Text(
-                                  ( locationController.addressType ?? "").toString(),
-                                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
-                                ),
-                              )
-                            : Flexible(
-                                child: Text(
-                                  'Home',
-                                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
-                                ),
-                              ),
-                        const SizedBox(width: 5),
-                        Image.asset(
-                          'assets/icons/dropdown.png',
-                          height: 8,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  addressData != null
-                      ? Text(( locationController.location ?? "").toString(),
-                          style: GoogleFonts.poppins(
-                            color: const Color(0xFF1E2538),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
-                          ))
-                      : Obx(() {
-                          return Text(
+              child: Obx(() {
+                if (profileController.refreshInt.value > 0) {}
+                return profileController.profileData != null && profileController.profileData!.selected_address != null
+                    ? AddressWidget(addressId: profileController.profileData!.selected_address)
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                              onTap: () {
+                                FirebaseAuth _auth = FirebaseAuth.instance;
+                                User? user = _auth.currentUser;
+                                if (user != null) {
+                                  Get.to(() => MyAddressList(
+                                        addressChanged: (AddressModel address) {},
+                                      ));
+                                } else {
+                                  Get.to(() => LoginScreen());
+                                }
+                              },
+                              behavior: HitTestBehavior.translucent,
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/icons/location.png',
+                                    height: 15,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      'Home',
+                                      style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Image.asset(
+                                    'assets/icons/dropdown.png',
+                                    height: 8,
+                                  ),
+                                ],
+                              )),
+                          const SizedBox(
+                            height: 6,
+                          ),
+                          Text(
                             locationController.locality.value.toString(),
                             style: GoogleFonts.poppins(
                               color: const Color(0xFF1E2538),
                               fontSize: 12,
                               fontWeight: FontWeight.w300,
                             ),
-                          );
-                        })
-                ],
-              ),
+                          )
+                        ],
+                      );
+              }),
             ),
             GestureDetector(
               onTap: () {
@@ -345,6 +323,7 @@ class _HomePageState extends State<HomePage> {
                 if (user != null) {
                   Get.offAll(const BottomNavbar());
                   bottomController.updateIndexValue(3);
+                  Get.back();
                 } else {
                   Get.to(() => LoginScreen());
                 }
@@ -356,12 +335,16 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    child: CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      imageUrl: profileData.profile_image.toString(),
-                      errorWidget: (_, __, ___) => const Icon(Icons.person),
-                      placeholder: (_, __) => const SizedBox(),
-                    ),
+                    child: Obx(() {
+                      if (profileController.refreshInt.value > 0) {}
+                      return CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl:
+                            profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
+                        errorWidget: (_, __, ___) => const Icon(Icons.person),
+                        placeholder: (_, __) => const SizedBox(),
+                      );
+                    }),
                   ),
                 ),
               ),
@@ -619,6 +602,7 @@ class _HomePageState extends State<HomePage> {
                     height: 260,
                     child: ListView.builder(
                         shrinkWrap: true,
+                        // dragStartBehavior: DragStartBehavior.start,
                         itemCount: restaurantList!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
@@ -981,25 +965,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Widget _drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-  //     child: ListTile(
-  //       selectedTileColor: AppTheme.primaryColor,
-  //       leading: icon,
-  //       minLeadingWidth: 25,
-  //       title: Text(
-  //         title,
-  //         style: GoogleFonts.poppins(
-  //           fontSize: 14,
-  //           color: AppTheme.drawerColor,
-  //           fontWeight: FontWeight.w400,
-  //         ),
-  //       ),
-  //       onTap: active ? onTap : null,
-  //     ),
-  //   );
-  // }
+// Widget _drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
+//   return Padding(
+//     padding: const EdgeInsets.symmetric(horizontal: 8.0),
+//     child: ListTile(
+//       selectedTileColor: AppTheme.primaryColor,
+//       leading: icon,
+//       minLeadingWidth: 25,
+//       title: Text(
+//         title,
+//         style: GoogleFonts.poppins(
+//           fontSize: 14,
+//           color: AppTheme.drawerColor,
+//           fontWeight: FontWeight.w400,
+//         ),
+//       ),
+//       onTap: active ? onTap : null,
+//     ),
+//   );
+// }
 }
 
 Widget drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {

@@ -105,6 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Container(
                       // padding: const EdgeInsets.all(15),
                       width: size.width,
+                      height: size.height,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.white,
@@ -302,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   title: 'Save',
                                 ),
                               ],
-                            ),
+                            ).appPaddingTextField,
                           ),
                           const SizedBox(
                             height: 80,

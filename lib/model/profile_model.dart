@@ -2,6 +2,7 @@ class ProfileData {
   dynamic userName;
   dynamic userId;
   dynamic email;
+  dynamic selected_address;
   dynamic mobileNumber;
   dynamic profile_image;
   dynamic docid;
@@ -11,6 +12,7 @@ class ProfileData {
         this.userName,
         this.userId,
         this.email,
+        this.selected_address,
         this.mobileNumber,
         this.docid,
         this.profile_image,
@@ -20,6 +22,7 @@ class ProfileData {
     userName = json['userName'];
     userId = json['userId'];
     email = json['email'];
+    selected_address = json['selected_address'];
     mobileNumber = json['mobileNumber'];
     docid = json['docid'];
     profile_image = json['profile_image'] ?? "";
@@ -32,6 +35,7 @@ class ProfileData {
     data['mobileNumber'] = mobileNumber;
     data['userId'] = userId;
     data['email'] = email;
+    data['selected_address'] = selected_address;
     data['profile_image'] = profile_image;
     return data;
   }

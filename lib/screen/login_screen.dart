@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child:
                       Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                     const SizedBox(
-                      height: 200,
+                      height: 220,
                     ),
                     Align(
                       alignment: Alignment.center,
@@ -241,6 +241,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderSide: const BorderSide(width: 1, color: Color(0x63ffffff)),
                                 ),
                               ),
+                              onCountryChanged: (phone){
+                                setState(() {
+                                  code = "+${phone.dialCode}";
+                                  log(code.toString());
+                                });
+                              },
                               initialCountryCode: 'IN',
                               cursorColor: Colors.white,
                               keyboardType: TextInputType.number,
@@ -527,7 +533,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     )
                   ]),
                 ),
-              )),
+              )).appPadding,
         ));
   }
 }
