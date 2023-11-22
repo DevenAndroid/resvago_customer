@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -274,7 +275,8 @@ class _MyOrderState extends State<MyOrder> {
                 indicatorPadding: const EdgeInsets.symmetric(horizontal: 15),
                 // automaticIndicatorColorAdjustment: true,
                 onTap: (value) {
-                  currentDrawer = 0;
+                  currentDrawer = value;
+                  log(currentDrawer.toString());
                   setState(() {});
                 },
                 tabs: [
@@ -297,7 +299,7 @@ class _MyOrderState extends State<MyOrder> {
                   Tab(
                     child: Text(
                       "Cancelled",
-                      style: currentDrawer == 1
+                      style: currentDrawer == 2
                           ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
                           : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
                     ),
@@ -310,12 +312,12 @@ class _MyOrderState extends State<MyOrder> {
                     StreamBuilder<List<MyOrderModel>>(
                       stream: getActiveOrder(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return LoadingAnimationWidget.fourRotatingDots(
-                            color: AppTheme.primaryColor,
-                            size: 40,
-                          );
-                        }
+                        // if (snapshot.connectionState == ConnectionState.waiting) {
+                        //   return LoadingAnimationWidget.fourRotatingDots(
+                        //     color: AppTheme.primaryColor,
+                        //     size: 40,
+                        //   );
+                        // }
                         if (snapshot.hasData) {
                           List<MyOrderModel> myOrder = snapshot.data ?? [];
                           log(myOrder.toString()); //
@@ -372,14 +374,19 @@ class _MyOrderState extends State<MyOrder> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      child: Image.network(
-                                                        orderItem.orderDetails!.restaurantInfo!.image,
-                                                        height: 70,
-                                                        width: 70,
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                                    SizedBox(
+                                                      height: 70,
+                                                      width: 70,
+                                                      child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl: orderItem.orderDetails!.restaurantInfo!.image,
+                                                            fit: BoxFit.cover,
+                                                            errorWidget: (_, __, ___) => Icon(
+                                                              Icons.error,
+                                                              color: Colors.red,
+                                                            ),
+                                                          )),
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only(left: 15),
@@ -538,12 +545,6 @@ class _MyOrderState extends State<MyOrder> {
                     StreamBuilder<List<MyOrderModel>>(
                       stream: getCompletedOrder(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return LoadingAnimationWidget.fourRotatingDots(
-                            color: AppTheme.primaryColor,
-                            size: 40,
-                          );
-                        }
                         if (snapshot.hasData) {
                           List<MyOrderModel> myOrder = snapshot.data ?? [];
                           log(myOrder.toString()); //
@@ -600,14 +601,19 @@ class _MyOrderState extends State<MyOrder> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      child: Image.network(
-                                                        orderItem.orderDetails!.restaurantInfo!.image,
-                                                        height: 70,
-                                                        width: 70,
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                                    SizedBox(
+                                                      height: 70,
+                                                      width: 70,
+                                                      child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl: orderItem.orderDetails!.restaurantInfo!.image,
+                                                            fit: BoxFit.cover,
+                                                            errorWidget: (_, __, ___) => Icon(
+                                                              Icons.error,
+                                                              color: Colors.red,
+                                                            ),
+                                                          )),
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only(left: 15),
@@ -821,12 +827,6 @@ class _MyOrderState extends State<MyOrder> {
                     StreamBuilder<List<MyOrderModel>>(
                       stream: getCancelledOrder(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return LoadingAnimationWidget.fourRotatingDots(
-                            color: AppTheme.primaryColor,
-                            size: 40,
-                          );
-                        }
                         if (snapshot.hasData) {
                           List<MyOrderModel> myOrder = snapshot.data ?? [];
                           log(myOrder.toString()); //
@@ -883,14 +883,19 @@ class _MyOrderState extends State<MyOrder> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      child: Image.network(
-                                                        orderItem.orderDetails!.restaurantInfo!.image,
-                                                        height: 70,
-                                                        width: 70,
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                                    SizedBox(
+                                                      height: 70,
+                                                      width: 70,
+                                                      child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl: orderItem.orderDetails!.restaurantInfo!.image,
+                                                            fit: BoxFit.cover,
+                                                            errorWidget: (_, __, ___) => Icon(
+                                                              Icons.error,
+                                                              color: Colors.red,
+                                                            ),
+                                                          )),
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only(left: 15),
@@ -1024,12 +1029,6 @@ class _MyOrderState extends State<MyOrder> {
                     StreamBuilder<List<MyDiningOrderModel>>(
                       stream: getActiveDiningOrder(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return LoadingAnimationWidget.fourRotatingDots(
-                            color: AppTheme.primaryColor,
-                            size: 40,
-                          );
-                        }
                         if (snapshot.hasData) {
                           List<MyDiningOrderModel> myOrder = snapshot.data ?? [];
                           log(myOrder.toString()); //
@@ -1088,14 +1087,19 @@ class _MyOrderState extends State<MyOrder> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      child: Image.network(
-                                                        orderItem.restaurantInfo!.image,
-                                                        height: 70,
-                                                        width: 70,
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                                    SizedBox(
+                                                      height: 70,
+                                                      width: 70,
+                                                      child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl: orderItem.restaurantInfo!.image,
+                                                            fit: BoxFit.cover,
+                                                            errorWidget: (_, __, ___) => Icon(
+                                                              Icons.error,
+                                                              color: Colors.red,
+                                                            ),
+                                                          )),
                                                     ),
                                                     Expanded(
                                                       child: Padding(
@@ -1298,12 +1302,6 @@ class _MyOrderState extends State<MyOrder> {
                     StreamBuilder<List<MyDiningOrderModel>>(
                       stream: getCompletedDiningOrder(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return LoadingAnimationWidget.fourRotatingDots(
-                            color: AppTheme.primaryColor,
-                            size: 40,
-                          );
-                        }
                         if (snapshot.hasData) {
                           List<MyDiningOrderModel> myOrder = snapshot.data ?? [];
                           log(myOrder.toString()); //
@@ -1353,14 +1351,19 @@ class _MyOrderState extends State<MyOrder> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      child: Image.network(
-                                                        orderItem.restaurantInfo!.image,
-                                                        height: 70,
-                                                        width: 70,
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                                    SizedBox(
+                                                      height: 70,
+                                                      width: 70,
+                                                      child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl: orderItem.restaurantInfo!.image,
+                                                            fit: BoxFit.cover,
+                                                            errorWidget: (_, __, ___) => Icon(
+                                                              Icons.error,
+                                                              color: Colors.red,
+                                                            ),
+                                                          )),
                                                     ),
                                                     Expanded(
                                                       child: Padding(
@@ -1621,12 +1624,6 @@ class _MyOrderState extends State<MyOrder> {
                     StreamBuilder<List<MyDiningOrderModel>>(
                       stream: getCancelledDiningOrder(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return LoadingAnimationWidget.fourRotatingDots(
-                            color: AppTheme.primaryColor,
-                            size: 40,
-                          );
-                        }
                         if (snapshot.hasData) {
                           List<MyDiningOrderModel> myOrder = snapshot.data ?? [];
                           log(myOrder.toString()); //
@@ -1685,14 +1682,19 @@ class _MyOrderState extends State<MyOrder> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      child: Image.network(
-                                                        orderItem.restaurantInfo!.image,
-                                                        height: 70,
-                                                        width: 70,
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                                    SizedBox(
+                                                      height: 70,
+                                                      width: 70,
+                                                      child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl: orderItem.restaurantInfo!.image,
+                                                            fit: BoxFit.cover,
+                                                            errorWidget: (_, __, ___) => Icon(
+                                                              Icons.error,
+                                                              color: Colors.red,
+                                                            ),
+                                                          )),
                                                     ),
                                                     Expanded(
                                                       child: Padding(

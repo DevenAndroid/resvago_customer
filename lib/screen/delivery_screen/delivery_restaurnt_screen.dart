@@ -10,6 +10,7 @@ import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/model/wishListModel.dart';
 import 'package:resvago_customer/routers/routers.dart';
@@ -38,6 +39,7 @@ import '../login_screen.dart';
 import '../myAddressList.dart';
 import '../single_store_screens/setting_for_restaurant.dart';
 import '../widgets/address_widget.dart';
+import '../widgets/calculate_distance.dart';
 import 'cart screen.dart';
 
 class DeliveryPage extends StatefulWidget {
@@ -70,7 +72,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
 
   List<CategoryData>? categoryList;
   getVendorCategories() {
-    FirebaseFirestore.instance.collection("resturent").where("deactivate", isNotEqualTo: true).get().then((value) {
+    FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         categoryList ??= [];
@@ -515,16 +517,18 @@ class _DeliveryPageState extends State<DeliveryPage> {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(right: 5.0, left: 5.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.network(
-                              sliderList![index],
-                              fit: BoxFit.cover,
-                              height: 80,
-                              errorBuilder: (_, __, ___) => SizedBox(
-                                height: 80,
-                              ),
-                            ),
+                          child: SizedBox(
+                            height: 80,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: CachedNetworkImage(
+                                  imageUrl: sliderList![index],
+                                  fit: BoxFit.cover,
+                                  errorWidget: (_, __, ___) => Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                  ),
+                                )),
                           ),
                         );
                       },
@@ -557,21 +561,19 @@ class _DeliveryPageState extends State<DeliveryPage> {
                             padding: const EdgeInsets.only(left: 8.0),
                             child: Column(
                               children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.network(
-                                    categoryList![index].image,
-                                    fit: BoxFit.cover,
-                                    height: 70,
-                                    width: 70,
-                                    errorBuilder: (_, __, ___) => SizedBox(
-                                        height: 70,
-                                        width: 70,
-                                        child: Icon(
+                                SizedBox(
+                                  height: 70,
+                                  width: 70,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: CachedNetworkImage(
+                                        imageUrl: categoryList![index].image,
+                                        fit: BoxFit.cover,
+                                        errorWidget: (_, __, ___) => Icon(
                                           Icons.error,
                                           color: Colors.red,
-                                        )),
-                                  ),
+                                        ),
+                                      )),
                                 ),
                                 const SizedBox(
                                   height: 5,
@@ -630,24 +632,23 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                   children: [
                                     Stack(
                                       children: [
-                                        ClipRRect(
-                                            borderRadius: const BorderRadius.only(
-                                              topRight: Radius.circular(10),
-                                              topLeft: Radius.circular(10),
-                                            ),
-                                            child: Image.network(
-                                              restaurantListItem.image.toString(),
-                                              height: 150,
-                                              width: 250,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) => SizedBox(
-                                                  height: 150,
-                                                  width: 250,
-                                                  child: Icon(
-                                                    Icons.error,
-                                                    color: Colors.red,
-                                                  )),
-                                            )),
+                                        SizedBox(
+                                          height: 150,
+                                          width: 250,
+                                          child: ClipRRect(
+                                              borderRadius: const BorderRadius.only(
+                                                topRight: Radius.circular(10),
+                                                topLeft: Radius.circular(10),
+                                              ),
+                                              child: CachedNetworkImage(
+                                                imageUrl: restaurantListItem.image.toString(),
+                                                fit: BoxFit.cover,
+                                                errorWidget: (_, __, ___) => Icon(
+                                                  Icons.error,
+                                                  color: Colors.red,
+                                                ),
+                                              )),
+                                        ),
                                         Positioned(
                                             top: 0,
                                             right: 0,
@@ -693,14 +694,17 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          Text(
-                                            _calculateDistance(
-                                              lat1: restaurantListItem.latitude.toString(),
-                                              lon1: restaurantListItem.longitude.toString(),
-                                            ),
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                          CalculateDistanceFromStoreWidget(
+                                            latLng: LatLng(restaurantListItem.storeLat, restaurantListItem.storeLong),
                                           ),
+                                          // Text(
+                                          //   _calculateDistance(
+                                          //     lat1: restaurantListItem.latitude.toString(),
+                                          //     lon1: restaurantListItem.longitude.toString(),
+                                          //   ),
+                                          //   style: GoogleFonts.poppins(
+                                          //       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                          // ),
                                           const SizedBox(
                                             width: 3,
                                           ),
@@ -769,21 +773,19 @@ class _DeliveryPageState extends State<DeliveryPage> {
                             padding: const EdgeInsets.only(left: 8.0),
                             child: Column(
                               children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.network(
-                                    categoryList![index].image,
-                                    fit: BoxFit.cover,
-                                    height: 70,
-                                    width: 70,
-                                    errorBuilder: (_, __, ___) => SizedBox(
-                                        height: 70,
-                                        width: 70,
-                                        child: Icon(
+                                SizedBox(
+                                  height: 70,
+                                  width: 70,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: CachedNetworkImage(
+                                        imageUrl: categoryList![index].image,
+                                        fit: BoxFit.cover,
+                                        errorWidget: (_, __, ___) => Icon(
                                           Icons.error,
                                           color: Colors.red,
-                                        )),
-                                  ),
+                                        ),
+                                      )),
                                 ),
                                 const SizedBox(
                                   height: 5,
@@ -842,24 +844,23 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                   children: [
                                     Stack(
                                       children: [
-                                        ClipRRect(
-                                            borderRadius: const BorderRadius.only(
-                                              topRight: Radius.circular(10),
-                                              topLeft: Radius.circular(10),
-                                            ),
-                                            child: Image.network(
-                                              restaurantListItem.image.toString(),
-                                              height: 150,
-                                              width: 250,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) => SizedBox(
-                                                  height: 150,
-                                                  width: 250,
-                                                  child: Icon(
-                                                    Icons.error,
-                                                    color: Colors.red,
-                                                  )),
-                                            )),
+                                        SizedBox(
+                                          height: 150,
+                                          width: 250,
+                                          child: ClipRRect(
+                                              borderRadius: const BorderRadius.only(
+                                                topRight: Radius.circular(10),
+                                                topLeft: Radius.circular(10),
+                                              ),
+                                              child: CachedNetworkImage(
+                                                imageUrl: restaurantListItem.image.toString(),
+                                                fit: BoxFit.cover,
+                                                errorWidget: (_, __, ___) => Icon(
+                                                  Icons.error,
+                                                  color: Colors.red,
+                                                ),
+                                              )),
+                                        ),
                                         Positioned(
                                             top: 0,
                                             right: 0,

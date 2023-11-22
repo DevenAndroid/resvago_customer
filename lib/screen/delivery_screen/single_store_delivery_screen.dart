@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -163,11 +164,19 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                 SizedBox(
                   height: 390,
                   child: Stack(children: [
-                    Image.network(
-                      widget.restaurantItem!.image.toString(),
+                    SizedBox(
                       width: size.width,
                       height: size.height * .20,
-                      fit: BoxFit.cover,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(0),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.restaurantItem!.image.toString(),
+                            fit: BoxFit.cover,
+                            errorWidget: (_, __, ___) => Icon(
+                              Icons.error,
+                              color: Colors.red,
+                            ),
+                          )),
                     ),
                     Positioned(
                       top: 110,
@@ -459,23 +468,21 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                               itemCount: widget.restaurantItem!.restaurantImage!.length,
                                               itemBuilder: (BuildContext context, int index) {
                                                 return Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                                                  child: SizedBox(
+                                                    width: 100,
                                                     child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      child: Image.network(
-                                                        widget.restaurantItem!.restaurantImage![index],
-                                                        fit: BoxFit.cover,
-                                                        width: 100,
-                                                        errorBuilder: (context, error, stackTrace) {
-                                                          return const SizedBox(
-                                                              width: 100,
-                                                              child: Icon(
-                                                                Icons.error,
-                                                                color: Colors.red,
-                                                              ));
-                                                        },
-                                                      ),
-                                                    ));
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: widget.restaurantItem!.restaurantImage![index],
+                                                          fit: BoxFit.cover,
+                                                          errorWidget: (_, __, ___) => Icon(
+                                                            Icons.error,
+                                                            color: Colors.red,
+                                                          ),
+                                                        )),
+                                                  ),
+                                                );
                                               },
                                             ),
                                           ),
@@ -505,11 +512,16 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                               itemCount: widget.restaurantItem!.menuGalleryImages!.length,
                                               itemBuilder: (BuildContext context, int index) {
                                                 return Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                                                    child: Image.network(
-                                                      widget.restaurantItem!.menuGalleryImages![index],
-                                                      fit: BoxFit.cover,
-                                                    ));
+                                                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: widget.restaurantItem!.menuGalleryImages![index],
+                                                    fit: BoxFit.cover,
+                                                    errorWidget: (_, __, ___) => Icon(
+                                                      Icons.error,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                );
                                               },
                                             ),
                                           ),
@@ -528,13 +540,19 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
-                                                      ClipRRect(
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        child: Image.network(
-                                                          menuListData.image ?? "",
-                                                          height: 60,
-                                                          width: 80,
-                                                          fit: BoxFit.cover,
+                                                      SizedBox(
+                                                        height: 60,
+                                                        width: 80,
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl:menuListData.image,
+                                                            fit: BoxFit.cover,
+                                                            errorWidget: (_, __, ___) => Icon(
+                                                              Icons.error,
+                                                              color: Colors.red,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -547,6 +565,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                           children: [
                                                             Text(
                                                               menuListData.dishName.toString(),
+                                                              maxLines: 2,
                                                               style: GoogleFonts.poppins(
                                                                   fontSize: 14,
                                                                   fontWeight: FontWeight.w400,
@@ -557,6 +576,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                             ),
                                                             Text(
                                                               menuListData.description.toString(),
+                                                              maxLines: 2,
                                                               style: GoogleFonts.poppins(
                                                                   fontSize: 10,
                                                                   fontWeight: FontWeight.w300,

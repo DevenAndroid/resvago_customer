@@ -4,21 +4,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import '../model/resturant_model.dart';
 
-class WishListController extends GetxController{
-  
+class WishListController extends GetxController {
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? streamSubscription;
-  
+
   Map<String, RestaurantModel> wishListRestaurants = {};
   RxInt refreshInt = 0.obs;
-  
-  startListener(){
+
+  startListener() {
     streamSubscription ??= FirebaseFirestore.instance
         .collection("wishlist")
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("my_wishlist").snapshots().listen(updateChanges);
+        .collection("my_wishlist")
+        .snapshots()
+        .listen(updateChanges);
   }
-  
-  updateChanges(QuerySnapshot<Map<String, dynamic>> event){
+
+  updateChanges(QuerySnapshot<Map<String, dynamic>> event) {
     wishListRestaurants.clear();
     for (var element in event.docs) {
       wishListRestaurants[element.id] ??= RestaurantModel.fromJson(element.data(), element.id.toString());
@@ -26,8 +27,8 @@ class WishListController extends GetxController{
     refreshInt.value = DateTime.now().millisecondsSinceEpoch;
   }
 
-  disposeStream(){
-    if(streamSubscription != null){
+  disposeStream() {
+    if (streamSubscription != null) {
       streamSubscription!.cancel();
       streamSubscription = null;
     }
@@ -47,7 +48,8 @@ class WishListController extends GetxController{
         .collection("wishlist")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("my_wishlist")
-        .doc(docId).delete();
+        .doc(docId)
+        .delete();
   }
 
   @override

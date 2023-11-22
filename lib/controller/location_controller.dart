@@ -18,7 +18,7 @@ class LocationController extends GetxController {
   RxString long = "0.0".obs, lat = "0.0".obs;
   var locality = 'No location set'.obs;
   var country = 'Getting Country..'.obs;
-  late StreamSubscription<Position> positionStream;
+  // late StreamSubscription<Position> positionStream;
 
   Future checkGps(context) async {
     servicestatus.value = await Geolocator.isLocationServiceEnabled();
@@ -34,6 +34,7 @@ class LocationController extends GetxController {
       }
 
       if (haspermission.value) {
+        currentPosition ??= Geolocator.getPositionStream().listen((event) { });
        await getLocation();
       }
     } else {
@@ -80,10 +81,19 @@ class LocationController extends GetxController {
     }
   }
 
+  StreamSubscription<Position>? currentPosition;
+
+  Position? currentUserPosition;
+  RxInt refreshInt = 0.obs;
+
   Future getLocation() async {
     log("Getting user location.........");
     position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+    currentPosition ??= Geolocator.getPositionStream().listen((event) {
+      currentUserPosition = event;
+      refreshInt.value = DateTime.now().millisecondsSinceEpoch;
+    });
     long.value = position.longitude.toString();
     lat.value = position.latitude.toString();
     print("Address$position");

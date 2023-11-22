@@ -147,7 +147,7 @@ class _MaxRatingScreenState extends State<MaxRatingScreen> {
                 const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
                 const SizedBox(width: 2),
                 Text(
-                  "${reviewData.fullRating}",
+                  "${(reviewData.fullRating ?? "")}".toString(),
                   style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
                 ),
               ],

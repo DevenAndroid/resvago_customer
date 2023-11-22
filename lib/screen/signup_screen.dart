@@ -32,12 +32,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final _formKey = GlobalKey<FormState>();
   late GeoFlutterFire geo;
-  String code = "+91";
+  String code = "+353";
   String verificationId = "";
   bool value = false;
   bool showValidation = false;
   FirebaseService firebaseService = FirebaseService();
-
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
@@ -190,8 +189,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                                 enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
                                 focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white))),
-                            initialCountryCode: 'IN',
-                            onCountryChanged: (phone){
+                            initialCountryCode: 'IE',
+                            onCountryChanged: (phone) {
                               setState(() {
                                 code = "+${phone.dialCode}";
                                 log(code.toString());

@@ -1,6 +1,10 @@
 class RestaurantModel {
   List<String>? restaurantImage;
   List<String>? menuGalleryImages;
+
+  double get storeLat => double.tryParse(latitude.toString()) ?? 0;
+  double get storeLong => double.tryParse(longitude.toString()) ?? 0;
+
   dynamic password;
   dynamic address;
   dynamic latitude;

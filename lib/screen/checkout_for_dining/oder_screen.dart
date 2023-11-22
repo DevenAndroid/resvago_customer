@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -142,14 +143,19 @@ class _OderScreenState extends State<OderScreen> {
                             // mainAxisAlignment: MainAxisAlignment.start,
                             // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  restaurantData!.image ?? "",
-                                  height: 60,
-                                  width: 80,
-                                  fit: BoxFit.cover,
-                                ),
+                              SizedBox(
+                                height: 60,
+                                width: 80,
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: CachedNetworkImage(
+                                      imageUrl: restaurantData!.image,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (_, __, ___) => Icon(
+                                        Icons.error,
+                                        color: Colors.red,
+                                      ),
+                                    )),
                               ),
                               Expanded(
                                 child: Padding(

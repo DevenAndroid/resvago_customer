@@ -206,10 +206,6 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                       onTap: () {
                         Get.to(() => SingleRestaurantsScreen(
                               restaurantItem: categoryList[index],
-                              distance: _calculateDistance(
-                                lat1: categoryList[index].latitude.toString(),
-                                lon1: categoryList[index].longitude.toString(),
-                              ),
                             ));
                       },
                       child: Padding(

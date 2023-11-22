@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -184,14 +185,19 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.network(
-                                    myOrderModel.orderDetails!.restaurantInfo!.image.toString(),
-                                    height: 70,
-                                    width: 80,
-                                    fit: BoxFit.cover,
-                                  ),
+                                SizedBox(
+                                  height: 70,
+                                  width: 80,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: CachedNetworkImage(
+                                        imageUrl: myOrderModel.orderDetails!.restaurantInfo!.image.toString(),
+                                        fit: BoxFit.cover,
+                                        errorWidget: (_, __, ___) => Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                        ),
+                                      )),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 15),
@@ -279,14 +285,19 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  child: Image.network(
-                                                    menuData.image.toString(),
-                                                    height: 60,
-                                                    width: 60,
-                                                    fit: BoxFit.cover,
-                                                  ),
+                                                SizedBox(
+                                                  height: 60,
+                                                  width: 60,
+                                                  child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: menuData.image,
+                                                        fit: BoxFit.cover,
+                                                        errorWidget: (_, __, ___) => Icon(
+                                                          Icons.error,
+                                                          color: Colors.red,
+                                                        ),
+                                                      )),
                                                 ),
                                                 const SizedBox(
                                                   width: 15,
@@ -308,7 +319,9 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                         Text(
                                                           "Qty: ${menuData.qty}",
                                                           style: GoogleFonts.poppins(
-                                                              fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xFF3B5998)),
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.w300,
+                                                              color: const Color(0xFF3B5998)),
                                                         ),
                                                       ],
                                                     ),
@@ -435,7 +448,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         _makingPhoneCall(
-                                            "tel:${myOrderModel.orderDetails!.restaurantInfo!.mobileNumber ?? ""}".toString());
+                                            "tel:${myOrderModel.orderDetails!.restaurantInfo!.mobileNumber}".toString());
                                       },
                                       child: Image.asset(
                                         AppAssets.call,
@@ -671,14 +684,19 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image.network(
-                                        myDiningOrderModel!.restaurantInfo!.image.toString(),
-                                        height: 70,
-                                        width: 80,
-                                        fit: BoxFit.cover,
-                                      ),
+                                    SizedBox(
+                                      height: 70,
+                                      width: 80,
+                                      child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: CachedNetworkImage(
+                                            imageUrl: myDiningOrderModel!.restaurantInfo!.image.toString(),
+                                            fit: BoxFit.cover,
+                                            errorWidget: (_, __, ___) => Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                            ),
+                                          )),
                                     ),
                                     Expanded(
                                       child: Padding(
@@ -840,14 +858,19 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.circular(10),
-                                                      child: Image.network(
-                                                        menuData.image.toString(),
-                                                        height: 60,
-                                                        width: 60,
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                                    SizedBox(
+                                                      height: 60,
+                                                      width: 60,
+                                                      child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl: menuData.image.toString(),
+                                                            fit: BoxFit.cover,
+                                                            errorWidget: (_, __, ___) => Icon(
+                                                              Icons.error,
+                                                              color: Colors.red,
+                                                            ),
+                                                          )),
                                                     ),
                                                     const SizedBox(
                                                       width: 15,

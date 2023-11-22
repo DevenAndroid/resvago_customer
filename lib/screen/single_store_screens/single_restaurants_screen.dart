@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +8,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:resvago_customer/model/menu_model.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
+import 'package:resvago_customer/screen/widgets/calculate_distance.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 import '../../model/resturant_model.dart';
 import '../../model/review_model.dart';
@@ -20,8 +23,7 @@ import 'select_date_flow.dart';
 
 class SingleRestaurantsScreen extends StatefulWidget {
   final RestaurantModel? restaurantItem;
-  String distance;
-  SingleRestaurantsScreen({super.key, required this.restaurantItem, required this.distance});
+  SingleRestaurantsScreen({super.key, required this.restaurantItem});
 
   @override
   State<SingleRestaurantsScreen> createState() => _SingleRestaurantsScreenState();
@@ -29,7 +31,6 @@ class SingleRestaurantsScreen extends StatefulWidget {
 
 class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
   RestaurantModel? get restaurantData => widget.restaurantItem;
-  String? get distance => widget.distance;
   double fullRating = 0;
   int currentDrawer = 0;
   int currentMenu = 0;
@@ -132,11 +133,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                 SizedBox(
                   height: 390,
                   child: Stack(children: [
-                    Image.network(
-                      widget.restaurantItem!.image.toString(),
-                      width: size.width,
-                      height: size.height * .20,
-                      fit: BoxFit.cover,
+                    Hero(
+                      tag: widget.restaurantItem!.image,
+                      child: Image.network(
+                        widget.restaurantItem!.image.toString(),
+                        width: size.width,
+                        height: size.height * .20,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     Positioned(
                       top: 110,
@@ -175,11 +179,8 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                         docId: widget.restaurantItem!.docid.toString(),
                                       ),
                                       const Spacer(),
-                                      Text(
-                                        widget.distance,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff606573)),
-                                      ),
+                                      CalculateDistanceFromStoreWidget(
+                                          latLng: LatLng(widget.restaurantItem!.storeLat, widget.restaurantItem!.storeLong))
                                     ],
                                   ),
                                   const SizedBox(
@@ -309,7 +310,8 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                 ],
                               ),
                             ),
-                            Positioned(top: 120, bottom: 0, left: 0,right: 0, child: Center(child: SvgPicture.asset(AppAssets.code))),
+                            Positioned(
+                                top: 120, bottom: 0, left: 0, right: 0, child: Center(child: SvgPicture.asset(AppAssets.code))),
                           ]),
                         ],
                       ),
@@ -561,11 +563,16 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                               itemCount: widget.restaurantItem!.menuGalleryImages!.length,
                                               itemBuilder: (BuildContext context, int index) {
                                                 return Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                                                    child: Image.network(
-                                                      widget.restaurantItem!.menuGalleryImages![index],
-                                                      fit: BoxFit.cover,
-                                                    ));
+                                                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: widget.restaurantItem!.menuGalleryImages![index],
+                                                    fit: BoxFit.cover,
+                                                    errorWidget: (_, __, ___) => Icon(
+                                                      Icons.error,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                );
                                               },
                                             ),
                                           ),
@@ -584,14 +591,19 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
-                                                      ClipRRect(
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        child: Image.network(
-                                                          menuListData.image ?? "",
-                                                          height: 60,
-                                                          width: 80,
-                                                          fit: BoxFit.cover,
-                                                        ),
+                                                      SizedBox(
+                                                        height: 60,
+                                                        width: 80,
+                                                        child: ClipRRect(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            child: CachedNetworkImage(
+                                                              imageUrl: menuListData.image.toString(),
+                                                              fit: BoxFit.cover,
+                                                              errorWidget: (_, __, ___) => Icon(
+                                                                Icons.error,
+                                                                color: Colors.red,
+                                                              ),
+                                                            )),
                                                       ),
                                                       SizedBox(width: 10),
                                                       Expanded(
@@ -682,7 +694,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                   const SizedBox(
                                                     height: 10,
                                                   ),
-                                                  index != menuList!.length -1
+                                                  index != menuList!.length - 1
                                                       ? const DottedLine(
                                                           dashColor: Color(0xffBCBCBC),
                                                           dashGapLength: 1,
@@ -740,9 +752,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                           color: const Color(0xff3B5998),
                                                         ),
                                                         onRatingUpdate: (ratingvalue) {
-                                                          setState(() {
-                                                            fullRating = ratingvalue;
-                                                          });
+                                                          null;
                                                         },
                                                       ),
                                                       const SizedBox(

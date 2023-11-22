@@ -31,11 +31,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
   final _firestore = FirebaseFirestore.instance;
   List<RestaurantModel>? restaurantList;
   getRestaurantList() {
-    FirebaseFirestore.instance
-        .collection("vendor_users")
-        .where("category", isEqualTo: widget.categoryName)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("vendor_users").where("category", isEqualTo: widget.categoryName).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         restaurantList ??= [];
@@ -44,7 +40,6 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
       setState(() {});
     });
   }
-
 
   final radius = BehaviorSubject<double>.seeded(1.0);
   Stream<List<DocumentSnapshot>>? stream;
@@ -110,12 +105,8 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                         child: InkWell(
                           onTap: () {
                             Get.to(() => SingleRestaurantsScreen(
-                              restaurantItem: restaurantListItem,
-                              distance: _calculateDistance(
-                                lat1: restaurantListItem.latitude.toString(),
-                                lon1: restaurantListItem.longitude.toString(),
-                              ),
-                            ));
+                                  restaurantItem: restaurantListItem,
+                                ));
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -162,7 +153,9 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      MaxRatingScreen(docId: restaurantListItem.docid,)
+                                      MaxRatingScreen(
+                                        docId: restaurantListItem.docid,
+                                      )
                                     ],
                                   ),
                                 ),
@@ -201,11 +194,11 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                 FittedBox(
                                   child: Row(
                                     children: List.generate(
-                                        29,
+                                        40,
                                         (index) => Padding(
                                               padding: const EdgeInsets.only(left: 2, right: 2),
                                               child: Container(
-                                                color: Colors.grey[200],
+                                                color: Colors.grey[300],
                                                 height: 2,
                                                 width: 10,
                                               ),
@@ -215,7 +208,10 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                MaxDiscountScreen(docId: restaurantListItem.docid),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: MaxDiscountScreen(docId: restaurantListItem.docid),
+                                ),
                                 const SizedBox(height: 5),
                               ],
                             ),

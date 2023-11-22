@@ -18,18 +18,18 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
 
   final wishListController = Get.put(WishListController());
 
-  bool get isInWishlist => wishListController.wishListRestaurants[info.userID] != null;
+  bool get isInWishlist => wishListController.wishListRestaurants[info.docid] != null;
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if(wishListController.refreshInt.value > 0){}
+      if (wishListController.refreshInt.value > 0) {}
       return IconButton(
         onPressed: () {
-          if(isInWishlist) {
-            wishListController.removeFromWishList(docId: info.userID.toString());
+          if (isInWishlist) {
+            wishListController.removeFromWishList(docId: info.docid.toString());
           } else {
-            wishListController.addToWishList(restaurantInfo: info.toJson(), docId: info.userID.toString());
+            wishListController.addToWishList(restaurantInfo: info.toJson(), docId: info.docid.toString());
           }
         },
         icon: Container(
@@ -37,8 +37,7 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
           width: 25,
           decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
           child: Icon(
-            isInWishlist ? Icons.favorite
-                : Icons.favorite_border,
+            isInWishlist ? Icons.favorite : Icons.favorite_border,
             color: isInWishlist ? Colors.red : Colors.grey.shade800,
             size: 18,
           ),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -162,14 +163,19 @@ class _CartScreenState extends State<CartScreen> {
                                         padding: const EdgeInsets.symmetric(vertical: 5),
                                         child: Column(children: [
                                           Row(children: [
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(10),
-                                              child: Image.network(
-                                                item.image,
-                                                height: 60,
-                                                width: 80,
-                                                fit: BoxFit.cover,
-                                              ),
+                                            SizedBox(
+                                              height: 60,
+                                              width: 80,
+                                              child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: item.image,
+                                                    fit: BoxFit.cover,
+                                                    errorWidget: (_, __, ___) => Icon(
+                                                      Icons.error,
+                                                      color: Colors.red,
+                                                    ),
+                                                  )),
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(left: 15),

@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showOtpField = false;
   EmailOTP myauth = EmailOTP();
   String verificationId = "";
-  String code = "+91";
+  String code = "+353";
   LoginOption loginOption = LoginOption.Mobile;
   TextEditingController emailController = TextEditingController();
   TextEditingController otpController = TextEditingController();
@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   log(code.toString());
                                 });
                               },
-                              initialCountryCode: 'IN',
+                              initialCountryCode: 'IE',
                               cursorColor: Colors.white,
                               keyboardType: TextInputType.number,
                               validator: MultiValidator([RequiredValidator(errorText: 'Please enter your mobile number')]).call,

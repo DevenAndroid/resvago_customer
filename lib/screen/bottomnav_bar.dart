@@ -11,10 +11,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
+import 'package:resvago_customer/screen/wishlist_screen.dart';
 
 import '../controller/bottomnavbar_controller.dart';
 
 import '../model/profile_model.dart';
+import '../model/resturant_model.dart';
 import '../routers/routers.dart';
 import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
@@ -80,7 +82,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
     // updateFCMToken();
     getProfileData();
   }
-
+   RestaurantModel? restaurantModel;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -221,6 +223,29 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             User? user = _auth.currentUser;
                             if (user != null) {
                               Get.to(() => MyAddressList());
+                            } else {
+                              Get.to(() => LoginScreen());
+                            }
+                            // Get.back();
+                            // widget.onItemTapped(1);
+                          }),
+                      const Divider(
+                        height: 5,
+                        color: Color(0xffF2F2F2),
+                      ),
+                      drawerTile(
+                          active: true,
+                          title: "My Wishlist".tr,
+                          icon: const ImageIcon(
+                            AssetImage(AppAssets.myAddress),
+                            size: 22,
+                            color: AppTheme.drawerColor,
+                          ),
+                          onTap: () {
+                            FirebaseAuth _auth = FirebaseAuth.instance;
+                            User? user = _auth.currentUser;
+                            if (user != null) {
+                              Get.to(() => WishlistScreen());
                             } else {
                               Get.to(() => LoginScreen());
                             }
