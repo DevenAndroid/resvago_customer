@@ -28,13 +28,7 @@ class ChooseAddress extends StatefulWidget {
   final bool isEditMode;
 
   ChooseAddress(
-      {super.key,
-        required this.isEditMode,
-        this.streetAddress,
-        this.selectedChip,
-        this.name,
-        this.flatAddress,
-        this.docID});
+      {super.key, required this.isEditMode, this.streetAddress, this.selectedChip, this.name, this.flatAddress, this.docID});
   static var chooseAddressScreen = "/chooseAddressScreen";
 
   @override
@@ -65,24 +59,21 @@ class _ChooseAddressState extends State<ChooseAddress> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Location services are disabled. Please enable the services')));
       return false;
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Location permissions are denied')));
         return false;
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are permanently denied, we cannot request permissions.')));
       return false;
     }
     return true;
@@ -92,18 +83,12 @@ class _ChooseAddressState extends State<ChooseAddress> {
     final hasPermission = await _handleLocationPermission();
 
     if (!hasPermission) return;
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) {
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((Position position) {
       setState(() => _currentPosition = position);
       _getAddressFromLatLng(_currentPosition!);
       mapController!.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(
-              target: LatLng(
-                  _currentPosition!.latitude, _currentPosition!.longitude),
-              zoom: 15)));
-      _onAddMarkerButtonPressed(
-          LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-          "current location");
+          CameraPosition(target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude), zoom: 15)));
+      _onAddMarkerButtonPressed(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), "current location");
       setState(() {});
       // location = _currentAddress!;
     }).catchError((e) {
@@ -112,13 +97,10 @@ class _ChooseAddressState extends State<ChooseAddress> {
   }
 
   Future<void> _getAddressFromLatLng(Position position) async {
-    await placemarkFromCoordinates(
-        _currentPosition!.latitude, _currentPosition!.longitude)
-        .then((List<Placemark> placemarks) {
+    await placemarkFromCoordinates(_currentPosition!.latitude, _currentPosition!.longitude).then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
       setState(() {
-        _address =
-        '${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+        _address = '${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
       });
     }).catchError((e) {
       debugPrint(e.toString());
@@ -141,8 +123,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
             },
             child: Obx(() {
               return Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: SingleChildScrollView(
                     child: Form(
                       key: _formKey,
@@ -160,15 +141,13 @@ class _ChooseAddressState extends State<ChooseAddress> {
                             child: Container(
                               height: 50,
                               width: 50,
-                              decoration: const ShapeDecoration(
-                                  color: AppTheme.blackcolor,
-                                  shape: CircleBorder()),
+                              decoration: const ShapeDecoration(color: AppTheme.blackcolor, shape: CircleBorder()),
                               child: Center(
                                   child: Icon(
-                                    Icons.clear,
-                                    color: AppTheme.backgroundcolor,
-                                    size: AddSize.size30,
-                                  )),
+                                Icons.clear,
+                                color: AppTheme.backgroundcolor,
+                                size: AddSize.size30,
+                              )),
                             ),
                           ),
                           SizedBox(
@@ -178,32 +157,24 @@ class _ChooseAddressState extends State<ChooseAddress> {
                             width: double.maxFinite,
                             decoration: const BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(20),
-                                    topLeft: Radius.circular(20))),
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20))),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: AddSize.padding16,
-                                  vertical: AddSize.padding16),
+                              padding: EdgeInsets.symmetric(horizontal: AddSize.padding16, vertical: AddSize.padding16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
                                     "Enter complete address",
-                                    style: TextStyle(
-                                        color: AppTheme.blackcolor,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 17),
+                                    style: TextStyle(color: AppTheme.blackcolor, fontWeight: FontWeight.w600, fontSize: 17),
                                   ),
                                   SizedBox(
                                     height: AddSize.size12,
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: List.generate(
                                       choiceAddress.length,
-                                          (index) => chipList(choiceAddress[index]),
+                                      (index) => chipList(choiceAddress[index]),
                                     ),
                                   ),
                                   SizedBox(
@@ -220,9 +191,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                     controller: streetAddressController,
                                     hint: "Flat, House no, Floor, Tower,Street",
                                     validator: MultiValidator([
-                                      RequiredValidator(
-                                          errorText:
-                                          'Flat, House no, Floor, Tower,Street'),
+                                      RequiredValidator(errorText: 'Flat, House no, Floor, Tower,Street'),
                                     ]).call,
                                   ),
                                   SizedBox(
@@ -232,8 +201,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                     controller: flatAddressController,
                                     hint: "Street, Society, Landmark",
                                     validator: MultiValidator([
-                                      RequiredValidator(
-                                          errorText: 'Select city'),
+                                      RequiredValidator(errorText: 'Select city'),
                                     ]).call,
                                   ),
                                   SizedBox(
@@ -243,8 +211,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                     hint: "Recipient’s name",
                                     controller: nameController,
                                     validator: MultiValidator([
-                                      RequiredValidator(
-                                          errorText: 'Recipient’s name'),
+                                      RequiredValidator(errorText: 'Recipient’s name'),
                                     ]).call,
                                   ),
                                   SizedBox(
@@ -253,7 +220,9 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                   CommonButtonBlue(
                                     title: 'save address'.toUpperCase(),
                                     onPressed: () {
-                                      AddAddresstofirebase();
+                                      if (_formKey.currentState!.validate()) {
+                                        AddAddresstofirebase();
+                                      }
                                     },
                                   ),
                                 ],
@@ -275,7 +244,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
   }
 
   AddAddresstofirebase() {
-    if(widget.isEditMode == false){
+    if (widget.isEditMode == false) {
       FirebaseFirestore.instance
           .collection('Address')
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -292,8 +261,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
         Get.back();
         Fluttertoast.showToast(msg: 'Address Added');
       });
-    }else{
-
+    } else {
       FirebaseFirestore.instance
           .collection('Address')
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -317,11 +285,14 @@ class _ChooseAddressState extends State<ChooseAddress> {
   @override
   void initState() {
     super.initState();
-    _getCurrentPosition();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _getCurrentPosition();
+    });
     nameController.text = widget.name ?? "";
     streetAddressController.text = widget.streetAddress ?? "";
     flatAddressController.text = widget.flatAddress ?? "";
-    selectedChip.value = widget.selectedChip ?? "";
+    selectedChip.value = widget.selectedChip ?? "Home";
   }
 
   String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
@@ -331,16 +302,12 @@ class _ChooseAddressState extends State<ChooseAddress> {
   final Set<Marker> markers = {};
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-        targetWidth: width);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
-        .buffer
-        .asUint8List();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
-  Future<void> _onAddMarkerButtonPressed(LatLng lastMapPosition, markerTitle,
-      {allowZoomIn = true}) async {
+  Future<void> _onAddMarkerButtonPressed(LatLng lastMapPosition, markerTitle, {allowZoomIn = true}) async {
     final Uint8List markerIcon = await getBytesFromAsset(location, 100);
     markers.clear();
     markers.add(Marker(
@@ -352,9 +319,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
         icon: BitmapDescriptor.fromBytes(markerIcon)));
     // BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan,)));
     if (googleMapController.isCompleted) {
-      mapController!.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(
-              target: lastMapPosition, zoom: allowZoomIn ? 14 : 11)));
+      mapController!
+          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: lastMapPosition, zoom: allowZoomIn ? 14 : 11)));
     }
     setState(() {});
   }
@@ -372,9 +338,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
         },
         child: Scaffold(
             appBar: backAppBar(
-                title: _isValue.value == true
-                    ? "Complete Address"
-                    : "Choose Address",
+                title: _isValue.value == true ? "Complete Address" : "Choose Address",
                 context: context,
                 dispose: "dispose",
                 disposeController: () {
@@ -412,9 +376,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                       width: MediaQuery.of(context).size.width,
                       decoration: const BoxDecoration(
                           color: AppTheme.backgroundcolor,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20))),
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: AddSize.padding16,
@@ -443,9 +405,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                           style: Theme.of(context)
                                               .textTheme
                                               .headlineSmall!
-                                              .copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: AddSize.font16),
+                                              .copyWith(fontWeight: FontWeight.w500, fontSize: AddSize.font16),
                                         ),
                                       )
                                     ],
@@ -478,28 +438,22 @@ class _ChooseAddressState extends State<ChooseAddress> {
   }
 
   chipList(
-      title,
-      ) {
+    title,
+  ) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Obx(() {
       return Column(
         children: [
           ChoiceChip(
-            padding: EdgeInsets.symmetric(
-                horizontal: width * .01, vertical: height * .01),
+            padding: EdgeInsets.symmetric(horizontal: width * .01, vertical: height * .01),
             backgroundColor: AppTheme.backgroundcolor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
-                side: BorderSide(
-                    color: title != selectedChip.value
-                        ? Colors.grey.shade300
-                        : const Color(0xff7ED957))),
+                side: BorderSide(color: title != selectedChip.value ? Colors.grey.shade300 : const Color(0xff7ED957))),
             label: Text("$title",
                 style: TextStyle(
-                    color: title != selectedChip.value
-                        ? Colors.grey.shade600
-                        : const Color(0xff7ED957),
+                    color: title != selectedChip.value ? Colors.grey.shade600 : const Color(0xff7ED957),
                     fontSize: AddSize.font14,
                     fontWeight: FontWeight.w500)),
             selected: title == selectedChip.value,
@@ -521,4 +475,3 @@ class _ChooseAddressState extends State<ChooseAddress> {
     });
   }
 }
-

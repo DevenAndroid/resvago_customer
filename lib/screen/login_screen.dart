@@ -37,6 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final loginController = Get.put(LoginController());
   void checkPhoneNumberInFirestore() async {
+    if (loginController.mobileController.text.isEmpty) {
+      Fluttertoast.showToast(msg: 'Please enter phone number');
+      return;
+    }
     log(code + loginController.mobileController.text.trim());
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('customer_users')
@@ -46,9 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
       print(result.docs.first.data());
       Map kk = result.docs.first.data() as Map;
       print(kk["email"]);
-      login(kk["email"].toString());
-    } else if (loginController.mobileController.text.isEmpty) {
-      Fluttertoast.showToast(msg: 'Please enter phone number');
+      if (kk["deactivate"] == true) {
+        Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
+      } else {
+        login(kk["email"].toString());
+      }
     } else {
       Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
     }
@@ -58,30 +64,38 @@ class _LoginScreenState extends State<LoginScreen> {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
-      myauth.setConfig(
-          appEmail: "contact@hdevcoder.com",
-          appName: "Email OTP",
-          userEmail: emailController.text,
-          otpLength: 6,
-          otpType: OTPType.digitsOnly);
-      if (await myauth.sendOTP() == true) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("OTP has been sent"),
-        ));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Oops, OTP send failed"),
-        ));
+      print(result.docs.first.data());
+      Map kk = result.docs.first.data() as Map;
+      print(kk["email"]);
+      if(kk["deactivate"] == false){
+        myauth.setConfig(
+            appEmail: "contact@hdevcoder.com",
+            appName: "Email OTP",
+            userEmail: emailController.text,
+            otpLength: 6,
+            otpType: OTPType.digitsOnly);
+        if (await myauth.sendOTP() == true) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("OTP has been sent"),
+          ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Oops, OTP send failed"),
+          ));
+        }
+        setState(() {
+          showOtpField = true;
+        });
+        return;
       }
-      setState(() {
-        showOtpField = true;
-      });
-      return;
-    } else {
+      else{
+        Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
+      }
+    }
+    else {
       Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
     }
   }
-
 
   login(String email) async {
     await FirebaseAuth.instance.signOut();
@@ -241,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderSide: const BorderSide(width: 1, color: Color(0x63ffffff)),
                                 ),
                               ),
-                              onCountryChanged: (phone){
+                              onCountryChanged: (phone) {
                                 setState(() {
                                   code = "+${phone.dialCode}";
                                   log(code.toString());
@@ -278,7 +292,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {
                                     checkEmailInFirestore();
                                   },
-                                  child: const Text('send',style: TextStyle(color: Colors.white),),
+                                  child: const Text(
+                                    'send',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                                 filled: true,
                                 fillColor: Colors.white.withOpacity(.10),
@@ -321,7 +338,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     borderRadius: BorderRadius.circular(6.0),
                                   ),
                                   enabledBorder: OutlineInputBorder(
-
                                       borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
                                       borderRadius: const BorderRadius.all(Radius.circular(6.0))),
                                   border: OutlineInputBorder(
@@ -362,7 +378,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
-
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                       child: Column(
@@ -382,7 +397,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           password: "123456",
                                         )
                                             .then((value) {
-                                          Get.offAllNamed(MyRouters.bottomNavbar);
+                                          Get.offAll(() => BottomNavbar());
                                         });
                                       } else {
                                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

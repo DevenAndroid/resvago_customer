@@ -4,6 +4,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:resvago_customer/screen/helper.dart';
+import 'package:resvago_customer/screen/widgets/calculate_distance.dart';
 import 'package:resvago_customer/widget/common_text_field.dart';
 import '../../controller/location_controller.dart';
 import '../../model/resturant_model.dart';
@@ -31,7 +34,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
   final _firestore = FirebaseFirestore.instance;
   List<RestaurantModel>? restaurantList;
   getRestaurantList() {
-    FirebaseFirestore.instance.collection("vendor_users").where("category", isEqualTo: widget.categoryName).get().then((value) {
+    FirebaseFirestore.instance.collection("vendor_users").where("deactivate", isEqualTo: false).where("category", isEqualTo: widget.categoryName).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         restaurantList ??= [];
@@ -44,28 +47,6 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
   final radius = BehaviorSubject<double>.seeded(1.0);
   Stream<List<DocumentSnapshot>>? stream;
   GeoFlutterFire? geo;
-
-  String _calculateDistance({dynamic lat1, dynamic lon1}) {
-    if (kDebugMode) {
-      print(double.tryParse(locationController.lat.toString()));
-    }
-    if (kDebugMode) {
-      print(double.tryParse(locationController.long.toString()));
-    }
-    if (double.tryParse(lat1) == null ||
-        double.tryParse(lon1) == null ||
-        double.tryParse(locationController.lat.toString()) == null ||
-        double.tryParse(locationController.long.toString()) == null) {
-      return "Not Available";
-    }
-
-    double distanceInMeters = Geolocator.distanceBetween(double.parse(lat1), double.parse(lon1),
-        double.parse(locationController.lat.toString()), double.parse(locationController.long.toString()));
-    if ((distanceInMeters / 1000) < 1) {
-      return "${distanceInMeters.toInt()} Meter away";
-    }
-    return "${(distanceInMeters / 1000).toStringAsFixed(2)} KM";
-  }
 
   @override
   void initState() {
@@ -174,14 +155,17 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text(
-                                        _calculateDistance(
-                                          lat1: restaurantListItem.latitude.toString(),
-                                          lon1: restaurantListItem.longitude.toString(),
-                                        ),
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                      CalculateDistanceFromStoreWidget(
+                                        latLng: LatLng(restaurantListItem.storeLat, restaurantListItem.storeLong),
                                       ),
+                                      // Text(
+                                      //   _calculateDistance(
+                                      //     lat1: restaurantListItem.latitude.toString(),
+                                      //     lon1: restaurantListItem.longitude.toString(),
+                                      //   ),
+                                      //   style: GoogleFonts.poppins(
+                                      //       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                      // ),
                                       const SizedBox(
                                         width: 3,
                                       ),
@@ -193,8 +177,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                 ),
                                 FittedBox(
                                   child: Row(
-                                    children: List.generate(
-                                        40,
+                                    children: List.generate(kIsWeb ?100 :40,
                                         (index) => Padding(
                                               padding: const EdgeInsets.only(left: 2, right: 2),
                                               child: Container(
@@ -215,7 +198,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                 const SizedBox(height: 5),
                               ],
                             ),
-                          ),
+                          ).appPaddingForScreen,
                         ),
                       );
                     });

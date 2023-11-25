@@ -1,9 +1,11 @@
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/model/order_model.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/order/myorder_screen.dart';
 import '../../widget/apptheme.dart';
 import '../order/order_details_screen.dart';
@@ -31,7 +33,7 @@ class _ThankuScreenState extends State<ThankuScreen> {
           child: Container(
               padding: const EdgeInsets.only(bottom: 20),
               child: SizedBox(
-                width: size.width,
+                width: kIsWeb ? 600 : size.width,
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
@@ -139,6 +141,6 @@ class _ThankuScreenState extends State<ThankuScreen> {
               ],
             ),
           ),
-        ));
+        ).appPadding);
   }
 }

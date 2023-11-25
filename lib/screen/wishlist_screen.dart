@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resvago_customer/controller/location_controller.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
 import 'package:resvago_customer/screen/widgets/calculate_distance.dart';
@@ -77,10 +78,13 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                 ),
                                 child: Stack(children: [
                                   SizedBox(
-                                    height: 150,
+                                    height: kIsWeb ? 400 :150,
                                     width: double.maxFinite,
                                     child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
+                                        borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(10),
+                                          topLeft: Radius.circular(10),
+                                        ),
                                         child: CachedNetworkImage(
                                           imageUrl: restaurantListItem.image.toString(),
                                           fit: BoxFit.cover,
@@ -167,7 +171,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                               const SizedBox(height: 5),
                             ],
                           ),
-                        ),
+                        ).appPaddingForScreen,
                       ),
                     );
                   })

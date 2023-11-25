@@ -423,10 +423,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                 dynamic discountValue = 0;
                                 if (couponData != null) {
                                   discountValue = couponData!.discount;
-                                }
-                                else{
-
-                                }
+                                } else {}
                                 FirebaseAuth _auth = FirebaseAuth.instance;
                                 User? user = _auth.currentUser;
                                 if (user != null) {
@@ -495,12 +492,19 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: guestNo,
           shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 0,
-            mainAxisExtent: AddSize.screenHeight * 0.080,
-          ),
+          gridDelegate: kIsWeb
+              ? SliverGridDelegateWithMaxCrossAxisExtent(
+                  mainAxisExtent: AddSize.screenHeight * .080,
+                  maxCrossAxisExtent: 150,
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 0,
+                )
+              : SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 0,
+                  mainAxisExtent: AddSize.screenHeight * 0.080,
+                ),
           itemBuilder: (BuildContext context, int index) {
             return Column(
               children: [
@@ -621,8 +625,9 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: kIsWeb
                 ? SliverGridDelegateWithMaxCrossAxisExtent(
+                    mainAxisExtent: AddSize.screenHeight * .080,
                     maxCrossAxisExtent: 150,
-                    crossAxisSpacing: 10,
+                    crossAxisSpacing: 2,
                     mainAxisSpacing: 0,
                   )
                 : SliverGridDelegateWithFixedCrossAxisCount(
@@ -712,8 +717,9 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: kIsWeb
                 ? SliverGridDelegateWithMaxCrossAxisExtent(
+                    mainAxisExtent: AddSize.screenHeight * .080,
                     maxCrossAxisExtent: 150,
-                    crossAxisSpacing: 10,
+                    crossAxisSpacing: 2,
                     mainAxisSpacing: 0,
                   )
                 : SliverGridDelegateWithFixedCrossAxisCount(

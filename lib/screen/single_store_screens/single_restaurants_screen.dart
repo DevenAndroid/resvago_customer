@@ -1184,7 +1184,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                 const SizedBox(
                   height: 20,
                 )
-              ]).appPadding)
+              ]).appPaddingForScreen)
             : const SizedBox.shrink());
   }
 }

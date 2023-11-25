@@ -115,7 +115,7 @@ extension AddPaddingtoAll on Widget{
     if(kIsWeb){
       return Center(
         child: SizedBox(
-          width: 1000,
+          width: 1200,
           child: this,
         ),
       );

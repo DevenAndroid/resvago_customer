@@ -49,10 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-             height: 80,
-              width: 80,
-              child: Center(child: Image.asset('assets/images/splash.png'))),
+          SizedBox(height: 80, width: 80, child: Center(child: Image.asset('assets/images/splash.png'))),
           const Center(child: Image(image: AssetImage('assets/images/Resvago.png'))),
         ],
       ),

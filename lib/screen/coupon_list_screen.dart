@@ -55,7 +55,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                         itemBuilder: (context, int index) {
                           final item = filteredUsers[index];
                           return GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               widget.couponData(item);
                               Get.back();
                             },
@@ -122,7 +122,9 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                                   Text(
                                                     "Discount",
                                                     style: GoogleFonts.poppins(
-                                                        color: const Color(0xFF304048), fontWeight: FontWeight.w400, fontSize: 16),
+                                                        color: const Color(0xFF304048),
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 16),
                                                   ),
                                                   Text(
                                                     "\$${item.discount.toString()}",
@@ -232,6 +234,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
   Stream<List<CouponData>> getCouponStream(id) {
     return FirebaseFirestore.instance
         .collection('Coupon_data')
+        .where("deactivate", isEqualTo: false)
         .where("userID", isEqualTo: id)
         .snapshots()
         .map((snapshot) => snapshot.docs

@@ -6,6 +6,7 @@ class ProfileData {
   dynamic mobileNumber;
   dynamic profile_image;
   dynamic docid;
+  dynamic deactivate;
 
   ProfileData(
       {
@@ -16,6 +17,7 @@ class ProfileData {
         this.mobileNumber,
         this.docid,
         this.profile_image,
+        this.deactivate,
        });
 
   ProfileData.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class ProfileData {
     selected_address = json['selected_address'];
     mobileNumber = json['mobileNumber'];
     docid = json['docid'];
+    deactivate = json['deactivate'];
     profile_image = json['profile_image'] ?? "";
   }
 
@@ -35,6 +38,7 @@ class ProfileData {
     data['mobileNumber'] = mobileNumber;
     data['userId'] = userId;
     data['email'] = email;
+    data['deactivate'] = deactivate;
     data['selected_address'] = selected_address;
     data['profile_image'] = profile_image;
     return data;

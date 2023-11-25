@@ -21,8 +21,8 @@ class ProfileController extends GetxController {
     }
   }
 
-  updateProfile(DocumentSnapshot<Map<String, dynamic>> event){
-    if(event.exists){
+  updateProfile(DocumentSnapshot<Map<String, dynamic>> event) {
+    if (event.exists) {
       if (event.data() == null) return;
       log("profile updated....     ${event.data()}");
       profileData = ProfileData.fromJson(event.data()!);
@@ -44,8 +44,13 @@ class ProfileController extends GetxController {
   Future updateAddress(String addressId) async {
     await FirebaseFirestore.instance
         .collection("customer_users")
-        .doc(FirebaseAuth.instance.currentUser!.uid).update({
-      "selected_address" : addressId
-    });
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({"selected_address": addressId});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    cancelStream();
   }
 }

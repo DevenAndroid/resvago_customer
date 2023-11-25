@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/model/dinig_order.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import '../../model/order_model.dart';
 import '../../widget/appassets.dart';
 import '../../widget/common_text_field.dart';
@@ -594,7 +595,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                     height: 20,
                   )
                 ],
-              ),
+              ).appPaddingForScreen,
             )
           : widget.orderType == "Dining" && myDiningOrderModel != null
               ? SingleChildScrollView(
@@ -1139,7 +1140,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                         height: 20,
                       )
                     ],
-                  ),
+                  ).appPaddingForScreen,
                 )
               : const SizedBox.shrink(),
     );

@@ -86,7 +86,12 @@ class _DeliveryPageState extends State<DeliveryPage> {
   Future getRestaurantList() async {
     restaurantList ??= [];
     restaurantList!.clear();
-    await FirebaseFirestore.instance.collection("vendor_users").where("setDelivery", isEqualTo: true).get().then((value) {
+    await FirebaseFirestore.instance
+        .collection("vendor_users")
+        .where("deactivate", isEqualTo: false)
+        .where("setDelivery", isEqualTo: true)
+        .get()
+        .then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
@@ -100,27 +105,27 @@ class _DeliveryPageState extends State<DeliveryPage> {
   Stream<List<DocumentSnapshot>>? stream;
   GeoFlutterFire? geo;
 
-  String _calculateDistance({dynamic lat1, dynamic lon1}) {
-    if (kDebugMode) {
-      print(double.tryParse(locationController.lat.toString()));
-    }
-    if (kDebugMode) {
-      print(double.tryParse(locationController.long.toString()));
-    }
-    if (double.tryParse(lat1) == null ||
-        double.tryParse(lon1) == null ||
-        double.tryParse(locationController.lat.toString()) == null ||
-        double.tryParse(locationController.long.toString()) == null) {
-      return "Not Available";
-    }
-
-    double distanceInMeters = Geolocator.distanceBetween(double.parse(lat1), double.parse(lon1),
-        double.parse(locationController.lat.toString()), double.parse(locationController.long.toString()));
-    if ((distanceInMeters / 1000) < 1) {
-      return "${distanceInMeters.toInt()} Meter away";
-    }
-    return "${(distanceInMeters / 1000).toStringAsFixed(2)} KM";
-  }
+  // String _calculateDistance({dynamic lat1, dynamic lon1}) {
+  //   if (kDebugMode) {
+  //     print(double.tryParse(locationController.lat.toString()));
+  //   }
+  //   if (kDebugMode) {
+  //     print(double.tryParse(locationController.long.toString()));
+  //   }
+  //   if (double.tryParse(lat1) == null ||
+  //       double.tryParse(lon1) == null ||
+  //       double.tryParse(locationController.lat.toString()) == null ||
+  //       double.tryParse(locationController.long.toString()) == null) {
+  //     return "Not Available";
+  //   }
+  //
+  //   double distanceInMeters = Geolocator.distanceBetween(double.parse(lat1), double.parse(lon1),
+  //       double.parse(locationController.lat.toString()), double.parse(locationController.long.toString()));
+  //   if ((distanceInMeters / 1000) < 1) {
+  //     return "${distanceInMeters.toInt()} Meter away";
+  //   }
+  //   return "${(distanceInMeters / 1000).toStringAsFixed(2)} KM";
+  // }
 
   Future<bool> addToWishlist(
     String userId,
@@ -547,7 +552,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 if (categoryList != null)
                   SizedBox(
                     height: 100,
-                    // width: size.width,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: categoryList!.length,
@@ -559,31 +563,36 @@ class _DeliveryPageState extends State<DeliveryPage> {
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 70,
-                                  width: 70,
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(100),
-                                      child: CachedNetworkImage(
-                                        imageUrl: categoryList![index].image,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (_, __, ___) => Icon(
-                                          Icons.error,
-                                          color: Colors.red,
-                                        ),
-                                      )),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  categoryList![index].name ?? "",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
-                                )
-                              ],
+                            child: SizedBox(
+                              width: 70,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: CachedNetworkImage(
+                                          imageUrl: categoryList![index].image,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (_, __, ___) => Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          ),
+                                        )),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    categoryList![index].name ?? "",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -615,10 +624,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
                               onTap: () {
                                 Get.to(() => SingleRestaurantForDeliveryScreen(
                                       restaurantItem: restaurantListItem,
-                                      distance: _calculateDistance(
-                                        lat1: restaurantListItem.latitude.toString(),
-                                        lon1: restaurantListItem.longitude.toString(),
-                                      ),
+                                      // distance: _calculateDistance(
+                                      //   lat1: restaurantListItem.latitude.toString(),
+                                      //   lon1: restaurantListItem.longitude.toString(),
+                                      // ),
                                     ));
                               },
                               child: Container(
@@ -711,17 +720,22 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                         ],
                                       ),
                                     ),
-                                    Row(
-                                      children: List.generate(
-                                          17,
-                                          (index) => Padding(
-                                                padding: const EdgeInsets.only(left: 2, right: 2),
-                                                child: Container(
-                                                  color: Colors.grey[200],
-                                                  height: 2,
-                                                  width: 10,
-                                                ),
-                                              )),
+                                    SizedBox(
+                                      width: 250,
+                                      child: FittedBox(
+                                        child: Row(
+                                          children: List.generate(
+                                              30,
+                                              (index) => Padding(
+                                                    padding: const EdgeInsets.only(left: 2, right: 2),
+                                                    child: Container(
+                                                      color: Colors.grey[300],
+                                                      height: 2,
+                                                      width: 10,
+                                                    ),
+                                                  )),
+                                        ),
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -759,7 +773,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 if (categoryList != null)
                   SizedBox(
                     height: 100,
-                    // width: size.width,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: categoryList!.length,
@@ -771,31 +784,36 @@ class _DeliveryPageState extends State<DeliveryPage> {
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 70,
-                                  width: 70,
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(100),
-                                      child: CachedNetworkImage(
-                                        imageUrl: categoryList![index].image,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (_, __, ___) => Icon(
-                                          Icons.error,
-                                          color: Colors.red,
-                                        ),
-                                      )),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  categoryList![index].name ?? "",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
-                                )
-                              ],
+                            child: SizedBox(
+                              width: 70,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: CachedNetworkImage(
+                                          imageUrl: categoryList![index].image,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (_, __, ___) => Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          ),
+                                        )),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    categoryList![index].name ?? "",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -827,10 +845,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
                               onTap: () {
                                 Get.to(() => SingleRestaurantForDeliveryScreen(
                                       restaurantItem: restaurantListItem,
-                                      distance: _calculateDistance(
-                                        lat1: restaurantListItem.latitude.toString(),
-                                        lon1: restaurantListItem.longitude.toString(),
-                                      ),
                                     ));
                               },
                               child: Container(
@@ -906,13 +920,8 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          Text(
-                                            _calculateDistance(
-                                              lat1: restaurantListItem.latitude.toString(),
-                                              lon1: restaurantListItem.longitude.toString(),
-                                            ),
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                                          CalculateDistanceFromStoreWidget(
+                                            latLng: LatLng(restaurantListItem.storeLat, restaurantListItem.storeLong),
                                           ),
                                           const SizedBox(
                                             width: 3,
@@ -920,17 +929,22 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                         ],
                                       ),
                                     ),
-                                    Row(
-                                      children: List.generate(
-                                          17,
-                                          (index) => Padding(
-                                                padding: const EdgeInsets.only(left: 2, right: 2),
-                                                child: Container(
-                                                  color: Colors.grey[200],
-                                                  height: 2,
-                                                  width: 10,
-                                                ),
-                                              )),
+                                    SizedBox(
+                                      width: 250,
+                                      child: FittedBox(
+                                        child: Row(
+                                          children: List.generate(
+                                              30,
+                                              (index) => Padding(
+                                                    padding: const EdgeInsets.only(left: 2, right: 2),
+                                                    child: Container(
+                                                      color: Colors.grey[300],
+                                                      height: 2,
+                                                      width: 10,
+                                                    ),
+                                                  )),
+                                        ),
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -959,7 +973,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   height: 90,
                 ),
               ],
-            ),
+            ).appPaddingForScreen,
           ),
         ),
       ),

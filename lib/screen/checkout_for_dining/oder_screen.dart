@@ -55,11 +55,7 @@ class _OderScreenState extends State<OderScreen> {
   FirebaseService firebaseService = FirebaseService();
   ProfileData? profileData;
   void fetchdata() {
-    FirebaseFirestore.instance
-        .collection("customer_users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
@@ -71,7 +67,7 @@ class _OderScreenState extends State<OderScreen> {
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    String? fcm = await FirebaseMessaging.instance.getToken();
+    // String? fcm = await FirebaseMessaging.instance.getToken();
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
       await firebaseService
@@ -83,7 +79,7 @@ class _OderScreenState extends State<OderScreen> {
               profileData: profileData!.toJson(),
               vendorId: vendorId,
               time: gg,
-              fcm: fcm,
+              fcm: "fcm",
               slot: widget.slot,
               guest: widget.guest,
               date: widget.date,
@@ -703,7 +699,7 @@ class _OderScreenState extends State<OderScreen> {
                 const SizedBox(
                   height: 100,
                 )
-              ]))
+              ]).appPaddingForScreen)
             : const Center(child: CircularProgressIndicator()));
   }
 }

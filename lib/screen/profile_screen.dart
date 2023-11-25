@@ -10,7 +10,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import '../model/profile_model.dart';
 import '../widget/addsize.dart';
@@ -69,7 +68,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         "userName": firstNameController.text.trim(),
         "email": emailController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
-        "profile_image": imageUrlProfile
+        "profile_image": imageUrlProfile,
+        "deactivate": false,
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       log("profile data" + profileData.mobileNumber.toString());
       Helper.hideLoader(loader);
@@ -103,7 +103,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     Container(
-                      // padding: const EdgeInsets.all(15),
                       width: size.width,
                       height: size.height,
                       decoration: BoxDecoration(
@@ -117,10 +116,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Stack(
                             children: [
                               Container(
-                                  padding: const EdgeInsets.only(bottom: 30),
+                                  padding: EdgeInsets.only(
+                                    bottom: 30,
+                                  ),
                                   clipBehavior: Clip.antiAlias,
                                   decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-                                  child: Image.asset('assets/images/profilebg.png')),
+                                  child: Image.asset(
+                                    'assets/images/profilebg.png',
+                                  )),
                               Positioned(
                                 top: 90,
                                 left: 0,
@@ -183,6 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   onTap: () {
                                     showActionSheet(context);
                                   },
+                                  behavior: HitTestBehavior.translucent,
                                   child: Container(
                                     height: 30,
                                     width: 30,
@@ -303,7 +307,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   title: 'Save',
                                 ),
                               ],
-                            ).appPaddingTextField,
+                            ).appPaddingForScreen,
                           ),
                           const SizedBox(
                             height: 80,

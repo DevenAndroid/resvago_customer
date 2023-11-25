@@ -96,7 +96,7 @@ class _CartScreenState extends State<CartScreen> {
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    String? fcm = await FirebaseMessaging.instance.getToken();
+    // String? fcm = await FirebaseMessaging.instance.getToken();
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
       await firebaseService
@@ -108,7 +108,7 @@ class _CartScreenState extends State<CartScreen> {
               time: gg,
               address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
               couponDiscount: couponDiscount,
-              fcm: fcm,
+              fcm: "fcm",
               total: totalPrice)
           .then((value) {
         Helper.hideLoader(loader);
@@ -724,7 +724,7 @@ class _CartScreenState extends State<CartScreen> {
                 const SizedBox(
                   height: 100,
                 )
-              ]))
+              ]).appPaddingForScreen)
             : Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/search_singlerestaurant_screen.dart';
 
 import '../../widget/custom_textfield.dart';
@@ -20,11 +22,22 @@ class _SerachListScreenState extends State<SerachListScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          surfaceTintColor: Colors.white,
+          backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           title: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: Row(
               children: [
+                InkWell(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 13.0),
+                    child: SvgPicture.asset("assets/images/back.svg"),
+                  ),
+                ),
                 Expanded(
                   child: Container(
                       height: 42,
@@ -175,7 +188,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                 }
                 return const Center(child: CircularProgressIndicator());
               },
-            ),
+            ).appPaddingForScreen,
             StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('vendor_menu')
@@ -214,7 +227,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                 }
                 return const Center(child: CircularProgressIndicator());
               },
-            ),
+            ).appPaddingForScreen,
             // StreamBuilder(
             //   stream: FirebaseFirestore.instance
             //       .collection('vendor_menu')

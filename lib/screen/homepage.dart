@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
   Future getRestaurantList() async {
     restaurantList ??= [];
     restaurantList!.clear();
-    await FirebaseFirestore.instance.collection("vendor_users").get().then((value) {
+    await FirebaseFirestore.instance.collection("vendor_users").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
@@ -89,7 +89,6 @@ class _HomePageState extends State<HomePage> {
       setState(() {});
     });
   }
-
 
   final radius = BehaviorSubject<double>.seeded(1.0);
   final _firestore = FirebaseFirestore.instance;
@@ -301,7 +300,6 @@ class _HomePageState extends State<HomePage> {
                 FirebaseAuth _auth = FirebaseAuth.instance;
                 User? user = _auth.currentUser;
                 if (user != null) {
-                  Get.offAll(const BottomNavbar());
                   bottomController.updateIndexValue(3);
                   Get.back();
                 } else {
@@ -319,8 +317,7 @@ class _HomePageState extends State<HomePage> {
                       if (profileController.refreshInt.value > 0) {}
                       return CachedNetworkImage(
                         fit: BoxFit.cover,
-                        imageUrl:
-                            profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
+                        imageUrl: profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
                         errorWidget: (_, __, ___) => const Icon(Icons.person),
                         placeholder: (_, __) => const SizedBox(),
                       );
@@ -524,7 +521,6 @@ class _HomePageState extends State<HomePage> {
                 if (categoryList != null)
                   SizedBox(
                     height: 100,
-                    // width: size.width,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: categoryList!.length,
@@ -536,31 +532,36 @@ class _HomePageState extends State<HomePage> {
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 70,
-                                  width: 70,
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(100),
-                                      child: CachedNetworkImage(
-                                        imageUrl: categoryList![index].image,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (_, __, ___) => Icon(
-                                          Icons.error,
-                                          color: Colors.red,
-                                        ),
-                                      )),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  categoryList![index].name ?? "",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
-                                )
-                              ],
+                            child: SizedBox(
+                              width: 70,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: CachedNetworkImage(
+                                          imageUrl: categoryList![index].image,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (_, __, ___) => Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          ),
+                                        )),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    categoryList![index].name ?? "",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -688,17 +689,22 @@ class _HomePageState extends State<HomePage> {
                                         ],
                                       ),
                                     ),
-                                    Row(
-                                      children: List.generate(
-                                          17,
-                                          (index) => Padding(
-                                                padding: const EdgeInsets.only(left: 2, right: 2),
-                                                child: Container(
-                                                  color: Colors.grey[200],
-                                                  height: 2,
-                                                  width: 10,
-                                                ),
-                                              )),
+                                    SizedBox(
+                                      width: 250,
+                                      child: FittedBox(
+                                        child: Row(
+                                          children: List.generate(
+                                              30,
+                                              (index) => Padding(
+                                                    padding: const EdgeInsets.only(left: 2, right: 2),
+                                                    child: Container(
+                                                      color: Colors.grey[300],
+                                                      height: 2,
+                                                      width: 10,
+                                                    ),
+                                                  )),
+                                        ),
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -736,7 +742,6 @@ class _HomePageState extends State<HomePage> {
                 if (categoryList != null)
                   SizedBox(
                     height: 100,
-                    // width: size.width,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: categoryList!.length,
@@ -748,31 +753,36 @@ class _HomePageState extends State<HomePage> {
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 70,
-                                  width: 70,
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(100),
-                                      child: CachedNetworkImage(
-                                        imageUrl: categoryList![index].image,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (_, __, ___) => Icon(
-                                          Icons.error,
-                                          color: Colors.red,
-                                        ),
-                                      )),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  categoryList![index].name ?? "",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
-                                )
-                              ],
+                            child: SizedBox(
+                              width: 70,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: CachedNetworkImage(
+                                          imageUrl: categoryList![index].image,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (_, __, ___) => Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          ),
+                                        )),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    categoryList![index].name ?? "",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -952,7 +962,7 @@ class _HomePageState extends State<HomePage> {
                   height: 90,
                 ),
               ],
-            ),
+            ).appPaddingForScreen,
           ),
         ),
       ),

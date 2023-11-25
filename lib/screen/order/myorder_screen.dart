@@ -12,6 +12,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:resvago_customer/model/dinig_order.dart';
 import 'package:resvago_customer/model/order_model.dart';
 import 'package:resvago_customer/screen/delivery_screen/cart%20screen.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 import '../../firebase_service/firebase_service.dart';
@@ -480,10 +481,10 @@ class _MyOrderState extends State<MyOrder> {
                                                     child: ElevatedButton(
                                                       onPressed: () {
                                                         Get.to(() => OderDetailsScreen(
-                                                              orderType: 'Delivery',
-                                                              orderId: '',
-                                                              data: '',
-                                                            ));
+                                                          orderType: 'Delivery',
+                                                          orderId: orderItem.orderId,
+                                                          data: '',
+                                                        ));
                                                       },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: AppTheme.primaryColor,
@@ -501,7 +502,7 @@ class _MyOrderState extends State<MyOrder> {
                                                 ],
                                               ),
                                             ],
-                                          )),
+                                          )).appPaddingForScreen,
                                     );
                                   })
                               : Column(
@@ -783,7 +784,7 @@ class _MyOrderState extends State<MyOrder> {
                                                 ],
                                               ),
                                             ],
-                                          )),
+                                          )).appPaddingForScreen,
                                     );
                                   })
                               : Column(
@@ -983,7 +984,7 @@ class _MyOrderState extends State<MyOrder> {
                                                     )
                                                   ]),
                                             ],
-                                          )),
+                                          )).appPaddingForScreen,
                                     );
                                   })
                               : Column(
@@ -1258,7 +1259,7 @@ class _MyOrderState extends State<MyOrder> {
                                                 ],
                                               ),
                                             ],
-                                          )),
+                                          )).appPaddingForScreen,
                                     );
                                   })
                               : Column(
@@ -1580,7 +1581,7 @@ class _MyOrderState extends State<MyOrder> {
                                                 ],
                                               ),
                                             ],
-                                          ))
+                                          )).appPaddingForScreen
                                     ]);
                                   })
                               : Column(
@@ -1822,7 +1823,7 @@ class _MyOrderState extends State<MyOrder> {
                                                     )
                                                   ]),
                                             ],
-                                          )),
+                                          )).appPaddingForScreen,
                                     );
                                   })
                               : Column(

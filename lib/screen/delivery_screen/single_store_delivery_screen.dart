@@ -9,6 +9,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:resvago_customer/model/menu_model.dart';
@@ -21,12 +22,13 @@ import '../../widget/apptheme.dart';
 import '../../widget/restaurant_timing.dart';
 import '../helper.dart';
 import '../login_screen.dart';
+import '../widgets/calculate_distance.dart';
 import 'cart screen.dart';
 
 class SingleRestaurantForDeliveryScreen extends StatefulWidget {
   final RestaurantModel? restaurantItem;
-  String distance;
-  SingleRestaurantForDeliveryScreen({super.key, required this.restaurantItem, required this.distance});
+  // String distance;
+  SingleRestaurantForDeliveryScreen({super.key, required this.restaurantItem, });
 
   @override
   State<SingleRestaurantForDeliveryScreen> createState() => _SingleRestaurantForDeliveryScreenState();
@@ -34,7 +36,7 @@ class SingleRestaurantForDeliveryScreen extends StatefulWidget {
 
 class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForDeliveryScreen> {
   RestaurantModel? get restaurantData => widget.restaurantItem;
-  String? get distance => widget.distance;
+  // String? get distance => widget.distance;
   double fullRating = 0;
   int currentDrawer = 0;
   int currentMenu = 0;
@@ -215,11 +217,14 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                         docId: widget.restaurantItem!.docid.toString(),
                                       ),
                                       const Spacer(),
-                                      Text(
-                                        widget.distance,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff606573)),
+                                      CalculateDistanceFromStoreWidget(
+                                        latLng: LatLng(widget.restaurantItem!.storeLat, widget.restaurantItem!.storeLong),
                                       ),
+                                      // Text(
+                                      //   widget.distance,
+                                      //   style: GoogleFonts.poppins(
+                                      //       fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff606573)),
+                                      // ),
                                     ],
                                   ),
                                   const SizedBox(
@@ -546,7 +551,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                         child: ClipRRect(
                                                           borderRadius: BorderRadius.circular(10),
                                                           child: CachedNetworkImage(
-                                                            imageUrl:menuListData.image,
+                                                            imageUrl: menuListData.image,
                                                             fit: BoxFit.cover,
                                                             errorWidget: (_, __, ___) => Icon(
                                                               Icons.error,
@@ -587,7 +592,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                             ),
                                                             menuListData.qty > 0
                                                                 ? Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    mainAxisAlignment: MainAxisAlignment.start,
                                                                     children: [
                                                                       Container(
                                                                         height: 28,
@@ -1239,7 +1244,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                 const SizedBox(
                   height: 20,
                 )
-              ]))
+              ]).appPaddingForScreen)
             : const SizedBox.shrink());
   }
 }

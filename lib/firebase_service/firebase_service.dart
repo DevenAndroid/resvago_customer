@@ -31,6 +31,7 @@ class FirebaseService {
         "userID": mobileNumber,
         "profile_image": "",
         "password": "123456",
+        "deactivate": false,
       }).then((value) {});
     } catch (e) {
       throw Exception(e);

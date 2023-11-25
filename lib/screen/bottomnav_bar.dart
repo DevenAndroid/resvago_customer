@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/delivery_screen.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import 'package:resvago_customer/screen/wishlist_screen.dart';
@@ -165,7 +166,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             FirebaseAuth _auth = FirebaseAuth.instance;
                             User? user = _auth.currentUser;
                             if (user != null) {
-                              Get.toNamed(MyRouters.myOrder);
+                              bottomController.updateIndexValue(2);
+                              Get.back();
                             } else {
                               Get.to(() => LoginScreen());
                             }
@@ -186,7 +188,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             FirebaseAuth _auth = FirebaseAuth.instance;
                             User? user = _auth.currentUser;
                             if (user != null) {
-                              Get.toNamed(MyRouters.profileScreen);
+                              bottomController.updateIndexValue(3);
+                              Get.back();
                             } else {
                               Get.to(() => LoginScreen());
                             }
@@ -482,7 +485,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                     ),
                   ),
                 ],
-              ),
+              ).appPaddingForScreen,
             ],
           ),
         ),
