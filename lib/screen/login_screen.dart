@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print(result.docs.first.data());
       Map kk = result.docs.first.data() as Map;
       print(kk["email"]);
-      if(kk["deactivate"] == false){
+      if (kk["deactivate"] == false) {
         myauth.setConfig(
             appEmail: "contact@hdevcoder.com",
             appName: "Email OTP",
@@ -87,12 +87,10 @@ class _LoginScreenState extends State<LoginScreen> {
           showOtpField = true;
         });
         return;
-      }
-      else{
+      } else {
         Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
       }
-    }
-    else {
+    } else {
       Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
     }
   }

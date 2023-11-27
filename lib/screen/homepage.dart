@@ -793,7 +793,7 @@ class _HomePageState extends State<HomePage> {
                   height: 10,
                 ),
                 Text(
-                  '  Popular restaurants in Madrid',
+                  '  Popular restaurants',
                   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                 ),
                 const SizedBox(

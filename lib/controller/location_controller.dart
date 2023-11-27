@@ -34,7 +34,6 @@ class LocationController extends GetxController {
       }
 
       if (haspermission.value) {
-        currentPosition ??= Geolocator.getPositionStream().listen((event) { });
        await getLocation();
       }
     } else {

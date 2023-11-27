@@ -384,7 +384,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                     borderRadius: BorderRadius.circular(100),
                     child: CachedNetworkImage(
                       fit: BoxFit.cover,
-                      imageUrl: profileData.profile_image.toString(),
+                      imageUrl: profileController.profileData!.profile_image.toString(),
                       errorWidget: (_, __, ___) => const Icon(Icons.person),
                       placeholder: (_, __) => const SizedBox(),
                     ),

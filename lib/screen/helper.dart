@@ -6,8 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-
 import '../widget/apptheme.dart';
 
 class Helper {
@@ -23,6 +21,7 @@ class Helper {
       throw Exception(e);
     }
   }
+
 
   static OverlayEntry overlayLoader(context) {
     OverlayEntry loader = OverlayEntry(builder: (context) {
