@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/controller/location_controller.dart';
 import '../../model/add_address_modal.dart';
 import '../login_screen.dart';
 import '../myAddressList.dart';
@@ -16,6 +17,13 @@ class AddressWidget extends StatefulWidget {
 }
 
 class _AddressWidgetState extends State<AddressWidget> {
+
+  final locationController = Get.put(LocationController());
+  @override
+  void initState() {
+    super.initState();
+    locationController.checkGps(context);
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -77,7 +85,55 @@ class _AddressWidgetState extends State<AddressWidget> {
               ],
             );
           }
-          return Text("Not available");
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                  onTap: () {
+                    FirebaseAuth _auth = FirebaseAuth.instance;
+                    User? user = _auth.currentUser;
+                    if (user != null) {
+                      Get.to(() => MyAddressList(
+                        addressChanged: (AddressModel address) {},
+                      ));
+                    } else {
+                      Get.to(() => LoginScreen());
+                    }
+                  },
+                  behavior: HitTestBehavior.translucent,
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        'assets/icons/location.png',
+                        height: 15,
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          'Home',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Image.asset(
+                        'assets/icons/dropdown.png',
+                        height: 8,
+                      ),
+                    ],
+                  )),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                locationController.locality.value.toString(),
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF1E2538),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w300,
+                ),
+              )
+            ],
+          );
         },
       ),
     );

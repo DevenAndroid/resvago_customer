@@ -85,6 +85,7 @@ class CommonTextFieldWidget extends StatelessWidget {
             // fontFamily: 'poppins',
             fontWeight: FontWeight.w300,
           ),
+          counterText: "",
           filled: true,
           fillColor: Colors.white.withOpacity(.10),
           contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),

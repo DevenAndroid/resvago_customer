@@ -1,10 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -33,7 +35,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ProfileData profileData = ProfileData();
   String code = "+91";
   File categoryFile = File("");
-
+  Uint8List? pickedFile;
+  String fileUrl = "";
   void fetchdata() {
     FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
@@ -45,6 +48,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         firstNameController.text = (profileData.userName ?? "").toString();
         lastNameController.text = (profileData.userName ?? "").toString();
         emailController.text = (profileData.email ?? "").toString();
+        if (!kIsWeb) {
+          categoryFile = File(profileData.profile_image ?? "");
+        } else {
+          fileUrl = profileData.profile_image ?? "";
+        }
         apiLoaded = true;
         setState(() {});
       }
@@ -54,21 +62,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> updateProfileToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    String imageUrlProfile = categoryFile.path;
-    if (!categoryFile.path.contains("http")) {
-      UploadTask uploadTask = FirebaseStorage.instance
-          .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
-          .child("profile_image")
-          .putFile(categoryFile);
-      TaskSnapshot snapshot = await uploadTask;
-      imageUrlProfile = await snapshot.ref.getDownloadURL();
+    String? imageUrl;
+    if (kIsWeb) {
+      if (pickedFile != null) {
+        UploadTask uploadTask = FirebaseStorage.instance.ref("profile_image}").child("image").putData(pickedFile!);
+        TaskSnapshot snapshot = await uploadTask;
+        imageUrl = await snapshot.ref.getDownloadURL();
+      } else {
+        imageUrl = fileUrl;
+      }
+    } else {
+      if (!categoryFile.path.contains("https")) {
+        Reference gg = FirebaseStorage.instance.refFromURL(profileData.profile_image.toString());
+        await gg.delete();
+        UploadTask uploadTask = FirebaseStorage.instance
+            .ref("profile_image")
+            .child(DateTime.now().millisecondsSinceEpoch.toString())
+            .putFile(categoryFile);
+        TaskSnapshot snapshot = await uploadTask;
+        imageUrl = await snapshot.ref.getDownloadURL();
+      }
     }
     try {
       await FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).update({
         "userName": firstNameController.text.trim(),
         "email": emailController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
-        "profile_image": imageUrlProfile,
+        "profile_image": imageUrl,
         "deactivate": false,
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       log("profile data" + profileData.mobileNumber.toString());
@@ -81,7 +101,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Helper.hideLoader(loader);
     }
   }
-
   @override
   void initState() {
     // TODO: implement initState
@@ -116,14 +135,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Stack(
                             children: [
                               Container(
-                                  padding: EdgeInsets.only(
-                                    bottom: 30,
-                                  ),
+                                  width: kIsWeb ? 500 : size.width,
+                                  padding: const EdgeInsets.only(bottom: 30),
                                   clipBehavior: Clip.antiAlias,
                                   decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-                                  child: Image.asset(
-                                    'assets/images/profilebg.png',
-                                  )),
+                                  child: Image.asset('assets/images/profilebg.png')),
                               Positioned(
                                 top: 90,
                                 left: 0,
@@ -131,78 +147,160 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10000),
-                                      child: Container(
-                                          height: 100,
-                                          width: 100,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffFAAF40),
-                                            border: Border.all(color: const Color(0xff3B5998), width: 6),
-                                            borderRadius: BorderRadius.circular(5000),
-                                            // color: Colors.brown
-                                          ),
-                                          child: categoryFile.path.contains("http") || categoryFile.path.isEmpty
-                                              ? Image.network(
-                                                  categoryFile.path,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                    fit: BoxFit.cover,
-                                                    imageUrl: categoryFile.path,
-                                                    height: AddSize.size30,
-                                                    width: AddSize.size30,
-                                                    errorWidget: (_, __, ___) => const Icon(
-                                                      Icons.person,
-                                                      size: 60,
+                                    SizedBox(
+                                      height: 100,
+                                      width: 100,
+                                      child: kIsWeb
+                                          ? Stack(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10000),
+                                                  child: Container(
+                                                      height: 100,
+                                                      width: 100,
+                                                      clipBehavior: Clip.antiAlias,
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(0xffFAAF40),
+                                                        border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                                        borderRadius: BorderRadius.circular(5000),
+                                                        // color: Colors.brown
+                                                      ),
+                                                      child: pickedFile != null
+                                                          ? Image.memory(
+                                                              pickedFile!,
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                                fit: BoxFit.cover,
+                                                                imageUrl: categoryFile.path,
+                                                                height: AddSize.size30,
+                                                                width: AddSize.size30,
+                                                                errorWidget: (_, __, ___) => const Icon(
+                                                                  Icons.person,
+                                                                  size: 60,
+                                                                ),
+                                                                placeholder: (_, __) => const SizedBox(),
+                                                              ),
+                                                            )
+                                                          : Image.network(
+                                                              fileUrl,
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                                fit: BoxFit.cover,
+                                                                imageUrl: categoryFile.path,
+                                                                height: AddSize.size30,
+                                                                width: AddSize.size30,
+                                                                errorWidget: (_, __, ___) => const Icon(
+                                                                  Icons.person,
+                                                                  size: 60,
+                                                                ),
+                                                                placeholder: (_, __) => const SizedBox(),
+                                                              ),
+                                                            )),
+                                                ),
+                                                Positioned(
+                                                  bottom: 0,
+                                                  right: 0,
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Helper.addFilePicker().then((value) {
+                                                        pickedFile = value;
+                                                        print(pickedFile);
+                                                        setState(() {});
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      clipBehavior: Clip.antiAlias,
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(0xff04666E),
+                                                        borderRadius: BorderRadius.circular(50),
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.camera_alt,
+                                                        color: Colors.white,
+                                                        size: 15,
+                                                      ),
                                                     ),
-                                                    placeholder: (_, __) => const SizedBox(),
                                                   ),
                                                 )
-                                              : Image.memory(
-                                                  categoryFile.readAsBytesSync(),
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                    fit: BoxFit.cover,
-                                                    imageUrl: categoryFile.path,
-                                                    height: AddSize.size30,
-                                                    width: AddSize.size30,
-                                                    errorWidget: (_, __, ___) => const Icon(
-                                                      Icons.person,
-                                                      size: 60,
+                                              ],
+                                            )
+                                          : Stack(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10000),
+                                                  child: Container(
+                                                      height: 100,
+                                                      width: 100,
+                                                      clipBehavior: Clip.antiAlias,
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(0xffFAAF40),
+                                                        border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                                        borderRadius: BorderRadius.circular(5000),
+                                                        // color: Colors.brown
+                                                      ),
+                                                      child: categoryFile.path.contains("http") || categoryFile.path.isEmpty
+                                                          ? Image.network(
+                                                              categoryFile.path,
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                                fit: BoxFit.cover,
+                                                                imageUrl: categoryFile.path,
+                                                                height: AddSize.size30,
+                                                                width: AddSize.size30,
+                                                                errorWidget: (_, __, ___) => const Icon(
+                                                                  Icons.person,
+                                                                  size: 60,
+                                                                ),
+                                                                placeholder: (_, __) => const SizedBox(),
+                                                              ),
+                                                            )
+                                                          : Image.memory(
+                                                              categoryFile.readAsBytesSync(),
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                                fit: BoxFit.cover,
+                                                                imageUrl: categoryFile.path,
+                                                                height: AddSize.size30,
+                                                                width: AddSize.size30,
+                                                                errorWidget: (_, __, ___) => const Icon(
+                                                                  Icons.person,
+                                                                  size: 60,
+                                                                ),
+                                                                placeholder: (_, __) => const SizedBox(),
+                                                              ),
+                                                            )),
+                                                ),
+                                                Positioned(
+                                                  bottom: 0,
+                                                  right: 0,
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      showActionSheet(context);
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      clipBehavior: Clip.antiAlias,
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(0xff04666E),
+                                                        borderRadius: BorderRadius.circular(50),
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.camera_alt,
+                                                        color: Colors.white,
+                                                        size: 15,
+                                                      ),
                                                     ),
-                                                    placeholder: (_, __) => const SizedBox(),
                                                   ),
-                                                )),
+                                                )
+                                              ],
+                                            ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Positioned(
-                                top: 150,
-                                left: 210,
-                                right: 120,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    showActionSheet(context);
-                                  },
-                                  behavior: HitTestBehavior.translucent,
-                                  child: Container(
-                                    height: 30,
-                                    width: 30,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff04666E),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: const Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
-                                      size: 15,
-                                    ),
-                                  ),
-                                ),
-                              )
                             ],
                           ),
                           Align(

@@ -5,15 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:flutter/foundation.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if(kIsWeb){
+  if (kIsWeb) {
     await Firebase.initializeApp(
       options: FirebaseOptions(
         apiKey: "AIzaSyBCol-O-qoqmOCLI_aRN0PeJ5KPvGPVQB8",
         projectId: "resvago-b7bd4",
         messagingSenderId: "671324938172",
         appId: "1:671324938172:web:d017a2cf72416c24aed5b9",
+        storageBucket: "resvago-b7bd4.appspot.com",
       ),
     );
   }
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
+          focusColor: kIsWeb ? Colors.transparent : null,
+          hoverColor: kIsWeb ? Colors.transparent : null,
           scaffoldBackgroundColor: const Color(0xffF6F6F6)),
       debugShowCheckedModeBanner: false,
       initialRoute: "/",

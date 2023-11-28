@@ -42,6 +42,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
   getMenuList() {
     FirebaseFirestore.instance
         .collection("vendor_menu")
+        .where("bookingForDining", isEqualTo: true)
         .where("vendorId", isEqualTo: widget.restaurantItem!.userID)
         .get()
         .then((value) {

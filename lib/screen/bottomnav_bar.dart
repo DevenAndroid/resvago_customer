@@ -16,6 +16,7 @@ import 'package:resvago_customer/screen/wishlist_screen.dart';
 
 import '../controller/bottomnavbar_controller.dart';
 
+import '../controller/profile_controller.dart';
 import '../model/profile_model.dart';
 import '../model/resturant_model.dart';
 import '../routers/routers.dart';
@@ -35,7 +36,7 @@ class BottomNavbar extends StatefulWidget {
 
 class _BottomNavbarState extends State<BottomNavbar> {
   final bottomController = Get.put(BottomNavBarController());
-
+  final profileController = Get.put(ProfileController());
   final pages = [
     const HomePage(),
     const DeliveryPage(),
@@ -81,7 +82,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
   void initState() {
     super.initState();
     // updateFCMToken();
-    getProfileData();
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    if (user != null) {
+      getProfileData();
+      profileController.getProfileData();
+    }
   }
    RestaurantModel? restaurantModel;
   @override
@@ -126,12 +132,15 @@ class _BottomNavbarState extends State<BottomNavbar> {
                                     BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(100),
-                                  child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl: profileData.profile_image.toString(),
-                                    errorWidget: (_, __, ___) => const Icon(Icons.person),
-                                    placeholder: (_, __) => const SizedBox(),
-                                  ),
+                                  child: Obx(() {
+                                    if (profileController.refreshInt.value > 0) {}
+                                    return CachedNetworkImage(
+                                      fit: BoxFit.cover,
+                                      imageUrl: profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
+                                      errorWidget: (_, __, ___) => const Icon(Icons.person),
+                                      placeholder: (_, __) => const SizedBox(),
+                                    );
+                                  }),
                                 ),
                               ),
                             ),

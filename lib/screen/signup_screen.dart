@@ -48,9 +48,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               email: emailController.text.trim(),
               mobileNumber: code + phoneNumberController.text.trim(),
               password: "123456")
-          .then((value) {
+          .then((value) async {
         Helper.hideLoader(loader);
+        await FirebaseAuth.instance.signOut();
         Get.toNamed(MyRouters.loginScreen);
+      }).catchError((e) async {
+        await FirebaseAuth.instance.signOut();
       });
     }
   }

@@ -34,7 +34,7 @@ class ProfileController extends GetxController {
     if (FirebaseAuth.instance.currentUser == null) {
       cancelStream();
     }
-    profileStream ??= FirebaseFirestore.instance
+    profileStream = FirebaseFirestore.instance
         .collection("customer_users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .snapshots()

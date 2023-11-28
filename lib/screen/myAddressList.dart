@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -56,7 +58,7 @@ class _MyAddressListState extends State<MyAddressList> {
         ),
       ),
       body: SizedBox(
-        width:  Get.width,
+        width: Get.width,
         child: StreamBuilder<List<AddressModel>>(
           stream: getPagesStream(),
           builder: (BuildContext context, AsyncSnapshot<List<AddressModel>> snapshot) {
@@ -65,6 +67,7 @@ class _MyAddressListState extends State<MyAddressList> {
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              log("fdgdfh" + snapshot.data.toString());
               return const Center(child: Text("No Address Found"));
             } else {
               List<AddressModel>? pages = snapshot.data;
@@ -76,6 +79,7 @@ class _MyAddressListState extends State<MyAddressList> {
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         final item = filteredPages[index];
+                        log("fdgdfh" + item.toString());
                         return InkWell(
                           onTap: () {
                             if (widget.addressChanged != null) {
@@ -131,7 +135,7 @@ class _MyAddressListState extends State<MyAddressList> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         PopupMenuButton<int>(
-                                          surfaceTintColor: Colors.white,
+                                            surfaceTintColor: Colors.white,
                                             icon: const Icon(
                                               Icons.more_vert,
                                               color: Colors.black,
@@ -160,51 +164,66 @@ class _MyAddressListState extends State<MyAddressList> {
                                                       context: context,
                                                       builder: (ctx) => AlertDialog(
                                                         title: const Text("Delete Address"),
-                                                        content: const Text("Are you sure you want to delete this Address"),
-                                                        actions: <Widget>[
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(ctx).pop();
-                                                            },
-                                                            child: Container(
-                                                              decoration: BoxDecoration(
-                                                                  color: Colors.red, borderRadius: BorderRadius.circular(11)),
-                                                              width: 100,
-                                                              padding: const EdgeInsets.all(14),
-                                                              child: const Center(
-                                                                  child: Text(
-                                                                "Cancel",
-                                                                style: TextStyle(color: Colors.white),
-                                                              )),
-                                                            ),
+                                                        content: Container(
+                                                          height: MediaQuery.sizeOf(context).height*.20,
+                                                          child: Column(
+                                                            children: [
+                                                              const Text("Are you sure you want to delete this Address"),
+                                                              SizedBox(height: 20,),
+                                                              Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: TextButton(
+                                                                      onPressed: () {
+                                                                        Navigator.of(ctx).pop();
+                                                                      },
+                                                                      child: Container(
+                                                                        decoration: BoxDecoration(
+                                                                            color: Colors.red,
+                                                                            borderRadius: BorderRadius.circular(11)),
+                                                                        width: 100,
+                                                                        padding: const EdgeInsets.all(14),
+                                                                        child: const Center(
+                                                                            child: Text(
+                                                                          "Cancel",
+                                                                          style: TextStyle(color: Colors.white),
+                                                                        )),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: TextButton(
+                                                                      onPressed: () {
+                                                                        FirebaseFirestore.instance
+                                                                            .collection('Address')
+                                                                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                                                                            .collection('TotalAddress')
+                                                                            .doc(item.docid)
+                                                                            .delete()
+                                                                            .then((value) {
+                                                                          setState(() {});
+                                                                        });
+                                                                        Navigator.of(ctx).pop();
+                                                                      },
+                                                                      child: Container(
+                                                                        decoration: BoxDecoration(
+                                                                            color: Colors.green,
+                                                                            borderRadius: BorderRadius.circular(11)),
+                                                                        width: 100,
+                                                                        padding: const EdgeInsets.all(14),
+                                                                        child: const Center(
+                                                                            child: Text(
+                                                                          "okay",
+                                                                          style: TextStyle(color: Colors.white),
+                                                                        )),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            ],
                                                           ),
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              FirebaseFirestore.instance
-                                                                  .collection('Address')
-                                                                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                                                                  .collection('TotalAddress')
-                                                                  .doc(item.docid)
-                                                                  .delete()
-                                                                  .then((value) {
-                                                                setState(() {});
-                                                              });
-                                                              Navigator.of(ctx).pop();
-                                                            },
-                                                            child: Container(
-                                                              decoration: BoxDecoration(
-                                                                  color: Colors.green,
-                                                                  borderRadius: BorderRadius.circular(11)),
-                                                              width: 100,
-                                                              padding: const EdgeInsets.all(14),
-                                                              child: const Center(
-                                                                  child: Text(
-                                                                "okay",
-                                                                style: TextStyle(color: Colors.white),
-                                                              )),
-                                                            ),
-                                                          ),
-                                                        ],
+                                                        ),
                                                       ),
                                                     );
                                                   },

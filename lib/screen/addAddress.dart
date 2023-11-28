@@ -88,7 +88,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
       _getAddressFromLatLng(_currentPosition!);
       mapController!.animateCamera(CameraUpdate.newCameraPosition(
           CameraPosition(target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude), zoom: 15)));
-      _onAddMarkerButtonPressed(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), "current location");
+      // _onAddMarkerButtonPressed(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), "current location");
       setState(() {});
       // location = _currentAddress!;
     }).catchError((e) {
@@ -307,23 +307,23 @@ class _ChooseAddressState extends State<ChooseAddress> {
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
-  Future<void> _onAddMarkerButtonPressed(LatLng lastMapPosition, markerTitle, {allowZoomIn = true}) async {
-    final Uint8List markerIcon = await getBytesFromAsset(location, 100);
-    markers.clear();
-    markers.add(Marker(
-        markerId: MarkerId(lastMapPosition.toString()),
-        position: lastMapPosition,
-        infoWindow: const InfoWindow(
-          title: "",
-        ),
-        icon: BitmapDescriptor.fromBytes(markerIcon)));
-    // BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan,)));
-    if (googleMapController.isCompleted) {
-      mapController!
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: lastMapPosition, zoom: allowZoomIn ? 14 : 11)));
-    }
-    setState(() {});
-  }
+  // Future<void> _onAddMarkerButtonPressed(LatLng lastMapPosition, markerTitle, {allowZoomIn = true}) async {
+  //   final Uint8List markerIcon = await getBytesFromAsset(location, 100);
+  //   markers.clear();
+  //   markers.add(Marker(
+  //       markerId: MarkerId(lastMapPosition.toString()),
+  //       position: lastMapPosition,
+  //       infoWindow: const InfoWindow(
+  //         title: "",
+  //       ),
+  //       icon: BitmapDescriptor.fromBytes(markerIcon)));
+  //   // BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan,)));
+  //   if (googleMapController.isCompleted) {
+  //     mapController!
+  //         .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: lastMapPosition, zoom: allowZoomIn ? 14 : 11)));
+  //   }
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -354,8 +354,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
                   ),
                   mapType: MapType.normal,
                   onMapCreated: (controller) {
+                    mapController = controller;
                     setState(() async {
-                      mapController = controller;
                     });
                   },
                   markers: markers,

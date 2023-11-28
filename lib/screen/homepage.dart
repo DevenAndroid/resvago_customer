@@ -317,7 +317,8 @@ class _HomePageState extends State<HomePage> {
                       if (profileController.refreshInt.value > 0) {}
                       return CachedNetworkImage(
                         fit: BoxFit.cover,
-                        imageUrl: profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
+                        imageUrl:
+                            profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
                         errorWidget: (_, __, ___) => const Icon(Icons.person),
                         placeholder: (_, __) => const SizedBox(),
                       );

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,19 @@ class Helper {
     }
   }
 
+  static Future addFilePicker() async {
+    try {
+      final item = await FilePicker.platform.pickFiles(type: FileType.custom,allowedExtensions: ['jpg','png','jpeg'],);
+      if (item == null) {
+        return null;
+      } else {
+        print(item.files.first.bytes!);
+        return kIsWeb ? item.files.first.bytes! : File(item.files.first.path!);
+      }
+    } on PlatformException catch (e) {
+      throw Exception(e);
+    }
+  }
 
   static OverlayEntry overlayLoader(context) {
     OverlayEntry loader = OverlayEntry(builder: (context) {

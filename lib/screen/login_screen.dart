@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,6 +15,8 @@ import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
 import 'bottomnav_bar.dart';
 import 'helper.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 enum LoginOption { Mobile, EmailPassword }
 
@@ -41,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Fluttertoast.showToast(msg: 'Please enter phone number');
       return;
     }
-    log(code + loginController.mobileController.text.trim());
+    print(code + loginController.mobileController.text.trim());
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('customer_users')
         .where('mobileNumber', isEqualTo: code + loginController.mobileController.text.trim())
@@ -68,6 +71,9 @@ class _LoginScreenState extends State<LoginScreen> {
       Map kk = result.docs.first.data() as Map;
       print(kk["email"]);
       if (kk["deactivate"] == false) {
+        // sendEmailWithOTP(emailController.text.trim()).then((value) {
+        //   print(generateRandomPassword());
+        // });
         myauth.setConfig(
             appEmail: "contact@hdevcoder.com",
             appName: "Email OTP",
@@ -105,14 +111,14 @@ class _LoginScreenState extends State<LoginScreen> {
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {
-          log("Verification Failed: $credential");
+          print("Verification Failed: $credential");
         },
         verificationFailed: (FirebaseAuthException e) {
-          log("Verification Failed: $e");
+          print("Verification Failed: $e");
         },
         codeSent: (String verificationId, [int? resendToken]) {
           // Update the parameter to accept nullable int
-          log("Code Sent: $verificationId");
+          print("Code Sent: $verificationId");
           this.verificationId = verificationId;
           Get.to(() => OtpScreen(
                 verificationId: verificationId,
@@ -121,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ));
         },
         codeAutoRetrievalTimeout: (String verificationId) {
-          log("Auto Retrieval Timeout: $verificationId");
+          print("Auto Retrieval Timeout: $verificationId");
         },
       );
       Helper.hideLoader(loader);
@@ -129,6 +135,28 @@ class _LoginScreenState extends State<LoginScreen> {
       Helper.hideLoader(loader);
     }
   }
+
+  // Future<void> sendEmailWithOTP(String email) async {
+  //   final FirebaseAuth _auth = FirebaseAuth.instance;
+  //   final smtpServer = gmail('deveneoxys@gmail.com', 'mjbq fbja ywpu nnys');
+  //   final message = Message()
+  //     ..from = Address('deveneoxys@gmail.com', 'Deven')
+  //     ..recipients.add("anjalikumari5845@gmail.com")
+  //     ..subject = 'OTP for Your App'
+  //     ..text = generateRandomPassword(); // You can customize the OTP generation logic
+  //
+  //   try {
+  //     await send(message, smtpServer);
+  //     print('Otp sent successfully');
+  //   } catch (e) {
+  //     print('Error sending email: $e');
+  //   }
+  // }
+
+  // String generateRandomPassword() {
+  //   final random = Random();
+  //   return List.generate(6, (index) => random.nextInt(9).toString()).join();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -256,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onCountryChanged: (phone) {
                                 setState(() {
                                   code = "+${phone.dialCode}";
-                                  log(code.toString());
+                                  print(code.toString());
                                 });
                               },
                               initialCountryCode: 'IE',

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -481,10 +482,10 @@ class _MyOrderState extends State<MyOrder> {
                                                     child: ElevatedButton(
                                                       onPressed: () {
                                                         Get.to(() => OderDetailsScreen(
-                                                          orderType: 'Delivery',
-                                                          orderId: orderItem.orderId,
-                                                          data: '',
-                                                        ));
+                                                              orderType: 'Delivery',
+                                                              orderId: orderItem.orderId,
+                                                              data: '',
+                                                            ));
                                                       },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: AppTheme.primaryColor,
@@ -518,7 +519,8 @@ class _MyOrderState extends State<MyOrder> {
                                         // mainAxisAlignment: MainAxisAlignment.start,
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Image.asset(AppAssets.orderEmpty),
+                                          Image.asset(AppAssets.orderEmpty,
+                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
                                           Text(
                                             'Empty',
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
@@ -800,7 +802,8 @@ class _MyOrderState extends State<MyOrder> {
                                         // mainAxisAlignment: MainAxisAlignment.start,
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Image.asset(AppAssets.orderEmpty),
+                                          Image.asset(AppAssets.orderEmpty,
+                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
                                           Text(
                                             'Empty',
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
@@ -1000,7 +1003,8 @@ class _MyOrderState extends State<MyOrder> {
                                         // mainAxisAlignment: MainAxisAlignment.start,
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Image.asset(AppAssets.orderEmpty),
+                                          Image.asset(AppAssets.orderEmpty,
+                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
                                           Text(
                                             'Empty',
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
@@ -1025,7 +1029,7 @@ class _MyOrderState extends State<MyOrder> {
                         return const SizedBox.shrink();
                       },
                     ),
-                  ])
+                  ]).appPaddingForScreen
                 : TabBarView(children: [
                     StreamBuilder<List<MyDiningOrderModel>>(
                       stream: getActiveDiningOrder(),
@@ -1275,7 +1279,8 @@ class _MyOrderState extends State<MyOrder> {
                                         // mainAxisAlignment: MainAxisAlignment.start,
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Image.asset(AppAssets.orderEmpty),
+                                          Image.asset(AppAssets.orderEmpty,
+                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
                                           Text(
                                             'Empty',
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
@@ -1597,7 +1602,8 @@ class _MyOrderState extends State<MyOrder> {
                                         // mainAxisAlignment: MainAxisAlignment.start,
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Image.asset(AppAssets.orderEmpty),
+                                          Image.asset(AppAssets.orderEmpty,
+                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
                                           Text(
                                             'Empty',
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
@@ -1839,7 +1845,8 @@ class _MyOrderState extends State<MyOrder> {
                                         // mainAxisAlignment: MainAxisAlignment.start,
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Image.asset(AppAssets.orderEmpty),
+                                          Image.asset(AppAssets.orderEmpty,
+                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
                                           Text(
                                             'Empty',
                                             style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
@@ -1864,6 +1871,6 @@ class _MyOrderState extends State<MyOrder> {
                         return const SizedBox.shrink();
                       },
                     ),
-                  ])));
+                  ]).appPaddingForScreen));
   }
 }
