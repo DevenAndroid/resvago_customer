@@ -257,9 +257,10 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                   Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Container(
-                          padding: const EdgeInsets.all(14),
+                          padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(
                                 child: Column(
@@ -350,12 +351,9 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 98.0),
-                                child: Image.asset(
-                                  AppAssets.qr,
-                                  height: 80,
-                                ),
+                              Image.asset(
+                                AppAssets.qr,
+                                height: 80,
                               )
                             ],
                           ))),

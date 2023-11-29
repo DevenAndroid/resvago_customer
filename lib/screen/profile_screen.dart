@@ -73,8 +73,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     } else {
       if (!categoryFile.path.contains("https")) {
-        Reference gg = FirebaseStorage.instance.refFromURL(profileData.profile_image.toString());
-        await gg.delete();
+        if (profileData.profile_image.toString().isNotEmpty) {
+          Reference gg = FirebaseStorage.instance.refFromURL(profileData.profile_image.toString());
+          await gg.delete();
+        }
         UploadTask uploadTask = FirebaseStorage.instance
             .ref("profile_image")
             .child(DateTime.now().millisecondsSinceEpoch.toString())
@@ -101,6 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Helper.hideLoader(loader);
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState

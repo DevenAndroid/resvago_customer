@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
-          focusColor: kIsWeb ? Colors.transparent : null,
-          hoverColor: kIsWeb ? Colors.transparent : null,
+          focusColor:  Colors.transparent,
+          hoverColor:  Colors.transparent,
           scaffoldBackgroundColor: const Color(0xffF6F6F6)),
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
@@ -46,3 +46,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+

@@ -7,6 +7,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/model/profile_model.dart';
@@ -36,11 +37,30 @@ class _CartScreenState extends State<CartScreen> {
   final bottomController = Get.put(BottomNavBarController());
 
   CheckOutModel cartModel = CheckOutModel();
-
+  List<Map<String, dynamic>> extractedData = [];
   getCheckOutData() {
+    extractedData.clear();
     FirebaseFirestore.instance.collection("checkOut").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       log("checkOut${jsonEncode(value.data())}");
       cartModel = CheckOutModel.fromJson(value.data() ?? {});
+      log(cartModel.menuList!.map((e) => e.toJson()).toList().toString());
+      extractedData = cartModel.menuList!.map((e) => e.toJson()).toList().map((item) {
+        return {
+          "name": item["dishName"],
+          "quantity": item["qty"],
+          "price": double.parse(item["price"]).toStringAsFixed(2).toString(),
+          "currency": "USD"
+        };
+      }).toList();
+      if (couponData != null) {
+        extractedData.add({
+          "name": "discount",
+          "quantity": "1",
+          "price": (-math.min(discountAmount, couponData!.maximumDiscountAmount)).toStringAsFixed(2),
+          "currency": "USD"
+        });
+      }
+      log(extractedData.toString());
       setState(() {});
     });
   }
@@ -375,6 +395,7 @@ class _CartScreenState extends State<CartScreen> {
                           id: cartModel.vendorId,
                           couponData: (CouponData coupon) {
                             couponData = coupon;
+                            getCheckOutData();
                             setState(() {});
                           },
                         ));
@@ -432,7 +453,7 @@ class _CartScreenState extends State<CartScreen> {
                                       height: 5,
                                     ),
                                     Text(
-                                      'You saved \$$couponDiscount',
+                                      'You saved \$${couponDiscount.toStringAsFixed(2)}',
                                       style: GoogleFonts.poppins(fontSize: 12, color: AppTheme.primaryColor),
                                     ),
                                     const SizedBox(
@@ -532,11 +553,11 @@ class _CartScreenState extends State<CartScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Save Coupon Code',
+                          'Save Coupon',
                           style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                         ),
                         Text(
-                          "\$$couponDiscount",
+                          "\$${couponDiscount.toStringAsFixed(2)}",
                           style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
                         ),
                       ],
@@ -671,7 +692,7 @@ class _CartScreenState extends State<CartScreen> {
                                   width: 18,
                                 ),
                                 Text(
-                                  'PayPay',
+                                  'PayPal',
                                   style: GoogleFonts.poppins(
                                       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
                                 ),
@@ -695,13 +716,96 @@ class _CartScreenState extends State<CartScreen> {
                           if (addressData == null) {
                             showToast("Please choose address");
                           } else {
-                            order(cartModel.vendorId).then((value) {
-                              FirebaseFirestore.instance
-                                  .collection("checkOut")
-                                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                                  .delete();
-                              Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
-                            });
+                            print([
+                              {
+                                "amount": {
+                                  "total": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                  "currency": "USD",
+                                  "details": {
+                                    "subtotal": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                    "shipping": '0',
+                                    "shipping_discount": 0
+                                  }
+                                },
+                                "description": "The payment transaction description.",
+                                // "payment_options": {
+                                //   "allowed_payment_method":
+                                //       "INSTANT_FUNDING_SOURCE"
+                                // },
+                                "item_list": {
+                                  "items": extractedData,
+                                  // shipping address is not required though
+                                  // "shipping_address": {
+                                  //   "recipient_name": "Jane Foster",
+                                  //   "line1": "Travis County",
+                                  //   "line2": "",
+                                  //   "city": "Austin",
+                                  //   "country_code": "US",sqxc3v4bgy5un6mi7,o8.p[/j vm],nl̥ō'{}|9+
+                                  //   "phone": "+00000000",
+                                  //   "state": "Texas"
+                                  // },
+                                }
+                              }
+                            ]);
+                            // return;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => UsePaypal(
+                                    sandboxMode: true,
+                                    clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
+                                    secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
+                                    returnURL: "https://samplesite.com/return",
+                                    cancelURL: "https://samplesite.com/cancel",
+                                    transactions: [
+                                      {
+                                        "amount": {
+                                          "total": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                          "currency": "USD",
+                                          "details": {
+                                            "subtotal": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                            "shipping": '0',
+                                            "shipping_discount": 0
+                                          }
+                                        },
+                                        "description": "The payment transaction description.",
+                                        // "payment_options": {
+                                        //   "allowed_payment_method":
+                                        //       "INSTANT_FUNDING_SOURCE"
+                                        // },
+                                        "item_list": {
+                                          "items": extractedData,
+                                          // shipping address is not required though
+                                          "shipping_address": {
+                                            "recipient_name": "Jane Foster",
+                                            "line1": "aaa",
+                                            "line2": "aaa",
+                                            "city": addressData!.streetAddress.toString(),
+                                            "country_code": "IN",
+                                            "phone": "+91",
+                                            "state": addressData!.streetAddress.toString(),
+                                          },
+                                        }
+                                      }
+                                    ],
+                                    note: "Contact us for any questions on your order.",
+                                    onSuccess: (Map params) async {
+                                      print("onSuccess: ${params}");
+                                      order(cartModel.vendorId).then((value) {
+                                        FirebaseFirestore.instance
+                                            .collection("checkOut")
+                                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                                            .delete();
+                                        Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
+                                      });
+                                    },
+                                    onError: (error) {
+                                      print("onError: $error");
+                                    },
+                                    onCancel: (params) {
+                                      print('cancelled: $params');
+                                    }),
+                              ),
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(

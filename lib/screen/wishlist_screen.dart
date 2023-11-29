@@ -1,12 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geoflutterfire2/geoflutterfire2.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -20,7 +16,6 @@ import '../controller/wishlist_controller.dart';
 import '../model/resturant_model.dart';
 import '../widget/like_button.dart';
 import '../widget/restaurant_timing.dart';
-import 'package:rxdart/rxdart.dart';
 
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
@@ -176,7 +171,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                     );
                   })
               : Center(
-                  child: Text("Data not available"),
+                  child: Text("Wishlist is Empty"),
                 );
         }));
 

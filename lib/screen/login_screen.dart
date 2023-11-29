@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,8 +13,6 @@ import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
 import 'bottomnav_bar.dart';
 import 'helper.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
 
 enum LoginOption { Mobile, EmailPassword }
 
@@ -103,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   login(String email) async {
     await FirebaseAuth.instance.signOut();
-    await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: "123456");
+    // await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: "123456");
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
@@ -423,7 +419,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           password: "123456",
                                         )
                                             .then((value) {
-                                          Get.offAll(() => BottomNavbar());
+                                          Get.offAllNamed(MyRouters.bottomNavbar);
                                         });
                                       } else {
                                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

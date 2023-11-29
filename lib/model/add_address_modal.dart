@@ -19,7 +19,7 @@ class AddressModel {
   });
 
   Map<String, dynamic> toMap() {
-    return {
+    var o =  {
       "name": name,
       "streetAddress": streetAddress,
       "flatAddress": flatAddress,
@@ -28,6 +28,8 @@ class AddressModel {
       "time": time,
       "userID": userID,
     };
+    o.removeWhere((key, value) => value == null);
+    return o;
   }
 
   factory AddressModel.fromMap(Map<String, dynamic> map, String menuId) {

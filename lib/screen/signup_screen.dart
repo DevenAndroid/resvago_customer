@@ -50,10 +50,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               password: "123456")
           .then((value) async {
         Helper.hideLoader(loader);
-        await FirebaseAuth.instance.signOut();
+        // await FirebaseAuth.instance.signOut();
         Get.toNamed(MyRouters.loginScreen);
-      }).catchError((e) async {
-        await FirebaseAuth.instance.signOut();
       });
     }
   }

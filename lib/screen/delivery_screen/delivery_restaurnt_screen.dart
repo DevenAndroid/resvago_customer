@@ -1,13 +1,11 @@
-import 'dart:developer';
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,7 +15,6 @@ import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/delivery_screen/single_store_delivery_screen.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
-import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
 import '../../controller/bottomnavbar_controller.dart';
 import '../../controller/location_controller.dart';
@@ -26,21 +23,18 @@ import '../../controller/wishlist_controller.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/add_address_modal.dart';
 import '../../model/category_model.dart';
-import '../../model/checkout_model.dart';
 import '../../model/profile_model.dart';
-import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../widget/custom_textfield.dart';
 import '../../widget/restaurant_timing.dart';
-import '../bottomnav_bar.dart';
+import '../allcategory_screen.dart';
 import '../category/resturant_by_category.dart';
 import '../login_screen.dart';
 import '../myAddressList.dart';
 import '../single_store_screens/setting_for_restaurant.dart';
 import '../widgets/address_widget.dart';
 import '../widgets/calculate_distance.dart';
-import 'cart screen.dart';
 
 class DeliveryPage extends StatefulWidget {
   const DeliveryPage({super.key});
@@ -61,10 +55,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
     FirebaseFirestore.instance.collection("slider").orderBy('timestamp', descending: isDescendingOrder).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
-        log(gg.toString());
+        print(gg.toString());
         sliderList ??= [];
         sliderList!.add(gg["imageUrl"]);
-        log("dfasghdfhg$sliderList");
+        print("dfasghdfhg$sliderList");
       }
       setState(() {});
     });
@@ -197,7 +191,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
         var gg = element.data();
         wishList ??= [];
         wishList!.add(WishListModel.fromMap(gg, element.id));
-        log("wishList$wishList");
+        print("wishList$wishList");
       }
       setState(() {});
     });
@@ -385,7 +379,8 @@ class _DeliveryPageState extends State<DeliveryPage> {
                       if (profileController.refreshInt.value > 0) {}
                       return CachedNetworkImage(
                         fit: BoxFit.cover,
-                        imageUrl: profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
+                        imageUrl:
+                            profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
                         errorWidget: (_, __, ___) => const Icon(Icons.person),
                         placeholder: (_, __) => const SizedBox(),
                       );
@@ -548,15 +543,25 @@ class _DeliveryPageState extends State<DeliveryPage> {
                       // control: const SwiperControl(size: 6),
                     ),
                   ),
-                const SizedBox(
-                  height: 10,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          Get.to(()=>AllCategoryScreen());
+                        },
+                        child: Text(
+                          "View All",
+                          style: TextStyle(color: AppTheme.primaryColor),
+                        ))
+                  ],
                 ),
                 if (categoryList != null)
                   SizedBox(
                     height: 100,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: categoryList!.length,
+                      itemCount: min(6, categoryList!.length),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         return InkWell(
@@ -777,7 +782,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                     height: 100,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: categoryList!.length,
+                      itemCount: min(6, categoryList!.length),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         return InkWell(

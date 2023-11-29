@@ -5,17 +5,21 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/widget/apptheme.dart';
 import '../../firebase_service/firebase_service.dart';
+import '../../model/coupon_modal.dart';
 import '../../model/menu_model.dart';
 import '../../model/profile_model.dart';
 import '../../model/resturant_model.dart';
 import '../../widget/common_text_field.dart';
+import '../coupon_list_screen.dart';
 import '../helper.dart';
+import 'dart:math' as math;
 
 class OderScreen extends StatefulWidget {
   OderScreen(
@@ -41,15 +45,15 @@ class OderScreen extends StatefulWidget {
 class _OderScreenState extends State<OderScreen> {
   RestaurantModel? get restaurantData => widget.restaurantItem;
   List<MenuData>? get menuListData => widget.menuList;
-
+  CouponData? couponData;
   var totalPrice = 0.0;
-  getTotalPrice() {
+  double getTotalPrice() {
     totalPrice = 0;
     for (int i = 0; i < menuListData!.length; i++) {
       totalPrice = totalPrice + double.parse(menuListData![i].qty.toString()) * double.parse(menuListData![i].price);
       log(totalPrice.toString());
-      setState(() {});
     }
+    return totalPrice;
   }
 
   FirebaseService firebaseService = FirebaseService();
@@ -62,6 +66,33 @@ class _OderScreenState extends State<OderScreen> {
         setState(() {});
       }
     });
+  }
+
+  List<Map<String, dynamic>> extractedData = [];
+  getCheckOutData() {
+    extractedData.clear();
+    log("rydhfdgh" + menuListData!.where((e) => e.qty > 0).map((e) => e.toMap()).toList().toString());
+    extractedData = menuListData!.where((e) => e.qty > 0).map((e) => e.toMap()).toList().map((item) {
+      return {
+        "name": item["dishName"],
+        "quantity": item["qty"],
+        "price": double.parse(item["price"]).toStringAsFixed(2).toString(),
+        "currency": "USD"
+      };
+    }).toList();
+    if (couponData != null) {
+      extractedData.add({
+        "name": "discount",
+        "quantity": "1",
+        "price": (-math.min(discountAmount, couponData!.maximumDiscountAmount)).toStringAsFixed(2),
+        "currency": "USD"
+      });
+    }
+    // extractedData = menuListData!.where((e) => e.qty > 0).map((e) => e.toMap()).toList().map((item) {
+    //   return {"name": item["dishName"], "quantity": item["qty"], "price": double.parse(item["price"]).toStringAsFixed(2), "currency": "USD"};
+    // }).toList();
+    log("dhfgdhgfh" + extractedData.toString());
+    setState(() {});
   }
 
   Future<int> order(String vendorId) async {
@@ -83,7 +114,7 @@ class _OderScreenState extends State<OderScreen> {
               slot: widget.slot,
               guest: widget.guest,
               date: widget.date,
-              total: totalPrice)
+              total: calculateTotalPrice.toString())
           .then((value) {
         Helper.hideLoader(loader);
         return gg;
@@ -95,11 +126,19 @@ class _OderScreenState extends State<OderScreen> {
     }
   }
 
+  double get discountAmount => totalPrice * couponData!.maximumDiscount;
+
+  double get calculateTotalPrice => getTotalPrice() > 0
+      ? (getTotalPrice() - (couponData == null ? 0 : math.min(discountAmount, couponData!.maximumDiscountAmount)))
+      : 0;
+
+  double get couponDiscount => (couponData == null ? 0 : math.min(discountAmount, couponData!.maximumDiscountAmount));
   @override
   void initState() {
     super.initState();
     getTotalPrice();
     fetchdata();
+    getCheckOutData();
   }
 
   @override
@@ -248,7 +287,7 @@ class _OderScreenState extends State<OderScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Dinner:",
+                                "Slot Time",
                                 style: GoogleFonts.poppins(
                                     fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                               ),
@@ -349,7 +388,7 @@ class _OderScreenState extends State<OderScreen> {
                                                   height: 3,
                                                 ),
                                                 Text(
-                                                  "\$${menuListItem.price ?? ""}",
+                                                  "\$${menuListItem.price}",
                                                   style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF74848C)),
                                                 ),
 
@@ -378,6 +417,7 @@ class _OderScreenState extends State<OderScreen> {
                                                       } else {
                                                         menuListItem.qty--;
                                                         getTotalPrice();
+                                                        getCheckOutData();
                                                       }
                                                       setState(() {});
                                                     },
@@ -412,6 +452,7 @@ class _OderScreenState extends State<OderScreen> {
                                                       onTap: () {
                                                         menuListItem.qty++;
                                                         getTotalPrice();
+                                                        getCheckOutData();
                                                         setState(() {});
                                                       },
                                                       child: const Icon(
@@ -430,45 +471,122 @@ class _OderScreenState extends State<OderScreen> {
                                     );
                                   }),
                             ]))),
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: size.width,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF37C666).withOpacity(0.10),
-                          offset: const Offset(
-                            1,
-                            1,
-                          ),
-                          blurRadius: 20.0,
-                          spreadRadius: 1.0,
+                // Padding(
+                //     padding: const EdgeInsets.all(8.0),
+                //     child: Container(
+                //       width: size.width,
+                //       padding: const EdgeInsets.all(14),
+                //       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
+                //         BoxShadow(
+                //           color: const Color(0xFF37C666).withOpacity(0.10),
+                //           offset: const Offset(
+                //             1,
+                //             1,
+                //           ),
+                //           blurRadius: 20.0,
+                //           spreadRadius: 1.0,
+                //         ),
+                //       ]),
+                //       child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.start,
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           children: [
+                //             Image.asset(
+                //               'assets/icons/discount.png',
+                //               height: 20,
+                //             ),
+                //             const SizedBox(
+                //               width: 13,
+                //             ),
+                //             Text(
+                //               ' Your Offer',
+                //               style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: AppTheme.primaryColor),
+                //             ),
+                //             const Spacer(),
+                //             Text(
+                //               'Applied',
+                //               style:
+                //                   GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: const Color(0xff34AD00)),
+                //             ),
+                //           ]),
+                //     )),
+
+                InkWell(
+                  onTap: () {
+                    Get.to(() => PromoCodeList(
+                          id: restaurantData!.userID,
+                          couponData: (CouponData coupon) {
+                            couponData = coupon;
+                            setState(() {});
+                          },
+                        ));
+                  },
+                  child: Container(
+                    width: size.width,
+                    margin: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF37C666).withOpacity(0.10),
+                        offset: const Offset(
+                          1,
+                          1,
                         ),
-                      ]),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset(
-                              'assets/icons/discount.png',
-                              height: 20,
-                            ),
-                            const SizedBox(
-                              width: 13,
-                            ),
-                            Text(
-                              ' Your Offer',
-                              style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: AppTheme.primaryColor),
-                            ),
-                            const Spacer(),
-                            Text(
-                              'Applied',
-                              style:
-                                  GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: const Color(0xff34AD00)),
-                            ),
-                          ]),
-                    )),
+                        blurRadius: 20.0,
+                        spreadRadius: 1.0,
+                      ),
+                    ]),
+                    child: Column(
+                      children: [
+                        Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Image.asset(
+                            'assets/icons/coupon.png',
+                            height: 20,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Use Coupons',
+                            style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
+                          ),
+                        ]),
+                        if (couponData != null)
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image.asset(
+                                  'assets/icons/verified.png',
+                                  height: 20,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${couponData!.code} Applied Successfully',
+                                      style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538).withOpacity(.8)),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      'You saved \$${couponDiscount.toStringAsFixed(2)}',
+                                      style: GoogleFonts.poppins(fontSize: 12, color: AppTheme.primaryColor),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    )
+                                  ],
+                                ),
+                              ]),
+                      ],
+                    ),
+                  ),
+                ),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -495,18 +613,18 @@ class _OderScreenState extends State<OderScreen> {
                                   GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                             ),
                             const SizedBox(
-                              height: 18,
+                              height: 10,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Booking  Fee',
+                                  ' Subtotal',
                                   style: GoogleFonts.poppins(
                                       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                                 ),
                                 Text(
-                                  '\$10.00',
+                                  '\$${totalPrice.toStringAsFixed(2)}',
                                   style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
                                 ),
                               ],
@@ -518,12 +636,12 @@ class _OderScreenState extends State<OderScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Salad Veggie x 2',
+                                  'Save Coupon',
                                   style: GoogleFonts.poppins(
                                       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                                 ),
                                 Text(
-                                  '\$20.00',
+                                  "\$${couponDiscount.toStringAsFixed(2)}",
                                   style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
                                 ),
                               ],
@@ -540,7 +658,7 @@ class _OderScreenState extends State<OderScreen> {
                                       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                                 ),
                                 Text(
-                                  '\$$totalPrice',
+                                  '\$${calculateTotalPrice.toStringAsFixed(2)}',
                                   style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
                                 ),
                               ],
@@ -666,18 +784,101 @@ class _OderScreenState extends State<OderScreen> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          order(restaurantData!.docid).then((value) {
-                            FirebaseFirestore.instance
-                                .collection("checkOut")
-                                .doc(FirebaseAuth.instance.currentUser!.uid)
-                                .delete();
-                            Get.offAll(ThankuScreen(
-                              date: widget.date.toString(),
-                              guestNo: widget.guest,
-                              orderType: "Dining",
-                              orderId: value.toString(),
-                            ));
-                          });
+                          print([
+                            {
+                              "amount": {
+                                "total": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                "currency": "USD",
+                                "details": {
+                                  "subtotal": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                  "shipping": '0',
+                                  "shipping_discount": 0
+                                }
+                              },
+                              "description": "The payment transaction description.",
+                              // "payment_options": {
+                              //   "allowed_payment_method":
+                              //       "INSTANT_FUNDING_SOURCE"
+                              // },
+                              "item_list": {
+                                "items": extractedData,
+                              },
+                              // shipping address is not required though
+                              // "shipping_address": {
+                              //   "recipient_name": "Jane Foster",
+                              //   "line1": "Travis County",
+                              //   "line2": "",
+                              //   "city": "Austin",
+                              //   "country_code": "US",
+                              //   "phone": "+00000000",
+                              //   "state": "Texas"
+                              // },
+                            }
+                          ]);
+                          // return;
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => UsePaypal(
+                                  sandboxMode: true,
+                                  clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
+                                  secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
+                                  returnURL: "https://samplesite.com/return",
+                                  cancelURL: "https://samplesite.com/cancel",
+                                  transactions: [
+                                    {
+                                      "amount": {
+                                        "total": calculateTotalPrice.toString(),
+                                        "currency": "USD",
+                                        "details": {
+                                          "subtotal": calculateTotalPrice.toString(),
+                                          "shipping": '0',
+                                          "shipping_discount": 0
+                                        }
+                                      },
+                                      "description": "The payment transaction description.",
+                                      // "payment_options": {
+                                      //   "allowed_payment_method":
+                                      //       "INSTANT_FUNDING_SOURCE"
+                                      // },
+                                      "item_list": {
+                                        "items": extractedData,
+                                      },
+                                      // shipping address is not required though
+                                      // "shipping_address": {
+                                      //   "recipient_name": "Jane Foster",
+                                      //   "line1": "Travis County",
+                                      //   "line2": "",
+                                      //   "city": "Austin",
+                                      //   "country_code": "US",
+                                      //   "phone": "+00000000",
+                                      //   "state": "Texas"
+                                      // },
+                                    }
+                                  ],
+                                  note: "Contact us for any questions on your order.",
+                                  onSuccess: (Map params) async {
+                                    print("onSuccess: ${params}");
+                                    order(restaurantData!.docid).then((value) {
+                                      FirebaseFirestore.instance
+                                          .collection("checkOut")
+                                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                                          .delete();
+                                      Get.offAll(ThankuScreen(
+                                        date: widget.date.toString(),
+                                        guestNo: widget.guest,
+                                        orderType: "Dining",
+                                        orderId: value.toString(),
+                                      ));
+                                    });
+                                  },
+                                  onError: (error) {
+                                    print("onError: $error");
+                                  },
+                                  onCancel: (params) {
+                                    print('cancelled: $params');
+                                  }),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.primaryColor,

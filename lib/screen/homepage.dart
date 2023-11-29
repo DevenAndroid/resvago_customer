@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,7 +30,7 @@ import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'package:rxdart/rxdart.dart';
 import '../widget/restaurant_timing.dart';
-import 'bottomnav_bar.dart';
+import 'allcategory_screen.dart';
 import 'category/resturant_by_category.dart';
 import 'login_screen.dart';
 import 'myAddressList.dart';
@@ -55,10 +55,10 @@ class _HomePageState extends State<HomePage> {
     FirebaseFirestore.instance.collection("slider").orderBy('timestamp', descending: isDescendingOrder).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
-        log(gg.toString());
+        print(gg.toString());
         sliderList ??= [];
         sliderList!.add(gg["imageUrl"]);
-        log("dfasghdfhg$sliderList");
+        print("dfasghdfhg$sliderList");
       }
       setState(() {});
     });
@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
         var gg = element.data();
         wishList ??= [];
         wishList!.add(WishListModel.fromMap(gg, element.id));
-        log("wishList$wishList");
+        print("wishList$wishList");
       }
       setState(() {});
     });
@@ -492,19 +492,16 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(right: 5.0, left: 5.0),
-                          child: SizedBox(
-                            height: 80,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: CachedNetworkImage(
-                                  imageUrl: sliderList![index],
-                                  fit: BoxFit.cover,
-                                  errorWidget: (_, __, ___) => Icon(
-                                    Icons.error,
-                                    color: Colors.red,
-                                  ),
-                                )),
-                          ),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: CachedNetworkImage(
+                                imageUrl: sliderList![index],
+                                fit: BoxFit.cover,
+                                errorWidget: (_, __, ___) => Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                ),
+                              )),
                         );
                       },
                       outer: false,
@@ -516,15 +513,25 @@ class _HomePageState extends State<HomePage> {
                       // control: const SwiperControl(size: 6),
                     ),
                   ),
-                const SizedBox(
-                  height: 10,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          Get.to(()=>AllCategoryScreen());
+                        },
+                        child: Text(
+                          "View All",
+                          style: TextStyle(color: AppTheme.primaryColor),
+                        ))
+                  ],
                 ),
                 if (categoryList != null)
                   SizedBox(
                     height: 100,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: categoryList!.length,
+                      itemCount: min(6, categoryList!.length),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         return InkWell(
@@ -745,7 +752,7 @@ class _HomePageState extends State<HomePage> {
                     height: 100,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: categoryList!.length,
+                      itemCount: min(6, categoryList!.length),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         return InkWell(
