@@ -132,27 +132,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Future<void> sendEmailWithOTP(String email) async {
-  //   final FirebaseAuth _auth = FirebaseAuth.instance;
-  //   final smtpServer = gmail('deveneoxys@gmail.com', 'mjbq fbja ywpu nnys');
-  //   final message = Message()
-  //     ..from = Address('deveneoxys@gmail.com', 'Deven')
-  //     ..recipients.add("anjalikumari5845@gmail.com")
-  //     ..subject = 'OTP for Your App'
-  //     ..text = generateRandomPassword(); // You can customize the OTP generation logic
-  //
-  //   try {
-  //     await send(message, smtpServer);
-  //     print('Otp sent successfully');
-  //   } catch (e) {
-  //     print('Error sending email: $e');
-  //   }
-  // }
-
-  // String generateRandomPassword() {
-  //   final random = Random();
-  //   return List.generate(6, (index) => random.nextInt(9).toString()).join();
-  // }
 
   @override
   Widget build(BuildContext context) {

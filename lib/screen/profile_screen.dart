@@ -62,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> updateProfileToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    String? imageUrl;
+    String? imageUrl = kIsWeb ? null : categoryFile.path;;
     if (kIsWeb) {
       if (pickedFile != null) {
         UploadTask uploadTask = FirebaseStorage.instance.ref("profile_image}").child("image").putData(pickedFile!);
