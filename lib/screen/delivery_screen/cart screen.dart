@@ -91,6 +91,9 @@ class _CartScreenState extends State<CartScreen> {
         .update({"menuList": cartModel.menuList!.map((e) => e.toJson()).toList()});
   }
 
+  Future updateVendor(int count, vendorId) async {
+    await FirebaseFirestore.instance.collection("vendor_users").doc(vendorId).update({"order_count": ++count});
+  }
 
   var totalPrice = 0.0;
   double getTotalPrice() {

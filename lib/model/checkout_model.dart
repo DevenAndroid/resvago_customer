@@ -62,6 +62,7 @@ class RestaurantInfo {
   dynamic category;
   dynamic email;
   dynamic longitude;
+  dynamic order_count = 0;
 
   RestaurantInfo(
       {this.aboutUs,
@@ -78,6 +79,7 @@ class RestaurantInfo {
         this.menuImage,
         this.category,
         this.email,
+        this.order_count,
         this.longitude});
 
   RestaurantInfo.fromJson(Map<String, dynamic> json) {
@@ -96,6 +98,7 @@ class RestaurantInfo {
     category = json['category'];
     email = json['email'];
     longitude = json['longitude'];
+    order_count = json['order_count'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -115,6 +118,7 @@ class RestaurantInfo {
     data['category'] = category;
     data['email'] = email;
     data['longitude'] = longitude;
+    data['order_count'] = order_count;
     return data;
   }
 }

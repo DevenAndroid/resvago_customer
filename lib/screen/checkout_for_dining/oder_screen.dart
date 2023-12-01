@@ -68,6 +68,10 @@ class _OderScreenState extends State<OderScreen> {
     });
   }
 
+  Future updateVendor(int count, vendorId) async {
+    await FirebaseFirestore.instance.collection("vendor_users").doc(vendorId).update({"order_count": ++count});
+  }
+
   List<Map<String, dynamic>> extractedData = [];
   getCheckOutData() {
     extractedData.clear();
@@ -859,6 +863,7 @@ class _OderScreenState extends State<OderScreen> {
                                   onSuccess: (Map params) async {
                                     print("onSuccess: ${params}");
                                     order(restaurantData!.docid).then((value) {
+                                      updateVendor(widget.restaurantItem!.order_count+1,widget.restaurantItem!.userID);
                                       FirebaseFirestore.instance
                                           .collection("checkOut")
                                           .doc(FirebaseAuth.instance.currentUser!.uid)

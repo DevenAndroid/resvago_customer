@@ -241,10 +241,8 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                     "Layers of delicious restoring",
                                     style: GoogleFonts.poppins(
                                         fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
-                                  ),
-                                  Text(
-                                    widget.restaurantItem!.order_count.toString() +
-                                        widget.restaurantItem!.mobileNumber.toString(),
+                                  ),Text(
+                                    widget.restaurantItem!.order_count.toString() +  widget.restaurantItem!.mobileNumber.toString(),
                                     style: GoogleFonts.poppins(
                                         fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                                   ),
@@ -1225,8 +1223,8 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                       User? user = _auth.currentUser;
                                       if (user != null) {
                                         manageCheckOut(widget.restaurantItem!.docid).then((value) {
-                                          updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
-                                          Get.offAll(() => const CartScreen());
+                                          updateVendor(widget.restaurantItem!.order_count+1,widget.restaurantItem!.userID);
+                                          Get.to(() => const CartScreen());
                                         });
                                       } else {
                                         Get.to(() => LoginScreen());
