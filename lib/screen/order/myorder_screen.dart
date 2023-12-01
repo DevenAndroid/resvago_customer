@@ -330,6 +330,7 @@ class _MyOrderState extends State<MyOrder> {
                                   itemBuilder: (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
                                       onTap: () {
                                         Get.to(() => OderDetailsScreen(
                                               orderType: 'Delivery',
@@ -506,41 +507,44 @@ class _MyOrderState extends State<MyOrder> {
                                           )).appPaddingForScreen,
                                     );
                                   })
-                              : Column(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        top: 18,
+                              : SingleChildScrollView(
+                                child: Column(
+                                    children: [
+                                      Container(
+                                        height: 500,
+                                        margin: const EdgeInsets.only(
+                                          top: 18,
+                                        ),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffFFFFFF),
+                                        ),
+                                        child: Column(
+                                          // mainAxisAlignment: MainAxisAlignment.start,
+                                          // crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Image.asset(AppAssets.orderEmpty,
+                                                height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
+                                            Text(
+                                              'Empty',
+                                              style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                                            ),
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            Text(
+                                              'You do not have an active order of this time',
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
+                                            ),
+                                            const SizedBox(
+                                              height: 40,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xffFFFFFF),
-                                      ),
-                                      child: Column(
-                                        // mainAxisAlignment: MainAxisAlignment.start,
-                                        // crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Image.asset(AppAssets.orderEmpty,
-                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
-                                          Text(
-                                            'Empty',
-                                            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
-                                          ),
-                                          const SizedBox(
-                                            height: 15,
-                                          ),
-                                          Text(
-                                            'You do not have an active order of this time',
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
-                                          ),
-                                          const SizedBox(
-                                            height: 40,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                );
+                                    ],
+                                  ),
+                              );
                         }
                         return const SizedBox.shrink();
                       },

@@ -167,6 +167,7 @@ AppBar backAppBar(
     leading: Padding(
       padding: EdgeInsets.only(left: AddSize.padding10),
       child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
           onTap: () {
             if(dispose == 'Data'){
               Get.offAll(const BottomNavbar());

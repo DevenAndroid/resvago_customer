@@ -232,22 +232,20 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                               border: Border.all(color: const Color(0xFFC7C7C7), width: 1.0)),
                           width: AddSize.screenWidth,
                           height: 50,
-                          child: GestureDetector(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(AppAssets.vector, height: 20),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  "Select Your Offer",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF3B5998)),
-                                ),
-                              ],
-                            ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(AppAssets.vector, height: 20),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Select Your Offer",
+                                style: GoogleFonts.poppins(
+                                    fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF3B5998)),
+                              ),
+                            ],
                           )),
                     ),
                     const SizedBox(

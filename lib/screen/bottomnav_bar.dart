@@ -77,13 +77,13 @@ class _BottomNavbarState extends State<BottomNavbar> {
       });
     }
   }
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? user;
   @override
   void initState() {
     super.initState();
     // updateFCMToken();
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    User? user = _auth.currentUser;
+    user = _auth.currentUser;
     if (user != null) {
       getProfileData();
       profileController.getProfileData();
@@ -116,6 +116,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           height: size.height * 0.05,
                         ),
                         GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
                             // Get.to(navigationPage.elementAt(_currentPage))
                             // Get.to(MyProfile());
@@ -301,6 +302,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                         height: 5,
                         color: Color(0xffF2F2F2),
                       ),
+                      if(user != null)
                       drawerTile(
                           active: true,
                           title: "Logout".tr,

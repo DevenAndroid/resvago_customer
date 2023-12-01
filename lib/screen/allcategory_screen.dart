@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/widget/common_text_field.dart';
 
 import '../model/category_model.dart';
@@ -43,59 +44,56 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
     return Scaffold(
       appBar: backAppBar(title: "Category", context: context),
       body: Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         child: categoryList != null
             ? GridView.builder(
                 itemCount: categoryList!.length,
-                shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: kIsWeb
                     ? SliverGridDelegateWithMaxCrossAxisExtent(
-                        mainAxisExtent: AddSize.screenHeight * .080,
-                        maxCrossAxisExtent: 250,
+                        mainAxisExtent: AddSize.screenHeight * .14,
+                        maxCrossAxisExtent: 200,
                         crossAxisSpacing: 2,
                         mainAxisSpacing: 0,
                       )
                     : SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3, crossAxisSpacing: 10, mainAxisSpacing: 0, mainAxisExtent: AddSize.screenHeight * .14),
                 itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
+                  return GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: () {
                       Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 60,
-                            width: 60,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: CachedNetworkImage(
-                                  imageUrl: categoryList![index].image,
-                                  fit: BoxFit.cover,
-                                  errorWidget: (_, __, ___) => Icon(
-                                    Icons.error,
-                                    color: Colors.red,
-                                  ),
-                                )),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            categoryList![index].name ?? "",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
-                          )
-                        ],
-                      ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 60,
+                          width: 60,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: CachedNetworkImage(
+                                imageUrl: categoryList![index].image,
+                                fit: BoxFit.cover,
+                                errorWidget: (_, __, ___) => Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                ),
+                              )),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          categoryList![index].name ?? "",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                        )
+                      ],
                     ),
                   );
                 },
-              )
+              ).appPaddingForScreen
             : Center(
                 child: Text("Category not available"),
               ),

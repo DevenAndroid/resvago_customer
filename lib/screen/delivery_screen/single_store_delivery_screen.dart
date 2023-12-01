@@ -28,7 +28,10 @@ import 'cart screen.dart';
 class SingleRestaurantForDeliveryScreen extends StatefulWidget {
   final RestaurantModel? restaurantItem;
   // String distance;
-  SingleRestaurantForDeliveryScreen({super.key, required this.restaurantItem, });
+  SingleRestaurantForDeliveryScreen({
+    super.key,
+    required this.restaurantItem,
+  });
 
   @override
   State<SingleRestaurantForDeliveryScreen> createState() => _SingleRestaurantForDeliveryScreenState();
@@ -101,6 +104,10 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
       }
       setState(() {});
     });
+  }
+
+  Future updateVendor(int count, vendorId) async {
+    await FirebaseFirestore.instance.collection("vendor_users").doc(vendorId).update({"order_count": ++count});
   }
 
   FirebaseService firebaseService = FirebaseService();
@@ -232,6 +239,12 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                   ),
                                   Text(
                                     "Layers of delicious restoring",
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
+                                  ),
+                                  Text(
+                                    widget.restaurantItem!.order_count.toString() +
+                                        widget.restaurantItem!.mobileNumber.toString(),
                                     style: GoogleFonts.poppins(
                                         fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                                   ),
@@ -391,6 +404,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
                                     GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
                                       onTap: () {
                                         currentMenu = 0;
                                         setState(() {});
@@ -1211,7 +1225,8 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                       User? user = _auth.currentUser;
                                       if (user != null) {
                                         manageCheckOut(widget.restaurantItem!.docid).then((value) {
-                                          Get.to(() => const CartScreen());
+                                          updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
+                                          Get.offAll(() => const CartScreen());
                                         });
                                       } else {
                                         Get.to(() => LoginScreen());

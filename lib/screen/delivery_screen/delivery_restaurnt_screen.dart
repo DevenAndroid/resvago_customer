@@ -249,6 +249,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   bottomController.scaffoldKey.currentState!.openDrawer();
                 },
@@ -340,6 +341,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
             //   ),
             // ),
             GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () {
                 FirebaseAuth _auth = FirebaseAuth.instance;
                 User? user = _auth.currentUser;
@@ -358,6 +360,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
               ),
             ),
             GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () {
                 FirebaseAuth _auth = FirebaseAuth.instance;
                 User? user = _auth.currentUser;
@@ -548,7 +551,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          Get.to(()=>AllCategoryScreen());
+                          Get.to(() => AllCategoryScreen());
                         },
                         child: Text(
                           "View All",
@@ -564,7 +567,8 @@ class _DeliveryPageState extends State<DeliveryPage> {
                       itemCount: min(6, categoryList!.length),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return InkWell(
+                        return GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
                             Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
                           },
@@ -785,7 +789,8 @@ class _DeliveryPageState extends State<DeliveryPage> {
                       itemCount: min(6, categoryList!.length),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return InkWell(
+                        return GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
                             Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
                           },

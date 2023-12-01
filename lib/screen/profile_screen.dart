@@ -204,6 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   bottom: 0,
                                                   right: 0,
                                                   child: GestureDetector(
+                                                    behavior: HitTestBehavior.translucent,
                                                     onTap: () {
                                                       Helper.addFilePicker().then((value) {
                                                         pickedFile = value;

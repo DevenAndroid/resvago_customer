@@ -464,6 +464,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               GestureDetector(
+                                behavior: HitTestBehavior.translucent,
                                 onTap: () async {},
                                 child: Container(
                                   width: 152,

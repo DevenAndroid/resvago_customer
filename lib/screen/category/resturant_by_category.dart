@@ -83,7 +83,8 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                       var restaurantListItem = restaurantList![index];
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
                             Get.to(() => SingleRestaurantsScreen(
                                   restaurantItem: restaurantListItem,
@@ -109,6 +110,12 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                       height: 150,
                                       width: double.maxFinite,
                                       fit: BoxFit.cover,
+                                      errorBuilder: (BuildContext, Object, StackTrace){
+                                        return  SizedBox(height: 150,
+                                          width: double.maxFinite,
+                                          child: Icon(Icons.error,color: Colors.red,),
+                                        );
+                                    },
                                     ),
                                     Positioned(
                                         top: 0,

@@ -55,6 +55,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
                         itemBuilder: (context, int index) {
                           final item = filteredUsers[index];
                           return GestureDetector(
+                            behavior: HitTestBehavior.translucent,
                             onTap: () {
                               widget.couponData(item);
                               Get.back();

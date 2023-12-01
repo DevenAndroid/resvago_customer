@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
   Future getRestaurantList() async {
     restaurantList ??= [];
     restaurantList!.clear();
-    await FirebaseFirestore.instance.collection("vendor_users").where("deactivate", isEqualTo: false).get().then((value) {
+    await FirebaseFirestore.instance.collection("vendor_users").where("deactivate", isEqualTo: false).orderBy("order_count", descending: true).limit(10).get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
@@ -216,6 +216,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   bottomController.scaffoldKey.currentState!.openDrawer();
                 },
@@ -513,11 +514,14 @@ class _HomePageState extends State<HomePage> {
                       // control: const SwiperControl(size: 6),
                     ),
                   ),
+                SizedBox(
+                    height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
-                        onPressed: () {
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                        onTap: () {
                           Get.to(()=>AllCategoryScreen());
                         },
                         child: Text(
@@ -526,6 +530,8 @@ class _HomePageState extends State<HomePage> {
                         ))
                   ],
                 ),
+                SizedBox(
+                    height: 10),
                 if (categoryList != null)
                   SizedBox(
                     height: 100,
@@ -534,7 +540,8 @@ class _HomePageState extends State<HomePage> {
                       itemCount: min(6, categoryList!.length),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return InkWell(
+                        return GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
                             Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
                           },
@@ -755,7 +762,8 @@ class _HomePageState extends State<HomePage> {
                       itemCount: min(6, categoryList!.length),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return InkWell(
+                        return GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
                             Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
                           },

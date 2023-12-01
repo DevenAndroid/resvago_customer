@@ -1,11 +1,17 @@
+import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:resvago_customer/screen/helper.dart';
-import 'package:resvago_customer/screen/search_singlerestaurant_screen.dart';
-
+import '../../model/resturant_model.dart';
+import '../../widget/addsize.dart';
+import '../../widget/apptheme.dart';
 import '../../widget/custom_textfield.dart';
+import '../delivery_screen/single_store_delivery_screen.dart';
+import '../single_store_screens/single_restaurants_screen.dart';
 
 class SerachListScreen extends StatefulWidget {
   const SerachListScreen({super.key});
@@ -15,6 +21,60 @@ class SerachListScreen extends StatefulWidget {
 }
 
 class _SerachListScreenState extends State<SerachListScreen> {
+  String searchQuery = '';
+  Stream<List<RestaurantModel>> getRestaurantData() {
+    return FirebaseFirestore.instance
+        .collection("vendor_users")
+        .where("deactivate", isEqualTo: false)
+        .snapshots()
+        .map((querySnapshot) {
+      List<RestaurantModel> menuList = [];
+      try {
+        for (var doc in querySnapshot.docs) {
+          var gg = doc.data();
+          menuList.add(RestaurantModel.fromJson(gg, doc.id.toString()));
+        }
+      } catch (e) {
+        throw Exception(e.toString());
+      }
+      return menuList;
+    });
+  }
+
+  Stream<List<RestaurantModel>> getDeliveryRestaurantData() {
+    return FirebaseFirestore.instance
+        .collection("vendor_users")
+        .where("deactivate", isEqualTo: false)
+        .where("setDelivery", isEqualTo: true)
+        .snapshots()
+        .map((querySnapshot) {
+      List<RestaurantModel> menuList = [];
+      try {
+        for (var doc in querySnapshot.docs) {
+          var gg = doc.data();
+          menuList.add(RestaurantModel.fromJson(gg, doc.id.toString()));
+        }
+      } catch (e) {
+        throw Exception(e.toString());
+      }
+      return menuList;
+    });
+  }
+
+  List<RestaurantModel> filterRestaurant(List<RestaurantModel> menus, String query) {
+    if (query.isEmpty) {
+      return menus; // Return all users if the search query is empty
+    } else {
+      // Filter the users based on the search query
+      return menus.where((menu) {
+        if (menu.category is String) {
+          return menu.category.toLowerCase().contains(query.toLowerCase());
+        }
+        return false;
+      }).toList();
+    }
+  }
+
   String searchKeyword = "";
   @override
   Widget build(BuildContext context) {
@@ -67,7 +127,8 @@ class _SerachListScreenState extends State<SerachListScreen> {
                         ),
                         onChanged: (val) {
                           setState(() {
-                            searchKeyword = val;
+                            searchQuery = val;
+                            log("search-----${searchQuery}");
                           });
                         },
                       )),
@@ -139,10 +200,10 @@ class _SerachListScreenState extends State<SerachListScreen> {
             indicatorSize: TabBarIndicatorSize.tab,
             tabs: [
               Tab(
-                child: Text("Delivery"),
+                child: Text("Dine In"),
               ),
               Tab(
-                child: Text("Dine In"),
+                child: Text("Delivery"),
               ),
             ],
           ),
@@ -150,84 +211,221 @@ class _SerachListScreenState extends State<SerachListScreen> {
         ),
         body: TabBarView(
           children: [
-            StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('vendor_menu')
-                  .where("bookingForDelivery" , isEqualTo: true)
-                  .where('category',
-                  isGreaterThanOrEqualTo: searchKeyword)
-                  .where('category', isLessThan: '${searchKeyword}z')
-                  .snapshots(),
+            StreamBuilder<List<RestaurantModel>>(
+              stream: getRestaurantData(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-
-                  var products = snapshot.data!.docs;
-                  List<String> kk = products.map((e) => e.data()['category'].toString()).toList().toSet().toList();
-                  List<String> image = products.map((e) => e.data()['image'].toString()).toList().toSet().toList();
-                  print(products);
-                  return ListView.builder(
-                    itemCount: kk.length,
-                    itemBuilder: (context, index) {
-                      var product = kk[index];
-                      return GestureDetector(
-                        onTap: (){
-                          Get.to(SearchRestaurantScreen(
-                            category: product,
-
-                          ));
-                        },
-                        child: ListTile(
-                          title: Text(product),
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(image[index]),
-                          ),
-                        ),
-                      );
-                    },
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return LoadingAnimationWidget.fourRotatingDots(
+                    color: AppTheme.primaryColor,
+                    size: 40,
                   );
                 }
-                return const Center(child: CircularProgressIndicator());
+                if (snapshot.hasData) {
+                  List<RestaurantModel> menu = snapshot.data ?? [];
+                  log(menu.toString());
+                  final filteredUsers = filterRestaurant(menu, searchQuery); //
+                  return filteredUsers.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: filteredUsers.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            var menuItem = filteredUsers[index];
+                            return InkWell(
+                              onTap: () {
+                                Get.to(() => SingleRestaurantsScreen(
+                                      restaurantItem: menuItem,
+                                    ));
+                                FocusManager.instance.primaryFocus!.unfocus();
+                              },
+                              child: Stack(
+                                children: [
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(vertical: AddSize.size10, horizontal: 15),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            height: AddSize.size50,
+                                            width: AddSize.size50,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(50), border: Border.all(width: 1)),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(50),
+                                              child: CachedNetworkImage(
+                                                imageUrl: menuItem.image.toString(),
+                                                errorWidget: (_, __, ___) => const SizedBox(),
+                                                placeholder: (_, __) => const SizedBox(),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: AddSize.size15,
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              menuItem.restaurantName ?? "".toString(),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w500, fontSize: 18, color: AppTheme.blackcolor),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                        ],
+                                      )),
+                                ],
+                              ),
+                            );
+                          })
+                      : Center(
+                          child: Text("No Menu Created".tr),
+                        );
+                }
+                return const SizedBox.shrink();
               },
             ).appPaddingForScreen,
-            StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('vendor_menu')
-                  .where("bookingForDining" , isEqualTo: true)
-                  .where('category',
-                  isGreaterThanOrEqualTo: searchKeyword)
-                  .where('category', isLessThan: '${searchKeyword}z')
-                  .snapshots(),
+            StreamBuilder<List<RestaurantModel>>(
+              stream: getDeliveryRestaurantData(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-
-                  var products = snapshot.data!.docs;
-                  List<String> kk = products.map((e) => e.data()['category'].toString()).toList().toSet().toList();
-                  List<String> image = products.map((e) => e.data()['image'].toString()).toList().toSet().toList();
-                  print(products);
-                  return ListView.builder(
-                    itemCount: kk.length,
-                    itemBuilder: (context, index) {
-                      var product = kk[index];
-                      return GestureDetector(
-                        onTap: (){
-                          Get.to(SearchRestaurantScreen(
-                            category: product,
-
-                          ));
-                        },
-                        child: ListTile(
-                          title: Text(product),
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(image[index]),
-                          ),
-                        ),
-                      );
-                    },
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return LoadingAnimationWidget.fourRotatingDots(
+                    color: AppTheme.primaryColor,
+                    size: 40,
                   );
                 }
-                return const Center(child: CircularProgressIndicator());
+                if (snapshot.hasData) {
+                  List<RestaurantModel> menu = snapshot.data ?? [];
+                  log(menu.toString());
+                  final filteredUsers = filterRestaurant(menu, searchQuery); //
+                  return filteredUsers.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: filteredUsers.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            var menuItem = filteredUsers[index];
+                            return InkWell(
+                              onTap: () {
+                                Get.to(() => SingleRestaurantForDeliveryScreen(
+                                      restaurantItem: menuItem,
+                                    ));
+                                FocusManager.instance.primaryFocus!.unfocus();
+                              },
+                              child: Stack(
+                                children: [
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(vertical: AddSize.size10, horizontal: 15),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            height: AddSize.size50,
+                                            width: AddSize.size50,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(50), border: Border.all(width: 1)),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(50),
+                                              child: CachedNetworkImage(
+                                                imageUrl: menuItem.image.toString(),
+                                                errorWidget: (_, __, ___) => const SizedBox(),
+                                                placeholder: (_, __) => const SizedBox(),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: AddSize.size15,
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              menuItem.restaurantName ?? "".toString(),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w500, fontSize: 18, color: AppTheme.blackcolor),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                        ],
+                                      )),
+                                ],
+                              ),
+                            );
+                          })
+                      : SizedBox.shrink();
+                }
+                return const SizedBox.shrink();
               },
             ).appPaddingForScreen,
+            // StreamBuilder(
+            //   stream: FirebaseFirestore.instance
+            //       .collection('vendor_users')
+            //       .where("deactivate", isEqualTo: false)
+            //       .where("setDelivery", isEqualTo: true)
+            //       .where('category', isGreaterThanOrEqualTo: searchKeyword)
+            //       .where('category', isLessThan: '${searchKeyword}z')
+            //       .snapshots(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasData) {
+            //       var products = snapshot.data!.docs;
+            //       List<String> kk = products.map((e) => e.data()['category'].toString()).toList().toSet().toList();
+            //       List<String> image = products.map((e) => e.data()['image'].toString()).toList().toSet().toList();
+            //       print(products);
+            //       return ListView.builder(
+            //         itemCount: kk.length,
+            //         itemBuilder: (context, index) {
+            //           var product = kk[index];
+            //           return GestureDetector(
+            //             onTap: () {
+            //               Get.to(SearchRestaurantScreen(
+            //                 category: product,
+            //               ));
+            //             },
+            //             child: ListTile(
+            //               title: Text(product),
+            //               leading: CircleAvatar(
+            //                 backgroundImage: NetworkImage(image[index]),
+            //               ),
+            //             ),
+            //           );
+            //         },
+            //       );
+            //     }
+            //     return const Center(child: CircularProgressIndicator());
+            //   },
+            // ).appPaddingForScreen,
+            // StreamBuilder(
+            //   stream: FirebaseFirestore.instance
+            //       .collection('vendor_users')
+            //       .where("deactivate", isEqualTo: false)
+            //       .where('category', isGreaterThanOrEqualTo: searchKeyword)
+            //       .where('category', isLessThan: '${searchKeyword}z')
+            //       .snapshots(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasData) {
+            //       var products = snapshot.data!.docs;
+            //       List<String> kk = products.map((e) => e.data()['restaurantName'].toString()).toList().toSet().toList();
+            //       List<String> image = products.map((e) => e.data()['restaurantImage'].toString()).toList().toSet().toList();
+            //       print(products);
+            //       return ListView.builder(
+            //         itemCount: kk.length,
+            //         itemBuilder: (context, index) {
+            //           var product = kk[index];
+            //           return GestureDetector(
+            //             onTap: () {
+            //               // Get.to(() => SingleRestaurantsScreen(
+            //               //   restaurantItem: restaurantListItem,
+            //               // ));
+            //             },
+            //             child: ListTile(
+            //               title: Text(product),
+            //               leading: CircleAvatar(
+            //                 backgroundImage: NetworkImage(image[index]),
+            //               ),
+            //             ),
+            //           );
+            //         },
+            //       );
+            //     }
+            //     return const Center(child: CircularProgressIndicator());
+            //   },
+            // ).appPaddingForScreen,
             // StreamBuilder(
             //   stream: FirebaseFirestore.instance
             //       .collection('vendor_menu')

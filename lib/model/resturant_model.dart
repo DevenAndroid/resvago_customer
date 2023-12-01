@@ -23,6 +23,7 @@ class RestaurantModel {
   dynamic setDelivery;
   dynamic cancellation;
   dynamic menuSelection;
+  dynamic order_count = 0;
 
   RestaurantModel({
     this.restaurantImage,
@@ -45,6 +46,7 @@ class RestaurantModel {
     this.setDelivery,
     this.cancellation,
     this.menuSelection,
+    this.order_count,
   });
 
   RestaurantModel.fromJson(Map<String, dynamic> json, String docId) {
@@ -68,6 +70,7 @@ class RestaurantModel {
     setDelivery = json['setDelivery'];
     cancellation = json['cancellation'];
     menuSelection = json['menuSelection'];
+    order_count = json['order_count'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {

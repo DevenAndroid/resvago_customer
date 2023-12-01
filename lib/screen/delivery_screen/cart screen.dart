@@ -12,12 +12,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/model/profile_model.dart';
 import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/screen/myAddressList.dart';
-import 'package:youcanpay_sdk/youcanpay_sdk.dart';
+// import 'package:youcanpay_sdk/youcanpay_sdk.dart';
 import '../../controller/bottomnavbar_controller.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/add_address_modal.dart';
 import '../../model/checkout_model.dart';
 import '../../model/coupon_modal.dart';
+import '../../model/resturant_model.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/common_text_field.dart';
 import '../bottomnav_bar.dart';
@@ -35,31 +36,32 @@ class _CartScreenState extends State<CartScreen> {
   final bottomController = Get.put(BottomNavBarController());
   String token = "token";
   String publicKey = "pubKey";
-  late YCPay ycPay;
-  late CardInformation cardInformation;
+  // late YCPay ycPay;
+  // late CardInformation cardInformation;
   CheckOutModel cartModel = CheckOutModel();
   List<Map<String, dynamic>> extractedData = [];
 
-  initYCPay() {
-    ycPay = YCPay(publicKey: publicKey, context: context, sandbox: true);
-  }
-
-  // Initialize card information
-  // You can get this information from your user
-  initCardInformation() {
-    try {
-      cardInformation = CardInformation(
-          cardHolderName: 'Holder Name', cardNumber: '1234123412341234', expireDateYear: '35', expireDateMonth: '12', cvv: '123');
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
+  // initYCPay() {
+  //   ycPay = YCPay(publicKey: publicKey, context: context, sandbox: true);
+  // }
+  //
+  // // Initialize card information
+  // // You can get this information from your user
+  // initCardInformation() {
+  //   try {
+  //     cardInformation = CardInformation(
+  //         cardHolderName: 'Holder Name', cardNumber: '1234123412341234', expireDateYear: '35', expireDateMonth: '12', cvv: '123');
+  //   } catch (e) {
+  //     debugPrint(e.toString());
+  //   }
+  // }
 
   getCheckOutData() {
     extractedData.clear();
     FirebaseFirestore.instance.collection("checkOut").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       log("checkOut${jsonEncode(value.data())}");
       cartModel = CheckOutModel.fromJson(value.data() ?? {});
+      log("checkOut${cartModel.toJson()}");
       log(cartModel.menuList!.map((e) => e.toJson()).toList().toString());
       extractedData = cartModel.menuList!.map((e) => e.toJson()).toList().map((item) {
         return {
@@ -89,6 +91,7 @@ class _CartScreenState extends State<CartScreen> {
         .update({"menuList": cartModel.menuList!.map((e) => e.toJson()).toList()});
   }
 
+
   var totalPrice = 0.0;
   double getTotalPrice() {
     if (cartModel.menuList == null) return 0;
@@ -114,8 +117,8 @@ class _CartScreenState extends State<CartScreen> {
     getCheckOutData();
     getTotalPrice();
     fetchdata();
-    initYCPay();
-    initCardInformation();
+    // initYCPay();
+    // initCardInformation();
   }
 
   CouponData? couponData;
@@ -735,6 +738,16 @@ class _CartScreenState extends State<CartScreen> {
                           if (addressData == null) {
                             showToast("Please choose address");
                           } else {
+                            order(cartModel.vendorId).then((value) {
+                              FirebaseFirestore.instance
+                                  .collection("checkOut")
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                                  .delete();
+                              Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
+
+                            });
+
+                            return;
                             print([
                               {
                                 "amount": {
@@ -844,9 +857,9 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                     )),
-                payWithCardButton(),
-                const SizedBox(height: 20),
-                payWithCashPlusButton(),
+                // payWithCardButton(),
+                // const SizedBox(height: 20),
+                // payWithCashPlusButton(),
                 const SizedBox(
                   height: 100,
                 )
@@ -890,65 +903,65 @@ class _CartScreenState extends State<CartScreen> {
               ));
   }
 
-  Widget payWithCardButton() {
-    return ElevatedButton(
-        onPressed: () => payWithCard(),
-        child: SizedBox(
-            height: 50,
-            width: MediaQuery.of(context).size.width,
-            child: const Center(
-                child: Text(
-              "Pay with card",
-              style: TextStyle(fontSize: 20),
-            ))));
-  }
-
-  Widget payWithCashPlusButton() {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-        onPressed: () => payWithCashPlus(),
-        child: SizedBox(
-            height: 50,
-            width: MediaQuery.of(context).size.width,
-            child: const Center(
-                child: Text(
-              "Pay with CashPlus",
-              style: TextStyle(fontSize: 20),
-            ))));
-  }
-
-  void payWithCashPlus() {
-    ycPay.payWithCashPlus(
-        token: token,
-        onSuccessfulPayment: (transactionId, cashPlusToken) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('pay success cashPlus token: $transactionId'),
-            backgroundColor: Colors.green,
-          ));
-        },
-        onFailedPayment: (message) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('pay failed $message'),
-            backgroundColor: Colors.red,
-          ));
-        });
-  }
-
-  void payWithCard() {
-    ycPay.payWithCard(
-        token: token,
-        cardInformation: cardInformation,
-        onSuccessfulPayment: (transactionId) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('pay success $transactionId'),
-            backgroundColor: Colors.green,
-          ));
-        },
-        onFailedPayment: (message) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('pay failed $message'),
-            backgroundColor: Colors.red,
-          ));
-        });
-  }
+  // Widget payWithCardButton() {
+  //   return ElevatedButton(
+  //       onPressed: () => payWithCard(),
+  //       child: SizedBox(
+  //           height: 50,
+  //           width: MediaQuery.of(context).size.width,
+  //           child: const Center(
+  //               child: Text(
+  //             "Pay with card",
+  //             style: TextStyle(fontSize: 20),
+  //           ))));
+  // }
+  //
+  // Widget payWithCashPlusButton() {
+  //   return ElevatedButton(
+  //       style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+  //       onPressed: () => payWithCashPlus(),
+  //       child: SizedBox(
+  //           height: 50,
+  //           width: MediaQuery.of(context).size.width,
+  //           child: const Center(
+  //               child: Text(
+  //             "Pay with CashPlus",
+  //             style: TextStyle(fontSize: 20),
+  //           ))));
+  // }
+  //
+  // void payWithCashPlus() {
+  //   ycPay.payWithCashPlus(
+  //       token: token,
+  //       onSuccessfulPayment: (transactionId, cashPlusToken) {
+  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //           content: Text('pay success cashPlus token: $transactionId'),
+  //           backgroundColor: Colors.green,
+  //         ));
+  //       },
+  //       onFailedPayment: (message) {
+  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //           content: Text('pay failed $message'),
+  //           backgroundColor: Colors.red,
+  //         ));
+  //       });
+  // }
+  //
+  // void payWithCard() {
+  //   ycPay.payWithCard(
+  //       token: token,
+  //       cardInformation: cardInformation,
+  //       onSuccessfulPayment: (transactionId) {
+  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //           content: Text('pay success $transactionId'),
+  //           backgroundColor: Colors.green,
+  //         ));
+  //       },
+  //       onFailedPayment: (message) {
+  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //           content: Text('pay failed $message'),
+  //           backgroundColor: Colors.red,
+  //         ));
+  //       });
+  // }
 }

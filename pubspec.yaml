@@ -74,7 +74,7 @@ dependencies:
   google_maps_flutter_web: ^0.5.4+2
   file_picker:
   http: ^1.1.0
-  youcanpay_sdk: ^0.0.4
+#  youcanpay_sdk: ^0.0.4
   flutter_paypal:
     git:
       url: https://github.com/DevenAndroid/flutter_paypal_custom_plugin.git

@@ -131,6 +131,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           GestureDetector(
+                            behavior: HitTestBehavior.translucent,
                             onTap: () {
                               setState(() {
                                 _isValue.value = !_isValue.value;
@@ -333,6 +334,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
         return true;
       },
       child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: () {
           FocusManager.instance.primaryFocus!.unfocus();
         },

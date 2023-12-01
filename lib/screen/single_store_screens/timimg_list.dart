@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +23,7 @@ class _RestaurantTimingScreenListState extends State<RestaurantTimingScreenList>
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection("week_schedules").doc(widget.docId).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-          if(snapshot.hasData && snapshot.data!.data() != null){
+          if (snapshot.hasData && snapshot.data!.data() != null) {
             ModelStoreTime modelStoreTime = ModelStoreTime.fromJson(snapshot.data!.data()!);
             return Padding(
               padding: const EdgeInsets.all(12),
@@ -38,7 +37,7 @@ class _RestaurantTimingScreenListState extends State<RestaurantTimingScreenList>
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Container(
                       decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(color: AppTheme.greycolor)),
+                          BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(color: AppTheme.greycolor)),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -46,7 +45,7 @@ class _RestaurantTimingScreenListState extends State<RestaurantTimingScreenList>
                           Theme(
                             data: ThemeData(
                                 checkboxTheme:
-                                CheckboxThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+                                    CheckboxThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
                             child: Checkbox(
                               activeColor: AppTheme.primaryColor,
                               checkColor: Colors.white,
@@ -68,15 +67,14 @@ class _RestaurantTimingScreenListState extends State<RestaurantTimingScreenList>
                           Expanded(
                             flex: 2,
                             child: GestureDetector(
-                              onTap: () {
-
-                              },
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () {},
                               child: Row(
                                 children: [
                                   Text(
                                     daySchedule.startTime.toString(),
-                                    style:
-                                    GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15, color: Colors.grey.shade700),
+                                    style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500, fontSize: 15, color: Colors.grey.shade700),
                                   ),
                                   const Icon(Icons.keyboard_arrow_down_rounded)
                                 ],
@@ -92,15 +90,13 @@ class _RestaurantTimingScreenListState extends State<RestaurantTimingScreenList>
                           Expanded(
                             flex: 2,
                             child: GestureDetector(
-                              onTap: () {
-
-                              },
+                              onTap: () {},
                               child: Row(
                                 children: [
                                   Text(
                                     daySchedule.endTime.toString(),
-                                    style:
-                                    GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15, color: Colors.grey.shade700),
+                                    style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500, fontSize: 15, color: Colors.grey.shade700),
                                   ),
                                   const Icon(Icons.keyboard_arrow_down_rounded)
                                 ],

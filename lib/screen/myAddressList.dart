@@ -42,6 +42,7 @@ class _MyAddressListState extends State<MyAddressList> {
         title: "My Address",
         context: context,
         icon2: GestureDetector(
+          behavior: HitTestBehavior.translucent,
           onTap: () {
             Get.to(ChooseAddress(
               isEditMode: false,

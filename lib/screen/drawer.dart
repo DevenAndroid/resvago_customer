@@ -60,6 +60,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           height: screenSize.height * 0.05,
                         ),
                         GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
                             // Get.to(navigationPage.elementAt(_currentPage))
                             // Get.to(MyProfile());

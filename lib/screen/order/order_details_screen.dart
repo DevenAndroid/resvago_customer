@@ -116,34 +116,33 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                           const SizedBox(
                             width: 10,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Order ID: ${myOrderModel.orderId.toString()}",
-                                style: GoogleFonts.poppins(
-                                    color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
-                              ),
-                              Text(
-                                DateFormat.yMMMMd().format(
-                                    DateTime.parse(DateTime.fromMillisecondsSinceEpoch(myOrderModel.time).toLocal().toString())),
-                                style: GoogleFonts.poppins(
-                                    color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Order ID: ${myOrderModel.orderId.toString()}",
+                                  style: GoogleFonts.poppins(
+                                      color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                                ),
+                                Text(
+                                  DateFormat.yMMMMd().format(DateTime.parse(
+                                      DateTime.fromMillisecondsSinceEpoch(myOrderModel.time).toLocal().toString())),
+                                  style: GoogleFonts.poppins(
+                                      color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
+                                ),
+                              ],
+                            ),
                           ),
-                          const Spacer(),
-                          FittedBox(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF65CD90),
-                                borderRadius: BorderRadius.circular(9),
-                              ),
-                              child: Text(
-                                myOrderModel.orderStatus.toString(),
-                                style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 11),
-                              ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF65CD90),
+                              borderRadius: BorderRadius.circular(9),
+                            ),
+                            child: Text(
+                              myOrderModel.orderStatus.toString(),
+                              style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 11),
                             ),
                           )
                         ],
@@ -445,6 +444,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                       ),
                                     ),
                                     GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
                                       onTap: () {
                                         _makingPhoneCall(
                                             "tel:${myOrderModel.orderDetails!.restaurantInfo!.mobileNumber}".toString());
