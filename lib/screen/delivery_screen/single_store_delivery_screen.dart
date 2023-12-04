@@ -160,7 +160,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
           ),
           elevation: 1,
           title: Text(
-            "Restaurants",
+            "Restaurants".tr,
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -238,7 +238,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                     height: 10,
                                   ),
                                   Text(
-                                    "Layers of delicious restoring",
+                                    "Layers of delicious restoring".tr,
                                     style: GoogleFonts.poppins(
                                         fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                                   ),
@@ -300,12 +300,12 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                           Row(
                                             children: [
                                               Text(
-                                                "4.9",
+                                                "4.9".tr,
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 22, fontWeight: FontWeight.w300, color: const Color(0xff1E2538)),
                                               ),
                                               Text(
-                                                "/5.9",
+                                                "/5.9".tr,
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xff979798)),
                                               ),
@@ -318,7 +318,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 width: 3,
                                               ),
                                               Text(
-                                                "2584",
+                                                "2584".tr,
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xff1E2538)),
                                               ),
@@ -345,12 +345,12 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "Up to \$10 Master card Cashback",
+                                            "Up to \$10 Master card Cashback".tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff000000)),
                                           ),
                                           Text(
-                                            "Use code Card Above \$120",
+                                            "Use code Card Above \$120".tr,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 10, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
                                           ),
@@ -404,7 +404,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                         setState(() {});
                                       },
                                       child: Text(
-                                        "About",
+                                        "About".tr,
                                         style: currentMenu == 0
                                             ? GoogleFonts.poppins(
                                                 fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF3B5998))
@@ -418,7 +418,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                         setState(() {});
                                       },
                                       child: Text(
-                                        "Menu",
+                                        "Menu".tr,
                                         style: currentMenu == 1
                                             ? GoogleFonts.poppins(
                                                 fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF3B5998))
@@ -432,7 +432,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                         setState(() {});
                                       },
                                       child: Text(
-                                        "Reviews",
+                                        "Reviews".tr,
                                         style: currentMenu == 2
                                             ? GoogleFonts.poppins(
                                                 fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF3B5998))
@@ -457,7 +457,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "About Us",
+                                          "About Us".tr,
                                           style: GoogleFonts.poppins(
                                               fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                                         ),
@@ -510,7 +510,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Restaurant Menu",
+                                          "Restaurant Menu".tr,
                                           style: GoogleFonts.poppins(
                                               fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                                         ),
@@ -681,7 +681,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                                           textStyle: const TextStyle(
                                                                               fontSize: 18, fontWeight: FontWeight.w500)),
                                                                       child: Text(
-                                                                        "ADD TO CART",
+                                                                        "ADD TO CART".tr,
                                                                         style: GoogleFonts.poppins(
                                                                           fontSize: 10,
                                                                           fontWeight: FontWeight.w500,
@@ -748,7 +748,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                               height: 10,
                                             ),
                                             Text(
-                                              "Overall Rating",
+                                              "Overall Rating".tr,
                                               style: GoogleFonts.poppins(
                                                   fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF969AA3)),
                                             ),
@@ -756,8 +756,8 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
                                                 child: Column(children: [
                                                   Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                                    const Text(
-                                                      '4.8',
+                                                     Text(
+                                                      '4.8'.tr,
                                                       style: TextStyle(
                                                         color: Color(0xFF1B233A),
                                                         fontSize: 48,
@@ -789,10 +789,10 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                       const SizedBox(
                                                         height: 8,
                                                       ),
-                                                      const Padding(
+                                                       Padding(
                                                         padding: EdgeInsets.symmetric(horizontal: 4.0),
                                                         child: Text(
-                                                          'basad on 23 reviews',
+                                                          'basad on 23 reviews'.tr,
                                                           style: TextStyle(
                                                             color: Color(0xFF969AA3),
                                                             fontSize: 13,
@@ -807,9 +807,9 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  const Expanded(
+                                                   Expanded(
                                                     child: Text(
-                                                      'Excellent',
+                                                      'Excellent'.tr,
                                                       style: TextStyle(
                                                         color: Color(0xFF969AA3),
                                                         fontSize: 12,
@@ -837,9 +837,9 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
-                                                  const Expanded(
+                                                   Expanded(
                                                     child: Text(
-                                                      'Good',
+                                                      'Good'.tr,
                                                       style: TextStyle(
                                                         color: Color(0xFF969AA3),
                                                         fontSize: 12,
@@ -867,9 +867,9 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  const Expanded(
+                                                   Expanded(
                                                     child: Text(
-                                                      'Average',
+                                                      'Average'.tr,
                                                       style: TextStyle(
                                                         color: Color(0xFF969AA3),
                                                         fontSize: 12,
@@ -897,9 +897,9 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  const Expanded(
+                                                   Expanded(
                                                     child: Text(
-                                                      'Below Average',
+                                                      'Below Average'.tr,
                                                       style: TextStyle(
                                                         color: Color(0xFF969AA3),
                                                         fontSize: 12,
@@ -927,9 +927,9 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  const Expanded(
+                                                   Expanded(
                                                     child: Text(
-                                                      'Poor',
+                                                      'Poor'.tr,
                                                       style: TextStyle(
                                                         color: Color(0xFF969AA3),
                                                         fontSize: 12,
@@ -1107,7 +1107,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Buy As a Bundle and save",
+                                        "Buy As a Bundle and save".tr,
                                         style: GoogleFonts.poppins(
                                             fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                                       ),
@@ -1115,7 +1115,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                         height: 5,
                                       ),
                                       Text(
-                                        "20% Discount ",
+                                        "20% Discount".tr,
                                         style: GoogleFonts.poppins(
                                             fontStyle: FontStyle.italic,
                                             fontSize: 16,
@@ -1147,7 +1147,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "Salad veggie",
+                                                    "Salad veggie".tr,
                                                     style: GoogleFonts.poppins(
                                                         fontSize: 14,
                                                         fontWeight: FontWeight.w400,
@@ -1157,7 +1157,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     height: 3,
                                                   ),
                                                   Text(
-                                                    "Lorem ipsum Dollar",
+                                                    "Lorem ipsum Dollar".tr,
                                                     style: GoogleFonts.poppins(
                                                         fontSize: 10,
                                                         fontWeight: FontWeight.w300,
@@ -1182,7 +1182,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                               )),
                                                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                       child: Text(
-                                                        "ADD TO CART",
+                                                        "ADD TO CART".tr,
                                                         style: GoogleFonts.poppins(
                                                           fontSize: 10,
                                                           fontWeight: FontWeight.w500,
@@ -1197,7 +1197,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                             const Spacer(),
                                             Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                                               Text(
-                                                "\$10.00",
+                                                "\$10.00".tr,
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 14,
                                                     // fontWeight: FontWeight.w400,

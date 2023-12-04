@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/widget/appassets.dart';
 
 import '../widget/apptheme.dart';
+import '../widget/language_change.dart';
 
 class CustomDrawer extends StatefulWidget {
   // final void Function(int index) onItemTapped;
@@ -224,6 +225,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             ),
                           ),
                         ),
+
 
                         const Divider(
                           height: 1,

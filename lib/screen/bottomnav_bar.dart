@@ -13,6 +13,7 @@ import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import 'package:resvago_customer/screen/wishlist_screen.dart';
+import 'package:resvago_customer/widget/language_change.dart';
 
 import '../controller/bottomnavbar_controller.dart';
 
@@ -280,6 +281,22 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           onTap: () async {
                             Get.toNamed(MyRouters.privacyPolicyScreen);
 
+                            // }
+                          }),
+                      const Divider(
+                        height: 5,
+                        color: Color(0xffF2F2F2),
+                      ),
+                      drawerTile(
+                          active: true,
+                          title: "Change Language".tr,
+                          icon: const ImageIcon(
+                            AssetImage(AppAssets.helpCenter),
+                            size: 22,
+                            color: AppTheme.drawerColor,
+                          ),
+                          onTap: () async {
+                            Get.to(LanguageChangeScreen());
                             // }
                           }),
                       const Divider(

@@ -55,7 +55,7 @@ class _ThankuScreenState extends State<ThankuScreen> {
                     textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                   child: Text(
-                    "Check Order Details".toUpperCase(),
+                    "Check Order Details".tr.toUpperCase(),
                     style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: AppTheme.primaryColor),
                   ),
                 ),
@@ -84,14 +84,14 @@ class _ThankuScreenState extends State<ThankuScreen> {
                   height: 13,
                 ),
                 Text(
-                  'Thank you '.toUpperCase(),
+                  'Thank you'.tr.toUpperCase(),
                   style: GoogleFonts.poppins(fontSize: 40, fontWeight: FontWeight.w600, color: Colors.white),
                 ),
                 const SizedBox(
                   height: 5,
                 ),
                 Text(
-                  'your reservation is confirmed',
+                  'your reservation is confirmed'.tr,
                   style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
                 ),
                 const SizedBox(
@@ -128,14 +128,28 @@ class _ThankuScreenState extends State<ThankuScreen> {
                               ),
                             ],
                           )
-                        : Text(
-                            "Your OrderId: #${widget.orderId.toString()}",
-                            style: GoogleFonts.poppins(
-                                color: const Color(
-                                  0xffFAAF40,
-                                ),
-                                fontWeight: FontWeight.w500),
-                          ),
+                        : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Your OrderId:".tr,
+                              style: GoogleFonts.poppins(
+                                  color: const Color(
+                                    0xffFAAF40,
+                                  ),
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                                " #${widget.orderId.toString()}",
+                                style: GoogleFonts.poppins(
+                                    color: const Color(
+                                      0xffFAAF40,
+                                    ),
+                                    fontWeight: FontWeight.w500),
+                              ),
+                          ],
+                        ),
                   ),
                 ),
               ],

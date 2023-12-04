@@ -26,15 +26,26 @@ class _SettingDataScreenState extends State<SettingDataScreen> {
               onTap: (){
                 Get.to(()=>RestaurantTimingScreenList(docId: widget.docId));
               },
-              child: Text(
-              "Average Price \$${settingData.averageMealForMember ?? ""}",
-                style: GoogleFonts.poppins(
-                    fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Average Price".tr,
+                    style: GoogleFonts.poppins(
+                        fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                  ),
+                  Text(
+                  "\$${settingData.averageMealForMember ?? ""}",
+                    style: GoogleFonts.poppins(
+                        fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                  ),
+                ],
               ),
             );
           }
         return Text(
-          "Average Price",
+          "Average Price".tr,
           style: GoogleFonts.poppins(
               fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
         );
@@ -64,10 +75,21 @@ class _PreparationTimeScreenState extends State<PreparationTimeScreen> {
             onTap: (){
               Get.to(()=>RestaurantTimingScreenList(docId: widget.docId));
             },
-            child: Text(
-              "${settingData.preparationTime ?? ""} mins",
-              style: GoogleFonts.poppins(
-                  fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "${settingData.preparationTime ?? ""}",
+                  style: GoogleFonts.poppins(
+                      fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                ),
+                Text(
+                  "mins".tr,
+                  style: GoogleFonts.poppins(
+                      fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
+                ),
+              ],
             ),
           );
         }

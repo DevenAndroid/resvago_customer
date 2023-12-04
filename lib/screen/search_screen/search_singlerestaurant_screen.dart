@@ -48,7 +48,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                         ],
                         color: Colors.white),
                     child: CommonTextFieldWidget1(
-                      hint: 'Find for food or restaurant...',
+                      hint: 'Find for food or restaurant...'.tr,
                       // controller: filterDataController.storeSearchController,
                       prefix: InkWell(
                         onTap: () {},
@@ -86,30 +86,30 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                             PopupMenuItem(
                               value: 1,
                               onTap: () {},
-                              child: const Column(
-                                children: [Text("Near By"), Divider()],
+                              child:  Column(
+                                children: [Text("Near By".tr), Divider()],
                               ),
                             ),
                             PopupMenuItem(
                               value: 1,
                               onTap: () {},
-                              child: const Column(
-                                children: [Text("Rating"), Divider()],
+                              child:  Column(
+                                children: [Text("Rating".tr), Divider()],
                               ),
                             ),
                             PopupMenuItem(
                               value: 1,
                               onTap: () {},
-                              child: const Column(
-                                children: [Text("Offers"), Divider()],
+                              child:  Column(
+                                children: [Text("Offers".tr), Divider()],
                               ),
                             ),
                             PopupMenuItem(
                               value: 1,
                               onTap: () {},
-                              child: const Column(
+                              child:  Column(
                                 children: [
-                                  Text("Popular"),
+                                  Text("Popular".tr),
                                   Divider(
                                     color: Colors.white,
                                   )
@@ -135,7 +135,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
             tabs: [
               Tab(
                 child: Text(
-                  "Restaurants",
+                  "Restaurants".tr,
                   style: currentDrawer == 0
                       ? GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500)
                       : GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500),
@@ -143,7 +143,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
               ),
               Tab(
                 child: Text(
-                  "Dishes",
+                  "Dishes".tr,
                   style: currentDrawer == 1
                       ? GoogleFonts.poppins(color: Colors.cyan, fontSize: 16, fontWeight: FontWeight.w500)
                       : GoogleFonts.poppins(color: const Color(0xff1A2E33), fontSize: 16, fontWeight: FontWeight.w500),
@@ -224,7 +224,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                         borderRadius: const BorderRadius.all(Radius.circular(5))),
                                     child: Center(
                                       child: Text(
-                                        'South Indian Food',
+                                        'South Indian Food'.tr,
                                         style: GoogleFonts.poppins(
                                             fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.primaryColor),
                                       ),
@@ -237,7 +237,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "McDonald’s New Restaurant",
+                                        "McDonald’s New Restaurant".tr,
                                         style: GoogleFonts.poppins(
                                             fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
                                       ),
@@ -251,7 +251,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                         width: 5,
                                       ),
                                       Text(
-                                        "4.5",
+                                        "4.5".tr,
                                         style: GoogleFonts.poppins(
                                             fontSize: 14, fontWeight: FontWeight.w300, color: const Color(0xff08141B)),
                                       ),
@@ -263,7 +263,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        "25 Mins ",
+                                        "25 Mins".tr,
                                         style: GoogleFonts.poppins(
                                             fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
                                       ),
@@ -275,7 +275,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                         width: 5,
                                       ),
                                       Text(
-                                        "1.8 Km",
+                                        "1.8 Km".tr,
                                         style: GoogleFonts.poppins(
                                             fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
                                       ),
@@ -300,7 +300,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                         height: 16,
                                       ),
                                       Text(
-                                        "  40% off up to \$100",
+                                        "  40% off up to \$100".tr,
                                         style: GoogleFonts.poppins(
                                             fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
                                       ),
@@ -318,7 +318,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                     );
                   }),
             ),
-            const Text('djn'),
+             Text('djn'.tr),
             // Icon(Icons.directions_transit, size: 350),
           ],
         ),

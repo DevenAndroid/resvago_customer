@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:resvago_customer/widget/addsize.dart';
@@ -24,8 +25,8 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'ras',
+        title: Text(
+          'ras'.tr,
           style: TextStyle(color: Colors.black),
         ),
       ),
@@ -39,7 +40,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
             final isLastStep = currentStep == getSteps().length - 1;
             if (isLastStep) {
               if (kDebugMode) {
-                print('Complete');
+                print('Complete'.tr);
               }
             } else {
               setState(() {
@@ -74,7 +75,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                             textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                           ),
                           child: Text(
-                            "NEXT",
+                            "NEXT".tr,
                             style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                           ),
                         ),
@@ -100,7 +101,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                                 textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                               ),
                               child: Text(
-                                "Checkout".toUpperCase(),
+                                "Checkout".tr.toUpperCase(),
                                 style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                               ),
                             ),
@@ -118,12 +119,12 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
             state: currentStep > 0 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 0,
             label: currentStep > 0
-                ? const Text(
-                    'Date',
+                ?  Text(
+                    'Date'.tr,
                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 12),
                   )
-                : const Text(
-                    'Date',
+                :  Text(
+                    'Date'.tr,
                     style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.w500, fontSize: 12),
                   ),
             content: const Column(
@@ -132,8 +133,8 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
         Step(
             isActive: currentStep >= 1,
             state: currentStep > 1 ? StepState.complete : StepState.indexed,
-            label: const Text(
-              'Time',
+            label:  Text(
+              'Time'.tr,
               style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 12),
             ),
             title: const Text(''),
@@ -150,7 +151,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
-                    'Lunch',
+                    'Lunch'.tr,
                     style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
                   ),
                 ),
@@ -175,7 +176,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                               borderRadius: BorderRadius.circular(4)),
                           child: Center(
                             child: Text(
-                              '11:33',
+                              '11:33'.tr,
                               style: GoogleFonts.poppins(color: AppTheme.primaryColor),
                             ),
                           ),
@@ -190,7 +191,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
-                    'Dinner',
+                    'Dinner'.tr,
                     style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
                   ),
                 ),
@@ -215,7 +216,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                               borderRadius: BorderRadius.circular(4)),
                           child: Center(
                             child: Text(
-                              '19:30',
+                              '19:30'.tr,
                               style: GoogleFonts.poppins(color: AppTheme.primaryColor),
                             ),
                           ),
@@ -229,8 +230,8 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
         Step(
             state: currentStep > 2 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 2,
-            label: const Text(
-              'Guest',
+            label: Text(
+              'Guest'.tr,
               style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 12),
             ),
             title: const Text(''),
@@ -247,7 +248,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
-                    'Number Of Guests',
+                    'Number Of Guests'.tr,
                     style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
                   ),
                 ),
@@ -294,7 +295,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                 ),
                 Center(
                   child: Text(
-                    'We have max 100 sitting capacity'.toUpperCase(),
+                    'We have max 100 sitting capacity'.tr.toUpperCase(),
                     style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: const Color(0xFFFF2D2D)),
                   ),
                 )
@@ -303,8 +304,8 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
         Step(
             state: currentStep > 3 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 3,
-            label: const Text(
-              'Offer',
+            label:  Text(
+              'Offer'.tr,
               style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 12),
             ),
             title: const Text(''),
@@ -326,7 +327,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                             width: 10,
                           ),
                           Text(
-                            "Select Your Offer",
+                            "Select Your Offer".tr,
                             style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF3B5998)),
                           ),
                         ],
@@ -349,14 +350,14 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '20% Off On “A La Carte” Menu',
+                                '20% Off On “A La Carte” Menu'.tr,
                                 style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
                               ),
                               const SizedBox(
                                 height: 5,
                               ),
                               Text(
-                                'Discount available for the booked timeslot preset menus and drinks not inclused',
+                                'Discount available for the booked timeslot preset menus and drinks not inclused'.tr,
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF384953), fontWeight: FontWeight.w300, fontSize: 13),
                                 maxLines: 5,
@@ -370,7 +371,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                                 decoration: BoxDecoration(color: AppTheme.primaryColor, borderRadius: BorderRadius.circular(5)),
                                 child: Center(
                                   child: Text(
-                                    '20% off',
+                                    '20% off'.tr,
                                     style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
                                   ),
                                 ),
@@ -396,7 +397,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                   height: 13,
                 ),
                 Text(
-                  'Restaurants Menu Chosen For You',
+                  'Restaurants Menu Chosen For You'.tr,
                   style: GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w500, fontSize: 17),
                 ),
                 const SizedBox(
@@ -443,7 +444,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Salad veggie",
+                                    "Salad veggie".tr,
                                     style: GoogleFonts.poppins(
                                         fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                                   ),
@@ -451,7 +452,7 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                                     height: 3,
                                   ),
                                   Text(
-                                    "\$10.00",
+                                    "\$10.00".tr,
                                     style: GoogleFonts.poppins(
                                         fontSize: 14, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
                                   ),

@@ -72,6 +72,7 @@ dependencies:
   firebase_core_web: ^2.8.1
   firebase_messaging_web: ^3.5.14
   google_maps_flutter_web: ^0.5.4+2
+  shared_preferences: ^2.2.2
   file_picker:
   http: ^1.1.0
 #  youcanpay_sdk: ^0.0.4

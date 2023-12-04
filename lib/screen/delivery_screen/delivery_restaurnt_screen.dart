@@ -279,7 +279,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                   const SizedBox(width: 4),
                                   Flexible(
                                     child: Text(
-                                      'Home',
+                                      'Home'.tr,
                                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
                                     ),
                                   ),
@@ -438,7 +438,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                 Get.to(const SerachListScreen());
                               },
                               readOnly: true,
-                              hint: 'Find for food or restaurant...',
+                              hint: 'Find for food or restaurant...'.tr,
                               // controller: filterDataController.storeSearchController,
                               prefix: InkWell(
                                 onTap: () {},
@@ -476,30 +476,30 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
-                                      child: const Column(
-                                        children: [Text("Near By"), Divider()],
+                                      child:  Column(
+                                        children: [Text("Near By".tr), Divider()],
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
-                                      child: const Column(
-                                        children: [Text("Rating"), Divider()],
+                                      child:  Column(
+                                        children: [Text("Rating".tr), Divider()],
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
-                                      child: const Column(
-                                        children: [Text("Offers"), Divider()],
+                                      child:  Column(
+                                        children: [Text("Offers".tr), Divider()],
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
-                                      child: const Column(
+                                      child:  Column(
                                         children: [
-                                          Text("Popular"),
+                                          Text("Popular".tr),
                                           Divider(
                                             color: Colors.white,
                                           )
@@ -554,7 +554,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                           Get.to(() => AllCategoryScreen());
                         },
                         child: Text(
-                          "View All",
+                          "View All".tr,
                           style: TextStyle(color: AppTheme.primaryColor),
                         ))
                   ],
@@ -614,7 +614,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   height: 10,
                 ),
                 Text(
-                  '  Restaurants chosen for you',
+                  '  Restaurants chosen for you'.tr,
                   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                 ),
                 const SizedBox(
@@ -775,7 +775,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   height: 10,
                 ),
                 Text(
-                  '  Explore Now',
+                  '  Explore Now'.tr,
                   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                 ),
                 const SizedBox(
@@ -836,7 +836,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   height: 10,
                 ),
                 Text(
-                  '  Popular restaurants in Madrid',
+                  'Popular restaurants in Madrid'.tr,
                   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                 ),
                 const SizedBox(

@@ -32,7 +32,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
         ),
         elevation: 1,
         title: Text(
-          "Pizza",
+          "Pizza".tr,
           style: GoogleFonts.poppins(
             fontSize: 17,
             fontWeight: FontWeight.w600,
@@ -72,7 +72,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                             height: 5,
                           ),
                           Text(
-                            "Pizza",
+                            "Pizza".tr,
                             style: GoogleFonts.poppins(
                                 fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
                           ),
@@ -155,7 +155,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                                           borderRadius: const BorderRadius.all(Radius.circular(5))),
                                       child: Center(
                                         child: Text(
-                                          'South Indian Food',
+                                          'South Indian Food'.tr,
                                           style: GoogleFonts.poppins(
                                               fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.primaryColor),
                                         ),
@@ -168,7 +168,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "McDonald’s New Restaurant",
+                                          "McDonald’s New Restaurant".tr,
                                           style: GoogleFonts.poppins(
                                               fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff08141B)),
                                         ),
@@ -182,7 +182,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                                           width: 5,
                                         ),
                                         Text(
-                                          "4.5",
+                                          "4.5".tr,
                                           style: GoogleFonts.poppins(
                                               fontSize: 14, fontWeight: FontWeight.w300, color: const Color(0xff08141B)),
                                         ),
@@ -194,7 +194,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                                     Row(
                                       children: [
                                         Text(
-                                          "25 Mins ",
+                                          "25 Mins".tr,
                                           style: GoogleFonts.poppins(
                                               fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
                                         ),
@@ -206,7 +206,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                                           width: 5,
                                         ),
                                         Text(
-                                          "1.8 Km",
+                                          "1.8 Km".tr,
                                           style: GoogleFonts.poppins(
                                               fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
                                         ),
@@ -231,7 +231,7 @@ class _SearchListDiningScreenState extends State<SearchListDiningScreen> {
                                           height: 16,
                                         ),
                                         Text(
-                                          "  40% off up to \$100",
+                                          " 40% off up to \$100".tr,
                                           style: GoogleFonts.poppins(
                                               fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
                                         ),

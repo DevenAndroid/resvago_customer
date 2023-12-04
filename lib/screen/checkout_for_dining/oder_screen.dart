@@ -172,7 +172,7 @@ class _OderScreenState extends State<OderScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Restaurant",
+                            "Restaurant".tr,
                             style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                           ),
                           const SizedBox(
@@ -251,7 +251,7 @@ class _OderScreenState extends State<OderScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Reservation",
+                                "Reservation".tr,
                                 style: GoogleFonts.poppins(
                                     fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                               ),
@@ -268,7 +268,7 @@ class _OderScreenState extends State<OderScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Date:",
+                                "Date:".tr,
                                 style: GoogleFonts.poppins(
                                     fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                               ),
@@ -291,7 +291,7 @@ class _OderScreenState extends State<OderScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Slot Time",
+                                "Slot Time".tr,
                                 style: GoogleFonts.poppins(
                                     fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                               ),
@@ -314,7 +314,7 @@ class _OderScreenState extends State<OderScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Guest:",
+                                "Guest:".tr,
                                 style: GoogleFonts.poppins(
                                     fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                               ),
@@ -351,7 +351,7 @@ class _OderScreenState extends State<OderScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Selected Items",
+                                "Selected Items".tr,
                                 style: GoogleFonts.poppins(
                                     fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                               ),
@@ -551,7 +551,7 @@ class _OderScreenState extends State<OderScreen> {
                             width: 10,
                           ),
                           Text(
-                            'Use Coupons',
+                            'Use Coupons'.tr,
                             style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
                           ),
                         ]),
@@ -612,7 +612,7 @@ class _OderScreenState extends State<OderScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Payable Amount",
+                              "Payable Amount".tr,
                               style:
                                   GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                             ),
@@ -623,7 +623,7 @@ class _OderScreenState extends State<OderScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  ' Subtotal',
+                                  'Subtotal'.tr,
                                   style: GoogleFonts.poppins(
                                       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                                 ),
@@ -640,7 +640,7 @@ class _OderScreenState extends State<OderScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Save Coupon',
+                                  'Save Coupon'.tr,
                                   style: GoogleFonts.poppins(
                                       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                                 ),
@@ -657,7 +657,7 @@ class _OderScreenState extends State<OderScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Total',
+                                  'Total'.tr,
                                   style: GoogleFonts.poppins(
                                       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                                 ),
@@ -693,7 +693,7 @@ class _OderScreenState extends State<OderScreen> {
                             Row(
                               children: [
                                 Text(
-                                  "Payment Method",
+                                  "Payment Method".tr,
                                   style: GoogleFonts.poppins(
                                       fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                                 ),
@@ -739,7 +739,7 @@ class _OderScreenState extends State<OderScreen> {
                                       width: 18,
                                     ),
                                     Text(
-                                      'Debit/Credit Card',
+                                      'Debit/Credit Card'.tr,
                                       style: GoogleFonts.poppins(
                                           fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
                                     )
@@ -767,7 +767,7 @@ class _OderScreenState extends State<OderScreen> {
                                       width: 18,
                                     ),
                                     Text(
-                                      'PayPay',
+                                      'PayPay'.tr,
                                       style: GoogleFonts.poppins(
                                           fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
                                     ),
@@ -897,7 +897,7 @@ class _OderScreenState extends State<OderScreen> {
                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                         ),
                         child: Text(
-                          "Place Order",
+                          "Place Order".tr,
                           style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                         ),
                       ),

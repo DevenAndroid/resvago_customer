@@ -209,7 +209,7 @@ class _MyOrderState extends State<MyOrder> {
               ),
               elevation: 1,
               title: Text(
-                "My Orders",
+                "My Orders".tr,
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -246,8 +246,11 @@ class _MyOrderState extends State<MyOrder> {
                                     log(orderType.toString());
                                     setState(() {});
                                   },
-                                  child: const Column(
-                                    children: [Text("Dining Orders"), Divider()],
+                                  child: Column(
+                                    children: [
+                                      Text("Dining Orders".tr),
+                                      Divider()
+                                    ],
                                   ),
                                 ),
                                 PopupMenuItem(
@@ -257,9 +260,9 @@ class _MyOrderState extends State<MyOrder> {
                                     log(orderType.toString());
                                     setState(() {});
                                   },
-                                  child: const Column(
+                                  child:  Column(
                                     children: [
-                                      Text("Delivery Orders"),
+                                      Text("Delivery Orders".tr),
                                       Divider(
                                         color: Colors.white,
                                       )
@@ -284,26 +287,44 @@ class _MyOrderState extends State<MyOrder> {
                 tabs: [
                   Tab(
                     child: Text(
-                      "Active",
+                      "Active".tr,
                       style: currentDrawer == 0
-                          ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
-                          : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
+                          ? GoogleFonts.poppins(
+                              color: AppTheme.primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500)
+                          : GoogleFonts.poppins(
+                              color: const Color(0xff9B9B9B),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
                     ),
                   ),
                   Tab(
                     child: Text(
-                      "Completed",
+                      "Completed".tr,
                       style: currentDrawer == 1
-                          ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
-                          : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
+                          ? GoogleFonts.poppins(
+                              color: AppTheme.primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500)
+                          : GoogleFonts.poppins(
+                              color: const Color(0xff9B9B9B),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
                     ),
                   ),
                   Tab(
                     child: Text(
-                      "Cancelled",
+                      "Cancelled".tr,
                       style: currentDrawer == 2
-                          ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
-                          : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
+                          ? GoogleFonts.poppins(
+                              color: AppTheme.primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500)
+                          : GoogleFonts.poppins(
+                              color: const Color(0xff9B9B9B),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -327,7 +348,8 @@ class _MyOrderState extends State<MyOrder> {
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: myOrder.length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
                                       behavior: HitTestBehavior.translucent,
@@ -339,15 +361,18 @@ class _MyOrderState extends State<MyOrder> {
                                             ));
                                       },
                                       child: Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 13, vertical: 5),
                                           width: size.width,
                                           padding: const EdgeInsets.all(14),
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: const Color(0xFF37C666).withOpacity(0.10),
+                                                  color: const Color(0xFF37C666)
+                                                      .withOpacity(0.10),
                                                   offset: const Offset(
                                                     1,
                                                     1,
@@ -357,80 +382,123 @@ class _MyOrderState extends State<MyOrder> {
                                                 ),
                                               ]),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
                                             children: [
                                               Container(
                                                 height: 25,
                                                 width: 25,
                                                 decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
                                                     color: Colors.white,
                                                     border: Border.all(
-                                                      color: const Color(0xff363539).withOpacity(.1),
+                                                      color: const Color(
+                                                              0xff363539)
+                                                          .withOpacity(.1),
                                                     )),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(2),
-                                                  child: Image.asset('assets/images/route-square.png'),
+                                                  padding:
+                                                      const EdgeInsets.all(2),
+                                                  child: Image.asset(
+                                                      'assets/images/route-square.png'),
                                                 ),
                                               ),
                                               Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
                                                       height: 70,
                                                       width: 70,
                                                       child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl: orderItem.orderDetails!.restaurantInfo!.image,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl: orderItem
+                                                                .orderDetails!
+                                                                .restaurantInfo!
+                                                                .image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget:
+                                                                (_, __, ___) =>
+                                                                    Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
                                                           )),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.only(left: 15),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 15),
                                                       child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Text(
-                                                              orderItem.orderDetails!.restaurantInfo!.restaurantName.toString(),
+                                                              orderItem
+                                                                  .orderDetails!
+                                                                  .restaurantInfo!
+                                                                  .restaurantName
+                                                                  .toString(),
                                                               style: GoogleFonts.poppins(
                                                                   fontSize: 16,
-                                                                  fontWeight: FontWeight.w500,
-                                                                  color: const Color(0xFF1A2E33)),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: const Color(
+                                                                      0xFF1A2E33)),
                                                             ),
                                                             const SizedBox(
                                                               height: 3,
                                                             ),
                                                             IntrinsicHeight(
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
                                                                 children: [
                                                                   Text(
                                                                     "${orderItem.orderDetails!.menuList!.length} Items",
                                                                     style: GoogleFonts.poppins(
-                                                                        fontSize: 12,
-                                                                        fontWeight: FontWeight.w300,
-                                                                        color: const Color(0xFF74848C)),
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w300,
+                                                                        color: const Color(
+                                                                            0xFF74848C)),
                                                                   ),
                                                                   const SizedBox(
                                                                     height: 5,
                                                                   ),
                                                                   const VerticalDivider(),
                                                                   Text(
-                                                                    orderItem.orderType,
+                                                                    orderItem
+                                                                        .orderType,
                                                                     style: GoogleFonts.poppins(
-                                                                        fontSize: 12,
-                                                                        fontWeight: FontWeight.w300,
-                                                                        color: const Color(0xFF74848C)),
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w300,
+                                                                        color: const Color(
+                                                                            0xFF74848C)),
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .06,
+                                                                    width:
+                                                                        size.width *
+                                                                            .06,
                                                                   ),
                                                                 ],
                                                               ),
@@ -442,8 +510,11 @@ class _MyOrderState extends State<MyOrder> {
                                                               "\$${orderItem.total}",
                                                               style: GoogleFonts.poppins(
                                                                   fontSize: 12,
-                                                                  fontWeight: FontWeight.w300,
-                                                                  color: const Color(0xFF3B5998)),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300,
+                                                                  color: const Color(
+                                                                      0xFF3B5998)),
                                                             ),
                                                           ]),
                                                     )
@@ -454,24 +525,42 @@ class _MyOrderState extends State<MyOrder> {
                                                 thickness: 1,
                                               ),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   SizedBox(
                                                     height: 28,
                                                     child: ElevatedButton(
                                                       onPressed: () {},
-                                                      style: ElevatedButton.styleFrom(
-                                                          backgroundColor: Colors.white,
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(20),
-                                                              side: const BorderSide(
-                                                                color: Colors.red,
-                                                              )),
-                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20),
+                                                                      side:
+                                                                          const BorderSide(
+                                                                        color: Colors
+                                                                            .red,
+                                                                      )),
+                                                              textStyle: const TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500)),
                                                       child: Text(
-                                                        "Cancel Order",
-                                                        style: GoogleFonts.poppins(
-                                                            fontSize: 12, fontWeight: FontWeight.w500, color: Colors.red),
+                                                        "Cancel Order".tr,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    Colors.red),
                                                       ),
                                                     ),
                                                   ),
@@ -482,22 +571,42 @@ class _MyOrderState extends State<MyOrder> {
                                                     height: 28,
                                                     child: ElevatedButton(
                                                       onPressed: () {
-                                                        Get.to(() => OderDetailsScreen(
-                                                              orderType: 'Delivery',
-                                                              orderId: orderItem.orderId,
+                                                        Get.to(() =>
+                                                            OderDetailsScreen(
+                                                              orderType:
+                                                                  'Delivery',
+                                                              orderId: orderItem
+                                                                  .orderId,
                                                               data: '',
                                                             ));
                                                       },
-                                                      style: ElevatedButton.styleFrom(
-                                                          backgroundColor: AppTheme.primaryColor,
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(20),
-                                                          ),
-                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              backgroundColor:
+                                                                  AppTheme
+                                                                      .primaryColor,
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20),
+                                                              ),
+                                                              textStyle: const TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500)),
                                                       child: Text(
-                                                        "See Details",
-                                                        style: GoogleFonts.poppins(
-                                                            fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
+                                                        "See Details".tr,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Colors
+                                                                    .white),
                                                       ),
                                                     ),
                                                   ),
@@ -508,7 +617,7 @@ class _MyOrderState extends State<MyOrder> {
                                     );
                                   })
                               : SingleChildScrollView(
-                                child: Column(
+                                  child: Column(
                                     children: [
                                       Container(
                                         height: 500,
@@ -523,18 +632,24 @@ class _MyOrderState extends State<MyOrder> {
                                           // crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Image.asset(AppAssets.orderEmpty,
-                                                height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
+                                                height: kIsWeb ? 500 : 200,
+                                                width: kIsWeb ? 500 : 200),
                                             Text(
-                                              'Empty',
-                                              style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                                              'Empty'.tr,
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500),
                                             ),
                                             const SizedBox(
                                               height: 15,
                                             ),
                                             Text(
-                                              'You do not have an active order of this time',
+                                              'You do not have an active order of this time'.tr,
                                               style: GoogleFonts.poppins(
-                                                  fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      const Color(0xff747474)),
                                             ),
                                             const SizedBox(
                                               height: 40,
@@ -544,7 +659,7 @@ class _MyOrderState extends State<MyOrder> {
                                       ),
                                     ],
                                   ),
-                              );
+                                );
                         }
                         return const SizedBox.shrink();
                       },
@@ -559,7 +674,8 @@ class _MyOrderState extends State<MyOrder> {
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: myOrder.length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
                                       onTap: () {
@@ -570,15 +686,18 @@ class _MyOrderState extends State<MyOrder> {
                                             ));
                                       },
                                       child: Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 13, vertical: 5),
                                           width: size.width,
                                           padding: const EdgeInsets.all(14),
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: const Color(0xFF37C666).withOpacity(0.10),
+                                                  color: const Color(0xFF37C666)
+                                                      .withOpacity(0.10),
                                                   offset: const Offset(
                                                     1,
                                                     1,
@@ -588,80 +707,123 @@ class _MyOrderState extends State<MyOrder> {
                                                 ),
                                               ]),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
                                             children: [
                                               Container(
                                                 height: 25,
                                                 width: 25,
                                                 decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
                                                     color: Colors.white,
                                                     border: Border.all(
-                                                      color: const Color(0xff363539).withOpacity(.1),
+                                                      color: const Color(
+                                                              0xff363539)
+                                                          .withOpacity(.1),
                                                     )),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(2),
-                                                  child: Image.asset('assets/images/route-square.png'),
+                                                  padding:
+                                                      const EdgeInsets.all(2),
+                                                  child: Image.asset(
+                                                      'assets/images/route-square.png'),
                                                 ),
                                               ),
                                               Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
                                                       height: 70,
                                                       width: 70,
                                                       child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl: orderItem.orderDetails!.restaurantInfo!.image,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl: orderItem
+                                                                .orderDetails!
+                                                                .restaurantInfo!
+                                                                .image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget:
+                                                                (_, __, ___) =>
+                                                                    Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
                                                           )),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.only(left: 15),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 15),
                                                       child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Text(
-                                                              orderItem.orderDetails!.restaurantInfo!.restaurantName.toString(),
+                                                              orderItem
+                                                                  .orderDetails!
+                                                                  .restaurantInfo!
+                                                                  .restaurantName
+                                                                  .toString(),
                                                               style: GoogleFonts.poppins(
                                                                   fontSize: 16,
-                                                                  fontWeight: FontWeight.w500,
-                                                                  color: const Color(0xFF1A2E33)),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: const Color(
+                                                                      0xFF1A2E33)),
                                                             ),
                                                             const SizedBox(
                                                               height: 3,
                                                             ),
                                                             IntrinsicHeight(
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
                                                                 children: [
                                                                   Text(
                                                                     "${orderItem.orderDetails!.menuList!.length} Items",
                                                                     style: GoogleFonts.poppins(
-                                                                        fontSize: 12,
-                                                                        fontWeight: FontWeight.w300,
-                                                                        color: const Color(0xFF74848C)),
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w300,
+                                                                        color: const Color(
+                                                                            0xFF74848C)),
                                                                   ),
                                                                   const SizedBox(
                                                                     height: 5,
                                                                   ),
                                                                   const VerticalDivider(),
                                                                   Text(
-                                                                    orderItem.orderType,
+                                                                    orderItem
+                                                                        .orderType,
                                                                     style: GoogleFonts.poppins(
-                                                                        fontSize: 12,
-                                                                        fontWeight: FontWeight.w300,
-                                                                        color: const Color(0xFF74848C)),
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w300,
+                                                                        color: const Color(
+                                                                            0xFF74848C)),
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .06,
+                                                                    width:
+                                                                        size.width *
+                                                                            .06,
                                                                   ),
                                                                 ],
                                                               ),
@@ -674,30 +836,41 @@ class _MyOrderState extends State<MyOrder> {
                                                                 Text(
                                                                   "\$${orderItem.total}",
                                                                   style: GoogleFonts.poppins(
-                                                                      fontSize: 12,
-                                                                      fontWeight: FontWeight.w300,
-                                                                      color: const Color(0xFF3B5998)),
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w300,
+                                                                      color: const Color(
+                                                                          0xFF3B5998)),
                                                                 ),
                                                                 const SizedBox(
                                                                   width: 10,
                                                                 ),
                                                                 SizedBox(
                                                                   height: 28,
-                                                                  child: ElevatedButton(
-                                                                    onPressed: () {},
+                                                                  child:
+                                                                      ElevatedButton(
+                                                                    onPressed:
+                                                                        () {},
                                                                     style: ElevatedButton.styleFrom(
                                                                         backgroundColor: const Color(0xff65CD90),
                                                                         shape: RoundedRectangleBorder(
-                                                                          borderRadius: BorderRadius.circular(20),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(20),
                                                                         ),
-                                                                        textStyle: const TextStyle(
-                                                                            fontSize: 18, fontWeight: FontWeight.w500)),
+                                                                        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                                     child: Text(
-                                                                      orderItem.orderStatus.toString(),
+                                                                      orderItem
+                                                                          .orderStatus
+                                                                          .toString(),
                                                                       style: GoogleFonts.poppins(
-                                                                          fontSize: 12,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: Colors.white),
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight: FontWeight
+                                                                              .w500,
+                                                                          color:
+                                                                              Colors.white),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -712,31 +885,49 @@ class _MyOrderState extends State<MyOrder> {
                                                 thickness: 1,
                                               ),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   SizedBox(
                                                     height: 28,
                                                     child: ElevatedButton(
                                                       onPressed: () {
-                                                        Get.to(() => ReviewAndRatingScreen(
-                                                              orderId: orderItem.orderId,
-                                                              vendorId: orderItem.vendorId,
+                                                        Get.to(() =>
+                                                            ReviewAndRatingScreen(
+                                                              orderId: orderItem
+                                                                  .orderId,
+                                                              vendorId:
+                                                                  orderItem
+                                                                      .vendorId,
                                                             ));
                                                       },
-                                                      style: ElevatedButton.styleFrom(
-                                                          backgroundColor: Colors.white,
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(20),
-                                                              side: const BorderSide(
-                                                                color: Color(0xffFAAF40),
-                                                              )),
-                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20),
+                                                                      side:
+                                                                          const BorderSide(
+                                                                        color: Color(
+                                                                            0xffFAAF40),
+                                                                      )),
+                                                              textStyle: const TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500)),
                                                       child: Text(
-                                                        "Leave Review",
+                                                        "Leave Review".tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: const Color(0xffFAAF40)),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: const Color(
+                                                                0xffFAAF40)),
                                                       ),
                                                     ),
                                                   ),
@@ -750,40 +941,74 @@ class _MyOrderState extends State<MyOrder> {
                                                         log(myOrder[index]
                                                             .orderDetails!
                                                             .menuList!
-                                                            .where((e) => e.qty > 0)
+                                                            .where((e) =>
+                                                                e.qty > 0)
                                                             .toList()
                                                             .toString());
                                                         try {
                                                           await firebaseService
                                                               .manageCheckOut(
-                                                            cartId: FirebaseAuth.instance.currentUser!.uid,
-                                                            menuList: myOrder[index]
+                                                            cartId: FirebaseAuth
+                                                                .instance
+                                                                .currentUser!
+                                                                .uid,
+                                                            menuList: myOrder[
+                                                                    index]
                                                                 .orderDetails!
                                                                 .menuList!
-                                                                .where((e) => e.qty > 0)
-                                                                .map((e) => e.toJson())
+                                                                .where((e) =>
+                                                                    e.qty > 0)
+                                                                .map((e) =>
+                                                                    e.toJson())
                                                                 .toList(),
-                                                            restaurantInfo: myOrder[index].orderDetails!.restaurantInfo!.toJson(),
-                                                            vendorId: myOrder[index].orderDetails!.restaurantInfo!.userID,
-                                                            time: DateTime.now().millisecondsSinceEpoch,
+                                                            restaurantInfo: myOrder[
+                                                                    index]
+                                                                .orderDetails!
+                                                                .restaurantInfo!
+                                                                .toJson(),
+                                                            vendorId: myOrder[
+                                                                    index]
+                                                                .orderDetails!
+                                                                .restaurantInfo!
+                                                                .userID,
+                                                            time: DateTime.now()
+                                                                .millisecondsSinceEpoch,
                                                           )
                                                               .then((value) {
-                                                            Get.to(() => const CartScreen());
+                                                            Get.to(() =>
+                                                                const CartScreen());
                                                           });
                                                         } catch (e) {
                                                           throw Exception(e);
                                                         }
                                                       },
-                                                      style: ElevatedButton.styleFrom(
-                                                          backgroundColor: AppTheme.primaryColor,
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(20),
-                                                          ),
-                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              backgroundColor:
+                                                                  AppTheme
+                                                                      .primaryColor,
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20),
+                                                              ),
+                                                              textStyle: const TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500)),
                                                       child: Text(
-                                                        "Order Again",
-                                                        style: GoogleFonts.poppins(
-                                                            fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
+                                                        "Order Again".tr,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Colors
+                                                                    .white),
                                                       ),
                                                     ),
                                                   ),
@@ -807,18 +1032,23 @@ class _MyOrderState extends State<MyOrder> {
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Image.asset(AppAssets.orderEmpty,
-                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
+                                              height: kIsWeb ? 500 : 200,
+                                              width: kIsWeb ? 500 : 200),
                                           Text(
-                                            'Empty',
-                                            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                                            'Empty'.tr,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            'You do not have an active order of this time'.tr,
                                             style: GoogleFonts.poppins(
-                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                                color: const Color(0xff747474)),
                                           ),
                                           const SizedBox(
                                             height: 40,
@@ -842,7 +1072,8 @@ class _MyOrderState extends State<MyOrder> {
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: myOrder.length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
                                       onTap: () {
@@ -853,15 +1084,18 @@ class _MyOrderState extends State<MyOrder> {
                                             ));
                                       },
                                       child: Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 13, vertical: 5),
                                           width: size.width,
                                           padding: const EdgeInsets.all(14),
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: const Color(0xFF37C666).withOpacity(0.10),
+                                                  color: const Color(0xFF37C666)
+                                                      .withOpacity(0.10),
                                                   offset: const Offset(
                                                     1,
                                                     1,
@@ -871,80 +1105,123 @@ class _MyOrderState extends State<MyOrder> {
                                                 ),
                                               ]),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
                                             children: [
                                               Container(
                                                 height: 25,
                                                 width: 25,
                                                 decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
                                                     color: Colors.white,
                                                     border: Border.all(
-                                                      color: const Color(0xff363539).withOpacity(.1),
+                                                      color: const Color(
+                                                              0xff363539)
+                                                          .withOpacity(.1),
                                                     )),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(2),
-                                                  child: Image.asset('assets/images/route-square.png'),
+                                                  padding:
+                                                      const EdgeInsets.all(2),
+                                                  child: Image.asset(
+                                                      'assets/images/route-square.png'),
                                                 ),
                                               ),
                                               Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
                                                       height: 70,
                                                       width: 70,
                                                       child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl: orderItem.orderDetails!.restaurantInfo!.image,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl: orderItem
+                                                                .orderDetails!
+                                                                .restaurantInfo!
+                                                                .image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget:
+                                                                (_, __, ___) =>
+                                                                    Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
                                                           )),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.only(left: 15),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 15),
                                                       child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Text(
-                                                              orderItem.orderDetails!.restaurantInfo!.restaurantName.toString(),
+                                                              orderItem
+                                                                  .orderDetails!
+                                                                  .restaurantInfo!
+                                                                  .restaurantName
+                                                                  .toString(),
                                                               style: GoogleFonts.poppins(
                                                                   fontSize: 16,
-                                                                  fontWeight: FontWeight.w500,
-                                                                  color: const Color(0xFF1A2E33)),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: const Color(
+                                                                      0xFF1A2E33)),
                                                             ),
                                                             const SizedBox(
                                                               height: 3,
                                                             ),
                                                             IntrinsicHeight(
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
                                                                 children: [
                                                                   Text(
                                                                     "${orderItem.orderDetails!.menuList!.length} Items",
                                                                     style: GoogleFonts.poppins(
-                                                                        fontSize: 12,
-                                                                        fontWeight: FontWeight.w300,
-                                                                        color: const Color(0xFF74848C)),
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w300,
+                                                                        color: const Color(
+                                                                            0xFF74848C)),
                                                                   ),
                                                                   const SizedBox(
                                                                     height: 5,
                                                                   ),
                                                                   const VerticalDivider(),
                                                                   Text(
-                                                                    orderItem.orderType,
+                                                                    orderItem
+                                                                        .orderType,
                                                                     style: GoogleFonts.poppins(
-                                                                        fontSize: 12,
-                                                                        fontWeight: FontWeight.w300,
-                                                                        color: const Color(0xFF74848C)),
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w300,
+                                                                        color: const Color(
+                                                                            0xFF74848C)),
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .06,
+                                                                    width:
+                                                                        size.width *
+                                                                            .06,
                                                                   ),
                                                                 ],
                                                               ),
@@ -957,31 +1234,39 @@ class _MyOrderState extends State<MyOrder> {
                                                                 Text(
                                                                   "\$${orderItem.total}",
                                                                   style: GoogleFonts.poppins(
-                                                                      fontSize: 12,
-                                                                      fontWeight: FontWeight.w300,
-                                                                      color: const Color(0xFF3B5998)),
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w300,
+                                                                      color: const Color(
+                                                                          0xFF3B5998)),
                                                                 ),
                                                                 const SizedBox(
                                                                   width: 10,
                                                                 ),
                                                                 SizedBox(
                                                                   height: 28,
-                                                                  child: ElevatedButton(
-                                                                    onPressed: () {},
+                                                                  child:
+                                                                      ElevatedButton(
+                                                                    onPressed:
+                                                                        () {},
                                                                     style: ElevatedButton.styleFrom(
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius: BorderRadius.circular(20),
                                                                             side: const BorderSide(
                                                                               color: Colors.red,
                                                                             )),
-                                                                        textStyle: const TextStyle(
-                                                                            fontSize: 18, fontWeight: FontWeight.w500)),
+                                                                        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                                     child: Text(
                                                                       "Cancelled",
                                                                       style: GoogleFonts.poppins(
-                                                                          fontSize: 12,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: Colors.red),
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight: FontWeight
+                                                                              .w500,
+                                                                          color:
+                                                                              Colors.red),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -1008,18 +1293,23 @@ class _MyOrderState extends State<MyOrder> {
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Image.asset(AppAssets.orderEmpty,
-                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
+                                              height: kIsWeb ? 500 : 200,
+                                              width: kIsWeb ? 500 : 200),
                                           Text(
-                                            'Empty',
-                                            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                                            'Empty'.tr,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            'You do not have an active order of this time'.tr,
                                             style: GoogleFonts.poppins(
-                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                                color: const Color(0xff747474)),
                                           ),
                                           const SizedBox(
                                             height: 40,
@@ -1039,13 +1329,15 @@ class _MyOrderState extends State<MyOrder> {
                       stream: getActiveDiningOrder(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          List<MyDiningOrderModel> myOrder = snapshot.data ?? [];
+                          List<MyDiningOrderModel> myOrder =
+                              snapshot.data ?? [];
                           log(myOrder.toString()); //
                           return myOrder.isNotEmpty
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: myOrder.length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
                                       onTap: () {
@@ -1056,15 +1348,18 @@ class _MyOrderState extends State<MyOrder> {
                                             ));
                                       },
                                       child: Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 13, vertical: 5),
                                           width: size.width,
                                           padding: const EdgeInsets.all(14),
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: const Color(0xFF37C666).withOpacity(0.10),
+                                                  color: const Color(0xFF37C666)
+                                                      .withOpacity(0.10),
                                                   offset: const Offset(
                                                     1,
                                                     1,
@@ -1074,37 +1369,54 @@ class _MyOrderState extends State<MyOrder> {
                                                 ),
                                               ]),
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
                                             children: [
                                               Container(
                                                 height: 25,
                                                 width: 25,
                                                 margin: EdgeInsets.zero,
                                                 decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
                                                     color: Colors.white,
                                                     border: Border.all(
-                                                      color: const Color(0xff363539).withOpacity(.1),
+                                                      color: const Color(
+                                                              0xff363539)
+                                                          .withOpacity(.1),
                                                     )),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(2),
-                                                  child: Image.asset('assets/images/route-square.png'),
+                                                  padding:
+                                                      const EdgeInsets.all(2),
+                                                  child: Image.asset(
+                                                      'assets/images/route-square.png'),
                                                 ),
                                               ),
                                               Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
                                                       height: 70,
                                                       width: 70,
                                                       child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl: orderItem.restaurantInfo!.image,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl: orderItem
+                                                                .restaurantInfo!
+                                                                .image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget:
+                                                                (_, __, ___) =>
+                                                                    Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
@@ -1112,66 +1424,96 @@ class _MyOrderState extends State<MyOrder> {
                                                     ),
                                                     Expanded(
                                                       child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(left: 10),
                                                         child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
                                                               Text(
-                                                                orderItem.restaurantInfo!.restaurantName.toString(),
+                                                                orderItem
+                                                                    .restaurantInfo!
+                                                                    .restaurantName
+                                                                    .toString(),
                                                                 style: GoogleFonts.poppins(
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    color: const Color(0xFF1A2E33)),
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: const Color(
+                                                                        0xFF1A2E33)),
                                                               ),
                                                               const SizedBox(
                                                                 height: 3,
                                                               ),
                                                               Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
                                                                 children: [
                                                                   Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       Text(
-                                                                        "Date",
+                                                                        "Date".tr,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w300,
                                                                             color: const Color(0xFF74848C)),
                                                                       ),
                                                                       const SizedBox(
-                                                                        height: 5,
+                                                                        height:
+                                                                            5,
                                                                       ),
                                                                       Text(
-                                                                        DateFormat("dd-MMM-yyyy")
-                                                                            .format(DateTime.parse(orderItem.date.toString())),
+                                                                        DateFormat("dd-MMM-yyyy").format(DateTime.parse(orderItem
+                                                                            .date
+                                                                            .toString())),
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
                                                                             color: const Color(0xFF384953)),
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .04,
+                                                                    width:
+                                                                        size.width *
+                                                                            .04,
                                                                   ),
                                                                   Expanded(
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
                                                                       children: [
                                                                         Text(
-                                                                          "Time",
+                                                                          "Time".tr,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w300,
                                                                               color: const Color(0xFF74848C)),
                                                                         ),
                                                                         const SizedBox(
-                                                                          height: 5,
+                                                                          height:
+                                                                              5,
                                                                         ),
                                                                         Text(
-                                                                          orderItem.slot,
+                                                                          orderItem
+                                                                              .slot,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w500,
@@ -1181,50 +1523,69 @@ class _MyOrderState extends State<MyOrder> {
                                                                     ),
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .02,
+                                                                    width:
+                                                                        size.width *
+                                                                            .02,
                                                                   ),
                                                                   Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       Text(
-                                                                        "Guest",
+                                                                        "Guest".tr,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w300,
                                                                             color: const Color(0xFF74848C)),
                                                                       ),
                                                                       const SizedBox(
-                                                                        height: 5,
+                                                                        height:
+                                                                            5,
                                                                       ),
                                                                       Text(
-                                                                        orderItem.guest.toString(),
+                                                                        orderItem
+                                                                            .guest
+                                                                            .toString(),
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
                                                                             color: const Color(0xFF384953)),
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .02,
+                                                                    width:
+                                                                        size.width *
+                                                                            .02,
                                                                   ),
                                                                   Column(
                                                                     children: [
                                                                       Text(
-                                                                        "offer",
+                                                                        "offer".tr,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w300,
                                                                             color: const Color(0xFF74848C)),
                                                                       ),
                                                                       const SizedBox(
-                                                                        height: 5,
+                                                                        height:
+                                                                            5,
                                                                       ),
                                                                       Text(
-                                                                        orderItem.offer,
+                                                                        orderItem
+                                                                            .offer,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
                                                                             color: const Color(0xFF384953)),
                                                                       ),
                                                                     ],
@@ -1241,26 +1602,40 @@ class _MyOrderState extends State<MyOrder> {
                                                 thickness: 1,
                                               ),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   SizedBox(
                                                     height: 28,
                                                     child: ElevatedButton(
                                                       onPressed: () {},
-                                                      style: ElevatedButton.styleFrom(
-                                                          backgroundColor: Colors.white,
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(3),
-                                                              side: const BorderSide(
-                                                                color: Color(0xFF3B5998),
-                                                              )),
-                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              3),
+                                                                      side:
+                                                                          const BorderSide(
+                                                                        color: Color(
+                                                                            0xFF3B5998),
+                                                                      )),
+                                                              textStyle: const TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500)),
                                                       child: Text(
-                                                        "Cancel Order",
+                                                        "Cancel Order".tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: AppTheme.primaryColor),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: AppTheme
+                                                                .primaryColor),
                                                       ),
                                                     ),
                                                   ),
@@ -1284,18 +1659,23 @@ class _MyOrderState extends State<MyOrder> {
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Image.asset(AppAssets.orderEmpty,
-                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
+                                              height: kIsWeb ? 500 : 200,
+                                              width: kIsWeb ? 500 : 200),
                                           Text(
-                                            'Empty',
-                                            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                                            'Empty'.tr,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            'You do not have an active order of this time'.tr,
                                             style: GoogleFonts.poppins(
-                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                                color: const Color(0xff747474)),
                                           ),
                                           const SizedBox(
                                             height: 40,
@@ -1313,25 +1693,30 @@ class _MyOrderState extends State<MyOrder> {
                       stream: getCompletedDiningOrder(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          List<MyDiningOrderModel> myOrder = snapshot.data ?? [];
+                          List<MyDiningOrderModel> myOrder =
+                              snapshot.data ?? [];
                           log(myOrder.toString()); //
                           return myOrder.isNotEmpty
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: myOrder.length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
                                     return Column(children: [
                                       Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 13, vertical: 7),
                                           width: size.width,
                                           padding: const EdgeInsets.all(14),
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: const Color(0xFF37C666).withOpacity(0.10),
+                                                  color: const Color(0xFF37C666)
+                                                      .withOpacity(0.10),
                                                   offset: const Offset(
                                                     1,
                                                     1,
@@ -1341,35 +1726,51 @@ class _MyOrderState extends State<MyOrder> {
                                                 ),
                                               ]),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
                                             children: [
                                               Container(
                                                 height: 25,
                                                 width: 25,
                                                 decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
                                                     color: Colors.white,
                                                     border: Border.all(
-                                                      color: const Color(0xff363539).withOpacity(.1),
+                                                      color: const Color(
+                                                              0xff363539)
+                                                          .withOpacity(.1),
                                                     )),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(2),
-                                                  child: Image.asset('assets/images/route-square.png'),
+                                                  padding:
+                                                      const EdgeInsets.all(2),
+                                                  child: Image.asset(
+                                                      'assets/images/route-square.png'),
                                                 ),
                                               ),
                                               Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
                                                       height: 70,
                                                       width: 70,
                                                       child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl: orderItem.restaurantInfo!.image,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl: orderItem
+                                                                .restaurantInfo!
+                                                                .image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget:
+                                                                (_, __, ___) =>
+                                                                    Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
@@ -1377,66 +1778,96 @@ class _MyOrderState extends State<MyOrder> {
                                                     ),
                                                     Expanded(
                                                       child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(left: 10),
                                                         child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
                                                               Text(
-                                                                orderItem.restaurantInfo!.restaurantName.toString(),
+                                                                orderItem
+                                                                    .restaurantInfo!
+                                                                    .restaurantName
+                                                                    .toString(),
                                                                 style: GoogleFonts.poppins(
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    color: const Color(0xFF1A2E33)),
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: const Color(
+                                                                        0xFF1A2E33)),
                                                               ),
                                                               const SizedBox(
                                                                 height: 3,
                                                               ),
                                                               Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
                                                                 children: [
                                                                   Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       Text(
-                                                                        "Date",
+                                                                        "Date".tr,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w300,
                                                                             color: const Color(0xFF74848C)),
                                                                       ),
                                                                       const SizedBox(
-                                                                        height: 5,
+                                                                        height:
+                                                                            5,
                                                                       ),
                                                                       Text(
-                                                                        DateFormat("dd-MMM-yyyy")
-                                                                            .format(DateTime.parse(orderItem.date.toString())),
+                                                                        DateFormat("dd-MMM-yyyy").format(DateTime.parse(orderItem
+                                                                            .date
+                                                                            .toString())),
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
                                                                             color: const Color(0xFF384953)),
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .04,
+                                                                    width:
+                                                                        size.width *
+                                                                            .04,
                                                                   ),
                                                                   Expanded(
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
                                                                       children: [
                                                                         Text(
-                                                                          "Time",
+                                                                          "Time".tr,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w300,
                                                                               color: const Color(0xFF74848C)),
                                                                         ),
                                                                         const SizedBox(
-                                                                          height: 5,
+                                                                          height:
+                                                                              5,
                                                                         ),
                                                                         Text(
-                                                                          orderItem.slot,
+                                                                          orderItem
+                                                                              .slot,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w500,
@@ -1446,50 +1877,69 @@ class _MyOrderState extends State<MyOrder> {
                                                                     ),
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .02,
+                                                                    width:
+                                                                        size.width *
+                                                                            .02,
                                                                   ),
                                                                   Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       Text(
-                                                                        "Guest",
+                                                                        "Guest".tr,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w300,
                                                                             color: const Color(0xFF74848C)),
                                                                       ),
                                                                       const SizedBox(
-                                                                        height: 5,
+                                                                        height:
+                                                                            5,
                                                                       ),
                                                                       Text(
-                                                                        orderItem.guest.toString(),
+                                                                        orderItem
+                                                                            .guest
+                                                                            .toString(),
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
                                                                             color: const Color(0xFF384953)),
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .02,
+                                                                    width:
+                                                                        size.width *
+                                                                            .02,
                                                                   ),
                                                                   Column(
                                                                     children: [
                                                                       Text(
-                                                                        "offer",
+                                                                        "offer".tr,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w300,
                                                                             color: const Color(0xFF74848C)),
                                                                       ),
                                                                       const SizedBox(
-                                                                        height: 5,
+                                                                        height:
+                                                                            5,
                                                                       ),
                                                                       Text(
-                                                                        orderItem.offer,
+                                                                        orderItem
+                                                                            .offer,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
                                                                             color: const Color(0xFF384953)),
                                                                       ),
                                                                     ],
@@ -1513,25 +1963,42 @@ class _MyOrderState extends State<MyOrder> {
 
                                                     child: ElevatedButton(
                                                       onPressed: () {
-                                                        Get.to(() => ReviewAndRatingScreen(
-                                                              orderId: orderItem.orderId,
-                                                              vendorId: orderItem.vendorId,
+                                                        Get.to(() =>
+                                                            ReviewAndRatingScreen(
+                                                              orderId: orderItem
+                                                                  .orderId,
+                                                              vendorId:
+                                                                  orderItem
+                                                                      .vendorId,
                                                             ));
                                                       },
-                                                      style: ElevatedButton.styleFrom(
-                                                          backgroundColor: Colors.white,
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(3),
-                                                              side: const BorderSide(
-                                                                color: Color(0xFF3B5998),
-                                                              )),
-                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              3),
+                                                                      side:
+                                                                          const BorderSide(
+                                                                        color: Color(
+                                                                            0xFF3B5998),
+                                                                      )),
+                                                              textStyle: const TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500)),
                                                       child: Text(
-                                                        "Leave a review",
+                                                        "Leave a review".tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 12,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: AppTheme.primaryColor),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: AppTheme
+                                                                .primaryColor),
                                                       ),
                                                     ),
                                                   ),
@@ -1568,20 +2035,35 @@ class _MyOrderState extends State<MyOrder> {
                                                         //   throw Exception(e);
                                                         // }
                                                       },
-                                                      style: ElevatedButton.styleFrom(
-                                                          backgroundColor: const Color(0xFF3B5998),
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(3),
-                                                              side: const BorderSide(
-                                                                width: 2.0,
-                                                                color: Color(0xFF3B5998),
-                                                              )),
-                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              backgroundColor:
+                                                                  const Color(
+                                                                      0xFF3B5998),
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              3),
+                                                                      side:
+                                                                          const BorderSide(
+                                                                        width:
+                                                                            2.0,
+                                                                        color: Color(
+                                                                            0xFF3B5998),
+                                                                      )),
+                                                              textStyle: const TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500)),
                                                       child: Text(
-                                                        "Order Again",
-                                                        style: GoogleFonts.poppins(
+                                                        "Order Again".tr,
+                                                        style:
+                                                            GoogleFonts.poppins(
                                                           fontSize: 12,
-                                                          fontWeight: FontWeight.w500,
+                                                          fontWeight:
+                                                              FontWeight.w500,
                                                           color: Colors.white,
                                                         ),
                                                       ),
@@ -1607,18 +2089,23 @@ class _MyOrderState extends State<MyOrder> {
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Image.asset(AppAssets.orderEmpty,
-                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
+                                              height: kIsWeb ? 500 : 200,
+                                              width: kIsWeb ? 500 : 200),
                                           Text(
-                                            'Empty',
-                                            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                                            'Empty'.tr,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            'You do not have an active order of this time'.tr,
                                             style: GoogleFonts.poppins(
-                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                                color: const Color(0xff747474)),
                                           ),
                                           const SizedBox(
                                             height: 40,
@@ -1636,13 +2123,15 @@ class _MyOrderState extends State<MyOrder> {
                       stream: getCancelledDiningOrder(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          List<MyDiningOrderModel> myOrder = snapshot.data ?? [];
+                          List<MyDiningOrderModel> myOrder =
+                              snapshot.data ?? [];
                           log(myOrder.toString()); //
                           return myOrder.isNotEmpty
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: myOrder.length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
                                     return GestureDetector(
                                       onTap: () {
@@ -1653,15 +2142,18 @@ class _MyOrderState extends State<MyOrder> {
                                             ));
                                       },
                                       child: Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 13, vertical: 5),
                                           width: size.width,
                                           padding: const EdgeInsets.all(14),
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: const Color(0xFF37C666).withOpacity(0.10),
+                                                  color: const Color(0xFF37C666)
+                                                      .withOpacity(0.10),
                                                   offset: const Offset(
                                                     1,
                                                     1,
@@ -1671,37 +2163,54 @@ class _MyOrderState extends State<MyOrder> {
                                                 ),
                                               ]),
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
                                             children: [
                                               Container(
                                                 height: 25,
                                                 width: 25,
                                                 margin: EdgeInsets.zero,
                                                 decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
                                                     color: Colors.white,
                                                     border: Border.all(
-                                                      color: const Color(0xff363539).withOpacity(.1),
+                                                      color: const Color(
+                                                              0xff363539)
+                                                          .withOpacity(.1),
                                                     )),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(2),
-                                                  child: Image.asset('assets/images/route-square.png'),
+                                                  padding:
+                                                      const EdgeInsets.all(2),
+                                                  child: Image.asset(
+                                                      'assets/images/route-square.png'),
                                                 ),
                                               ),
                                               Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
                                                       height: 70,
                                                       width: 70,
                                                       child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl: orderItem.restaurantInfo!.image,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl: orderItem
+                                                                .restaurantInfo!
+                                                                .image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget:
+                                                                (_, __, ___) =>
+                                                                    Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
@@ -1709,66 +2218,96 @@ class _MyOrderState extends State<MyOrder> {
                                                     ),
                                                     Expanded(
                                                       child: Padding(
-                                                        padding: const EdgeInsets.only(left: 10),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(left: 10),
                                                         child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
                                                               Text(
-                                                                orderItem.restaurantInfo!.restaurantName.toString(),
+                                                                orderItem
+                                                                    .restaurantInfo!
+                                                                    .restaurantName
+                                                                    .toString(),
                                                                 style: GoogleFonts.poppins(
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    color: const Color(0xFF1A2E33)),
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: const Color(
+                                                                        0xFF1A2E33)),
                                                               ),
                                                               const SizedBox(
                                                                 height: 3,
                                                               ),
                                                               Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
                                                                 children: [
                                                                   Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       Text(
                                                                         "Date",
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w300,
                                                                             color: const Color(0xFF74848C)),
                                                                       ),
                                                                       const SizedBox(
-                                                                        height: 5,
+                                                                        height:
+                                                                            5,
                                                                       ),
                                                                       Text(
-                                                                        DateFormat("dd-MMM-yyyy")
-                                                                            .format(DateTime.parse(orderItem.date.toString())),
+                                                                        DateFormat("dd-MMM-yyyy").format(DateTime.parse(orderItem
+                                                                            .date
+                                                                            .toString())),
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
                                                                             color: const Color(0xFF384953)),
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .04,
+                                                                    width:
+                                                                        size.width *
+                                                                            .04,
                                                                   ),
                                                                   Expanded(
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
                                                                       children: [
                                                                         Text(
-                                                                          "Time",
+                                                                          "Time".tr,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w300,
                                                                               color: const Color(0xFF74848C)),
                                                                         ),
                                                                         const SizedBox(
-                                                                          height: 5,
+                                                                          height:
+                                                                              5,
                                                                         ),
                                                                         Text(
-                                                                          orderItem.slot,
+                                                                          orderItem
+                                                                              .slot,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w500,
@@ -1778,50 +2317,69 @@ class _MyOrderState extends State<MyOrder> {
                                                                     ),
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .02,
+                                                                    width:
+                                                                        size.width *
+                                                                            .02,
                                                                   ),
                                                                   Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       Text(
-                                                                        "Guest",
+                                                                        "Guest".tr,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w300,
                                                                             color: const Color(0xFF74848C)),
                                                                       ),
                                                                       const SizedBox(
-                                                                        height: 5,
+                                                                        height:
+                                                                            5,
                                                                       ),
                                                                       Text(
-                                                                        orderItem.guest.toString(),
+                                                                        orderItem
+                                                                            .guest
+                                                                            .toString(),
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
                                                                             color: const Color(0xFF384953)),
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   SizedBox(
-                                                                    width: size.width * .02,
+                                                                    width:
+                                                                        size.width *
+                                                                            .02,
                                                                   ),
                                                                   Column(
                                                                     children: [
                                                                       Text(
                                                                         "offer",
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w300,
                                                                             color: const Color(0xFF74848C)),
                                                                       ),
                                                                       const SizedBox(
-                                                                        height: 5,
+                                                                        height:
+                                                                            5,
                                                                       ),
                                                                       Text(
-                                                                        orderItem.offer,
+                                                                        orderItem
+                                                                            .offer,
                                                                         style: GoogleFonts.poppins(
-                                                                            fontSize: 11,
-                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize:
+                                                                                11,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
                                                                             color: const Color(0xFF384953)),
                                                                       ),
                                                                     ],
@@ -1850,18 +2408,23 @@ class _MyOrderState extends State<MyOrder> {
                                         // crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Image.asset(AppAssets.orderEmpty,
-                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
+                                              height: kIsWeb ? 500 : 200,
+                                              width: kIsWeb ? 500 : 200),
                                           Text(
-                                            'Empty',
-                                            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                                            'Empty'.tr,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(
                                             height: 15,
                                           ),
                                           Text(
-                                            'You do not have an active order of this time',
+                                            'You do not have an active order of this time'.tr,
                                             style: GoogleFonts.poppins(
-                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                                color: const Color(0xff747474)),
                                           ),
                                           const SizedBox(
                                             height: 40,
