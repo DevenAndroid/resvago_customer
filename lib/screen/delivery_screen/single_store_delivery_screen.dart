@@ -241,10 +241,6 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                     "Layers of delicious restoring",
                                     style: GoogleFonts.poppins(
                                         fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
-                                  ),Text(
-                                    widget.restaurantItem!.order_count.toString() +  widget.restaurantItem!.mobileNumber.toString(),
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                                   ),
                                   const SizedBox(
                                     height: 10,
