@@ -60,20 +60,20 @@ class _ChooseAddressState extends State<ChooseAddress> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Location services are disabled. Please enable the services')));
+          .showSnackBar( SnackBar(content: Text('Location services are disabled. Please enable the services'.tr)));
       return false;
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Location permissions are denied')));
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text('Location permissions are denied'.tr)));
         return false;
       }
     }
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permissions are permanently denied, we cannot request permissions.')));
+           SnackBar(content: Text('Location permissions are permanently denied, we cannot request permissions.'.tr)));
       return false;
     }
     return true;
@@ -164,8 +164,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "Enter complete address",
+                                   Text(
+                                    "Enter complete address".tr,
                                     style: TextStyle(color: AppTheme.blackcolor, fontWeight: FontWeight.w600, fontSize: 17),
                                   ),
                                   SizedBox(
@@ -182,17 +182,17 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                     height: AddSize.size20,
                                   ),
                                   if (customTip.value)
-                                    const CommonTextFiel1dWidget(
-                                      hint: "Other",
+                                     CommonTextFiel1dWidget(
+                                      hint: "Other".tr,
                                     ),
                                   SizedBox(
                                     height: AddSize.size20,
                                   ),
                                   CommonTextFiel1dWidget(
                                     controller: streetAddressController,
-                                    hint: "Flat, House no, Floor, Tower,Street",
+                                    hint: "Flat, House no, Floor, Tower,Street".tr,
                                     validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Flat, House no, Floor, Tower,Street'),
+                                      RequiredValidator(errorText: 'Flat, House no, Floor, Tower,Street'.tr),
                                     ]).call,
                                   ),
                                   SizedBox(
@@ -200,26 +200,26 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                   ),
                                   CommonTextFiel1dWidget(
                                     controller: flatAddressController,
-                                    hint: "Street, Society, Landmark",
+                                    hint: "Street, Society, Landmark".tr,
                                     validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Select city'),
+                                      RequiredValidator(errorText: 'Select city'.tr),
                                     ]).call,
                                   ),
                                   SizedBox(
                                     height: AddSize.size20,
                                   ),
                                   CommonTextFiel1dWidget(
-                                    hint: "Recipient’s name",
+                                    hint: "Recipient’s name".tr,
                                     controller: nameController,
                                     validator: MultiValidator([
-                                      RequiredValidator(errorText: 'Recipient’s name'),
+                                      RequiredValidator(errorText: 'Recipient’s name'.tr),
                                     ]).call,
                                   ),
                                   SizedBox(
                                     height: AddSize.size20,
                                   ),
                                   CommonButtonBlue(
-                                    title: 'save address'.toUpperCase(),
+                                    title: 'save address'.tr.toUpperCase(),
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
                                         AddAddresstofirebase();
@@ -340,7 +340,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
         },
         child: Scaffold(
             appBar: backAppBar(
-                title: _isValue.value == true ? "Complete Address" : "Choose Address",
+                title: _isValue.value == true ? "Complete Address".tr : "Choose Address".tr,
                 context: context,
                 dispose: "dispose",
                 disposeController: () {
@@ -419,7 +419,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                               height: AddSize.size30,
                             ),
                             CommonButtonBlue(
-                              title: "Enter complete address",
+                              title: "Enter complete address".tr,
                               onPressed: () {
                                 setState(() {
                                   _isValue.value = !_isValue.value;
@@ -462,7 +462,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
             selectedColor: const Color(0xff7ED957).withOpacity(.13),
             onSelected: (value) {
               selectedChip.value = title;
-              if (title == "Other") {
+              if (title == "Other".tr) {
                 customTip.value = true;
                 otherController.text = "";
               } else {

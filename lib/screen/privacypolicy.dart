@@ -18,7 +18,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: backAppBar(
-          title: "Privacy Policy",
+          title: "Privacy Policy".tr,
           context: context,
         ),
         body: SingleChildScrollView(
@@ -34,57 +34,25 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                     children: <TextSpan>[
                       TextSpan(
                           text:
-                              "For users with a separate Doc Send or Drop Lorem  Sign account, the DocSend Terms of Service can found",
+                              "For users with a separate Doc Send or Drop Lorem  Sign account, the DocSend Terms of Service can found".tr,
                           style: GoogleFonts.poppins(
                               height: 1.8,
                               fontSize: 14,
                               color: const Color(0xff363539).withOpacity(.5),
                               fontWeight: FontWeight.w400)),
                       TextSpan(
-                          text: ' here',
+                          text: 'here'.tr,
                           style: GoogleFonts.poppins(
                               height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
                       TextSpan(
-                          text: ' and the Lorem Sign Terms of Service can found ',
+                          text: 'and the Lorem Sign Terms of Service can found'.tr,
                           style: GoogleFonts.poppins(
                               height: 1.8,
                               fontSize: 14,
                               color: const Color(0xff363539).withOpacity(.5),
                               fontWeight: FontWeight.w400)),
                       TextSpan(
-                          text: ' here',
-                          style: GoogleFonts.poppins(
-                              height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                          text:
-                              "For users with a separate Doc Send or Drop Lorem  Sign account, the DocSend Terms of Service can found",
-                          style: GoogleFonts.poppins(
-                              height: 1.8,
-                              fontSize: 14,
-                              color: const Color(0xff363539).withOpacity(.5),
-                              fontWeight: FontWeight.w400)),
-                      TextSpan(
-                          text: ' here',
-                          style: GoogleFonts.poppins(
-                              height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
-                      TextSpan(
-                          text: ' and the Lorem Sign Terms of Service can found ',
-                          style: GoogleFonts.poppins(
-                              height: 1.8,
-                              fontSize: 14,
-                              color: const Color(0xff363539).withOpacity(.5),
-                              fontWeight: FontWeight.w400)),
-                      TextSpan(
-                          text: ' here',
+                          text: 'here'.tr,
                           style: GoogleFonts.poppins(
                               height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
                     ],
@@ -98,25 +66,25 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                     children: <TextSpan>[
                       TextSpan(
                           text:
-                              "For users with a separate Doc Send or Drop Lorem  Sign account, the DocSend Terms of Service can found",
+                              "For users with a separate Doc Send or Drop Lorem  Sign account, the DocSend Terms of Service can found".tr,
                           style: GoogleFonts.poppins(
                               height: 1.8,
                               fontSize: 14,
                               color: const Color(0xff363539).withOpacity(.5),
                               fontWeight: FontWeight.w400)),
                       TextSpan(
-                          text: ' here',
+                          text: 'here'.tr,
                           style: GoogleFonts.poppins(
                               height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
                       TextSpan(
-                          text: ' and the Lorem Sign Terms of Service can found ',
+                          text: 'and the Lorem Sign Terms of Service can found'.tr,
                           style: GoogleFonts.poppins(
                               height: 1.8,
                               fontSize: 14,
                               color: const Color(0xff363539).withOpacity(.5),
                               fontWeight: FontWeight.w400)),
                       TextSpan(
-                          text: ' here',
+                          text: 'here'.tr,
                           style: GoogleFonts.poppins(
                               height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
                     ],
@@ -130,25 +98,57 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                     children: <TextSpan>[
                       TextSpan(
                           text:
-                              "For users with a separate Doc Send or Drop Lorem  Sign account, the DocSend Terms of Service can found",
+                              "For users with a separate Doc Send or Drop Lorem  Sign account, the DocSend Terms of Service can found".tr,
                           style: GoogleFonts.poppins(
                               height: 1.8,
                               fontSize: 14,
                               color: const Color(0xff363539).withOpacity(.5),
                               fontWeight: FontWeight.w400)),
                       TextSpan(
-                          text: ' here',
+                          text: 'here'.tr,
                           style: GoogleFonts.poppins(
                               height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
                       TextSpan(
-                          text: ' and the Lorem Sign Terms of Service can found ',
+                          text: 'and the Lorem Sign Terms of Service can found'.tr,
                           style: GoogleFonts.poppins(
                               height: 1.8,
                               fontSize: 14,
                               color: const Color(0xff363539).withOpacity(.5),
                               fontWeight: FontWeight.w400)),
                       TextSpan(
-                          text: ' here',
+                          text: 'here'.tr,
+                          style: GoogleFonts.poppins(
+                              height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                          text:
+                              "For users with a separate Doc Send or Drop Lorem  Sign account, the DocSend Terms of Service can found".tr,
+                          style: GoogleFonts.poppins(
+                              height: 1.8,
+                              fontSize: 14,
+                              color: const Color(0xff363539).withOpacity(.5),
+                              fontWeight: FontWeight.w400)),
+                      TextSpan(
+                          text: 'here'.tr,
+                          style: GoogleFonts.poppins(
+                              height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
+                      TextSpan(
+                          text: 'and the Lorem Sign Terms of Service can found'.tr,
+                          style: GoogleFonts.poppins(
+                              height: 1.8,
+                              fontSize: 14,
+                              color: const Color(0xff363539).withOpacity(.5),
+                              fontWeight: FontWeight.w400)),
+                      TextSpan(
+                          text: 'here'.tr,
                           style: GoogleFonts.poppins(
                               height: 1.8, fontSize: 14, color: const Color(0xff7968E2), fontWeight: FontWeight.w400)),
                     ],

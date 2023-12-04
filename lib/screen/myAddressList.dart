@@ -39,7 +39,7 @@ class _MyAddressListState extends State<MyAddressList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: backAppBar(
-        title: "My Address",
+        title: "My Address".tr,
         context: context,
         icon2: GestureDetector(
           behavior: HitTestBehavior.translucent,
@@ -69,7 +69,7 @@ class _MyAddressListState extends State<MyAddressList> {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               log("fdgdfh" + snapshot.data.toString());
-              return const Center(child: Text("No Address Found"));
+              return  Center(child: Text("No Address Found".tr));
             } else {
               List<AddressModel>? pages = snapshot.data;
               final filteredPages = filterUsers(pages!, searchQuery);
@@ -87,7 +87,7 @@ class _MyAddressListState extends State<MyAddressList> {
                               widget.addressChanged!(item);
                               final profileController = Get.put(ProfileController());
                               profileController.updateAddress(item.docid.toString()).then((value) {
-                                showToast("Address Updated");
+                                showToast("Address Updated".tr);
                                 Get.back();
                               });
                               // widget.addressChanged!(item);
@@ -156,7 +156,7 @@ class _MyAddressListState extends State<MyAddressList> {
                                                       docID: item.docid,
                                                     ));
                                                   },
-                                                  child: const Text("Edit"),
+                                                  child:  Text("Edit".tr),
                                                 ),
                                                 PopupMenuItem(
                                                   value: 1,
@@ -164,12 +164,12 @@ class _MyAddressListState extends State<MyAddressList> {
                                                     showDialog(
                                                       context: context,
                                                       builder: (ctx) => AlertDialog(
-                                                        title: const Text("Delete Address"),
+                                                        title:  Text("Delete Address".tr),
                                                         content: Container(
                                                           height: MediaQuery.sizeOf(context).height*.20,
                                                           child: Column(
                                                             children: [
-                                                              const Text("Are you sure you want to delete this Address"),
+                                                               Text("Are you sure you want to delete this Address".tr),
                                                               SizedBox(height: 20,),
                                                               Row(
                                                                 children: [
@@ -184,9 +184,9 @@ class _MyAddressListState extends State<MyAddressList> {
                                                                             borderRadius: BorderRadius.circular(11)),
                                                                         width: 100,
                                                                         padding: const EdgeInsets.all(14),
-                                                                        child: const Center(
+                                                                        child:  Center(
                                                                             child: Text(
-                                                                          "Cancel",
+                                                                          "Cancel".tr,
                                                                           style: TextStyle(color: Colors.white),
                                                                         )),
                                                                       ),
@@ -212,9 +212,9 @@ class _MyAddressListState extends State<MyAddressList> {
                                                                             borderRadius: BorderRadius.circular(11)),
                                                                         width: 100,
                                                                         padding: const EdgeInsets.all(14),
-                                                                        child: const Center(
+                                                                        child:  Center(
                                                                             child: Text(
-                                                                          "okay",
+                                                                          "okay".tr,
                                                                           style: TextStyle(color: Colors.white),
                                                                         )),
                                                                       ),

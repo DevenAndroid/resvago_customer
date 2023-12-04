@@ -36,7 +36,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: backAppBar(title: "My Wishlist", context: context),
+        appBar: backAppBar(title: "My Wishlist".tr, context: context),
         body: Obx(() {
           if (wishListController.refreshInt.value > 0) {}
           List<RestaurantModel> restaurantModel = wishListController.wishListRestaurants.entries.map((e) => e.value).toList();
@@ -171,7 +171,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                     );
                   })
               : Center(
-                  child: Text("Wishlist is Empty"),
+                  child: Text("Wishlist is Empty".tr),
                 );
         }));
 

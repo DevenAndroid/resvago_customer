@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/bottomnav_bar.dart';
-import '../routers/routers.dart';
 import '../widget/apptheme.dart';
-import 'login_screen.dart';
 import 'onboarding_list.dart';
 
 class OnBoardingScreen extends StatefulWidget {

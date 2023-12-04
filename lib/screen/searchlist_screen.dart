@@ -37,7 +37,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
           ),
           elevation: 1,
           title: Text(
-            "Search",
+            "Search".tr,
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -149,10 +149,10 @@ class _SerachListScreenState extends State<SerachListScreen> {
             indicatorSize: TabBarIndicatorSize.tab,
             tabs: [
               Tab(
-                child: Text("Deliverychcvh"),
+                child: Text("Delivery".tr),
               ),
               Tab(
-                child: Text("Dine In"),
+                child: Text("Dine In".tr),
               ),
             ],
           ),

@@ -11,7 +11,6 @@ import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import '../controller/logn_controller.dart';
 import '../widget/custom_textfield.dart';
-import 'bottomnav_bar.dart';
 
 class OtpScreen extends StatefulWidget {
   String verificationId;
@@ -108,7 +107,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'Sent OTP  to verify your number',
+                                  'Sent OTP  to verify your number'.tr,
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w400,
@@ -153,7 +152,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                                     }
                                                   },
                                                   validator: MultiValidator([
-                                                    RequiredValidator(errorText: 'Please enter your otp'),
+                                                    RequiredValidator(errorText: 'Please enter your otp'.tr),
                                                   ]).call,
                                                   keyboardType: TextInputType.text,
                                                 ),
@@ -188,14 +187,29 @@ class _OtpScreenState extends State<OtpScreen> {
                                     }),
                               Align(
                                 alignment: Alignment.center,
-                                child: Text(
-                                  'Enter the OTP Send to ${loginController.phoneNumberController.text.toString()}',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 18,
-                                  ),
-                                  textAlign: TextAlign.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Enter the OTP Send to'.tr,
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      ' ${loginController.phoneNumberController.text.toString()}',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(
@@ -207,7 +221,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 },
                                 child: Center(
                                   child: Text(
-                                    'RESEND OTP',
+                                    'RESEND OTP'.tr,
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 16),
                                     textAlign: TextAlign.center,

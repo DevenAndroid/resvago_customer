@@ -110,7 +110,7 @@ class _AddressWidgetState extends State<AddressWidget> {
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
-                          'Home',
+                          'Home'.tr,
                           style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
                         ),
                       ),

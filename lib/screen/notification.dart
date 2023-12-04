@@ -19,7 +19,7 @@ class NotificationScreenState extends State<NotificationScreen> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: backAppBar(title: "Notification", context: context,
+        appBar: backAppBar(title: "Notification".tr, context: context,
         ),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final loginController = Get.put(LoginController());
   void checkPhoneNumberInFirestore() async {
     if (loginController.mobileController.text.isEmpty) {
-      Fluttertoast.showToast(msg: 'Please enter phone number');
+      Fluttertoast.showToast(msg: 'Please enter phone number'.tr);
       return;
     }
     print(code + loginController.mobileController.text.trim());
@@ -50,12 +50,12 @@ class _LoginScreenState extends State<LoginScreen> {
       Map kk = result.docs.first.data() as Map;
       print(kk["email"]);
       if (kk["deactivate"] == true) {
-        Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
+        Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator'.tr);
       } else {
         login(kk["email"].toString());
       }
     } else {
-      Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
+      Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup'.tr);
     }
   }
 
@@ -90,10 +90,10 @@ class _LoginScreenState extends State<LoginScreen> {
         });
         return;
       } else {
-        Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
+        Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator'.tr);
       }
     } else {
-      Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
+      Fluttertoast.showToast(msg: 'Email not register yet Please Signup'.tr);
     }
   }
 
@@ -158,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'WELCOME BACK',
+                        'WELCOME BACK'.tr,
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -172,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'Login your account.',
+                        'Login your account.'.tr,
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w300,
@@ -193,8 +193,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           },
                         ),
-                        const Text(
-                          "Login With Mobile Number",
+                        Text(
+                          "Login With Mobile Number".tr,
                           style: TextStyle(color: Colors.white),
                         ),
                       ],
@@ -212,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           },
                         ),
-                        const Text("Login With Email Address", style: TextStyle(color: Colors.white)),
+                         Text("Login With Email Address".tr, style: TextStyle(color: Colors.white)),
                       ],
                     ),
                     if (loginOption == LoginOption.Mobile)
@@ -222,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Enter Mobile Number',
+                              'Enter Mobile Number'.tr,
                               style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -242,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: const TextStyle(color: Colors.white),
                               dropdownTextStyle: const TextStyle(color: Colors.white),
                               decoration: InputDecoration(
-                                hintText: 'Enter your Mobile number',
+                                hintText: 'Enter your Mobile number'.tr,
                                 hintStyle: const TextStyle(color: Colors.white),
                                 filled: true,
                                 enabled: true,
@@ -265,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               initialCountryCode: 'IE',
                               cursorColor: Colors.white,
                               keyboardType: TextInputType.number,
-                              validator: MultiValidator([RequiredValidator(errorText: 'Please enter your mobile number')]).call,
+                              validator: MultiValidator([RequiredValidator(errorText: 'Please enter your mobile number'.tr)]).call,
                               onChanged: (phone) {
                                 code = phone.countryCode.toString();
                                 setState(() {});
@@ -287,14 +287,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               cursorColor: Colors.white,
                               style: const TextStyle(color: Colors.white),
                               decoration: InputDecoration(
-                                hintText: 'Enter Email',
+                                hintText: 'Enter Email'.tr,
                                 hintStyle: const TextStyle(color: Colors.white),
                                 suffixIcon: TextButton(
                                   onPressed: () {
                                     checkEmailInFirestore();
                                   },
-                                  child: const Text(
-                                    'send',
+                                  child:  Text(
+                                    'send'.tr,
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -313,8 +313,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     borderRadius: BorderRadius.circular(6.0)),
                               ),
                               validator: MultiValidator([
-                                RequiredValidator(errorText: 'Please enter your email'),
-                                EmailValidator(errorText: 'Enter a valid email address'),
+                                RequiredValidator(errorText: 'Please enter your email'.tr),
+                                EmailValidator(errorText: 'Enter a valid email address'.tr),
                               ]).call,
                               keyboardType: TextInputType.emailAddress,
                               // textInputAction: TextInputAction.next,
@@ -329,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller: passwordController,
                                 decoration: InputDecoration(
                                   filled: true,
-                                  hintText: 'Enter Otp',
+                                  hintText: 'Enter Otp'.tr,
                                   hintStyle: const TextStyle(color: Colors.white),
                                   fillColor: Colors.white.withOpacity(.10),
                                   contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
@@ -346,7 +346,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderRadius: BorderRadius.circular(6.0)),
                                 ),
                                 validator: MultiValidator([
-                                  RequiredValidator(errorText: 'Please enter your otp'),
+                                  RequiredValidator(errorText: 'Please enter your otp'.tr),
                                 ]).call,
                               )
                             else
@@ -355,7 +355,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller: otpController,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
-                                  hintText: 'Enter Otp',
+                                  hintText: 'Enter Otp'.tr,
                                   hintStyle: const TextStyle(color: Colors.white),
                                   filled: true,
                                   fillColor: Colors.white.withOpacity(.10),
@@ -373,7 +373,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderRadius: BorderRadius.circular(6.0)),
                                 ),
                                 validator: MultiValidator([
-                                  RequiredValidator(errorText: 'Please enter your otp'),
+                                  RequiredValidator(errorText: 'Please enter your otp'.tr),
                                 ]).call,
                               ),
                           ],
@@ -389,8 +389,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
                                       if (await myauth.verifyOTP(otp: otpController.text) == true) {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                          content: Text("OTP is verified"),
+                                        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                                          content: Text("OTP is verified".tr),
                                         ));
                                         FirebaseAuth.instance
                                             .signInWithEmailAndPassword(
@@ -401,13 +401,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                           Get.offAllNamed(MyRouters.bottomNavbar);
                                         });
                                       } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                          content: Text("Invalid OTP"),
+                                        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                                          content: Text("Invalid OTP".tr),
                                         ));
                                       }
                                     }
                                   },
-                                  title: 'Login',
+                                  title: 'Login'.tr,
                                 )
                               : CommonButton(
                                   onPressed: () async {
@@ -415,20 +415,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                       checkPhoneNumberInFirestore();
                                     }
                                   },
-                                  title: 'Login',
+                                  title: 'Login'.tr,
                                 ),
                           const SizedBox(
                             height: 20,
                           ),
                           Text(
-                            'Customer Booking?',
+                            'Customer Booking?'.tr,
                             style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(
                             height: 10,
                           ),
                           Text(
-                            'Sign in as a business',
+                            'Sign in as a business'.tr,
                             style: GoogleFonts.poppins(color: const Color(0xFFFAAF40), fontSize: 16, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(
@@ -443,7 +443,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: const Color(0xFFD2D8DC),
                               ),
                               //SizedBox(width: 10,),
-                              Text('Or Login with',
+                              Text('Or Login with'.tr,
                                   style: GoogleFonts.poppins(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
@@ -484,7 +484,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         width: 10,
                                       ),
                                       Text(
-                                        'Facebook',
+                                        'Facebook'.tr,
                                         style:
                                             GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
                                       )
@@ -512,7 +512,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         width: 10,
                                       ),
                                       Text(
-                                        'Google',
+                                        'Google'.tr,
                                         style:
                                             GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                       )
@@ -530,7 +530,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                "Don't Have an Account?",
+                                "Don't Have an Account?".tr,
                                 style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
                               ),
                               InkWell(
@@ -538,7 +538,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Get.toNamed(MyRouters.signupScreen);
                                 },
                                 child: Text(
-                                  '  Signup',
+                                  'Signup'.tr,
                                   style: GoogleFonts.poppins(
                                       color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
                                 ),

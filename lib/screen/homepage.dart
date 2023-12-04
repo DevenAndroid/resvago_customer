@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                                   const SizedBox(width: 4),
                                   Flexible(
                                     child: Text(
-                                      'Home',
+                                      'Home'.tr,
                                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
                                     ),
                                   ),
@@ -409,7 +409,7 @@ class _HomePageState extends State<HomePage> {
                                 Get.to(const SerachListScreen());
                               },
                               readOnly: true,
-                              hint: 'Find for food or restaurant...',
+                              hint: 'Find for food or restaurant...'.tr,
                               // controller: filterDataController.storeSearchController,
                               prefix: InkWell(
                                 onTap: () {},
@@ -447,30 +447,30 @@ class _HomePageState extends State<HomePage> {
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
-                                      child: const Column(
-                                        children: [Text("Near By"), Divider()],
+                                      child:  Column(
+                                        children: [Text("Near By".tr), Divider()],
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
-                                      child: const Column(
-                                        children: [Text("Rating"), Divider()],
+                                      child:  Column(
+                                        children: [Text("Rating".tr), Divider()],
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
-                                      child: const Column(
-                                        children: [Text("Offers"), Divider()],
+                                      child:  Column(
+                                        children: [Text("Offers".tr), Divider()],
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
-                                      child: const Column(
+                                      child:  Column(
                                         children: [
-                                          Text("Popular"),
+                                          Text("Popular".tr),
                                           Divider(
                                             color: Colors.white,
                                           )
@@ -525,7 +525,7 @@ class _HomePageState extends State<HomePage> {
                           Get.to(()=>AllCategoryScreen());
                         },
                         child: Text(
-                          "View All",
+                          "View All".tr,
                           style: TextStyle(color: AppTheme.primaryColor),
                         ))
                   ],
@@ -587,7 +587,7 @@ class _HomePageState extends State<HomePage> {
                   height: 10,
                 ),
                 Text(
-                  '  Restaurants chosen for you',
+                  'Restaurants chosen for you'.tr,
                   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                 ),
                 const SizedBox(
@@ -748,7 +748,7 @@ class _HomePageState extends State<HomePage> {
                   height: 10,
                 ),
                 Text(
-                  '  Explore Now',
+                  'Explore Now'.tr,
                   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                 ),
                 const SizedBox(
@@ -809,7 +809,7 @@ class _HomePageState extends State<HomePage> {
                   height: 10,
                 ),
                 Text(
-                  '  Popular restaurants',
+                  'Popular restaurants'.tr,
                   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                 ),
                 const SizedBox(

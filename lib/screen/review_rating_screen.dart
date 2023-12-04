@@ -38,7 +38,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
         .get();
 
     if (result.docs.isNotEmpty) {
-      Fluttertoast.showToast(msg: 'Review already added');
+      Fluttertoast.showToast(msg: 'Review already added'.tr);
       return;
     }
     Addreviewdatatofirebase();
@@ -59,7 +59,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
       "orderID": widget.orderId,
     }).then((value) {
       Get.back();
-      Fluttertoast.showToast(msg: 'Review Added Successfully');
+      Fluttertoast.showToast(msg: 'Review Added Successfully'.tr);
     });
   }
 
@@ -106,8 +106,8 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'How did we do?',
+                       Text(
+                        'How did we do?'.tr,
                         style: TextStyle(color: Color(0xff1A2E33), fontSize: 18),
                       ),
                       const SizedBox(
@@ -149,8 +149,8 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                         foodQualityValue = value!;
                                       });
                                     }),
-                                const Text(
-                                  'food quality',
+                                 Text(
+                                  'food quality'.tr,
                                   style: TextStyle(color: Colors.black, fontSize: 20),
                                 ),
                                 const SizedBox(width: 20), // Add some space between checkboxes
@@ -162,8 +162,8 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                         foodQuantityValue = value!;
                                       });
                                     }),
-                                const Text(
-                                  'food quantity',
+                                 Text(
+                                  'food quantity'.tr,
                                   style: TextStyle(color: Colors.black, fontSize: 20),
                                 ),
                               ],
@@ -179,8 +179,8 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                         communicationValue = value!;
                                       });
                                     }),
-                                const Text(
-                                  'communication',
+                                 Text(
+                                  'communication'.tr,
                                   style: TextStyle(color: Colors.black, fontSize: 20),
                                 ),
                                 const SizedBox(width: 20), // Add some space between checkboxes
@@ -192,8 +192,8 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                         hygieneValue = value!;
                                       });
                                     }),
-                                const Text(
-                                  'hygiene',
+                                 Text(
+                                  'hygiene'.tr,
                                   style: TextStyle(color: Colors.black, fontSize: 20),
                                 ),
                               ],
@@ -214,8 +214,8 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'How did we do?',
+                       Text(
+                        'How did we do?'.tr,
                         style: TextStyle(color: Color(0xff1A2E33), fontSize: 18),
                       ),
                       const SizedBox(
@@ -229,7 +229,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "About required";
+                            return "About required".tr;
                           } else {
                             return null;
                           }
@@ -265,13 +265,13 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
                       if (fullRating == 0.0) {
-                        showToast("Please enter review");
+                        showToast("Please enter review".tr);
                       } else {
                         checkFirstore();
                       }
                     }
                   },
-                  title: 'FeedBack',
+                  title: 'FeedBack'.tr,
                 ),
                 const SizedBox(
                   height: 15,
@@ -290,7 +290,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                           )),
                       textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                   child: Text(
-                    "Skip".toUpperCase(),
+                    "Skip".tr.toUpperCase(),
                     style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500, color: AppTheme.primaryColor),
                   ),
                 ),

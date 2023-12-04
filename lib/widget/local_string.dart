@@ -5,6 +5,8 @@ class LocaleString extends Translations {
   Map<String, Map<String, String>> get keys => {
         //ENGLISH LANGUAGE
         'en_US': {
+          'View All' : 'View All',
+          'Popular restaurants' : 'Popular restaurants',
           'Logout' : 'Logout',
           'Change Language': 'Change Language',
           'My Wishlist' : 'My Wishlist',
@@ -274,6 +276,8 @@ class LocaleString extends Translations {
 
         //Spanish LANGUAGE
         'es_ES': {
+          'View All' : 'Ver todo',
+          'Popular restaurants': 'Restaurantes populares',
           'Logout' : 'Cerrar sesión',
           'Change Language':'Cambiar idioma',
           'My Wishlist' : 'mi lista de deseos',
@@ -557,6 +561,8 @@ class LocaleString extends Translations {
 
         // french Language
         'fr_FR': {
+          'View All' : 'Voir tout',
+          'Popular restaurants' : 'Restaurants populaires',
           'Logout' : 'Se déconnecter',
           'Change Language':'Changer de langue',
           'My Wishlist' : 'Ma liste denvies',
@@ -838,6 +844,8 @@ class LocaleString extends Translations {
 
         // Arabic Language
         'ar_AE': {
+          'View All' : 'عرض الكل',
+          'Popular restaurants' : 'مطاعم شعبية',
           'Logout' : 'تسجيل خروج',
           'Change Language' : 'تغيير اللغة',
           'My Wishlist': 'قائمة امنياتي',

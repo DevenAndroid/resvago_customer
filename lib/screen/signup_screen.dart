@@ -61,7 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
 
     if (result.docs.isNotEmpty) {
-      Fluttertoast.showToast(msg: 'Email already exits');
+      Fluttertoast.showToast(msg: 'Email already exits'.tr);
       return;
     }
     final QuerySnapshot phoneResult = await FirebaseFirestore.instance
@@ -70,7 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         .get();
 
     if (phoneResult.docs.isNotEmpty) {
-      Fluttertoast.showToast(msg: 'Mobile Number already exits');
+      Fluttertoast.showToast(msg: 'Mobile Number already exits'.tr);
       return;
     }
     addUserToFirestore();
@@ -99,7 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'Create Account',
+                        'Create Account'.tr,
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -114,7 +114,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Enter Your Name',
+                            'Enter Your Name'.tr,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w400,
@@ -127,9 +127,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           CommonTextFieldWidget(
                             controller: userNameController,
                             textInputAction: TextInputAction.next,
-                            hint: 'Enter Your Name',
+                            hint: 'Enter Your Name'.tr,
                             validator: MultiValidator([
-                              RequiredValidator(errorText: 'Please enter your name'),
+                              RequiredValidator(errorText: 'Please enter your name'.tr),
                             ]).call,
                             keyboardType: TextInputType.text,
                           ),
@@ -137,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             height: 15,
                           ),
                           Text(
-                            'Enter Email',
+                            'Enter Email'.tr,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w400,
@@ -150,17 +150,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           CommonTextFieldWidget(
                               controller: emailController,
                               textInputAction: TextInputAction.next,
-                              hint: 'Enter your Email',
+                              hint: 'Enter your Email'.tr,
                               keyboardType: TextInputType.text,
                               validator: MultiValidator([
-                                EmailValidator(errorText: "Valid Email is required"),
-                                RequiredValidator(errorText: "Email is required")
+                                EmailValidator(errorText: "Valid Email is required".tr),
+                                RequiredValidator(errorText: "Email is required".tr)
                               ]).call),
                           const SizedBox(
                             height: 15,
                           ),
                           Text(
-                            'Enter Mobile number',
+                            'Enter Mobile number'.tr,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w400,
@@ -181,9 +181,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             dropdownTextStyle: const TextStyle(color: Colors.white),
                             style: const TextStyle(color: Colors.white),
                             controller: phoneNumberController,
-                            decoration: const InputDecoration(
+                            decoration:  InputDecoration(
                                 hintStyle: TextStyle(color: Colors.white),
-                                labelText: 'Phone Number',
+                                labelText: 'Phone Number'.tr,
                                 labelStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(),
@@ -221,7 +221,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       }),
                                 ),
                               ),
-                              const Text('Are you agree terms and conditions?',
+                               Text('Are you agree terms and conditions?'.tr,
                                   style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Colors.white)),
                             ],
                           ),
@@ -234,11 +234,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 if (value == true) {
                                   checkEmailInFirestore();
                                 } else {
-                                  showToast("Please accept term and conditions");
+                                  showToast("Please accept term and conditions".tr);
                                 }
                               }
                             },
-                            title: 'Create Account',
+                            title: 'Create Account'.tr,
                           ),
                           const SizedBox(
                             height: 30,
@@ -252,7 +252,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 color: const Color(0xFFD2D8DC),
                               ),
                               //SizedBox(width: 10,),
-                              Text('Or Login with',
+                              Text('Or Login with'.tr,
                                   style: GoogleFonts.poppins(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
@@ -283,14 +283,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Image.asset(
-                                      'assets/icons/facrebook.png',
+                                      'assets/icons/facrebook.png'.tr,
                                       height: 27,
                                     ),
                                     const SizedBox(
                                       width: 10,
                                     ),
                                     Text(
-                                      'Facebook',
+                                      'Facebook'.tr,
                                       style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
                                     )
                                   ],
@@ -309,14 +309,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Image.asset(
-                                        'assets/icons/google.png',
+                                        'assets/icons/google.png'.tr,
                                         height: 25,
                                       ),
                                       const SizedBox(
                                         width: 10,
                                       ),
                                       Text(
-                                        'Google',
+                                        'Google'.tr,
                                         style:
                                             GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                                       )
@@ -333,7 +333,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Already Have an Account?",
+                                "Already Have an Account?".tr,
                                 style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
                               ),
                               InkWell(
@@ -341,7 +341,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Get.toNamed(MyRouters.loginScreen);
                                 },
                                 child: Text(
-                                  '  Login',
+                                  'Login'.tr,
                                   style: GoogleFonts.poppins(
                                       color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
                                 ),

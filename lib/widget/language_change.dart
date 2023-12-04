@@ -141,7 +141,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         setState(() {});
                         print(selectedLAnguage);
                       }),
-                  RadioListTile( value: "inglesa",
+                  RadioListTile( value: "Spanish",
                       groupValue: selectedLAnguage.value,
                       title: Text(
                         "SPANISH".tr,
@@ -151,11 +151,11 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         locale = const Locale('es', 'ES');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
-                        updateLanguage("inglesa");
+                        updateLanguage("Spanish");
                         setState(() {});
                         print(selectedLAnguage);
                       }),
-                  RadioListTile( value: "anglaise",
+                  RadioListTile( value: "french",
                       groupValue: selectedLAnguage.value,
                       title: Text(
                         "French".tr,
@@ -165,11 +165,11 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         locale = const Locale('fr', 'FR');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
-                        updateLanguage("anglaise");
+                        updateLanguage("french");
                         setState(() {});
                         print(selectedLAnguage);
                       }),
-                  RadioListTile( value: "إنجليزي",
+                  RadioListTile( value: "Arabic",
                       groupValue: selectedLAnguage.value,
                       title: Text(
                         "Arabic".tr,
@@ -179,7 +179,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         locale = const Locale('ar', 'AE');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
-                        updateLanguage("إنجليزي");
+                        updateLanguage("Arabic");
                         setState(() {});
                         print(selectedLAnguage);
                       }),

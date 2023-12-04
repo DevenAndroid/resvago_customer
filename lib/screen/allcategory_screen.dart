@@ -42,7 +42,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Category", context: context),
+      appBar: backAppBar(title: "Category".tr, context: context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         child: categoryList != null
@@ -95,7 +95,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                 },
               ).appPaddingForScreen
             : Center(
-                child: Text("Category not available"),
+                child: Text("Category not available".tr),
               ),
       ),
     );

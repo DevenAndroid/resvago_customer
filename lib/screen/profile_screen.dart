@@ -330,7 +330,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Name',
+                                  'Name'.tr,
                                   style: GoogleFonts.poppins(
                                       color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                                 ),
@@ -339,8 +339,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 RegisterTextFieldWidget(
                                     controller: firstNameController,
-                                    validator: RequiredValidator(errorText: 'Please enter your name').call,
-                                    hint: "Name"),
+                                    validator: RequiredValidator(errorText: 'Please enter your name'.tr).call,
+                                    hint: "Name".tr),
                                 // const SizedBox(
                                 //   height: 20,
                                 // ),
@@ -361,7 +361,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   height: 20,
                                 ),
                                 Text(
-                                  "Email",
+                                  "Email".tr,
                                   style: GoogleFonts.poppins(
                                       color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                                 ),
@@ -372,8 +372,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   readOnly: true,
                                   controller: emailController,
                                   validator: MultiValidator([
-                                    RequiredValidator(errorText: 'Please enter your email'),
-                                    EmailValidator(errorText: 'Enter a valid email address'),
+                                    RequiredValidator(errorText: 'Please enter your email'.tr),
+                                    EmailValidator(errorText: 'Enter a valid email address'.tr),
                                   ]).call,
                                   keyboardType: TextInputType.emailAddress,
                                   // textInputAction: TextInputAction.next,
@@ -383,7 +383,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   height: 20,
                                 ),
                                 Text(
-                                  "Mobile Number",
+                                  "Mobile Number".tr,
                                   style: GoogleFonts.poppins(
                                       color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                                 ),
@@ -396,7 +396,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     validator: RequiredValidator(errorText: 'Please enter your mobile number ').call,
                                     keyboardType: TextInputType.number,
                                     // textInputAction: TextInputAction.next,
-                                    hint: "Mobile number"),
+                                    hint: "Mobile number".tr),
                                 const SizedBox(
                                   height: 20,
                                 ),
@@ -406,7 +406,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       updateProfileToFirestore();
                                     }
                                   },
-                                  title: 'Save',
+                                  title: 'Save'.tr,
                                 ),
                               ],
                             ).appPaddingForScreen,
@@ -431,8 +431,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Select Picture from',
+        title:  Text(
+          'Select Picture from'.tr,
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
@@ -470,7 +470,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Get.back();
               });
             },
-            child: const Text("Camera"),
+            child:  Text("Camera".tr),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -507,14 +507,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Get.back();
               });
             },
-            child: const Text('Gallery'),
+            child:  Text('Gallery'.tr),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Get.back();
             },
-            child: const Text('Cancel'),
+            child:  Text('Cancel'.tr),
           ),
         ],
       ),
