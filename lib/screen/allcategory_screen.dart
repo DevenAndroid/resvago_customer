@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/helper.dart';
+import 'package:resvago_customer/widget/apptheme.dart';
 import 'package:resvago_customer/widget/common_text_field.dart';
-
 import '../model/category_model.dart';
 import '../widget/addsize.dart';
 import 'category/resturant_by_category.dart';
 
 class AllCategoryScreen extends StatefulWidget {
-  const AllCategoryScreen({super.key});
+  String restaurantType;
+   AllCategoryScreen({super.key, required  this.restaurantType});
 
   @override
   State<AllCategoryScreen> createState() => _AllCategoryScreenState();
@@ -45,10 +46,10 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
       appBar: backAppBar(title: "Category", context: context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        child: categoryList != null
+        child: categoryList != null ? categoryList !=[]
             ? GridView.builder(
                 itemCount: categoryList!.length,
-                physics: const NeverScrollableScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(),
                 gridDelegate: kIsWeb
                     ? SliverGridDelegateWithMaxCrossAxisExtent(
                         mainAxisExtent: AddSize.screenHeight * .14,
@@ -62,7 +63,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                   return GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () {
-                      Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
+                      Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString(), restaurantType: widget.restaurantType,));
                     },
                     child: Column(
                       children: [
@@ -96,7 +97,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
               ).appPaddingForScreen
             : Center(
                 child: Text("Category not available"),
-              ),
+              ):Center(child: CircularProgressIndicator(color: AppTheme.primaryColor),),
       ),
     );
   }

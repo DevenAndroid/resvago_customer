@@ -18,12 +18,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../widget/like_button.dart';
 import '../../widget/restaurant_timing.dart';
+import '../delivery_screen/single_store_delivery_screen.dart';
 import '../single_store_screens/setting_for_restaurant.dart';
 import '../single_store_screens/single_restaurants_screen.dart';
 
 class RestaurantByCategory extends StatefulWidget {
   String categoryName;
-  RestaurantByCategory({super.key, required this.categoryName});
+  String restaurantType;
+  RestaurantByCategory({super.key, required this.categoryName, required this.restaurantType});
 
   @override
   State<RestaurantByCategory> createState() => _RestaurantByCategoryState();
@@ -34,14 +36,36 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
   final _firestore = FirebaseFirestore.instance;
   List<RestaurantModel>? restaurantList;
   getRestaurantList() {
-    FirebaseFirestore.instance.collection("vendor_users").where("deactivate", isEqualTo: false).where("category", isEqualTo: widget.categoryName).get().then((value) {
-      for (var element in value.docs) {
-        var gg = element.data();
-        restaurantList ??= [];
-        restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
-      }
-      setState(() {});
-    });
+    if (widget.restaurantType == "Delivery") {
+      FirebaseFirestore.instance
+          .collection("vendor_users")
+          .where("deactivate", isEqualTo: false)
+          .where("setDelivery", isEqualTo: true)
+          .where("category", isEqualTo: widget.categoryName)
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          var gg = element.data();
+          restaurantList ??= [];
+          restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
+        }
+        setState(() {});
+      });
+    } else {
+      FirebaseFirestore.instance
+          .collection("vendor_users")
+          .where("deactivate", isEqualTo: false)
+          .where("category", isEqualTo: widget.categoryName)
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          var gg = element.data();
+          restaurantList ??= [];
+          restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
+        }
+        setState(() {});
+      });
+    }
   }
 
   final radius = BehaviorSubject<double>.seeded(1.0);
@@ -86,9 +110,16 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                         child: GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.to(() => SingleRestaurantsScreen(
-                                  restaurantItem: restaurantListItem,
-                                ));
+                            if(widget.restaurantType == "Delivery"){
+                              Get.to(() => SingleRestaurantForDeliveryScreen(
+                                restaurantItem: restaurantListItem,
+                              ));
+                            }
+                            else{
+                              Get.to(() => SingleRestaurantsScreen(
+                                restaurantItem: restaurantListItem,
+                              ));
+                            }
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -110,12 +141,16 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                       height: 150,
                                       width: double.maxFinite,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (BuildContext, Object, StackTrace){
-                                        return  SizedBox(height: 150,
+                                      errorBuilder: (BuildContext, Object, StackTrace) {
+                                        return SizedBox(
+                                          height: 150,
                                           width: double.maxFinite,
-                                          child: Icon(Icons.error,color: Colors.red,),
+                                          child: Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          ),
                                         );
-                                    },
+                                      },
                                     ),
                                     Positioned(
                                         top: 0,
@@ -184,7 +219,8 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                 ),
                                 FittedBox(
                                   child: Row(
-                                    children: List.generate(kIsWeb ?100 :40,
+                                    children: List.generate(
+                                        kIsWeb ? 100 : 40,
                                         (index) => Padding(
                                               padding: const EdgeInsets.only(left: 2, right: 2),
                                               child: Container(

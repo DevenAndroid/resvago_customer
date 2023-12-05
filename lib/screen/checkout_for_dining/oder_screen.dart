@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart';
@@ -102,7 +103,10 @@ class _OderScreenState extends State<OderScreen> {
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    // String? fcm = await FirebaseMessaging.instance.getToken();
+    String? fcm = "fcm";
+    if (!kIsWeb) {
+      fcm = await FirebaseMessaging.instance.getToken();
+    }
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
       await firebaseService
@@ -114,7 +118,7 @@ class _OderScreenState extends State<OderScreen> {
               profileData: profileData!.toJson(),
               vendorId: vendorId,
               time: gg,
-              fcm: "fcm",
+              fcm: fcm,
               slot: widget.slot,
               guest: widget.guest,
               date: widget.date,
@@ -377,8 +381,8 @@ class _OderScreenState extends State<OderScreen> {
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 15),
+                                          SizedBox(width: 10),
+                                          Expanded(
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,7 +406,6 @@ class _OderScreenState extends State<OderScreen> {
                                               ],
                                             ),
                                           ),
-                                          const Spacer(),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
@@ -863,7 +866,7 @@ class _OderScreenState extends State<OderScreen> {
                                   onSuccess: (Map params) async {
                                     print("onSuccess: ${params}");
                                     order(restaurantData!.docid).then((value) {
-                                      updateVendor(widget.restaurantItem!.order_count+1,widget.restaurantItem!.userID);
+                                      updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
                                       FirebaseFirestore.instance
                                           .collection("checkOut")
                                           .doc(FirebaseAuth.instance.currentUser!.uid)

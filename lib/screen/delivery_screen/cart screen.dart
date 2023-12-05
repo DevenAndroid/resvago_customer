@@ -742,6 +742,7 @@ class _CartScreenState extends State<CartScreen> {
                             showToast("Please choose address");
                           } else {
                             order(cartModel.vendorId).then((value) {
+                              updateVendor(cartModel.restaurantInfo!.order_count + 1, cartModel.restaurantInfo!.userID);
                               FirebaseFirestore.instance
                                   .collection("checkOut")
                                   .doc(FirebaseAuth.instance.currentUser!.uid)

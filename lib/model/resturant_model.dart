@@ -95,6 +95,7 @@ class RestaurantModel {
     data['setDelivery'] = setDelivery;
     data['cancellation'] = cancellation;
     data['menuSelection'] = menuSelection;
+    data['order_count'] = order_count;
     return data;
   }
 }

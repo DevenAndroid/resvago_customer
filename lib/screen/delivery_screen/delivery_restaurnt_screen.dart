@@ -551,7 +551,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          Get.to(() => AllCategoryScreen());
+                          Get.to(() => AllCategoryScreen(restaurantType: 'Delivery',));
                         },
                         child: Text(
                           "View All",
@@ -570,7 +570,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
+                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString(),restaurantType:"Delivery"));
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
@@ -792,7 +792,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString()));
+                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString(),restaurantType:"Delivery"));
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),

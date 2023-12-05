@@ -8,6 +8,8 @@ class MyOrderModel {
   dynamic time;
   dynamic userId;
   dynamic total;
+  dynamic docid;
+  dynamic reasonOfCancel;
   OrderDetails? orderDetails;
   dynamic orderType;
   CustomerData? customerData;
@@ -24,9 +26,11 @@ class MyOrderModel {
       this.orderDetails,
       this.total,
       this.customerData,
+      this.docid,
+      this.reasonOfCancel,
       this.orderType});
 
-  MyOrderModel.fromJson(Map<String, dynamic> json) {
+  MyOrderModel.fromJson(Map<String, dynamic> json,docid1) {
     couponDiscount = json['couponDiscount'];
     orderStatus = json['order_status'];
     address = json['address'];
@@ -39,6 +43,8 @@ class MyOrderModel {
     orderDetails = json['order_details'] != null ? OrderDetails.fromJson(json['order_details']) : null;
     customerData = json['user_data'] != null ? CustomerData.fromJson(json['user_data']) : null;
     orderType = json['order_type'];
+    reasonOfCancel = json['reasonOfCancel'];
+    docid = docid1;
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +58,7 @@ class MyOrderModel {
     data['time'] = time;
     data['userId'] = userId;
     data['total'] = total;
+    data['reasonOfCancel'] = reasonOfCancel;
     if (orderDetails != null) {
       data['order_details'] = orderDetails!.toJson();
     }

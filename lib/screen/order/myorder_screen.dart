@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ import 'package:resvago_customer/screen/delivery_screen/cart%20screen.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/widget/appassets.dart';
+import 'package:resvago_customer/widget/common_text_field.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../widget/apptheme.dart';
 import 'order_details_screen.dart';
@@ -28,6 +30,8 @@ class MyOrder extends StatefulWidget {
 }
 
 class _MyOrderState extends State<MyOrder> {
+  final reasonOfCancel = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   var currentDrawer = 0;
   var orderType = "Dining";
   List<MyOrderModel>? myOrder;
@@ -40,7 +44,7 @@ class _MyOrderState extends State<MyOrder> {
       for (var element in value.docs) {
         var gg = element.data();
         myOrder ??= [];
-        myOrder!.add(MyOrderModel.fromJson(gg));
+        myOrder!.add(MyOrderModel.fromJson(gg, element.id));
       }
     });
     setState(() {});
@@ -69,7 +73,7 @@ class _MyOrderState extends State<MyOrder> {
       try {
         for (var doc in querySnapshot.docs) {
           var gg = doc.data();
-          menuList.add(MyOrderModel.fromJson(gg));
+          menuList.add(MyOrderModel.fromJson(gg, doc.id));
         }
       } catch (e) {
         throw Exception(e.toString());
@@ -90,7 +94,7 @@ class _MyOrderState extends State<MyOrder> {
       try {
         for (var doc in querySnapshot.docs) {
           var gg = doc.data();
-          menuList.add(MyOrderModel.fromJson(gg));
+          menuList.add(MyOrderModel.fromJson(gg, doc.id));
         }
       } catch (e) {
         throw Exception(e.toString());
@@ -110,7 +114,7 @@ class _MyOrderState extends State<MyOrder> {
       try {
         for (var doc in querySnapshot.docs) {
           var gg = doc.data();
-          menuList.add(MyOrderModel.fromJson(gg));
+          menuList.add(MyOrderModel.fromJson(gg, doc.id));
         }
       } catch (e) {
         throw Exception(e.toString());
@@ -459,7 +463,9 @@ class _MyOrderState extends State<MyOrder> {
                                                   SizedBox(
                                                     height: 28,
                                                     child: ElevatedButton(
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        _showPopup(context, orderItem.docid);
+                                                      },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: Colors.white,
                                                           shape: RoundedRectangleBorder(
@@ -508,7 +514,7 @@ class _MyOrderState extends State<MyOrder> {
                                     );
                                   })
                               : SingleChildScrollView(
-                                child: Column(
+                                  child: Column(
                                     children: [
                                       Container(
                                         height: 500,
@@ -544,7 +550,7 @@ class _MyOrderState extends State<MyOrder> {
                                       ),
                                     ],
                                   ),
-                              );
+                                );
                         }
                         return const SizedBox.shrink();
                       },
@@ -1876,5 +1882,107 @@ class _MyOrderState extends State<MyOrder> {
                       },
                     ),
                   ]).appPaddingForScreen));
+  }
+
+  void _showPopup(BuildContext context, docid) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            surfaceTintColor: Colors.white,
+            title: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 2),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
+                      Icons.clear_rounded,
+                      color: Colors.red,
+                      size: 40,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text('Cancel Order', style: TextStyle(fontWeight: FontWeight.w500)),
+              ],
+            ),
+            content: Form(
+              key: _formKey,
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Text("Are you sure you want to cancel this order?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color(0xff384953))),
+                SizedBox(
+                  height: 10,
+                ),
+                RegisterTextFieldWidget(
+                  hint: "Enter Your Reason",
+                  controller: reasonOfCancel,
+                  validator: MultiValidator([
+                    RequiredValidator(errorText: 'Please enter your reason'),
+                  ]).call,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          decoration:
+                              BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.grey)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                            child: Center(child: Text('No')),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            FirebaseFirestore.instance.collection('order').doc(docid).update(
+                                {'order_status': 'Order Rejected', 'reasonOfCancel': reasonOfCancel.text.trim()}).then((value) {
+                              showToast("Order has been cancelled");
+                              reasonOfCancel.clear();
+                              Navigator.of(context).pop();
+                              setState(() {});
+                            });
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                            child: Center(
+                                child: Text(
+                              'Yes',
+                              style: TextStyle(color: Colors.white),
+                            )),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ]),
+            ));
+      },
+    );
   }
 }

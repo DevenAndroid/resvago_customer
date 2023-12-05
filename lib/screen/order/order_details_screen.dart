@@ -46,7 +46,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
         .get()
         .then((value) {
       if (value.docs.isNotEmpty) {
-        myOrderModel = MyOrderModel.fromJson(value.docs.first.data());
+        myOrderModel = MyOrderModel.fromJson(value.docs.first.data(), value.docs.first.id);
         setState(() {});
       }
     });
@@ -303,40 +303,42 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                 const SizedBox(
                                                   width: 15,
                                                 ),
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      menuData.dishName,
-                                                      style: GoogleFonts.poppins(
-                                                          color: const Color(0xFF1A2E33),
-                                                          fontWeight: FontWeight.w600,
-                                                          fontSize: 15),
-                                                    ),
-                                                    const SizedBox(height: 3),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          "Qty: ${menuData.qty}",
-                                                          style: GoogleFonts.poppins(
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.w300,
-                                                              color: const Color(0xFF3B5998)),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 3,
-                                                    ),
-                                                    Text(
-                                                      "\$${menuData.price}",
-                                                      style: GoogleFonts.poppins(
-                                                          color: const Color(0xFF384953),
-                                                          fontWeight: FontWeight.w300,
-                                                          fontSize: 15),
-                                                    ),
-                                                  ],
+                                                Expanded(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        menuData.dishName,
+                                                        style: GoogleFonts.poppins(
+                                                            color: const Color(0xFF1A2E33),
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 15),
+                                                      ),
+                                                      const SizedBox(height: 3),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            "Qty: ${menuData.qty}",
+                                                            style: GoogleFonts.poppins(
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.w300,
+                                                                color: const Color(0xFF3B5998)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 3,
+                                                      ),
+                                                      Text(
+                                                        "\$${menuData.price}",
+                                                        style: GoogleFonts.poppins(
+                                                            color: const Color(0xFF384953),
+                                                            fontWeight: FontWeight.w300,
+                                                            fontSize: 15),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 )
                                               ],
                                             ),
@@ -346,7 +348,9 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                           ],
                                         );
                                       },
-                                    )
+                                    ),
+                                    if (myOrderModel.orderStatus == "Order Rejected" && myOrderModel.reasonOfCancel != null)
+                                      Text(myOrderModel.reasonOfCancel.toString())
                                   ],
                                 ),
                               ),
@@ -615,23 +619,24 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                               const SizedBox(
                                 width: 10,
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Order ID: ${myDiningOrderModel!.orderId.toString()}",
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
-                                  ),
-                                  Text(
-                                    DateFormat.yMMMMd().format(DateTime.parse(
-                                        DateTime.fromMillisecondsSinceEpoch(myDiningOrderModel!.time).toLocal().toString())),
-                                    style: GoogleFonts.poppins(
-                                        color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
-                                  ),
-                                ],
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Order ID: ${myDiningOrderModel!.orderId.toString()}",
+                                      style: GoogleFonts.poppins(
+                                          color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                                    ),
+                                    Text(
+                                      DateFormat.yMMMMd().format(DateTime.parse(
+                                          DateTime.fromMillisecondsSinceEpoch(myDiningOrderModel!.time).toLocal().toString())),
+                                      style: GoogleFonts.poppins(
+                                          color: const Color(0xFF303C5E), fontWeight: FontWeight.w400, fontSize: 11),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const Spacer(),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
                                 decoration: BoxDecoration(
@@ -828,9 +833,10 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                       Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Container(
-                              padding: const EdgeInsets.all(14),
+                              padding: const EdgeInsets.all(10.0),
                               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Expanded(
                                     child: Column(
@@ -846,6 +852,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                           height: 11,
                                         ),
                                         ListView.builder(
+                                          padding: EdgeInsets.zero,
                                           physics: const BouncingScrollPhysics(),
                                           shrinkWrap: true,
                                           itemCount: myDiningOrderModel!.menuList!.length,
@@ -874,8 +881,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                     const SizedBox(
                                                       width: 15,
                                                     ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(top: 8.0),
+                                                    Expanded(
                                                       child: Column(
                                                         mainAxisAlignment: MainAxisAlignment.start,
                                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -912,12 +918,9 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 98.0),
-                                    child: Image.asset(
-                                      AppAssets.qr,
-                                      height: 80,
-                                    ),
+                                  Image.asset(
+                                    AppAssets.qr,
+                                    height: 80,
                                   )
                                 ],
                               ))),

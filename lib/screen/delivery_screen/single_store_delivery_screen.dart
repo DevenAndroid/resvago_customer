@@ -139,6 +139,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
     getReviewList();
     if (widget.restaurantItem != null) {
       log(widget.restaurantItem!.image.toString());
+      log(widget.restaurantItem!.toJson().toString());
       // getWeekSchedule(widget.restaurantItem!.userID);
     }
   }
@@ -538,196 +539,199 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                               },
                                             ),
                                           ),
-                                        if (menuList != null)
-                                          ListView.builder(
-                                              shrinkWrap: true,
-                                              physics: const NeverScrollableScrollPhysics(),
-                                              itemCount: menuList!.length,
-                                              itemBuilder: (context, index) {
-                                                var menuListData = menuList![index];
-                                                return Column(children: [
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 60,
-                                                        width: 80,
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl: menuListData.image,
-                                                            fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
-                                                              Icons.error,
-                                                              color: Colors.red,
+                                        menuList != null
+                                            ? ListView.builder(
+                                                shrinkWrap: true,
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                itemCount: menuList!.length,
+                                                itemBuilder: (context, index) {
+                                                  var menuListData = menuList![index];
+                                                  return Column(children: [
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 60,
+                                                          width: 80,
+                                                          child: ClipRRect(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            child: CachedNetworkImage(
+                                                              imageUrl: menuListData.image,
+                                                              fit: BoxFit.cover,
+                                                              errorWidget: (_, __, ___) => Icon(
+                                                                Icons.error,
+                                                                color: Colors.red,
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(
-                                                              menuListData.dishName.toString(),
-                                                              maxLines: 2,
-                                                              style: GoogleFonts.poppins(
-                                                                  fontSize: 14,
-                                                                  fontWeight: FontWeight.w400,
-                                                                  color: const Color(0xFF1E2538)),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 3,
-                                                            ),
-                                                            Text(
-                                                              menuListData.description.toString(),
-                                                              maxLines: 2,
-                                                              style: GoogleFonts.poppins(
-                                                                  fontSize: 10,
-                                                                  fontWeight: FontWeight.w300,
-                                                                  color: const Color(0xFF74848C)),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            menuListData.qty > 0
-                                                                ? Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                    children: [
-                                                                      Container(
-                                                                        height: 28,
-                                                                        width: 28,
-                                                                        decoration: BoxDecoration(
-                                                                            border: Border.all(color: Colors.black),
-                                                                            borderRadius: const BorderRadius.all(
-                                                                              Radius.circular(20),
-                                                                            )),
-                                                                        child: InkWell(
-                                                                            onTap: () {
-                                                                              menuListData.qty--;
-                                                                              log(menuListData.qty.toString());
-                                                                              setState(() {});
-                                                                            },
-                                                                            child: const Icon(
-                                                                              Icons.remove,
-                                                                              size: 18,
-                                                                            )),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width: 8,
-                                                                      ),
-                                                                      Text(
-                                                                        menuListData.qty.toString(),
-                                                                        style: GoogleFonts.alegreyaSans(
-                                                                          fontSize: 16,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width: 8,
-                                                                      ),
-                                                                      Row(
-                                                                        children: [
-                                                                          Container(
-                                                                            height: 28,
-                                                                            width: 28,
-                                                                            decoration: const BoxDecoration(
-                                                                                color: AppTheme.primaryColor,
-                                                                                borderRadius: BorderRadius.all(
-                                                                                  Radius.circular(20),
-                                                                                )),
-                                                                            child: InkWell(
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                menuListData.dishName.toString(),
+                                                                maxLines: 2,
+                                                                style: GoogleFonts.poppins(
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.w400,
+                                                                    color: const Color(0xFF1E2538)),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 3,
+                                                              ),
+                                                              Text(
+                                                                menuListData.description.toString(),
+                                                                maxLines: 2,
+                                                                style: GoogleFonts.poppins(
+                                                                    fontSize: 10,
+                                                                    fontWeight: FontWeight.w300,
+                                                                    color: const Color(0xFF74848C)),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              menuListData.qty > 0
+                                                                  ? Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      children: [
+                                                                        Container(
+                                                                          height: 28,
+                                                                          width: 28,
+                                                                          decoration: BoxDecoration(
+                                                                              border: Border.all(color: Colors.black),
+                                                                              borderRadius: const BorderRadius.all(
+                                                                                Radius.circular(20),
+                                                                              )),
+                                                                          child: InkWell(
                                                                               onTap: () {
-                                                                                menuListData.qty++;
+                                                                                menuListData.qty--;
                                                                                 log(menuListData.qty.toString());
                                                                                 setState(() {});
                                                                               },
                                                                               child: const Icon(
-                                                                                Icons.add,
-                                                                                color: Colors.white,
+                                                                                Icons.remove,
                                                                                 size: 18,
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      )
-                                                                    ],
-                                                                  )
-                                                                : SizedBox(
-                                                                    // width: size.width,
-                                                                    height: 23,
-
-                                                                    child: ElevatedButton(
-                                                                      onPressed: () {
-                                                                        menuListData.qty++;
-                                                                        log(menuListData.qty.toString());
-                                                                        setState(() {});
-                                                                      },
-                                                                      style: ElevatedButton.styleFrom(
-                                                                          backgroundColor: const Color(0xFF3B5998),
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(3),
-                                                                              side: const BorderSide(
-                                                                                width: 2.0,
-                                                                                color: Color(0xFF3B5998),
                                                                               )),
-                                                                          textStyle: const TextStyle(
-                                                                              fontSize: 18, fontWeight: FontWeight.w500)),
-                                                                      child: Text(
-                                                                        "ADD TO CART",
-                                                                        style: GoogleFonts.poppins(
-                                                                          fontSize: 10,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: Colors.white,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width: 8,
+                                                                        ),
+                                                                        Text(
+                                                                          menuListData.qty.toString(),
+                                                                          style: GoogleFonts.alegreyaSans(
+                                                                            fontSize: 16,
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width: 8,
+                                                                        ),
+                                                                        Row(
+                                                                          children: [
+                                                                            Container(
+                                                                              height: 28,
+                                                                              width: 28,
+                                                                              decoration: const BoxDecoration(
+                                                                                  color: AppTheme.primaryColor,
+                                                                                  borderRadius: BorderRadius.all(
+                                                                                    Radius.circular(20),
+                                                                                  )),
+                                                                              child: InkWell(
+                                                                                onTap: () {
+                                                                                  menuListData.qty++;
+                                                                                  log(menuListData.qty.toString());
+                                                                                  setState(() {});
+                                                                                },
+                                                                                child: const Icon(
+                                                                                  Icons.add,
+                                                                                  color: Colors.white,
+                                                                                  size: 18,
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        )
+                                                                      ],
+                                                                    )
+                                                                  : SizedBox(
+                                                                      // width: size.width,
+                                                                      height: 23,
+
+                                                                      child: ElevatedButton(
+                                                                        onPressed: () {
+                                                                          menuListData.qty++;
+                                                                          log(menuListData.qty.toString());
+                                                                          setState(() {});
+                                                                        },
+                                                                        style: ElevatedButton.styleFrom(
+                                                                            backgroundColor: const Color(0xFF3B5998),
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(3),
+                                                                                side: const BorderSide(
+                                                                                  width: 2.0,
+                                                                                  color: Color(0xFF3B5998),
+                                                                                )),
+                                                                            textStyle: const TextStyle(
+                                                                                fontSize: 18, fontWeight: FontWeight.w500)),
+                                                                        child: Text(
+                                                                          "ADD TO CART",
+                                                                          style: GoogleFonts.poppins(
+                                                                            fontSize: 10,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: Colors.white,
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                                        children: [
-                                                          Text(
-                                                            "\$${menuListData.price.toString()}",
-                                                            style: GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                // fontWeight: FontWeight.w400,
-                                                                color: const Color(0xFF1E2538)),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          Text(
-                                                            "${menuListData.discount.toString()}% Discount",
-                                                            style: GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                // fontWeight: FontWeight.w400,
-                                                                color: const Color(0xFF74848C)),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  index != menuList!.length - 1
-                                                      ? const DottedLine(
-                                                          dashColor: Color(0xffBCBCBC),
-                                                          dashGapLength: 1,
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                          children: [
+                                                            Text(
+                                                              "\$${menuListData.price.toString()}",
+                                                              style: GoogleFonts.poppins(
+                                                                  fontSize: 14,
+                                                                  // fontWeight: FontWeight.w400,
+                                                                  color: const Color(0xFF1E2538)),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Text(
+                                                              "${menuListData.discount.toString()}% Discount",
+                                                              style: GoogleFonts.poppins(
+                                                                  fontSize: 14,
+                                                                  // fontWeight: FontWeight.w400,
+                                                                  color: const Color(0xFF74848C)),
+                                                            ),
+                                                          ],
                                                         )
-                                                      : const SizedBox(),
-                                                ]);
-                                              }),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    index != menuList!.length - 1
+                                                        ? const DottedLine(
+                                                            dashColor: Color(0xffBCBCBC),
+                                                            dashGapLength: 1,
+                                                          )
+                                                        : const SizedBox(),
+                                                  ]);
+                                                })
+                                            : Center(
+                                                child: Text("Menu not available"),
+                                              ),
                                       ],
                                     ),
                                   ),
@@ -1219,7 +1223,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                       User? user = _auth.currentUser;
                                       if (user != null) {
                                         manageCheckOut(widget.restaurantItem!.docid).then((value) {
-                                          updateVendor(widget.restaurantItem!.order_count+1,widget.restaurantItem!.userID);
+                                          updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
                                           Get.to(() => const CartScreen());
                                         });
                                       } else {

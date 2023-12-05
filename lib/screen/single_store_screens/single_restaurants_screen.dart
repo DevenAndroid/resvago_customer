@@ -78,6 +78,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
     getReviewList();
     if (widget.restaurantItem != null) {
       log(widget.restaurantItem!.image.toString());
+      log(widget.restaurantItem!.toJson().toString());
     }
   }
 

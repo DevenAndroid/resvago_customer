@@ -153,7 +153,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                   'food quality',
                                   style: TextStyle(color: Colors.black, fontSize: 20),
                                 ),
-                                const SizedBox(width: 20), // Add some space between checkboxes
+                                const SizedBox(width: 10), // Add some space between checkboxes
                                 Checkbox(
                                     activeColor: AppTheme.primaryColor,
                                     value: foodQuantityValue,
