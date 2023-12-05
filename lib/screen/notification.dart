@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-import '../widget/apptheme.dart';
+import 'package:intl/intl.dart';
+import 'package:resvago_customer/screen/helper.dart';
+import '../model/notification_model.dart';
 import '../widget/common_text_field.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -13,125 +14,135 @@ class NotificationScreen extends StatefulWidget {
   NotificationScreenState createState() => NotificationScreenState();
 }
 
+String formatDate(DateTime date) {
+  return DateFormat.yMMMd().format(date);
+}
+
 class NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: backAppBar(title: "Notification".tr, context: context,
+        appBar: backAppBar(
+          title: "Notification".tr,
+          context: context,
         ),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: width * 0.02, vertical: height * .01),
-            child: Column(
-              children: [
-                ListView.builder(
-                    itemCount: 5,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.only(left: 5, right: 5),
-                        child: Card(
-                          elevation: 0,
+        body: StreamBuilder<List<NotificationData>>(
+          stream: getPagesStream(),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<NotificationData>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text("No Pages Found"));
+            } else {
+              List<NotificationData>? notification = snapshot.data;
+
+              return notification!.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: notification.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final item = notification[index];
+
+                        // if (item.deactivate) {
+                        //   return SizedBox.shrink();
+                        // }
+                        return Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          width: Get.width,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(11),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 1,
+                                blurRadius: 2,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
+                          ),
                           child: Row(
                             children: [
-                              SizedBox(
-                                width: width * 0.02,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: width * .005,
-                                ),
-                                child: Container(
-                                  width: width * .010,
-                                  height: height * .08,
-                                  decoration: const BoxDecoration(
-                                    color:Color(0xffFAAF40),
-                                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                                  ),
-                                ),
+                              Container(
+                                width: 5,
+                                height: 70,
+                                color: Color(0xffFAAF40),
                               ),
                               SizedBox(
-                                width: width * 0.03,
+                                width: 10,
                               ),
-                              Row(mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      color:Color(0xffFAAF40),
-                                      shape: BoxShape.circle
-                                    ),
-                                    height: 30,
-                                    width: 30,
-                                    child: Center(
-                                      child: Text('B',  style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                      ),),
-                                    ),
-                                  )
-                                ],
+                              CircleAvatar(
+                                maxRadius: 25,
+                                minRadius: 25,
+                                backgroundColor: Color(0xffFAAF40),
+                                child: Text('B'),
                               ),
                               SizedBox(
-                                width: width * 0.03,
+                                width: 20,
                               ),
                               Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.fromLTRB(12, 8, 8, 12),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-
-                                      Text(
-                                        'Date - 17-02-2022',
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w700,
-                                          color:const Color(0xffFAAF40),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 4,
-                                      ),
-                                      Text(
-                                        'Lorem ipsum dolor sit amet',
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w500,
-                                          color: const Color(0xff2A3757),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      //textBold(snapshot.data!.data.notifications[index].title),
-                                      const SizedBox(
-                                        height: 4,
-                                      ),
-                                      Text(
-                                      "Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do eiusmod",
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w400,
-                                          color: const Color(0xff797F8F),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Date: ${formatDate(item.date.toDate())}",
+                                      style: const TextStyle(
+                                          color: Color(0xffFAAF40),
                                           fontSize: 12,
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                    Text(
+                                      item.body.toString(),
+                                      style: const TextStyle(
+                                          color: Color(0xff384953),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      item.title.toString(),
+                                      style: const TextStyle(
+                                          color: Color(0xff384953),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      );
-                    })
-              ],
-            ),
-          ),
+                        ).appPaddingForScreen;
+                      })
+                  : const Center(
+                      child: Text("No Pages Found"),
+                    );
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
         ));
+  }
+
+  Stream<List<NotificationData>> getPagesStream() {
+    return FirebaseFirestore.instance
+        .collection('notification')
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => NotificationData(
+                  title: doc.data()['title'],
+                  docid: doc.id,
+                  userId: doc.data()['userId'],
+                  date: doc.data()['date'],
+                  body: doc.data()['body'],
+                ))
+            .toList());
   }
 }

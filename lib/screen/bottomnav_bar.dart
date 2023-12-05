@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/homepage.dart';
+import 'package:resvago_customer/screen/notification.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import 'package:resvago_customer/screen/wishlist_screen.dart';
 import 'package:resvago_customer/widget/language_change.dart';
@@ -83,7 +84,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   @override
   void initState() {
     super.initState();
-    // updateFCMToken();
+     updateFCMToken();
     user = _auth.currentUser;
     if (user != null) {
       getProfileData();
@@ -297,6 +298,22 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           ),
                           onTap: () async {
                             Get.to(LanguageChangeScreen());
+                            // }
+                          }),
+                      const Divider(
+                        height: 5,
+                        color: Color(0xffF2F2F2),
+                      ),
+                      drawerTile(
+                          active: true,
+                          title: "Notification".tr,
+                          icon: const ImageIcon(
+                            AssetImage(AppAssets.notification),
+                            size: 22,
+                            color: AppTheme.drawerColor,
+                          ),
+                          onTap: () async {
+                            Get.to(NotificationScreen());
                             // }
                           }),
                       const Divider(

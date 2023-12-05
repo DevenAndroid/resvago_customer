@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart';
@@ -141,7 +142,7 @@ class _CartScreenState extends State<CartScreen> {
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    // String? fcm = await FirebaseMessaging.instance.getToken();
+     String? fcm = await FirebaseMessaging.instance.getToken();
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
       await firebaseService
@@ -153,10 +154,12 @@ class _CartScreenState extends State<CartScreen> {
               time: gg,
               address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
               couponDiscount: couponDiscount,
-              fcm: "fcm",
+              fcm: fcm,
               total: totalPrice)
           .then((value) {
         Helper.hideLoader(loader);
+        log(fcm.toString());
+        print("ggggggggg${fcm.toString()}");
         return gg;
       });
       return gg;

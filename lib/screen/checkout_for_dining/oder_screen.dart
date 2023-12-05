@@ -102,7 +102,7 @@ class _OderScreenState extends State<OderScreen> {
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    // String? fcm = await FirebaseMessaging.instance.getToken();
+     String? fcm = await FirebaseMessaging.instance.getToken();
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
       await firebaseService
@@ -114,13 +114,14 @@ class _OderScreenState extends State<OderScreen> {
               profileData: profileData!.toJson(),
               vendorId: vendorId,
               time: gg,
-              fcm: "fcm",
+              fcm: fcm,
               slot: widget.slot,
               guest: widget.guest,
               date: widget.date,
               total: calculateTotalPrice.toString())
           .then((value) {
         Helper.hideLoader(loader);
+        log(fcm.toString());
         return gg;
       });
       return gg;

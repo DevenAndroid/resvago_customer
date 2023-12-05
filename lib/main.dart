@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:resvago_customer/widget/local_string.dart';
@@ -10,6 +12,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // await Permission.notification.isDenied.then((value) {
+  //   if (value) {
+  //     Permission.notification.request();
+  //   }
+  // });
   if (kIsWeb) {
     await Firebase.initializeApp(
       options: FirebaseOptions(
@@ -20,8 +27,19 @@ Future<void> main() async {
         storageBucket: "resvago-b7bd4.appspot.com",
       ),
     );
+  } else{
+    await Firebase.initializeApp();
   }
-  await Firebase.initializeApp();
+  await FirebaseMessaging.instance.requestPermission(
+    sound: true,
+    provisional: true,
+    criticalAlert: true,
+    carPlay: true,
+    badge: true,
+    announcement: true,
+    alert: true,
+
+  );
   runApp(const MyApp());
 }
 
