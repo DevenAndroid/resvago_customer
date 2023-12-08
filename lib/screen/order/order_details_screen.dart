@@ -59,7 +59,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
         .where("orderId", isEqualTo: widget.orderId.toString())
         .get()
         .then((value) {
-      myDiningOrderModel = MyDiningOrderModel.fromJson(value.docs.first.data());
+      myDiningOrderModel = MyDiningOrderModel.fromJson(value.docs.first.data(),value.docs.first.id);
       setState(() {});
     });
   }

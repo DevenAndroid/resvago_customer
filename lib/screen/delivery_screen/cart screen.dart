@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/model/profile_model.dart';
 import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/screen/myAddressList.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher.dart';
 // import 'package:youcanpay_sdk/youcanpay_sdk.dart';
 import '../../controller/bottomnavbar_controller.dart';
 import '../../firebase_service/firebase_service.dart';
@@ -24,6 +27,8 @@ import '../../widget/common_text_field.dart';
 import '../bottomnav_bar.dart';
 import '../coupon_list_screen.dart';
 import '../helper.dart';
+import '../paypal_services/payment.dart';
+import '../paypal_services/paypal.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -41,20 +46,12 @@ class _CartScreenState extends State<CartScreen> {
   CheckOutModel cartModel = CheckOutModel();
   List<Map<String, dynamic>> extractedData = [];
 
-  // initYCPay() {
-  //   ycPay = YCPay(publicKey: publicKey, context: context, sandbox: true);
-  // }
-  //
-  // // Initialize card information
-  // // You can get this information from your user
-  // initCardInformation() {
-  //   try {
-  //     cardInformation = CardInformation(
-  //         cardHolderName: 'Holder Name', cardNumber: '1234123412341234', expireDateYear: '35', expireDateMonth: '12', cvv: '123');
-  //   } catch (e) {
-  //     debugPrint(e.toString());
-  //   }
-  // }
+  final PayPalService payPalService = PayPalService(
+    clientId: "Ab5v6E4R-gNbD13BbcdgpzK0G66oJ8ij1Va8i85qzGTtgA4TXkmt2h4oRpCXGRTBQs8Fn1SMqgyVkQ19",
+    secret: "ELCzlUANZYqBS27CGrYqP3RNyoob11TbOj_J4kYp6QULFkDWh9veSi_zkpQoe8nu-VS3FN8XJf-o5WJx",
+    // clientId: "AYBmWmZ1iXnGwAqSsmGdqTZFeJ6RYu-rBjGWFLnuX-kDfvLqa8qp75RPCzhaetorPoFrxqZJu0cPccd_",
+    // secret: "EJIKzLSexzl_2VKzn9aoNa_J6tpdDFzz4zgm2xAPxw3WWZvkInjPW8wGVlRk-zvz5QhFiCbPrJrtBy8H",
+  );
 
   getCheckOutData() {
     extractedData.clear();
@@ -163,6 +160,13 @@ class _CartScreenState extends State<CartScreen> {
     } catch (e) {
       Helper.hideLoader(loader);
       throw Exception(e);
+    }
+  }
+
+  Future<void> _launchUrl(url) async {
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
     }
   }
 
@@ -737,21 +741,10 @@ class _CartScreenState extends State<CartScreen> {
                       width: size.width,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (addressData == null) {
                             showToast("Please choose address");
                           } else {
-                            order(cartModel.vendorId).then((value) {
-                              updateVendor(cartModel.restaurantInfo!.order_count + 1, cartModel.restaurantInfo!.userID);
-                              FirebaseFirestore.instance
-                                  .collection("checkOut")
-                                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                                  .delete();
-                              Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
-
-                            });
-
-                            return;
                             print([
                               {
                                 "amount": {
@@ -784,64 +777,84 @@ class _CartScreenState extends State<CartScreen> {
                               }
                             ]);
                             // return;
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => UsePaypal(
-                                    sandboxMode: true,
-                                    clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
-                                    secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
-                                    returnURL: "https://samplesite.com/return",
-                                    cancelURL: "https://samplesite.com/cancel",
-                                    transactions: [
-                                      {
-                                        "amount": {
-                                          "total": calculateTotalPrice.toStringAsFixed(2).toString(),
-                                          "currency": "USD",
-                                          "details": {
-                                            "subtotal": calculateTotalPrice.toStringAsFixed(2).toString(),
-                                            "shipping": '0',
-                                            "shipping_discount": 0
-                                          }
-                                        },
-                                        "description": "The payment transaction description.",
-                                        // "payment_options": {
-                                        //   "allowed_payment_method":
-                                        //       "INSTANT_FUNDING_SOURCE"
-                                        // },
-                                        "item_list": {
-                                          "items": extractedData,
-                                          // shipping address is not required though
-                                          "shipping_address": {
-                                            "recipient_name": "Jane Foster",
-                                            "line1": "aaa",
-                                            "line2": "aaa",
-                                            "city": addressData!.streetAddress.toString(),
-                                            "country_code": "IN",
-                                            "phone": "+91",
-                                            "state": addressData!.streetAddress.toString(),
+
+                            if (kIsWeb) {
+                              try {
+                                await payPalService.createOrder().then((value) {
+                                  print("fsdgdfghh" + value.toString());
+                                  order(cartModel.vendorId).then((value2) {
+                                    FirebaseFirestore.instance
+                                        .collection("checkOut")
+                                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                                        .delete();
+                                    Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
+                                  });
+                                });
+                              } catch (e) {
+                                print('Error: $e');
+                              };
+                            } else {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => UsePaypal(
+                                      sandboxMode: true,
+                                      // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
+                                      // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
+                                      clientId: "Ab5v6E4R-gNbD13BbcdgpzK0G66oJ8ij1Va8i85qzGTtgA4TXkmt2h4oRpCXGRTBQs8Fn1SMqgyVkQ19",
+                                      secretKey: "ELCzlUANZYqBS27CGrYqP3RNyoob11TbOj_J4kYp6QULFkDWh9veSi_zkpQoe8nu-VS3FN8XJf-o5WJx",
+                                      returnURL: "https://samplesite.com/return",
+                                      cancelURL: "https://samplesite.com/cancel",
+                                      transactions: [
+                                        {
+                                          "amount": {
+                                            "total": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                            "currency": "USD",
+                                            "details": {
+                                              "subtotal": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                              "shipping": '0',
+                                              "shipping_discount": 0
+                                            }
                                           },
+                                          "description": "The payment transaction description.",
+                                          // "payment_options": {
+                                          //   "allowed_payment_method":
+                                          //       "INSTANT_FUNDING_SOURCE"
+                                          // },
+                                          "item_list": {
+                                            "items": extractedData,
+                                            // shipping address is not required though
+                                            "shipping_address": {
+                                              "recipient_name": "Jane Foster",
+                                              "line1": "aaa",
+                                              "line2": "aaa",
+                                              "city": addressData!.streetAddress.toString(),
+                                              "country_code": "IN",
+                                              "phone": "+91",
+                                              "state": addressData!.streetAddress.toString(),
+                                            },
+                                          }
                                         }
-                                      }
-                                    ],
-                                    note: "Contact us for any questions on your order.",
-                                    onSuccess: (Map params) async {
-                                      print("onSuccess: ${params}");
-                                      order(cartModel.vendorId).then((value) {
-                                        FirebaseFirestore.instance
-                                            .collection("checkOut")
-                                            .doc(FirebaseAuth.instance.currentUser!.uid)
-                                            .delete();
-                                        Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
-                                      });
-                                    },
-                                    onError: (error) {
-                                      print("onError: $error");
-                                    },
-                                    onCancel: (params) {
-                                      print('cancelled: $params');
-                                    }),
-                              ),
-                            );
+                                      ],
+                                      note: "Contact us for any questions on your order.",
+                                      onSuccess: (Map params) async {
+                                        print("onSuccess: ${params}");
+                                        order(cartModel.vendorId).then((value) {
+                                          FirebaseFirestore.instance
+                                              .collection("checkOut")
+                                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                                              .delete();
+                                          Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
+                                        });
+                                      },
+                                      onError: (error) {
+                                        print("onError: $error");
+                                      },
+                                      onCancel: (params) {
+                                        print('cancelled: $params');
+                                      }),
+                                ),
+                              );
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -905,6 +918,32 @@ class _CartScreenState extends State<CartScreen> {
                   ],
                 ),
               ));
+  }
+
+  String? initialLink;
+  Future<void> initUniLinks() async {
+    try {
+      initialLink = await getInitialLink();
+      handleDeepLink(Uri.parse(initialLink.toString()));
+    } on Exception catch (e) {
+      // Handle error
+      print('Error initializing deep links: $e');
+    }
+    uriLinkStream.listen((Uri? uri) {
+      handleDeepLink(uri);
+    });
+  }
+
+  void handleDeepLink(Uri? uri) {
+    if (uri != null) {
+      print('Received deep link: $uri');
+      if (uri.path == '/payment-success') {
+        order(cartModel.vendorId).then((value2) {
+          FirebaseFirestore.instance.collection("checkOut").doc(FirebaseAuth.instance.currentUser!.uid).delete();
+          Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
+        });
+      } else if (uri.path == '/payment-cancel') {}
+    }
   }
 
   // Widget payWithCardButton() {

@@ -13,6 +13,7 @@ class MyDiningOrderModel {
   dynamic time;
   dynamic total;
   dynamic orderType;
+  dynamic docid;
   CustomerData? customerData;
   MyDiningOrderModel(
       {this.date,
@@ -29,9 +30,10 @@ class MyDiningOrderModel {
       this.time,
       this.total,
       this.orderType,
+      this.docid,
       this.customerData});
 
-  MyDiningOrderModel.fromJson(Map<String, dynamic> json) {
+  MyDiningOrderModel.fromJson(Map<String, dynamic> json,String docid) {
     date = json['date'];
     if (json['menuList'] != null) {
       menuList = <MenuList>[];
@@ -52,6 +54,7 @@ class MyDiningOrderModel {
     time = json['time'];
     orderType = json['order_type'];
     total = json['total'];
+    docid = docid;
   }
 
   Map<String, dynamic> toJson() {

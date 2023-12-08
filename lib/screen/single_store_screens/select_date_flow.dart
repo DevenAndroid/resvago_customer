@@ -732,7 +732,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                             selectSlotDinner = index;
                             selectSlot = -1;
                             guestNo = slotData!.eveningSlots![eveningSlots[index]]!;
-                            slot = slotData!.eveningSlots!.entries.toList()[index].key;
+                            slot = eveningSlots[index];
                             log(guestNo.toString());
                             log(slot.toString());
                             setState(() {});

@@ -793,10 +793,10 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                       const SizedBox(
                                                         height: 8,
                                                       ),
-                                                      const Padding(
+                                                      Padding(
                                                         padding: EdgeInsets.symmetric(horizontal: 4.0),
                                                         child: Text(
-                                                          'basad on 23 reviews',
+                                                          'based on ${reviewModel!.length} reviews',
                                                           style: TextStyle(
                                                             color: Color(0xFF969AA3),
                                                             fontSize: 13,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/screen/helper.dart';
 
 import '../widget/apptheme.dart';
 import '../widget/common_text_field.dart';
@@ -39,14 +40,14 @@ class NotificationScreenState extends State<NotificationScreen> {
                           child: Row(
                             children: [
                               SizedBox(
-                                width: width * 0.02,
+                                width:5,
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: width * .005,
+                                  horizontal: 10,
                                 ),
                                 child: Container(
-                                  width: width * .010,
+                                  width: 5,
                                   height: height * .08,
                                   decoration: const BoxDecoration(
                                     color:Color(0xffFAAF40),
@@ -55,7 +56,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                                 ),
                               ),
                               SizedBox(
-                                width: width * 0.03,
+                                width:10,
                               ),
                               Row(mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -77,7 +78,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                                 ],
                               ),
                               SizedBox(
-                                width: width * 0.03,
+                                width: 10,
                               ),
                               Expanded(
                                 child: Container(
@@ -130,7 +131,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                       );
                     })
               ],
-            ),
+            ).appPaddingForScreen,
           ),
         ));
   }

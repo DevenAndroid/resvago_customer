@@ -62,7 +62,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> updateProfileToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    String? imageUrl = kIsWeb ? null : categoryFile.path;;
+    String? imageUrl = kIsWeb ? null : categoryFile.path;
+    ;
     if (kIsWeb) {
       if (pickedFile != null) {
         UploadTask uploadTask = FirebaseStorage.instance.ref("profile_image}").child("image").putData(pickedFile!);
@@ -124,6 +125,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 key: formKey,
                 child: Column(
                   children: [
+                    Container(
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.black),
+                    ),
                     Container(
                       width: size.width,
                       height: size.height,

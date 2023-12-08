@@ -11,6 +11,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/myAddressList.dart';
 import 'package:resvago_customer/widget/custom_textfield.dart';
 
@@ -430,11 +431,11 @@ class _ChooseAddressState extends State<ChooseAddress> {
                               },
                             ),
                           ],
-                        ),
+                        ).appPaddingForScreen,
                       ),
-                    ))
+                    ).appPaddingForScreen)
               ],
-            )),
+            ).appPaddingForScreen),
       ),
     );
   }

@@ -73,7 +73,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                 ),
                                 child: Stack(children: [
                                   SizedBox(
-                                    height: kIsWeb ? 400 :150,
+                                    height: 150,
                                     width: double.maxFinite,
                                     child: ClipRRect(
                                         borderRadius: const BorderRadius.only(
@@ -148,21 +148,24 @@ class _WishlistScreenState extends State<WishlistScreen> {
                               FittedBox(
                                 child: Row(
                                   children: List.generate(
-                                      29,
-                                      (index) => Padding(
-                                            padding: const EdgeInsets.only(left: 2, right: 2),
-                                            child: Container(
-                                              color: Colors.grey[200],
-                                              height: 2,
-                                              width: 10,
-                                            ),
-                                          )),
+                                      kIsWeb ? 100 : 40,
+                                          (index) => Padding(
+                                        padding: const EdgeInsets.only(left: 2, right: 2),
+                                        child: Container(
+                                          color: Colors.grey[300],
+                                          height: 2,
+                                          width: 10,
+                                        ),
+                                      )),
                                 ),
                               ),
                               const SizedBox(
                                 height: 10,
                               ),
-                              MaxDiscountScreen(docId: restaurantListItem.docid),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: MaxDiscountScreen(docId: restaurantListItem.docid),
+                              ),
                               const SizedBox(height: 5),
                             ],
                           ),

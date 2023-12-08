@@ -34,7 +34,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
   void checkFirstore() async {
     final result = await FirebaseFirestore.instance
         .collection('Review')
-        .where('userID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .where('orderID', isEqualTo: widget.orderId)
         .get();
 
     if (result.docs.isNotEmpty) {
@@ -45,7 +45,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
   }
 
   Addreviewdatatofirebase() {
-    FirebaseFirestore.instance.collection('Review').doc(FirebaseAuth.instance.currentUser!.uid).set({
+    FirebaseFirestore.instance.collection('Review').add({
       "fullRating": fullRating,
       "foodQualityValue": foodQualityValue,
       "foodQuantityValue": foodQuantityValue,
@@ -151,7 +151,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                     }),
                                 const Text(
                                   'food quality',
-                                  style: TextStyle(color: Colors.black, fontSize: 20),
+                                  style: TextStyle(color: Colors.black, fontSize: 16),
                                 ),
                                 const SizedBox(width: 10), // Add some space between checkboxes
                                 Checkbox(
@@ -164,7 +164,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                     }),
                                 const Text(
                                   'food quantity',
-                                  style: TextStyle(color: Colors.black, fontSize: 20),
+                                  style: TextStyle(color: Colors.black, fontSize: 16),
                                 ),
                               ],
                             ),
@@ -181,7 +181,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                     }),
                                 const Text(
                                   'communication',
-                                  style: TextStyle(color: Colors.black, fontSize: 20),
+                                  style: TextStyle(color: Colors.black, fontSize: 16),
                                 ),
                                 const SizedBox(width: 20), // Add some space between checkboxes
                                 Checkbox(
@@ -194,7 +194,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                                     }),
                                 const Text(
                                   'hygiene',
-                                  style: TextStyle(color: Colors.black, fontSize: 20),
+                                  style: TextStyle(color: Colors.black, fontSize: 16),
                                 ),
                               ],
                             ),
@@ -216,7 +216,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                     children: [
                       const Text(
                         'How did we do?',
-                        style: TextStyle(color: Color(0xff1A2E33), fontSize: 18),
+                        style: TextStyle(color: Color(0xff1A2E33), fontSize: 16),
                       ),
                       const SizedBox(
                         height: 20,
@@ -298,7 +298,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                   height: 15,
                 ),
               ],
-            ),
+            ).appPaddingForScreen,
           ),
         ),
       ),
