@@ -47,7 +47,7 @@ class _RestaurantTimingScreenState extends State<RestaurantTimingScreen> {
           }
         }
         return Text(
-          "Open",
+          "Closed",
           style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
         );
       },
@@ -130,7 +130,7 @@ class _MaxRatingScreenState extends State<MaxRatingScreen> {
       stream: FirebaseFirestore.instance
           .collection("Review")
           .where("vendorID", isEqualTo: widget.docId)
-          // .orderBy("fullRating", descending: true)
+          .orderBy("fullRating", descending: true)
           .limit(1)
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/helper.dart';
@@ -92,6 +93,22 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                         )
                       ],
                     ),
+                  ).animate(
+                    key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
+                  )
+                      //.slideX(
+                      // duration: Duration(milliseconds: 600),
+                      // delay: Duration(milliseconds: (index + 1) * 100),
+                      // end: 0,
+                      // begin: index.toDouble()/5)
+                      .slideY(
+                      duration: Duration(milliseconds: 600),
+                      delay: Duration(milliseconds: (index + 1) * 100),
+                      end: 0,
+                      begin: index.toDouble()/5)
+                      .fade(
+                    duration: Duration(milliseconds: 800),
+                    delay: Duration(milliseconds: (index + 1) * 100),
                   );
                 },
               ).appPaddingForScreen

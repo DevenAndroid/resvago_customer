@@ -823,72 +823,89 @@ class _OderScreenState extends State<OderScreen> {
                             }
                           ]);
                           // return;
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => UsePaypal(
-                                  sandboxMode: true,
-                                  // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
-                                  // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
-                                  clientId: "AYBmWmZ1iXnGwAqSsmGdqTZFeJ6RYu-rBjGWFLnuX-kDfvLqa8qp75RPCzhaetorPoFrxqZJu0cPccd_",
-                                  secretKey: "EJIKzLSexzl_2VKzn9aoNa_J6tpdDFzz4zgm2xAPxw3WWZvkInjPW8wGVlRk-zvz5QhFiCbPrJrtBy8H",
-                                  returnURL: "https://samplesite.com/return",
-                                  cancelURL: "https://samplesite.com/cancel",
-                                  transactions: [
-                                    {
-                                      "amount": {
-                                        "total": calculateTotalPrice.toString(),
-                                        "currency": "USD",
-                                        "details": {
-                                          "subtotal": calculateTotalPrice.toString(),
-                                          "shipping": '0',
-                                          "shipping_discount": 0
-                                        }
-                                      },
-                                      "description": "The payment transaction description.",
-                                      // "payment_options": {
-                                      //   "allowed_payment_method":
-                                      //       "INSTANT_FUNDING_SOURCE"
-                                      // },
-                                      "item_list": {
-                                        "items": extractedData,
-                                      },
-                                      // shipping address is not required though
-                                      // "shipping_address": {
-                                      //   "recipient_name": "Jane Foster",
-                                      //   "line1": "Travis County",
-                                      //   "line2": "",
-                                      //   "city": "Austin",
-                                      //   "country_code": "US",
-                                      //   "phone": "+00000000",
-                                      //   "state": "Texas"
-                                      // },
-                                    }
-                                  ],
-                                  note: "Contact us for any questions on your order.",
-                                  onSuccess: (Map params) async {
-                                    print("onSuccess: ${params}");
-                                    order(restaurantData!.docid).then((value) {
-                                      updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
-                                      FirebaseFirestore.instance
-                                          .collection("checkOut")
-                                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                                          .delete();
-                                      Get.offAll(ThankuScreen(
-                                        date: widget.date.toString(),
-                                        guestNo: widget.guest,
-                                        orderType: "Dining",
-                                        orderId: value.toString(),
-                                      ));
-                                    });
-                                  },
-                                  onError: (error) {
-                                    print("onError: $error");
-                                  },
-                                  onCancel: (params) {
-                                    print('cancelled: $params');
-                                  }),
-                            ),
-                          );
+                          if(kIsWeb){
+                            order(restaurantData!.docid).then((value) {
+                              updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
+                              FirebaseFirestore.instance
+                                  .collection("checkOut")
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                                  .delete();
+                              Get.offAll(ThankuScreen(
+                                date: widget.date.toString(),
+                                guestNo: widget.guest,
+                                orderType: "Dining",
+                                orderId: value.toString(),
+                              ));
+                            });
+                          }
+                         else{
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => UsePaypal(
+                                    sandboxMode: true,
+                                    // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
+                                    // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
+                                    clientId: "AYBmWmZ1iXnGwAqSsmGdqTZFeJ6RYu-rBjGWFLnuX-kDfvLqa8qp75RPCzhaetorPoFrxqZJu0cPccd_",
+                                    secretKey: "EJIKzLSexzl_2VKzn9aoNa_J6tpdDFzz4zgm2xAPxw3WWZvkInjPW8wGVlRk-zvz5QhFiCbPrJrtBy8H",
+                                    returnURL: "https://samplesite.com/return",
+                                    cancelURL: "https://samplesite.com/cancel",
+                                    transactions: [
+                                      {
+                                        "amount": {
+                                          "total": calculateTotalPrice.toString(),
+                                          "currency": "USD",
+                                          "details": {
+                                            "subtotal": calculateTotalPrice.toString(),
+                                            "shipping": '0',
+                                            "shipping_discount": 0
+                                          }
+                                        },
+                                        "description": "The payment transaction description.",
+                                        // "payment_options": {
+                                        //   "allowed_payment_method":
+                                        //       "INSTANT_FUNDING_SOURCE"
+                                        // },
+                                        "item_list": {
+                                          "items": extractedData,
+                                        },
+                                        // shipping address is not required though
+                                        // "shipping_address": {
+                                        //   "recipient_name": "Jane Foster",
+                                        //   "line1": "Travis County",
+                                        //   "line2": "",
+                                        //   "city": "Austin",
+                                        //   "country_code": "US",
+                                        //   "phone": "+00000000",
+                                        //   "state": "Texas"
+                                        // },
+                                      }
+                                    ],
+                                    note: "Contact us for any questions on your order.",
+                                    onSuccess: (Map params) async {
+                                      print("onSuccess: ${params}");
+                                      order(restaurantData!.docid).then((value) {
+                                        updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
+                                        FirebaseFirestore.instance
+                                            .collection("checkOut")
+                                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                                            .delete();
+                                        Get.offAll(ThankuScreen(
+                                          date: widget.date.toString(),
+                                          guestNo: widget.guest,
+                                          orderType: "Dining",
+                                          orderId: value.toString(),
+                                        ));
+                                      });
+                                    },
+                                    onError: (error) {
+                                      print("onError: $error");
+                                    },
+                                    onCancel: (params) {
+                                      print('cancelled: $params');
+                                    }),
+                              ),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.primaryColor,

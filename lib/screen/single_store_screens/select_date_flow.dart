@@ -838,10 +838,10 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(
-              "Cancel",
-              style: GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w500, fontSize: 16),
-            ),
+            // Text(
+            //   "Cancel",
+            //   style: GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.w500, fontSize: 16),
+            // ),
             const SizedBox(
               width: 20,
             ),

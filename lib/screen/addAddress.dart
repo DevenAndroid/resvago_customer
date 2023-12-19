@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:ui' as ui;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,11 +11,8 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:resvago_customer/screen/helper.dart';
-import 'package:resvago_customer/screen/myAddressList.dart';
 import 'package:resvago_customer/widget/custom_textfield.dart';
-
 import '../widget/addsize.dart';
-import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
 import '../widget/common_text_field.dart';
 
@@ -287,7 +283,6 @@ class _ChooseAddressState extends State<ChooseAddress> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _getCurrentPosition();
     });
@@ -308,24 +303,6 @@ class _ChooseAddressState extends State<ChooseAddress> {
     ui.FrameInfo fi = await codec.getNextFrame();
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
-
-  // Future<void> _onAddMarkerButtonPressed(LatLng lastMapPosition, markerTitle, {allowZoomIn = true}) async {
-  //   final Uint8List markerIcon = await getBytesFromAsset(location, 100);
-  //   markers.clear();
-  //   markers.add(Marker(
-  //       markerId: MarkerId(lastMapPosition.toString()),
-  //       position: lastMapPosition,
-  //       infoWindow: const InfoWindow(
-  //         title: "",
-  //       ),
-  //       icon: BitmapDescriptor.fromBytes(markerIcon)));
-  //   // BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan,)));
-  //   if (googleMapController.isCompleted) {
-  //     mapController!
-  //         .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: lastMapPosition, zoom: allowZoomIn ? 14 : 11)));
-  //   }
-  //   setState(() {});
-  // }
 
   @override
   Widget build(BuildContext context) {

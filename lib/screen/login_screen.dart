@@ -11,8 +11,8 @@ import 'package:resvago_customer/screen/otpscreen.dart';
 import '../controller/logn_controller.dart';
 import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
-import 'bottomnav_bar.dart';
 import 'helper.dart';
+import 'dart:math';
 
 enum LoginOption { Mobile, EmailPassword }
 
@@ -59,7 +59,21 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  String otp = '';
+  void generateOTP() {
+    int otpLength = 6;
+    Random random = Random();
+    String otpCode = '';
+    for (int i = 0; i < otpLength; i++) {
+      otpCode += random.nextInt(10).toString();
+    }
+    setState(() {
+      otp = otpCode;
+    });
+  }
+
   void checkEmailInFirestore() async {
+    generateOTP();
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
@@ -67,24 +81,16 @@ class _LoginScreenState extends State<LoginScreen> {
       Map kk = result.docs.first.data() as Map;
       print(kk["email"]);
       if (kk["deactivate"] == false) {
-        // sendEmailWithOTP(emailController.text.trim()).then((value) {
-        //   print(generateRandomPassword());
-        // });
-        myauth.setConfig(
-            appEmail: "contact@hdevcoder.com",
-            appName: "Email OTP",
-            userEmail: emailController.text,
-            otpLength: 6,
-            otpType: OTPType.digitsOnly);
-        if (await myauth.sendOTP() == true) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("OTP has been sent"),
-          ));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Oops, OTP send failed"),
-          ));
-        }
+        FirebaseFirestore.instance.collection("send_mail").add({
+          "to": emailController.text,
+          "message": {
+            "subject": "This is a otp email",
+            "html": "Your otp is $otp",
+            "text": "asdfgwefddfgwefwn",
+          }
+        }).then((value) {
+          showToast("Otp send successfully");
+        });
         setState(() {
           showOtpField = true;
         });
@@ -130,6 +136,13 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       Helper.hideLoader(loader);
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    generateOTP();
   }
 
   @override
@@ -290,7 +303,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 hintStyle: const TextStyle(color: Colors.white),
                                 suffixIcon: TextButton(
                                   onPressed: () {
-                                    checkEmailInFirestore();
+                                    if (_formKey.currentState!.validate()) {
+                                      checkEmailInFirestore();
+                                    }
                                   },
                                   child: const Text(
                                     'send',
@@ -326,6 +341,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 cursorColor: Colors.white,
                                 style: const TextStyle(color: Colors.white),
                                 controller: passwordController,
+                                maxLength: 6,
                                 decoration: InputDecoration(
                                   filled: true,
                                   hintText: 'Enter Otp',
@@ -344,15 +360,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
                                       borderRadius: BorderRadius.circular(6.0)),
                                 ),
-                                validator: MultiValidator([
-                                  RequiredValidator(errorText: 'Please enter your otp'),
-                                ]).call,
                               )
                             else
                               TextFormField(
                                 style: const TextStyle(color: Colors.white),
                                 controller: otpController,
                                 keyboardType: TextInputType.number,
+                                maxLength: 6,
                                 decoration: InputDecoration(
                                   hintText: 'Enter Otp',
                                   hintStyle: const TextStyle(color: Colors.white),
@@ -371,9 +385,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
                                       borderRadius: BorderRadius.circular(6.0)),
                                 ),
-                                validator: MultiValidator([
-                                  RequiredValidator(errorText: 'Please enter your otp'),
-                                ]).call,
                               ),
                           ],
                         ),
@@ -387,26 +398,25 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? CommonButton(
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      if (await myauth.verifyOTP(otp: otpController.text) == true) {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                          content: Text("OTP is verified"),
-                                        ));
+                                      if (otp != otpController.text || otpController.text.length < 6) {
+                                        showToast("Invalid otp");
+                                      }
+                                      if (otpController.text.isEmpty) {
+                                        showToast("Please enter otp");
+                                      } else {
                                         FirebaseAuth.instance
                                             .signInWithEmailAndPassword(
                                           email: emailController.text.trim(),
                                           password: "123456",
                                         )
                                             .then((value) {
+                                          showToast("Verify otp successfully");
                                           Get.offAllNamed(MyRouters.bottomNavbar);
                                         });
-                                      } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                          content: Text("Invalid OTP"),
-                                        ));
                                       }
                                     }
                                   },
-                                  title: 'Login',
+                                  title: 'Login'.tr,
                                 )
                               : CommonButton(
                                   onPressed: () async {

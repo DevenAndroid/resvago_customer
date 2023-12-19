@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,6 +35,7 @@ import 'allcategory_screen.dart';
 import 'category/resturant_by_category.dart';
 import 'login_screen.dart';
 import 'myAddressList.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -81,7 +83,13 @@ class _HomePageState extends State<HomePage> {
   Future getRestaurantList() async {
     restaurantList ??= [];
     restaurantList!.clear();
-    await FirebaseFirestore.instance.collection("vendor_users").where("deactivate", isEqualTo: false).orderBy("order_count", descending: true).limit(10).get().then((value) {
+    await FirebaseFirestore.instance
+        .collection("vendor_users")
+        .where("deactivate", isEqualTo: false)
+        .orderBy("order_count", descending: true)
+        .limit(10)
+        .get()
+        .then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         restaurantList!.add(RestaurantModel.fromJson(gg, element.id.toString()));
@@ -192,7 +200,6 @@ class _HomePageState extends State<HomePage> {
         latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
     stream = radius.switchMap((rad) {
       final collectionReference = _firestore.collection('vendor_users');
-      // return collectionReference;
       return geo!
           .collection(collectionRef: collectionReference)
           .within(center: center, radius: rad, field: 'restaurant_position', strictMode: true);
@@ -487,42 +494,33 @@ class _HomePageState extends State<HomePage> {
                   height: 10,
                 ),
                 if (sliderList != null)
-                  SizedBox(
-                    height: size.height * 0.20,
-                    child: Swiper(
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 5.0, left: 5.0),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: CachedNetworkImage(
-                                imageUrl: sliderList![index],
-                                fit: BoxFit.cover,
-                                errorWidget: (_, __, ___) => Icon(
-                                  Icons.error,
-                                  color: Colors.red,
-                                ),
-                              )),
-                        );
-                      },
-                      outer: false,
-                      itemCount: sliderList!.length,
-                      autoplayDelay: 1,
-                      autoplayDisableOnInteraction: false,
-                      scrollDirection: Axis.horizontal,
-                      // pagination: const SwiperPagination(),
-                      // control: const SwiperControl(size: 6),
-                    ),
+                  CarouselSlider(
+                    options: CarouselOptions(height: size.height * 0.20, autoPlay: true, viewportFraction: 1),
+                    items: sliderList!.map((i) {
+                      return Container(
+                        width: double.maxFinite,
+                        padding: const EdgeInsets.only(right: 5.0, left: 5.0),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              imageUrl: i,
+                              fit: BoxFit.cover,
+                              errorWidget: (_, __, ___) => Icon(
+                                Icons.error,
+                                color: Colors.red,
+                              ),
+                            )),
+                      );
+                    }).toList(),
                   ),
-                SizedBox(
-                    height: 10),
+                SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     GestureDetector(
-                      behavior: HitTestBehavior.translucent,
+                        behavior: HitTestBehavior.translucent,
                         onTap: () {
-                          Get.to(()=>AllCategoryScreen(restaurantType : ""));
+                          Get.to(() => AllCategoryScreen(restaurantType: ""));
                         },
                         child: Text(
                           "View All",
@@ -530,11 +528,10 @@ class _HomePageState extends State<HomePage> {
                         ))
                   ],
                 ),
-                SizedBox(
-                    height: 10),
+                SizedBox(height: 10),
                 if (categoryList != null)
                   SizedBox(
-                    height: 100,
+                    height: 80,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: min(6, categoryList!.length),
@@ -543,21 +540,20 @@ class _HomePageState extends State<HomePage> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString(), restaurantType: '',));
+                            Get.to(() =>
+                                RestaurantByCategory(categoryName: categoryList![index].name.toString(), restaurantType: ""));
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: SizedBox(
-                              width: 70,
+                              width: 60,
                               child: Column(
                                 children: [
-                                  SizedBox(
-                                    height: 60,
-                                    width: 60,
+                                  Expanded(
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(100),
                                         child: CachedNetworkImage(
-                                          imageUrl: categoryList![index].image,
+                                          imageUrl: categoryList![index].image.toString(),
                                           fit: BoxFit.cover,
                                           errorWidget: (_, __, ___) => Icon(
                                             Icons.error,
@@ -593,12 +589,11 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                if (restaurantList != null)
+                if (restaurantList!.isNotEmpty && restaurantList != null)
                   SizedBox(
                     height: 260,
                     child: ListView.builder(
                         shrinkWrap: true,
-                        // dragStartBehavior: DragStartBehavior.start,
                         itemCount: restaurantList!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
@@ -667,7 +662,7 @@ class _HomePageState extends State<HomePage> {
                                             width: 10,
                                           ),
                                           MaxRatingScreen(
-                                            docId: restaurantListItem.userID.toString(),
+                                            docId: restaurantListItem.docid.toString(),
                                           )
                                         ],
                                       ),
@@ -679,7 +674,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
-                                          PreparationTimeScreen(docId: restaurantListItem.toString()),
+                                          PreparationTimeScreen(docId: restaurantListItem.userID.toString()),
                                           const SizedBox(
                                             width: 3,
                                           ),
@@ -728,7 +723,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Row(
                                         children: [
-                                          MaxDiscountScreen(docId: restaurantListItem.userID.toString())
+                                          MaxDiscountScreen(docId: restaurantListItem.docid.toString())
                                           // Text(
                                           //   "  40% off up to \$100",
                                           //   style: GoogleFonts.poppins(
@@ -740,7 +735,19 @@ class _HomePageState extends State<HomePage> {
                                   ],
                                 ),
                               ),
-                            ),
+                            )
+                                .animate(
+                                  key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
+                                )
+                                .slideX(
+                                    duration: Duration(milliseconds: 600),
+                                    delay: Duration(milliseconds: (index + 1) * 100),
+                                    end: 0,
+                                    begin: 2)
+                                .fade(
+                                  duration: Duration(milliseconds: 800),
+                                  delay: Duration(milliseconds: (index + 1) * 100),
+                                ),
                           );
                         }),
                   ),
@@ -756,7 +763,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 if (categoryList != null)
                   SizedBox(
-                    height: 100,
+                    height: 80,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: min(6, categoryList!.length),
@@ -765,21 +772,20 @@ class _HomePageState extends State<HomePage> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.to(() => RestaurantByCategory(categoryName: categoryList![index].name.toString(), restaurantType: '',));
+                            Get.to(() => RestaurantByCategory(
+                                categoryName: categoryList![index].name.toString(), restaurantType: "Delivery"));
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: SizedBox(
-                              width: 70,
+                              width: 60,
                               child: Column(
                                 children: [
-                                  SizedBox(
-                                    height: 60,
-                                    width: 60,
+                                  Expanded(
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(100),
                                         child: CachedNetworkImage(
-                                          imageUrl: categoryList![index].image,
+                                          imageUrl: categoryList![index].image.toString(),
                                           fit: BoxFit.cover,
                                           errorWidget: (_, __, ___) => Icon(
                                             Icons.error,
@@ -815,7 +821,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                if (restaurantList != null)
+                if (restaurantList!.isNotEmpty && restaurantList != null)
                   SizedBox(
                     height: 260,
                     child: ListView.builder(
@@ -958,7 +964,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Row(
                                         children: [
-                                          MaxDiscountScreen(docId: restaurantListItem.userID.toString())
+                                          MaxDiscountScreen(docId: restaurantListItem.docid.toString())
                                           // Text(
                                           //   "  40% off up to \$100",
                                           //   style: GoogleFonts.poppins(
@@ -970,40 +976,34 @@ class _HomePageState extends State<HomePage> {
                                   ],
                                 ),
                               ),
-                            ),
+                            )
+                                .animate(
+                                  key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
+                                )
+                                .slideX(
+                                    duration: Duration(milliseconds: 600),
+                                    delay: Duration(milliseconds: (index + 1) * 100),
+                                    end: 0,
+                                    begin: 2)
+                                .fade(
+                                  duration: Duration(milliseconds: 800),
+                                  delay: Duration(milliseconds: (index + 1) * 100),
+                                ),
                           );
                         }),
                   ),
                 const SizedBox(
                   height: 90,
                 ),
-              ],
+              ].animate(interval: Duration(milliseconds: 200)).fade(
+                    duration: Duration(milliseconds: 600),
+                  ),
             ).appPaddingForScreen,
           ),
         ),
       ),
     );
   }
-
-// Widget _drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
-//   return Padding(
-//     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//     child: ListTile(
-//       selectedTileColor: AppTheme.primaryColor,
-//       leading: icon,
-//       minLeadingWidth: 25,
-//       title: Text(
-//         title,
-//         style: GoogleFonts.poppins(
-//           fontSize: 14,
-//           color: AppTheme.drawerColor,
-//           fontWeight: FontWeight.w400,
-//         ),
-//       ),
-//       onTap: active ? onTap : null,
-//     ),
-//   );
-// }
 }
 
 Widget drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
