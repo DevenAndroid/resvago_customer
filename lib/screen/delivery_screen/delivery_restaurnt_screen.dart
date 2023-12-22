@@ -210,12 +210,13 @@ class _DeliveryPageState extends State<DeliveryPage> {
     });
   }
 
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? user;
   final profileController = Get.put(ProfileController());
   @override
   void initState() {
     super.initState();
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    User? user = _auth.currentUser;
+    user = _auth.currentUser;
     if (user != null) {
       wishListController.startListener();
       profileController.getProfileData();
@@ -342,8 +343,80 @@ class _DeliveryPageState extends State<DeliveryPage> {
             //     ),
             //   ),
             // ),
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
+            // GestureDetector(
+            //   behavior: HitTestBehavior.translucent,
+            //   onTap: () {
+            //     FirebaseAuth _auth = FirebaseAuth.instance;
+            //     User? user = _auth.currentUser;
+            //     if (user != null) {
+            //       Get.toNamed(MyRouters.cartScreen);
+            //     } else {
+            //       Get.to(() => LoginScreen());
+            //     }
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: Image.asset(
+            //       'assets/images/shoppinbag.png',
+            //       height: 30,
+            //     ),
+            //   ),
+            // ),
+            user != null
+                ? Badge(
+              label: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('checkOut')
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .snapshots(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: Text(" 0 "));
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(child: Text(" 0 "));
+                  }
+
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return const Center(child: Text(" 0 "));
+                  }
+
+                  // Access the menuList from the document snapshot
+                  List<dynamic> menuList = snapshot.data!['menuList'];
+
+                  // Now you can use the menuList as needed
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                    child: Text("${menuList.length.toString()}"),
+                  );
+                },
+              ),
+              backgroundColor: Colors.black,
+              padding: EdgeInsets.zero,
+              child: GestureDetector(
+                onTap: () {
+                  FirebaseAuth _auth = FirebaseAuth.instance;
+                  User? user = _auth.currentUser;
+                  if (user != null) {
+                    Get.toNamed(MyRouters.cartScreen);
+                  } else {
+                    Get.to(() => LoginScreen());
+                  }
+                  // Get.toNamed(MyRouters.cartScreen);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/images/shoppinbag.png',
+                    height: 30,
+                  ),
+                ),
+              ),
+            )
+                : GestureDetector(
               onTap: () {
                 FirebaseAuth _auth = FirebaseAuth.instance;
                 User? user = _auth.currentUser;
@@ -352,6 +425,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 } else {
                   Get.to(() => LoginScreen());
                 }
+                // Get.toNamed(MyRouters.cartScreen);
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -976,9 +1050,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
               const SizedBox(
                 height: 90,
               ),
-            ].animate(
-              interval: Duration(milliseconds: 200)
-            ).fade(duration: Duration(milliseconds: 600),),
+            ].animate(interval: Duration(milliseconds: 200)).fade(
+                  duration: Duration(milliseconds: 600),
+                ),
           ).appPaddingForScreen,
         ),
       ),

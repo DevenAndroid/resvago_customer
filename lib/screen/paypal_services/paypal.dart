@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert' as convert;
@@ -9,6 +11,7 @@ class PaypalServices {
   String domain = "https://api.sandbox.paypal.com"; // for sandbox mode
   String clientId = 'AYBmWmZ1iXnGwAqSsmGdqTZFeJ6RYu-rBjGWFLnuX-kDfvLqa8qp75RPCzhaetorPoFrxqZJu0cPccd_';
   String secret = 'EJIKzLSexzl_2VKzn9aoNa_J6tpdDFzz4zgm2xAPxw3WWZvkInjPW8wGVlRk-zvz5QhFiCbPrJrtBy8H';
+
   // for getting the access token from Paypal
   Future<String?> getAccessToken() async {
     try {
@@ -23,57 +26,58 @@ class PaypalServices {
       rethrow;
     }
   }
+}
 
   // for creating the payment request with Paypal
-  Future<Map<String, String>?> createPaypalPayment(transactions, accessToken) async {
-    try {
-      var response = await http.post(Uri.parse("$domain/v1/payments/payment"),
-          body: convert.jsonEncode(transactions),
-          headers: {"content-type": "application/json", 'Authorization': 'Bearer ' + accessToken});
-
-      final body = convert.jsonDecode(response.body);
-      if (response.statusCode == 201) {
-        if (body["links"] != null && body["links"].length > 0) {
-          List links = body["links"];
-
-          String executeUrl = "";
-          String approvalUrl = "";
-          final item = links.firstWhere((o) => o["rel"] == "approval_url", orElse: () => null);
-          if (item != null) {
-            approvalUrl = item["href"];
-          }
-          final item1 = links.firstWhere((o) => o["rel"] == "execute", orElse: () => null);
-          if (item1 != null) {
-            executeUrl = item1["href"];
-          }
-          return {"executeUrl": executeUrl, "approvalUrl": approvalUrl};
-        }
-        return null;
-      } else {
-        throw Exception(body["message"]);
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  // for executing the payment transaction
-  Future<String?> executePayment(url, payerId, accessToken) async {
-    try {
-      var response = await http.post(url,
-          body: convert.jsonEncode({"payer_id": payerId}),
-          headers: {"content-type": "application/json", 'Authorization': 'Bearer ' + accessToken});
-
-      final body = convert.jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return body["id"];
-      }
-      return null;
-    } catch (e) {
-      rethrow;
-    }
-  }
-}
+//   Future<Map<String, String>?> createPaypalPayment(transactions, accessToken) async {
+//     try {
+//       var response = await http.post(Uri.parse("$domain/v1/payments/payment"),
+//           body: convert.jsonEncode(transactions),
+//           headers: {"content-type": "application/json", 'Authorization': 'Bearer ' + accessToken});
+//
+//       final body = convert.jsonDecode(response.body);
+//       if (response.statusCode == 201) {
+//         if (body["links"] != null && body["links"].length > 0) {
+//           List links = body["links"];
+//
+//           String executeUrl = "";
+//           String approvalUrl = "";
+//           final item = links.firstWhere((o) => o["rel"] == "approval_url", orElse: () => null);
+//           if (item != null) {
+//             approvalUrl = item["href"];
+//           }
+//           final item1 = links.firstWhere((o) => o["rel"] == "execute", orElse: () => null);
+//           if (item1 != null) {
+//             executeUrl = item1["href"];
+//           }
+//           return {"executeUrl": executeUrl, "approvalUrl": approvalUrl};
+//         }
+//         return null;
+//       } else {
+//         throw Exception(body["message"]);
+//       }
+//     } catch (e) {
+//       rethrow;
+//     }
+//   }
+//
+//   // for executing the payment transaction
+//   Future<String?> executePayment(url, payerId, accessToken) async {
+//     try {
+//       var response = await http.post(url,
+//           body: convert.jsonEncode({"payer_id": payerId}),
+//           headers: {"content-type": "application/json", 'Authorization': 'Bearer ' + accessToken});
+//
+//       final body = convert.jsonDecode(response.body);
+//       if (response.statusCode == 200) {
+//         return body["id"];
+//       }
+//       return null;
+//     } catch (e) {
+//       rethrow;
+//     }
+//   }
+// }
 
 class PayPalService {
   final String clientId;
@@ -101,7 +105,6 @@ class PayPalService {
   }
 
   String? accessToken;
-
   Future<String> createOrder() async {
     accessToken = await getAccessToken();
     var url = Uri.parse('https://api-m.sandbox.paypal.com/v2/checkout/orders');
@@ -140,7 +143,7 @@ class PayPalService {
   }
 
   Future<void> capturePayment(String orderId) async {
-    print('Payment captured successfully${orderId}');
+    print("orderId${orderId}");
     var url = Uri.parse('https://api.sandbox.paypal.com/v2/checkout/orders/$orderId/capture');
     var response = await http.post(
       url,
@@ -152,16 +155,15 @@ class PayPalService {
 
     if (response.statusCode == 201) {
       var jsonResponse = jsonDecode(response.body);
-      // Handle the response body if needed.
       print('Payment captured successfully${jsonResponse.toString()}');
     } else {
       if (response.statusCode == 401) {
         throw Exception('Unauthorized to capture payment');
       } else {
         if (response.statusCode == 422) {
-          throw Exception('Failed to capture payment');
+          throw Exception('Failed to capture payment${response.statusCode}');
         } else {
-          throw Exception('Failed to capture payment');
+          throw Exception('Failed to capture payment${response.statusCode}');
         }
       }
     }

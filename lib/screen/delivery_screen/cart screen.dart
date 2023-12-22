@@ -779,13 +779,22 @@ class _CartScreenState extends State<CartScreen> {
                             // return;
 
                             if (kIsWeb) {
-                              order(cartModel.vendorId).then((value2) {
-                                FirebaseFirestore.instance
-                                    .collection("checkOut")
-                                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                                    .delete();
-                                Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
-                              });
+                              try {
+                                await payPalService.createOrder().then((value) async {
+                                  print("fsdgdfghh" + value.toString());
+                                  await payPalService.capturePayment(value).then((value1){
+                                    order(cartModel.vendorId).then((value2) {
+                                      FirebaseFirestore.instance
+                                          .collection("checkOut")
+                                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                                          .delete();
+                                      Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
+                                    });
+                                  });
+                                });
+                              } catch (e) {
+                                print('Error: $e');
+                              };
                             } else {
                               Navigator.of(context).push(
                                 MaterialPageRoute(

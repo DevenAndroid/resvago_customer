@@ -27,6 +27,7 @@ import '../controller/wishlist_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/add_address_modal.dart';
 import '../model/category_model.dart';
+import '../model/checkout_model.dart';
 import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'package:rxdart/rxdart.dart';
@@ -183,14 +184,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   final profileController = Get.put(ProfileController());
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? user;
   @override
   void initState() {
     super.initState();
     locationController.checkGps(context).then((value) {});
     locationController.getLocation();
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    User? user = _auth.currentUser;
+    user = _auth.currentUser;
     if (user != null) {
       wishListController.startListener();
       profileController.getProfileData();
@@ -285,6 +286,77 @@ class _HomePageState extends State<HomePage> {
                       );
               }),
             ),
+            // GestureDetector(
+            //   onTap: () {
+            //     FirebaseAuth _auth = FirebaseAuth.instance;
+            //     User? user = _auth.currentUser;
+            //     if (user != null) {
+            //       Get.toNamed(MyRouters.cartScreen);
+            //     } else {
+            //       Get.to(() => LoginScreen());
+            //     }
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: Image.asset(
+            //       'assets/images/shoppinbag.png',
+            //       height: 30,
+            //     ),
+            //   ),
+            // ),
+            user != null ?
+            Badge(
+              label: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('checkOut')
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: Text(" 0 "));
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(child: Text(" 0 "));
+                  }
+
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return const Center(child: Text(" 0 "));
+                  }
+
+                  // Access the menuList from the document snapshot
+                  List<dynamic> menuList = snapshot.data!['menuList'];
+
+                  // Now you can use the menuList as needed
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                    child: Text("${menuList.length.toString()}"),
+                  );
+                },
+              ),
+              backgroundColor: Colors.black,
+              padding: EdgeInsets.zero,
+              child: GestureDetector(
+                onTap: () {
+                  FirebaseAuth _auth = FirebaseAuth.instance;
+                  User? user = _auth.currentUser;
+                  if (user != null) {
+                    Get.toNamed(MyRouters.cartScreen);
+                  } else {
+                    Get.to(() => LoginScreen());
+                  }
+                  // Get.toNamed(MyRouters.cartScreen);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/images/shoppinbag.png',
+                    height: 30,
+                  ),
+                ),
+              ),
+            ):
             GestureDetector(
               onTap: () {
                 FirebaseAuth _auth = FirebaseAuth.instance;
@@ -294,6 +366,7 @@ class _HomePageState extends State<HomePage> {
                 } else {
                   Get.to(() => LoginScreen());
                 }
+                // Get.toNamed(MyRouters.cartScreen);
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -335,41 +408,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            // Badge(
-            //   label: StreamBuilder(
-            //     stream: FirebaseFirestore.instance
-            //         .collection('vendor_menu')
-            //         .where('userID', isLessThan: FirebaseAuth.instance.currentUser!.uid)
-            //         .snapshots(),
-            //     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-            //       if (snapshot.hasData) {
-            //         if (snapshot.data == null) {
-            //           return const Text(" 0 ");
-            //         }
-            //         if (snapshot.data!.docs.isEmpty) {
-            //           return const Text(" 0 ");
-            //         }
-            //         CheckOutModel cartData = CheckOutModel.fromJson(snapshot.data!.docs.first.data());
-            //         return Text(" ${cartData.menuList!.length}");
-            //       }
-            //       return const Center(child: Text(" 0 "));
-            //     },
-            //   ),
-            //   backgroundColor: Colors.black,
-            //   padding: EdgeInsets.zero,
-            //   child: GestureDetector(
-            //     onTap: () {
-            //       Get.toNamed(MyRouters.cartScreen);
-            //     },
-            //     child: Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Image.asset(
-            //         'assets/images/shoppinbag.png',
-            //         height: 30,
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
         automaticallyImplyLeading: false,
