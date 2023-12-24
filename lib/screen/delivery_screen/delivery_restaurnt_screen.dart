@@ -54,7 +54,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
   bool isDescendingOrder = false;
   List<String>? sliderList;
   getSliders() {
-    FirebaseFirestore.instance.collection("slider").orderBy('timestamp', descending: isDescendingOrder).get().then((value) {
+    FirebaseFirestore.instance.collection("slider").get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         print(gg.toString());

@@ -70,7 +70,6 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                                 color: Color(0xFF3B5998),
                               ),
                             ),
-                            primary: const Color(0xFF3B5998),
                             textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                           ),
                           child: Text(
@@ -96,7 +95,6 @@ class _RestaurantsStepperScreenState extends State<RestaurantsStepperScreen> {
                                     color: Color(0xFF3B5998),
                                   ),
                                 ),
-                                primary: const Color(0xFF3B5998),
                                 textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                               ),
                               child: Text(

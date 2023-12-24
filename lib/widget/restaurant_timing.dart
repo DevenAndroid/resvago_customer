@@ -73,7 +73,6 @@ class _MaxDiscountScreenState extends State<MaxDiscountScreen> {
       stream: FirebaseFirestore.instance
           .collection("Coupon_data")
           .where("userID", isEqualTo: widget.docId)
-          .orderBy("maxDiscount", descending: true)
           .limit(1)
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -130,7 +129,6 @@ class _MaxRatingScreenState extends State<MaxRatingScreen> {
       stream: FirebaseFirestore.instance
           .collection("Review")
           .where("vendorID", isEqualTo: widget.docId)
-          .orderBy("fullRating", descending: true)
           .limit(1)
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {

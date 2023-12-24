@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -46,7 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .manageRegisterUsers(
               userName: userNameController.text.trim(),
               email: emailController.text.trim(),
-              mobileNumber: code + phoneNumberController.text.trim(),
+              // mobileNumber: code + phoneNumberController.text.trim(),
               password: "123456")
           .then((value) async {
         Helper.hideLoader(loader);
@@ -159,48 +160,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           const SizedBox(
                             height: 15,
                           ),
-                          Text(
-                            'Enter Mobile number',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          IntlPhoneField(
-                            flagsButtonPadding: const EdgeInsets.all(8),
-                            dropdownIconPosition: IconPosition.trailing,
-                            cursorColor: Colors.white,
-                            dropdownIcon: const Icon(
-                              Icons.arrow_drop_down_rounded,
-                              color: Colors.white,
-                            ),
-                            dropdownTextStyle: const TextStyle(color: Colors.white),
-                            style: const TextStyle(color: Colors.white),
-                            controller: phoneNumberController,
-                            decoration: const InputDecoration(
-                                hintStyle: TextStyle(color: Colors.white),
-                                labelText: 'Phone Number',
-                                labelStyle: TextStyle(color: Colors.white),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(),
-                                ),
-                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white))),
-                            initialCountryCode: 'IE',
-                            onCountryChanged: (phone) {
-                              setState(() {
-                                code = "+${phone.dialCode}";
-                                log(code.toString());
-                              });
-                            },
-                            onChanged: (phone) {
-                              code = phone.countryCode.toString();
-                            },
-                          ),
+                          // Text(
+                          //   'Enter Mobile number',
+                          //   style: GoogleFonts.poppins(
+                          //     color: Colors.white,
+                          //     fontWeight: FontWeight.w400,
+                          //     fontSize: 14,
+                          //   ),
+                          // ),
+                          // const SizedBox(
+                          //   height: 15,
+                          // ),
+                          // IntlPhoneField(
+                          //   flagsButtonPadding: const EdgeInsets.all(8),
+                          //   dropdownIconPosition: IconPosition.trailing,
+                          //   cursorColor: Colors.white,
+                          //   dropdownIcon: const Icon(
+                          //     Icons.arrow_drop_down_rounded,
+                          //     color: Colors.white,
+                          //   ),
+                          //   dropdownTextStyle: const TextStyle(color: Colors.white),
+                          //   style: const TextStyle(color: Colors.white),
+                          //   controller: phoneNumberController,
+                          //   decoration: const InputDecoration(
+                          //       hintStyle: TextStyle(color: Colors.white),
+                          //       labelText: 'Phone Number',
+                          //       labelStyle: TextStyle(color: Colors.white),
+                          //       border: OutlineInputBorder(
+                          //         borderSide: BorderSide(),
+                          //       ),
+                          //       enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                          //       focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white))),
+                          //   initialCountryCode: 'IE',
+                          //   onCountryChanged: (phone) {
+                          //     setState(() {
+                          //       code = "+${phone.dialCode}";
+                          //       log(code.toString());
+                          //     });
+                          //   },
+                          //   onChanged: (phone) {
+                          //     code = phone.countryCode.toString();
+                          //   },
+                          // ),
                           Row(
                             children: [
                               Transform.scale(
@@ -221,8 +222,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       }),
                                 ),
                               ),
-                              const Text('Are you agree terms and conditions?',
-                                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Colors.white)),
+                              GestureDetector(
+                                onTap: (){
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      // Return the dialog box widget
+                                      return const AlertDialog(
+                                        title: Text('Terms And Conditions'),
+                                        content: Text(
+                                            'Terms and conditions are part of a contract that ensure parties understand their contractual rights and obligations. Parties draft them into a legal contract, also called a legal agreement, in accordance with local, state, and federal contract laws. They set important boundaries that all contract principals must uphold.'
+                                                'Several contract types utilize terms and conditions. When there is a formal agreement to create with another individual or entity, consider how you would like to structure your deal and negotiate the terms and conditions with the other side before finalizing anything. This strategy will help foster a sense of importance and inclusion on all sides.'),
+                                        actions: <Widget>[],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: const Text('Are you agree terms and conditions?',
+                                    style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Colors.white)),
+                              ),
                             ],
                           ),
                           const SizedBox(

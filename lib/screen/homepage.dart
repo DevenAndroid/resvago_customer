@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   List<String>? sliderList;
 
   getSliders() {
-    FirebaseFirestore.instance.collection("slider").orderBy('timestamp', descending: isDescendingOrder).get().then((value) {
+    FirebaseFirestore.instance.collection("slider").get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
         print(gg.toString());
@@ -87,7 +87,6 @@ class _HomePageState extends State<HomePage> {
     await FirebaseFirestore.instance
         .collection("vendor_users")
         .where("deactivate", isEqualTo: false)
-        .orderBy("order_count", descending: true)
         .limit(10)
         .get()
         .then((value) {
@@ -658,22 +657,19 @@ class _HomePageState extends State<HomePage> {
                                         SizedBox(
                                           height: 150,
                                           width: 250,
-                                          child: Hero(
-                                            tag: restaurantListItem.image,
-                                            child: ClipRRect(
-                                                borderRadius: const BorderRadius.only(
-                                                  topRight: Radius.circular(10),
-                                                  topLeft: Radius.circular(10),
+                                          child: ClipRRect(
+                                              borderRadius: const BorderRadius.only(
+                                                topRight: Radius.circular(10),
+                                                topLeft: Radius.circular(10),
+                                              ),
+                                              child: CachedNetworkImage(
+                                                imageUrl: restaurantListItem.image.toString(),
+                                                fit: BoxFit.cover,
+                                                errorWidget: (_, __, ___) => Icon(
+                                                  Icons.error,
+                                                  color: Colors.red,
                                                 ),
-                                                child: CachedNetworkImage(
-                                                  imageUrl: restaurantListItem.image.toString(),
-                                                  fit: BoxFit.cover,
-                                                  errorWidget: (_, __, ___) => Icon(
-                                                    Icons.error,
-                                                    color: Colors.red,
-                                                  ),
-                                                )),
-                                          ),
+                                              )),
                                         ),
                                         Positioned(
                                             top: 0,

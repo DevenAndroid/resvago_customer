@@ -267,7 +267,6 @@ class _MyAddressListState extends State<MyAddressList> {
         .collection('Address')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('TotalAddress')
-        .orderBy('time', descending: isDescendingOrder)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => AddressModel(

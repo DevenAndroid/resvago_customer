@@ -193,103 +193,103 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Radio(
-                          value: LoginOption.Mobile,
-                          groupValue: loginOption,
-                          activeColor: Colors.white,
-                          onChanged: (LoginOption? value) {
-                            setState(() {
-                              loginOption = value!;
-                            });
-                          },
-                        ),
-                        const Text(
-                          "Login With Mobile Number",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Radio(
+                    //       value: LoginOption.Mobile,
+                    //       groupValue: loginOption,
+                    //       activeColor: Colors.white,
+                    //       onChanged: (LoginOption? value) {
+                    //         setState(() {
+                    //           loginOption = value!;
+                    //         });
+                    //       },
+                    //     ),
+                    //     const Text(
+                    //       "Login With Mobile Number",
+                    //       style: TextStyle(color: Colors.white),
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(width: 20),
-                    Row(
-                      children: [
-                        Radio(
-                          value: LoginOption.EmailPassword,
-                          groupValue: loginOption,
-                          activeColor: Colors.white,
-                          onChanged: (LoginOption? value) {
-                            setState(() {
-                              loginOption = value!;
-                            });
-                          },
-                        ),
-                        const Text("Login With Email Address", style: TextStyle(color: Colors.white)),
-                      ],
-                    ),
-                    if (loginOption == LoginOption.Mobile)
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Enter Mobile Number',
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            IntlPhoneField(
-                              flagsButtonPadding: const EdgeInsets.all(8),
-                              dropdownIconPosition: IconPosition.trailing,
-                              dropdownIcon: const Icon(
-                                Icons.arrow_drop_down_rounded,
-                                color: Colors.white,
-                              ),
-                              controller: loginController.mobileController,
-                              style: const TextStyle(color: Colors.white),
-                              dropdownTextStyle: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                hintText: 'Enter your Mobile number',
-                                hintStyle: const TextStyle(color: Colors.white),
-                                filled: true,
-                                enabled: true,
-                                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0x63ffffff))),
-                                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0x63ffffff))),
-                                iconColor: Colors.white,
-                                errorBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
-                                fillColor: const Color(0x63ffffff).withOpacity(.2),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(width: 1, color: Color(0x63ffffff)),
-                                ),
-                              ),
-                              onCountryChanged: (phone) {
-                                setState(() {
-                                  code = "+${phone.dialCode}";
-                                  print(code.toString());
-                                });
-                              },
-                              initialCountryCode: 'IE',
-                              cursorColor: Colors.white,
-                              keyboardType: TextInputType.number,
-                              validator: MultiValidator([RequiredValidator(errorText: 'Please enter your mobile number')]).call,
-                              onChanged: (phone) {
-                                code = phone.countryCode.toString();
-                                setState(() {});
-                              },
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (loginOption == LoginOption.EmailPassword)
+                    // Row(
+                    //   children: [
+                    //     Radio(
+                    //       value: LoginOption.EmailPassword,
+                    //       groupValue: loginOption,
+                    //       activeColor: Colors.white,
+                    //       onChanged: (LoginOption? value) {
+                    //         setState(() {
+                    //           loginOption = value!;
+                    //         });
+                    //       },
+                    //     ),
+                    //     const Text("Login With Email Address", style: TextStyle(color: Colors.white)),
+                    //   ],
+                    // ),
+                    // if (loginOption == LoginOption.Mobile)
+                    //   Padding(
+                    //     padding: const EdgeInsets.all(12),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Text(
+                    //           'Enter Mobile Number',
+                    //           style: GoogleFonts.poppins(
+                    //             color: Colors.white,
+                    //             fontSize: 14,
+                    //           ),
+                    //         ),
+                    //         const SizedBox(
+                    //           height: 5,
+                    //         ),
+                    //         IntlPhoneField(
+                    //           flagsButtonPadding: const EdgeInsets.all(8),
+                    //           dropdownIconPosition: IconPosition.trailing,
+                    //           dropdownIcon: const Icon(
+                    //             Icons.arrow_drop_down_rounded,
+                    //             color: Colors.white,
+                    //           ),
+                    //           controller: loginController.mobileController,
+                    //           style: const TextStyle(color: Colors.white),
+                    //           dropdownTextStyle: const TextStyle(color: Colors.white),
+                    //           decoration: InputDecoration(
+                    //             hintText: 'Enter your Mobile number',
+                    //             hintStyle: const TextStyle(color: Colors.white),
+                    //             filled: true,
+                    //             enabled: true,
+                    //             enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0x63ffffff))),
+                    //             focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0x63ffffff))),
+                    //             iconColor: Colors.white,
+                    //             errorBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
+                    //             fillColor: const Color(0x63ffffff).withOpacity(.2),
+                    //             border: OutlineInputBorder(
+                    //               borderRadius: BorderRadius.circular(5),
+                    //               borderSide: const BorderSide(width: 1, color: Color(0x63ffffff)),
+                    //             ),
+                    //           ),
+                    //           onCountryChanged: (phone) {
+                    //             setState(() {
+                    //               code = "+${phone.dialCode}";
+                    //               print(code.toString());
+                    //             });
+                    //           },
+                    //           initialCountryCode: 'IE',
+                    //           cursorColor: Colors.white,
+                    //           keyboardType: TextInputType.number,
+                    //           validator: MultiValidator([RequiredValidator(errorText: 'Please enter your mobile number')]).call,
+                    //           onChanged: (phone) {
+                    //             code = phone.countryCode.toString();
+                    //             setState(() {});
+                    //           },
+                    //         ),
+                    //         const SizedBox(
+                    //           height: 15,
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // if (loginOption == LoginOption.EmailPassword)
                       Padding(
                         padding: const EdgeInsets.all(12),
                         child: Column(
@@ -394,8 +394,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          loginOption == LoginOption.EmailPassword
-                              ? CommonButton(
+                          // loginOption == LoginOption.EmailPassword
+                          //     ?
+                          CommonButton(
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
                                       if (otp != otpController.text || otpController.text.length < 6) {
@@ -417,15 +418,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                   },
                                   title: 'Login'.tr,
-                                )
-                              : CommonButton(
-                                  onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      checkPhoneNumberInFirestore();
-                                    }
-                                  },
-                                  title: 'Login',
                                 ),
+                              // : CommonButton(
+                              //     onPressed: () async {
+                              //       if (_formKey.currentState!.validate()) {
+                              //         checkPhoneNumberInFirestore();
+                              //       }
+                              //     },
+                              //     title: 'Login',
+                              //   ),
                           const SizedBox(
                             height: 20,
                           ),

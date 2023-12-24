@@ -217,7 +217,7 @@ class OnboardContent extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                   shape: const CircleBorder(),
-                  primary: const Color(0xFF3B5998),
+                  backgroundColor: Color(0xff3B5998),
                   textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
            child: Image.asset(height:23,width: 23,'assets/icons/arrow.png'),)),
       SizedBox(

@@ -1150,7 +1150,6 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                                   width: 2.0,
                                                                   color: Color(0xFF3B5998),
                                                                 )),
-                                                            primary: const Color(0xFF3B5998),
                                                             textStyle:
                                                                 const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                         child: Text(
