@@ -77,27 +77,25 @@ class _LoginScreenState extends State<LoginScreen> {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
-      print(result.docs.first.data());
-      Map kk = result.docs.first.data() as Map;
-      print(kk["email"]);
-      if (kk["deactivate"] == false) {
-        FirebaseFirestore.instance.collection("send_mail").add({
-          "to": emailController.text,
-          "message": {
-            "subject": "This is a otp email",
-            "html": "Your otp is $otp",
-            "text": "asdfgwefddfgwefwn",
-          }
-        }).then((value) {
-          showToast("Otp send successfully");
-        });
-        setState(() {
-          showOtpField = true;
-        });
-        return;
+      myauth.setConfig(
+          appEmail: "contact@hdevcoder.com",
+          appName: "Email OTP",
+          userEmail: emailController.text,
+          otpLength: 6,
+          otpType: OTPType.digitsOnly);
+      if (await myauth.sendOTP() == true) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("OTP has been sent"),
+        ));
       } else {
-        Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Oops, OTP send failed"),
+        ));
       }
+      setState(() {
+        showOtpField = true;
+      });
+      return;
     } else {
       Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
     }
@@ -336,11 +334,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(
                               height: 20,
                             ),
-                            if (!showOtpField)
+                            // if (!showOtpField)
                               TextFormField(
                                 cursorColor: Colors.white,
                                 style: const TextStyle(color: Colors.white),
-                                controller: passwordController,
+                                controller: otpController,
                                 maxLength: 6,
                                 decoration: InputDecoration(
                                   filled: true,
@@ -361,31 +359,31 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderRadius: BorderRadius.circular(6.0)),
                                 ),
                               )
-                            else
-                              TextFormField(
-                                style: const TextStyle(color: Colors.white),
-                                controller: otpController,
-                                keyboardType: TextInputType.number,
-                                maxLength: 6,
-                                decoration: InputDecoration(
-                                  hintText: 'Enter Otp',
-                                  hintStyle: const TextStyle(color: Colors.white),
-                                  filled: true,
-                                  fillColor: Colors.white.withOpacity(.10),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
-                                  // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                    borderRadius: BorderRadius.circular(6.0),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                      borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
-                                      borderRadius: BorderRadius.circular(6.0)),
-                                ),
-                              ),
+                            // else
+                            //   TextFormField(
+                            //     style: const TextStyle(color: Colors.white),
+                            //     controller: otpController,
+                            //     keyboardType: TextInputType.number,
+                            //     maxLength: 6,
+                            //     decoration: InputDecoration(
+                            //       hintText: 'Enter Otp',
+                            //       hintStyle: const TextStyle(color: Colors.white),
+                            //       filled: true,
+                            //       fillColor: Colors.white.withOpacity(.10),
+                            //       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
+                            //       // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                            //       focusedBorder: OutlineInputBorder(
+                            //         borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                            //         borderRadius: BorderRadius.circular(6.0),
+                            //       ),
+                            //       enabledBorder: OutlineInputBorder(
+                            //           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
+                            //           borderRadius: const BorderRadius.all(Radius.circular(6.0))),
+                            //       border: OutlineInputBorder(
+                            //           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
+                            //           borderRadius: BorderRadius.circular(6.0)),
+                            //     ),
+                            //   ),
                           ],
                         ),
                       ),
@@ -397,26 +395,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           // loginOption == LoginOption.EmailPassword
                           //     ?
                           CommonButton(
-                                  onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      if (otp != otpController.text || otpController.text.length < 6) {
-                                        showToast("Invalid otp");
-                                      }
-                                      if (otpController.text.isEmpty) {
-                                        showToast("Please enter otp");
-                                      } else {
-                                        FirebaseAuth.instance
-                                            .signInWithEmailAndPassword(
-                                          email: emailController.text.trim(),
-                                          password: "123456",
-                                        )
-                                            .then((value) {
-                                          showToast("Verify otp successfully");
-                                          Get.offAllNamed(MyRouters.bottomNavbar);
-                                        });
-                                      }
-                                    }
-                                  },
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                if (await myauth.verifyOTP(otp: otpController.text) == true) {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                    content: Text("OTP is verified"),
+                                  ));
+                                  FirebaseAuth.instance
+                                      .signInWithEmailAndPassword(
+                                    email: emailController.text.trim(),
+                                    password: "123456",
+                                  )
+                                      .then((value) {
+                                    Get.offAllNamed(MyRouters.bottomNavbar);
+                                  });
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                    content: Text("Invalid OTP"),
+                                  ));
+                                }
+                              }
+                            },
                                   title: 'Login'.tr,
                                 ),
                               // : CommonButton(
