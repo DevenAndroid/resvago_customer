@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -77,27 +78,45 @@ class _LoginScreenState extends State<LoginScreen> {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
-      myauth.setConfig(
-          appEmail: "contact@hdevcoder.com",
-          appName: "Email OTP",
-          userEmail: emailController.text,
-          otpLength: 6,
-          otpType: OTPType.digitsOnly);
-      if (await myauth.sendOTP() == true) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("OTP has been sent"),
-        ));
+      Map kk = result.docs.first.data() as Map;
+      if (kk["deactivate"] == false) {
+        FirebaseFirestore.instance.collection("send_mail").add({
+          "to": emailController.text,
+          "message": {
+            "subject": "This is a otp email",
+            "html": "Your otp is $otp",
+            "text": "asdfgwefddfgwefwn",
+          }
+        }).then((value) {
+          if (!kIsWeb) {
+            Fluttertoast.showToast(msg: 'Otp send successfully');
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Otp send successfully"),
+            ));
+          }
+        });
+        setState(() {
+          showOtpField = true;
+        });
+        return;
+      } else {
+        if (!kIsWeb) {
+          Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Your account has been deactivated, Please contact administrator"),
+          ));
+        }
+      }
+    } else {
+      if (!kIsWeb) {
+        Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Oops, OTP send failed"),
+          content: Text("Email not register yet Please Signup"),
         ));
       }
-      setState(() {
-        showOtpField = true;
-      });
-      return;
-    } else {
-      Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
     }
   }
 
@@ -397,22 +416,41 @@ class _LoginScreenState extends State<LoginScreen> {
                           CommonButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                if (await myauth.verifyOTP(otp: otpController.text) == true) {
-                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                    content: Text("OTP is verified"),
-                                  ));
+                                if (otpController.text.isEmpty) {
+                                  if (!kIsWeb) {
+                                    Fluttertoast.showToast(msg: 'Please enter otp');
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                      content: Text("Please enter otp"),
+                                    ));
+                                  }
+                                } else if (otp != otpController.text || otpController.text.length < 6) {
+                                  if (!kIsWeb) {
+                                    Fluttertoast.showToast(msg: 'Invalid otp');
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                      content: Text("Invalid otp"),
+                                    ));
+                                  }
+                                } else {
+                                  OverlayEntry loader = Helper.overlayLoader(context);
+                                  Overlay.of(context).insert(loader);
                                   FirebaseAuth.instance
                                       .signInWithEmailAndPassword(
                                     email: emailController.text.trim(),
                                     password: "123456",
                                   )
                                       .then((value) {
+                                    Helper.hideLoader(loader);
+                                    if (!kIsWeb) {
+                                      Fluttertoast.showToast(msg: 'Verify otp successfully');
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                        content: Text("Verify otp successfully"),
+                                      ));
+                                    }
                                     Get.offAllNamed(MyRouters.bottomNavbar);
                                   });
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                    content: Text("Invalid OTP"),
-                                  ));
                                 }
                               }
                             },
