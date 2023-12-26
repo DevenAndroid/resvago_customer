@@ -386,24 +386,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                Text(
-                                  "Mobile Number",
-                                  style: GoogleFonts.poppins(
-                                      color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                RegisterTextFieldWidget(
-                                    readOnly: true,
-                                    controller: mobileController,
-                                    validator: RequiredValidator(errorText: 'Please enter your mobile number ').call,
-                                    keyboardType: TextInputType.number,
-                                    // textInputAction: TextInputAction.next,
-                                    hint: "Mobile number"),
-                                const SizedBox(
-                                  height: 20,
-                                ),
+                                // Text(
+                                //   "Mobile Number",
+                                //   style: GoogleFonts.poppins(
+                                //       color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                                // ),
+                                // const SizedBox(
+                                //   height: 10,
+                                // ),
+                                // RegisterTextFieldWidget(
+                                //     readOnly: true,
+                                //     controller: mobileController,
+                                //     validator: RequiredValidator(errorText: 'Please enter your mobile number ').call,
+                                //     keyboardType: TextInputType.number,
+                                //     // textInputAction: TextInputAction.next,
+                                //     hint: "Mobile number"),
+                                // const SizedBox(
+                                //   height: 20,
+                                // ),
                                 CommonButtonBlue(
                                   onPressed: () {
                                     if (formKey.currentState!.validate()) {
