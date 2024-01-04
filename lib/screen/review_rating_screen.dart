@@ -32,10 +32,7 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
   final formKey = GlobalKey<FormState>();
 
   void checkFirstore() async {
-    final result = await FirebaseFirestore.instance
-        .collection('Review')
-        .where('orderID', isEqualTo: widget.orderId)
-        .get();
+    final result = await FirebaseFirestore.instance.collection('Review').where('orderID', isEqualTo: widget.orderId).get();
 
     if (result.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Review already added');
@@ -221,41 +218,43 @@ class _ReviewAndRatingScreenState extends State<ReviewAndRatingScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      TextFormField(
-                        controller: aboutController,
-                        textInputAction: TextInputAction.next,
-                        minLines: 7,
-                        maxLines: 7,
-                        keyboardType: TextInputType.text,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "About required";
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: InputDecoration(
-                          focusColor: Colors.black,
-                          hintStyle: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 14,
-                            // fontFamily: 'poppins',
-                            fontWeight: FontWeight.w300,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-                          // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.withOpacity(.35)),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
+                      SizedBox(
+                        height: 150,
+                        child: TextFormField(
+                          controller: aboutController,
+                          maxLines: null,
+                          expands: true,
+                          keyboardType: TextInputType.multiline,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "About required";
+                            } else {
+                              return null;
+                            }
+                          },
+                          decoration: InputDecoration(
+                            focusColor: Colors.black,
+                            hintStyle: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 14,
+                              // fontFamily: 'poppins',
+                              fontWeight: FontWeight.w300,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                            // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
+                            focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey.withOpacity(.35)),
-                              borderRadius: const BorderRadius.all(Radius.circular(10.0))),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.withOpacity(.35), width: 3.0),
-                              borderRadius: BorderRadius.circular(15.0)),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.withOpacity(.35)),
+                                borderRadius: const BorderRadius.all(Radius.circular(10.0))),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.withOpacity(.35), width: 3.0),
+                                borderRadius: BorderRadius.circular(15.0)),
+                          ),
                         ),
                       ),
                     ],

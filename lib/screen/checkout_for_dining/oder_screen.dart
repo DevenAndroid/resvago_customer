@@ -81,7 +81,7 @@ class _OderScreenState extends State<OderScreen> {
       return {
         "name": item["dishName"],
         "quantity": item["qty"],
-        "price": double.parse(item["price"]).toStringAsFixed(2).toString(),
+        "price": double.parse(item["price"]).toString(),
         "currency": "USD"
       };
     }).toList();
@@ -89,7 +89,7 @@ class _OderScreenState extends State<OderScreen> {
       extractedData.add({
         "name": "discount",
         "quantity": "1",
-        "price": (-math.min(discountAmount, couponData!.maximumDiscountAmount)).toStringAsFixed(2),
+        "price": (-math.min(discountAmount, couponData!.maximumDiscountAmount)).toString(),
         "currency": "USD"
       });
     }
@@ -823,7 +823,7 @@ class _OderScreenState extends State<OderScreen> {
                             }
                           ]);
                           // return;
-                          if(kIsWeb){
+                          if (kIsWeb) {
                             order(restaurantData!.docid).then((value) {
                               updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
                               FirebaseFirestore.instance
@@ -837,8 +837,7 @@ class _OderScreenState extends State<OderScreen> {
                                 orderId: value.toString(),
                               ));
                             });
-                          }
-                         else{
+                          } else {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) => UsePaypal(

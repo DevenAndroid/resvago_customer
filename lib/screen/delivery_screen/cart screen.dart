@@ -5,11 +5,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/model/admin_model.dart';
 import 'package:resvago_customer/model/profile_model.dart';
 import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/screen/myAddressList.dart';
@@ -93,32 +95,34 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   var totalPrice = 0.0;
+  double result = 0.0;
   double getTotalPrice() {
     if (cartModel.menuList == null) return 0;
     totalPrice = 0;
     for (int i = 0; i < cartModel.menuList!.length; i++) {
       totalPrice = totalPrice + double.parse(cartModel.menuList![i].qty.toString()) * double.parse(cartModel.menuList![i].price);
+      if (adminModel != null) {
+        result = (totalPrice * double.parse(adminModel!.adminCommission)) / 100;
+        log("sadsfgdg" + result.toString());
+      }
       log(totalPrice.toString());
     }
     return totalPrice;
   }
 
   double get discountAmount => totalPrice * couponData!.maximumDiscount;
-
   double get calculateTotalPrice => getTotalPrice() > 0
       ? (getTotalPrice() - (couponData == null ? 0 : math.min(discountAmount, couponData!.maximumDiscountAmount)))
       : 0;
-
   double get couponDiscount => (couponData == null ? 0 : math.min(discountAmount, couponData!.maximumDiscountAmount));
 
   @override
   void initState() {
     super.initState();
+    getAdminData();
     getCheckOutData();
     getTotalPrice();
     fetchdata();
-    // initYCPay();
-    // initCardInformation();
   }
 
   CouponData? couponData;
@@ -134,11 +138,22 @@ class _CartScreenState extends State<CartScreen> {
     });
   }
 
+  AdminModel? adminModel;
+  void getAdminData() {
+    FirebaseFirestore.instance.collection("admin_login").get().then((value) {
+      adminModel = AdminModel.fromJson(value.docs.first.data());
+      log(jsonEncode(value.docs.first.data()).toString());
+    });
+  }
+
   FirebaseService firebaseService = FirebaseService();
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    // String? fcm = await FirebaseMessaging.instance.getToken();
+    String? fcm = "fcm";
+    if (!kIsWeb) {
+      fcm = await FirebaseMessaging.instance.getToken();
+    }
     int gg = DateTime.now().millisecondsSinceEpoch;
     try {
       await firebaseService
@@ -150,8 +165,9 @@ class _CartScreenState extends State<CartScreen> {
               time: gg,
               address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
               couponDiscount: couponDiscount,
-              fcm: "fcm",
-              total: totalPrice)
+              fcm: fcm,
+              total: totalPrice,
+              admin_commission: result)
           .then((value) {
         Helper.hideLoader(loader);
         return gg;
@@ -160,13 +176,6 @@ class _CartScreenState extends State<CartScreen> {
     } catch (e) {
       Helper.hideLoader(loader);
       throw Exception(e);
-    }
-  }
-
-  Future<void> _launchUrl(url) async {
-    final Uri _url = Uri.parse(url);
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
     }
   }
 
@@ -779,22 +788,30 @@ class _CartScreenState extends State<CartScreen> {
                             // return;
 
                             if (kIsWeb) {
-                              try {
-                                await payPalService.createOrder().then((value) async {
-                                  print("fsdgdfghh" + value.toString());
-                                  await payPalService.capturePayment(value).then((value1){
-                                    order(cartModel.vendorId).then((value2) {
-                                      FirebaseFirestore.instance
-                                          .collection("checkOut")
-                                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                                          .delete();
-                                      Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
-                                    });
-                                  });
-                                });
-                              } catch (e) {
-                                print('Error: $e');
-                              };
+                              order(cartModel.vendorId).then((value2) {
+                                FirebaseFirestore.instance
+                                    .collection("checkOut")
+                                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                                    .delete();
+                                Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
+                              });
+                              // try {
+                              //   await payPalService.createOrder().then((value) async {
+                              //     print("fsdgdfghh" + value.toString());
+                              //     await payPalService.capturePayment(value).then((value1) {
+                              //       order(cartModel.vendorId).then((value2) {
+                              //         FirebaseFirestore.instance
+                              //             .collection("checkOut")
+                              //             .doc(FirebaseAuth.instance.currentUser!.uid)
+                              //             .delete();
+                              //         Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
+                              //       });
+                              //     });
+                              //   });
+                              // } catch (e) {
+                              //   print('Error: $e');
+                              // }
+                              // ;
                             } else {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -802,8 +819,10 @@ class _CartScreenState extends State<CartScreen> {
                                       sandboxMode: true,
                                       // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
                                       // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
-                                      clientId: "Ab5v6E4R-gNbD13BbcdgpzK0G66oJ8ij1Va8i85qzGTtgA4TXkmt2h4oRpCXGRTBQs8Fn1SMqgyVkQ19",
-                                      secretKey: "ELCzlUANZYqBS27CGrYqP3RNyoob11TbOj_J4kYp6QULFkDWh9veSi_zkpQoe8nu-VS3FN8XJf-o5WJx",
+                                      clientId:
+                                          "Ab5v6E4R-gNbD13BbcdgpzK0G66oJ8ij1Va8i85qzGTtgA4TXkmt2h4oRpCXGRTBQs8Fn1SMqgyVkQ19",
+                                      secretKey:
+                                          "ELCzlUANZYqBS27CGrYqP3RNyoob11TbOj_J4kYp6QULFkDWh9veSi_zkpQoe8nu-VS3FN8XJf-o5WJx",
                                       returnURL: "https://samplesite.com/return",
                                       cancelURL: "https://samplesite.com/cancel",
                                       transactions: [

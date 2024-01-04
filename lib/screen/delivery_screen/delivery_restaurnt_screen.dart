@@ -627,7 +627,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
               ),
               if (categoryList != null)
                 SizedBox(
-                  height: 80,
+                  height: 100,
                   child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: min(6, categoryList!.length),
@@ -642,10 +642,12 @@ class _DeliveryPageState extends State<DeliveryPage> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: SizedBox(
-                            width: 60,
+                            width: 70,
                             child: Column(
                               children: [
-                                Expanded(
+                                SizedBox(
+                                  height: 60,
+                                  width: 60,
                                   child: ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
                                       child: CachedNetworkImage(

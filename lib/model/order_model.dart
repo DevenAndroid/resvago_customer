@@ -8,6 +8,7 @@ class MyOrderModel {
   dynamic time;
   dynamic userId;
   dynamic total;
+  dynamic admin_commission;
   dynamic docid;
   dynamic reasonOfCancel;
   OrderDetails? orderDetails;
@@ -25,6 +26,7 @@ class MyOrderModel {
       this.userId,
       this.orderDetails,
       this.total,
+      this.admin_commission,
       this.customerData,
       this.docid,
       this.reasonOfCancel,
@@ -40,6 +42,7 @@ class MyOrderModel {
     time = json['time'];
     userId = json['userId'];
     total = json['total'];
+    admin_commission = json['admin_commission'];
     orderDetails = json['order_details'] != null ? OrderDetails.fromJson(json['order_details']) : null;
     customerData = json['user_data'] != null ? CustomerData.fromJson(json['user_data']) : null;
     orderType = json['order_type'];
@@ -58,6 +61,7 @@ class MyOrderModel {
     data['time'] = time;
     data['userId'] = userId;
     data['total'] = total;
+    data['admin_commission'] = admin_commission;
     data['reasonOfCancel'] = reasonOfCancel;
     if (orderDetails != null) {
       data['order_details'] = orderDetails!.toJson();

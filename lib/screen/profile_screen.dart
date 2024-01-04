@@ -13,6 +13,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import '../model/profile_model.dart';
 import '../widget/addsize.dart';
 import '../widget/apptheme.dart';
@@ -33,7 +34,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   ProfileData profileData = ProfileData();
-  String code = "+91";
+  String code = "+353";
+  String country = "IE";
+  int kk = 0;
   File categoryFile = File("");
   Uint8List? pickedFile;
   String fileUrl = "";
@@ -45,15 +48,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         log("profile data" + profileData.mobileNumber.toString());
         categoryFile = File(profileData.profile_image.toString());
         mobileController.text = (profileData.mobileNumber ?? "").toString();
+        code = (profileData.code ?? "").toString();
+        country = (profileData.country ?? "").toString();
+        log(code);
+        log(country);
         firstNameController.text = (profileData.userName ?? "").toString();
         lastNameController.text = (profileData.userName ?? "").toString();
         emailController.text = (profileData.email ?? "").toString();
+        kk++;
+        setState(() {});
         if (!kIsWeb) {
           categoryFile = File(profileData.profile_image ?? "");
         } else {
           fileUrl = profileData.profile_image ?? "";
         }
-        apiLoaded = true;
+        // apiLoaded = true;
         setState(() {});
       }
     });
@@ -64,26 +73,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Overlay.of(context).insert(loader);
     String? imageUrl = kIsWeb ? null : categoryFile.path;
     ;
+    // if (kIsWeb) {
+    //   if (pickedFile != null) {
+    //     UploadTask uploadTask = FirebaseStorage.instance.ref("profile_image}").child("image").putData(pickedFile!);
+    //     TaskSnapshot snapshot = await uploadTask;
+    //     imageUrl = await snapshot.ref.getDownloadURL();
+    //   } else {
+    //     imageUrl = fileUrl;
+    //   }
+    // } else {
+    //   if (!categoryFile.path.contains("https")) {
+    //     // if (profileData.profile_image.toString().isNotEmpty) {
+    //     //   Reference gg = FirebaseStorage.instance.refFromURL(profileData.profile_image.toString());
+    //     //   await gg.delete();
+    //     // }
+    //     UploadTask uploadTask = FirebaseStorage.instance
+    //         .ref("profile_image")
+    //         .child(DateTime.now().millisecondsSinceEpoch.toString())
+    //         .putFile(categoryFile);
+    //     TaskSnapshot snapshot = await uploadTask;
+    //     imageUrl = await snapshot.ref.getDownloadURL();
+    //   }
+    // }
+
+    String? imageUrlProfile = kIsWeb ? null : categoryFile.path;
     if (kIsWeb) {
       if (pickedFile != null) {
-        UploadTask uploadTask = FirebaseStorage.instance.ref("profile_image}").child("image").putData(pickedFile!);
+        UploadTask uploadTask = FirebaseStorage.instance
+            .ref("profile_image/${FirebaseAuth.instance.currentUser!.uid}")
+            .child("image")
+            .putData(pickedFile!);
         TaskSnapshot snapshot = await uploadTask;
-        imageUrl = await snapshot.ref.getDownloadURL();
+        imageUrlProfile = await snapshot.ref.getDownloadURL();
       } else {
-        imageUrl = fileUrl;
+        imageUrlProfile = fileUrl;
       }
     } else {
-      if (!categoryFile.path.contains("https")) {
-        if (profileData.profile_image.toString().isNotEmpty) {
-          Reference gg = FirebaseStorage.instance.refFromURL(profileData.profile_image.toString());
-          await gg.delete();
-        }
+      if (!categoryFile.path.contains("http") && categoryFile.path.isNotEmpty) {
         UploadTask uploadTask = FirebaseStorage.instance
-            .ref("profile_image")
-            .child(DateTime.now().millisecondsSinceEpoch.toString())
+            .ref("profileImage/${FirebaseAuth.instance.currentUser!.uid}")
+            .child("image")
             .putFile(categoryFile);
         TaskSnapshot snapshot = await uploadTask;
-        imageUrl = await snapshot.ref.getDownloadURL();
+        imageUrlProfile = await snapshot.ref.getDownloadURL();
       }
     }
     try {
@@ -91,7 +123,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         "userName": firstNameController.text.trim(),
         "email": emailController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
-        "profile_image": imageUrl,
+        "code": code,
+        "country": country,
+        "profile_image": imageUrlProfile,
         "deactivate": false,
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       log("profile data" + profileData.mobileNumber.toString());
@@ -118,317 +152,332 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F6F6),
-      body: apiLoaded
-          ? SingleChildScrollView(
-              child: Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.black),
-                    ),
-                    Container(
-                      width: size.width,
-                      height: size.height,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Stack(
+        backgroundColor: const Color(0xFFF6F6F6),
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.black),
+                ),
+                Container(
+                  width: size.width,
+                  height: size.height,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Stack(
+                          children: [
+                            Container(
+                                width: kIsWeb ? 500 : size.width,
+                                padding: const EdgeInsets.only(bottom: 30),
+                                clipBehavior: Clip.antiAlias,
+                                decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+                                child: Image.asset('assets/images/profilebg.png')),
+                            Positioned(
+                              top: 90,
+                              left: 0,
+                              right: 0,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 100,
+                                    width: 100,
+                                    child: kIsWeb
+                                        ? Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(10000),
+                                                child: Container(
+                                                    height: 100,
+                                                    width: 100,
+                                                    clipBehavior: Clip.antiAlias,
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(0xffFAAF40),
+                                                      border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                                      borderRadius: BorderRadius.circular(5000),
+                                                      // color: Colors.brown
+                                                    ),
+                                                    child: pickedFile != null
+                                                        ? Image.memory(
+                                                            pickedFile!,
+                                                            fit: BoxFit.cover,
+                                                            errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                              fit: BoxFit.cover,
+                                                              imageUrl: categoryFile.path,
+                                                              height: AddSize.size30,
+                                                              width: AddSize.size30,
+                                                              errorWidget: (_, __, ___) => const Icon(
+                                                                Icons.person,
+                                                                size: 60,
+                                                              ),
+                                                              placeholder: (_, __) => const SizedBox(),
+                                                            ),
+                                                          )
+                                                        : Image.network(
+                                                            fileUrl,
+                                                            fit: BoxFit.cover,
+                                                            errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                              fit: BoxFit.cover,
+                                                              imageUrl: categoryFile.path,
+                                                              height: AddSize.size30,
+                                                              width: AddSize.size30,
+                                                              errorWidget: (_, __, ___) => const Icon(
+                                                                Icons.person,
+                                                                size: 60,
+                                                              ),
+                                                              placeholder: (_, __) => const SizedBox(),
+                                                            ),
+                                                          )),
+                                              ),
+                                              Positioned(
+                                                bottom: 0,
+                                                right: 0,
+                                                child: GestureDetector(
+                                                  behavior: HitTestBehavior.translucent,
+                                                  onTap: () {
+                                                    Helper.addFilePicker().then((value) {
+                                                      pickedFile = value;
+                                                      print(pickedFile);
+                                                      setState(() {});
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    height: 30,
+                                                    width: 30,
+                                                    clipBehavior: Clip.antiAlias,
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(0xff04666E),
+                                                      borderRadius: BorderRadius.circular(50),
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.camera_alt,
+                                                      color: Colors.white,
+                                                      size: 15,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        : Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(10000),
+                                                child: Container(
+                                                    height: 100,
+                                                    width: 100,
+                                                    clipBehavior: Clip.antiAlias,
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(0xffFAAF40),
+                                                      border: Border.all(color: const Color(0xff3B5998), width: 6),
+                                                      borderRadius: BorderRadius.circular(5000),
+                                                      // color: Colors.brown
+                                                    ),
+                                                    child: categoryFile.path.contains("http") || categoryFile.path.isEmpty
+                                                        ? Image.network(
+                                                            categoryFile.path,
+                                                            fit: BoxFit.cover,
+                                                            errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                              fit: BoxFit.cover,
+                                                              imageUrl: categoryFile.path,
+                                                              height: AddSize.size30,
+                                                              width: AddSize.size30,
+                                                              errorWidget: (_, __, ___) => const Icon(
+                                                                Icons.person,
+                                                                size: 60,
+                                                              ),
+                                                              placeholder: (_, __) => const SizedBox(),
+                                                            ),
+                                                          )
+                                                        : Image.memory(
+                                                            categoryFile.readAsBytesSync(),
+                                                            fit: BoxFit.cover,
+                                                            errorBuilder: (_, __, ___) => CachedNetworkImage(
+                                                              fit: BoxFit.cover,
+                                                              imageUrl: categoryFile.path,
+                                                              height: AddSize.size30,
+                                                              width: AddSize.size30,
+                                                              errorWidget: (_, __, ___) => const Icon(
+                                                                Icons.person,
+                                                                size: 60,
+                                                              ),
+                                                              placeholder: (_, __) => const SizedBox(),
+                                                            ),
+                                                          )),
+                                              ),
+                                              Positioned(
+                                                bottom: 0,
+                                                right: 0,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    showActionSheet(context);
+                                                  },
+                                                  child: Container(
+                                                    height: 30,
+                                                    width: 30,
+                                                    clipBehavior: Clip.antiAlias,
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(0xff04666E),
+                                                      borderRadius: BorderRadius.circular(50),
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.camera_alt,
+                                                      color: Colors.white,
+                                                      size: 15,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            profileData.userName.toString(),
+                            style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            profileData.email.toString(),
+                            style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 12),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                  width: kIsWeb ? 500 : size.width,
-                                  padding: const EdgeInsets.only(bottom: 30),
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-                                  child: Image.asset('assets/images/profilebg.png')),
-                              Positioned(
-                                top: 90,
-                                left: 0,
-                                right: 0,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      height: 100,
-                                      width: 100,
-                                      child: kIsWeb
-                                          ? Stack(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10000),
-                                                  child: Container(
-                                                      height: 100,
-                                                      width: 100,
-                                                      clipBehavior: Clip.antiAlias,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(0xffFAAF40),
-                                                        border: Border.all(color: const Color(0xff3B5998), width: 6),
-                                                        borderRadius: BorderRadius.circular(5000),
-                                                        // color: Colors.brown
-                                                      ),
-                                                      child: pickedFile != null
-                                                          ? Image.memory(
-                                                              pickedFile!,
-                                                              fit: BoxFit.cover,
-                                                              errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                                fit: BoxFit.cover,
-                                                                imageUrl: categoryFile.path,
-                                                                height: AddSize.size30,
-                                                                width: AddSize.size30,
-                                                                errorWidget: (_, __, ___) => const Icon(
-                                                                  Icons.person,
-                                                                  size: 60,
-                                                                ),
-                                                                placeholder: (_, __) => const SizedBox(),
-                                                              ),
-                                                            )
-                                                          : Image.network(
-                                                              fileUrl,
-                                                              fit: BoxFit.cover,
-                                                              errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                                fit: BoxFit.cover,
-                                                                imageUrl: categoryFile.path,
-                                                                height: AddSize.size30,
-                                                                width: AddSize.size30,
-                                                                errorWidget: (_, __, ___) => const Icon(
-                                                                  Icons.person,
-                                                                  size: 60,
-                                                                ),
-                                                                placeholder: (_, __) => const SizedBox(),
-                                                              ),
-                                                            )),
-                                                ),
-                                                Positioned(
-                                                  bottom: 0,
-                                                  right: 0,
-                                                  child: GestureDetector(
-                                                    behavior: HitTestBehavior.translucent,
-                                                    onTap: () {
-                                                      Helper.addFilePicker().then((value) {
-                                                        pickedFile = value;
-                                                        print(pickedFile);
-                                                        setState(() {});
-                                                      });
-                                                    },
-                                                    child: Container(
-                                                      height: 30,
-                                                      width: 30,
-                                                      clipBehavior: Clip.antiAlias,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(0xff04666E),
-                                                        borderRadius: BorderRadius.circular(50),
-                                                      ),
-                                                      child: const Icon(
-                                                        Icons.camera_alt,
-                                                        color: Colors.white,
-                                                        size: 15,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                          : Stack(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10000),
-                                                  child: Container(
-                                                      height: 100,
-                                                      width: 100,
-                                                      clipBehavior: Clip.antiAlias,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(0xffFAAF40),
-                                                        border: Border.all(color: const Color(0xff3B5998), width: 6),
-                                                        borderRadius: BorderRadius.circular(5000),
-                                                        // color: Colors.brown
-                                                      ),
-                                                      child: categoryFile.path.contains("http") || categoryFile.path.isEmpty
-                                                          ? Image.network(
-                                                              categoryFile.path,
-                                                              fit: BoxFit.cover,
-                                                              errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                                fit: BoxFit.cover,
-                                                                imageUrl: categoryFile.path,
-                                                                height: AddSize.size30,
-                                                                width: AddSize.size30,
-                                                                errorWidget: (_, __, ___) => const Icon(
-                                                                  Icons.person,
-                                                                  size: 60,
-                                                                ),
-                                                                placeholder: (_, __) => const SizedBox(),
-                                                              ),
-                                                            )
-                                                          : Image.memory(
-                                                              categoryFile.readAsBytesSync(),
-                                                              fit: BoxFit.cover,
-                                                              errorBuilder: (_, __, ___) => CachedNetworkImage(
-                                                                fit: BoxFit.cover,
-                                                                imageUrl: categoryFile.path,
-                                                                height: AddSize.size30,
-                                                                width: AddSize.size30,
-                                                                errorWidget: (_, __, ___) => const Icon(
-                                                                  Icons.person,
-                                                                  size: 60,
-                                                                ),
-                                                                placeholder: (_, __) => const SizedBox(),
-                                                              ),
-                                                            )),
-                                                ),
-                                                Positioned(
-                                                  bottom: 0,
-                                                  right: 0,
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      showActionSheet(context);
-                                                    },
-                                                    child: Container(
-                                                      height: 30,
-                                                      width: 30,
-                                                      clipBehavior: Clip.antiAlias,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(0xff04666E),
-                                                        borderRadius: BorderRadius.circular(50),
-                                                      ),
-                                                      child: const Icon(
-                                                        Icons.camera_alt,
-                                                        color: Colors.white,
-                                                        size: 15,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                    ),
-                                  ],
+                              Text(
+                                'Name',
+                                style:
+                                    GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RegisterTextFieldWidget(
+                                  controller: firstNameController,
+                                  validator: RequiredValidator(errorText: 'Please enter your name').call,
+                                  hint: "Name"),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Email",
+                                style:
+                                    GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RegisterTextFieldWidget(
+                                readOnly: true,
+                                controller: emailController,
+                                validator: MultiValidator([
+                                  RequiredValidator(errorText: 'Please enter your email'),
+                                  EmailValidator(errorText: 'Enter a valid email address'),
+                                ]).call,
+                                keyboardType: TextInputType.emailAddress,
+                                // textInputAction: TextInputAction.next,
+                                hint: "abc@gmail.com",
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Mobile Number".tr,
+                                style:
+                                    GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              IntlPhoneField(
+                                key: ValueKey(kk),
+                                cursorColor: Colors.black,
+                                dropdownIcon: const Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  color: Colors.black,
                                 ),
+                                validator: MultiValidator([
+                                  RequiredValidator(errorText: 'Please enter your phone number'.tr),
+                                ]).call,
+                                dropdownTextStyle: const TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
+                                flagsButtonPadding: const EdgeInsets.all(8),
+                                dropdownIconPosition: IconPosition.trailing,
+                                controller: mobileController,
+                                decoration: InputDecoration(
+                                    hintStyle: const TextStyle(
+                                      color: Color(0xFF384953),
+                                      fontSize: 14,
+                                      // fontFamily: 'poppins',
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                    hintText: 'Phone Number'.tr,
+                                    // labelStyle: TextStyle(color: Colors.black),
+                                    border: const OutlineInputBorder(
+                                      borderSide: BorderSide(),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953))),
+                                    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF384953)))),
+                                initialCountryCode: country,
+                                keyboardType: TextInputType.number,
+                                onCountryChanged: (phone) {
+                                  setState(() {
+                                    code = "+${phone.dialCode}";
+                                    country = phone.code;
+                                    log(phone.code.toString());
+                                    log(phone.dialCode.toString());
+                                  });
+                                },
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              CommonButtonBlue(
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    updateProfileToFirestore();
+                                  }
+                                },
+                                title: 'Save',
                               ),
                             ],
-                          ),
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              profileData.userName.toString(),
-                              style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              profileData.email.toString(),
-                              style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 12),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Name',
-                                  style: GoogleFonts.poppins(
-                                      color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                RegisterTextFieldWidget(
-                                    controller: firstNameController,
-                                    validator: RequiredValidator(errorText: 'Please enter your name').call,
-                                    hint: "Name"),
-                                // const SizedBox(
-                                //   height: 20,
-                                // ),
-                                // Text(
-                                //   "Last name",
-                                //   style: GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                // ),
-                                // const SizedBox(
-                                //   height: 10,
-                                // ),
-                                // RegisterTextFieldWidget(
-                                //     controller: lastNameController,
-                                //     validator: RequiredValidator(errorText: 'Please enter your Last name ').call,
-                                //     // keyboardType: TextInputType.number,
-                                //     // textInputAction: TextInputAction.next,
-                                //     hint: "Last name"),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  "Email",
-                                  style: GoogleFonts.poppins(
-                                      color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                RegisterTextFieldWidget(
-                                  readOnly: true,
-                                  controller: emailController,
-                                  validator: MultiValidator([
-                                    RequiredValidator(errorText: 'Please enter your email'),
-                                    EmailValidator(errorText: 'Enter a valid email address'),
-                                  ]).call,
-                                  keyboardType: TextInputType.emailAddress,
-                                  // textInputAction: TextInputAction.next,
-                                  hint: "abc@gmail.com",
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                // Text(
-                                //   "Mobile Number",
-                                //   style: GoogleFonts.poppins(
-                                //       color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
-                                // ),
-                                // const SizedBox(
-                                //   height: 10,
-                                // ),
-                                // RegisterTextFieldWidget(
-                                //     readOnly: true,
-                                //     controller: mobileController,
-                                //     validator: RequiredValidator(errorText: 'Please enter your mobile number ').call,
-                                //     keyboardType: TextInputType.number,
-                                //     // textInputAction: TextInputAction.next,
-                                //     hint: "Mobile number"),
-                                // const SizedBox(
-                                //   height: 20,
-                                // ),
-                                CommonButtonBlue(
-                                  onPressed: () {
-                                    if (formKey.currentState!.validate()) {
-                                      updateProfileToFirestore();
-                                    }
-                                  },
-                                  title: 'Save',
-                                ),
-                              ],
-                            ).appPaddingForScreen,
-                          ),
-                          const SizedBox(
-                            height: 80,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            )
-          : Center(
-              child: CircularProgressIndicator(),
+                          ).appPaddingForScreen,
+                        ),
+                        const SizedBox(
+                          height: 80,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
-    );
+          ),
+        ));
   }
 
   void showActionSheet(BuildContext context) {

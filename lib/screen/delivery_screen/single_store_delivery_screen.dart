@@ -102,9 +102,70 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
         reviewModel ??= [];
         reviewModel!.add(ReviewModel.fromJson(gg));
       }
+      averageRating = calculateAverageRating();
+      categoryPercentages = calculatePercentageByCategory();
       setState(() {});
     });
   }
+
+  double calculateAverageRating() {
+    if (reviewModel == null || reviewModel!.isEmpty) {
+      return 0.0;
+    }
+    double totalRating = 0;
+    for (var review in reviewModel!) {
+      totalRating += review.fullRating;
+    }
+
+    return totalRating / reviewModel!.length;
+  }
+
+  double averageRating = 0.0;
+
+
+  Map<String, double> calculatePercentageByCategory() {
+    if (reviewModel == null || reviewModel!.isEmpty) {
+      return {
+        'Excellent': 0.0,
+        'Good': 0.0,
+        'Average': 0.0,
+        'Below Average': 0.0,
+        'Poor': 0.0,
+      };
+    }
+    int excellentCount = 0;
+    int goodCount = 0;
+    int averageCount = 0;
+    int belowAverageCount = 0;
+    int poorCount = 0;
+
+    for (var review in reviewModel!) {
+      if (review.fullRating >= 4.5) {
+        excellentCount++;
+      } else if (review.fullRating >= 3.5) {
+        goodCount++;
+      } else if (review.fullRating >= 2.5) {
+        averageCount++;
+      } else if (review.fullRating >= 1.5) {
+        belowAverageCount++;
+      } else {
+        poorCount++;
+      }
+    }
+
+    int totalReviews = reviewModel!.length;
+    return {
+      'Excellent': excellentCount / totalReviews,
+      'Good': goodCount / totalReviews,
+      'Average': averageCount / totalReviews,
+      'Below Average': belowAverageCount / totalReviews,
+      'Poor': poorCount / totalReviews,
+    };
+  }
+
+  Map<String, double> categoryPercentages = {};
+
+
 
   Future updateVendor(int count, vendorId) async {
     await FirebaseFirestore.instance.collection("vendor_users").doc(vendorId).update({"order_count": ++count});
@@ -738,7 +799,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                 if (currentMenu == 2)
                                   if (reviewModel != null)
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
+                                      padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 10),
                                       child: Column(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -746,7 +807,9 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                             Text(
                                               "Review(${reviewModel!.length})",
                                               style: GoogleFonts.poppins(
-                                                  fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: const Color(0xFF1E2538)),
                                             ),
                                             const SizedBox(
                                               height: 10,
@@ -754,58 +817,70 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                             Text(
                                               "Overall Rating",
                                               style: GoogleFonts.poppins(
-                                                  fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF969AA3)),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: const Color(0xFF969AA3)),
                                             ),
                                             Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
+                                                padding: const EdgeInsets.symmetric(
+                                                    vertical: 15.0, horizontal: 10),
                                                 child: Column(children: [
-                                                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                                    const Text(
-                                                      '4.8',
-                                                      style: TextStyle(
-                                                        color: Color(0xFF1B233A),
-                                                        fontSize: 48,
-                                                        fontWeight: FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 20,
-                                                    ),
-                                                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                      RatingBar.builder(
-                                                        initialRating: 4,
-                                                        minRating: 1,
-                                                        unratedColor: const Color(0xFF698EDE).withOpacity(.2),
-                                                        itemCount: 5,
-                                                        itemSize: 16.0,
-                                                        itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                        updateOnDrag: true,
-                                                        itemBuilder: (context, index) => Image.asset(
-                                                          'assets/icons/star.png',
-                                                          color: const Color(0xff3B5998),
-                                                        ),
-                                                        onRatingUpdate: (ratingvalue) {
-                                                          setState(() {
-                                                            fullRating = ratingvalue;
-                                                          });
-                                                        },
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 8,
-                                                      ),
-                                                      Padding(
-                                                        padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                        child: Text(
-                                                          'based on ${reviewModel!.length} reviews',
-                                                          style: TextStyle(
-                                                            color: Color(0xFF969AA3),
-                                                            fontSize: 13,
-                                                            fontWeight: FontWeight.w400,
+                                                  Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          averageRating.toString(),
+                                                          style: const TextStyle(
+                                                            color: Color(0xFF1B233A),
+                                                            fontSize: 40,
+                                                            fontWeight: FontWeight.w600,
                                                           ),
                                                         ),
-                                                      ),
-                                                    ]),
-                                                  ]),
+                                                        const SizedBox(
+                                                          width: 20,
+                                                        ),
+                                                        Column(
+                                                            crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                            children: [
+                                                              RatingBar.builder(
+                                                                initialRating: averageRating,
+                                                                allowHalfRating: true,
+                                                                minRating: 1,
+                                                                unratedColor: const Color(0xFF698EDE)
+                                                                    .withOpacity(.2),
+                                                                itemCount: 5,
+                                                                itemSize: 16.0,
+                                                                itemPadding:
+                                                                const EdgeInsets.symmetric(
+                                                                    horizontal: 4.0),
+                                                                updateOnDrag: true,
+                                                                itemBuilder: (context, index) =>
+                                                                    Image.asset(
+                                                                      'assets/icons/star.png',
+                                                                      color: const Color(0xff3B5998),
+                                                                    ),
+                                                                onRatingUpdate: (ratingvalue) {
+                                                                  null;
+                                                                },
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 8,
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets.symmetric(
+                                                                    horizontal: 4.0),
+                                                                child: Text(
+                                                                  'based on ${reviewModel!.length} reviews',
+                                                                  style: const TextStyle(
+                                                                    color: Color(0xFF969AA3),
+                                                                    fontSize: 13,
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ]),
+                                                      ]),
                                                 ])),
                                             Column(children: [
                                               Row(
@@ -829,7 +904,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                       backgroundColor: const Color(0xFFE6F9ED),
                                                       animation: true,
                                                       progressColor: const Color(0xFF5DAF5E),
-                                                      percent: 0.9,
+                                                      percent: categoryPercentages['Excellent'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -859,7 +934,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                       backgroundColor: const Color(0xFFF2FFCF),
                                                       animation: true,
                                                       progressColor: const Color(0xFFA4D131),
-                                                      percent: 0.7,
+                                                      percent: categoryPercentages['Good'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -889,7 +964,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                       backgroundColor: const Color(0xFFF5FFDB),
                                                       animation: true,
                                                       progressColor: const Color(0xFFF7E742),
-                                                      percent: 0.6,
+                                                      percent:categoryPercentages['Average'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -919,7 +994,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                       backgroundColor: const Color(0xFFFFF5E5),
                                                       animation: true,
                                                       progressColor: const Color(0xFFF8B859),
-                                                      percent: 0.5,
+                                                      percent: categoryPercentages['Below Average'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -949,7 +1024,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                       backgroundColor: const Color(0xFFFFE9E4),
                                                       animation: true,
                                                       progressColor: const Color(0xFFEE3D1C),
-                                                      percent: 0.3,
+                                                      percent: categoryPercentages['Poor'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -979,7 +1054,8 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     children: [
                                                       Row(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment.spaceBetween,
                                                         children: [
                                                           ClipRRect(
                                                             borderRadius: BorderRadius.circular(20),
@@ -994,10 +1070,12 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                           ),
                                                           Expanded(
                                                             child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment.start,
                                                               children: [
                                                                 Padding(
-                                                                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                                                  padding: const EdgeInsets.symmetric(
+                                                                      horizontal: 5.0),
                                                                   child: Text(
                                                                     reviewList.userName.toString(),
                                                                     style: GoogleFonts.poppins(
@@ -1011,17 +1089,23 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                                   height: 6,
                                                                 ),
                                                                 RatingBar.builder(
-                                                                  initialRating: reviewList.fullRating,
+                                                                  initialRating:
+                                                                  reviewList.fullRating,
                                                                   minRating: 1,
-                                                                  unratedColor: const Color(0xff3B5998).withOpacity(.2),
+                                                                  unratedColor:
+                                                                  const Color(0xff3B5998)
+                                                                      .withOpacity(.2),
                                                                   itemCount: 5,
                                                                   itemSize: 16.0,
-                                                                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                                  itemPadding:
+                                                                  const EdgeInsets.symmetric(
+                                                                      horizontal: 4.0),
                                                                   updateOnDrag: true,
-                                                                  itemBuilder: (context, index) => Image.asset(
-                                                                    'assets/icons/star.png',
-                                                                    color: const Color(0xff3B5998),
-                                                                  ),
+                                                                  itemBuilder: (context, index) =>
+                                                                      Image.asset(
+                                                                        'assets/icons/star.png',
+                                                                        color: const Color(0xff3B5998),
+                                                                      ),
                                                                   onRatingUpdate: (ratingvalue) {
                                                                     null;
                                                                   },
@@ -1030,15 +1114,18 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                                   height: 8,
                                                                 ),
                                                                 Padding(
-                                                                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                                                  padding: const EdgeInsets.symmetric(
+                                                                      horizontal: 5.0),
                                                                   child: RichText(
                                                                     text: TextSpan(children: [
                                                                       TextSpan(
                                                                           text: reviewList.about,
                                                                           style: GoogleFonts.poppins(
-                                                                            color: const Color(0xFF969AA3),
+                                                                            color: const Color(
+                                                                                0xFF969AA3),
                                                                             fontSize: 14,
-                                                                            fontWeight: FontWeight.w300,
+                                                                            fontWeight:
+                                                                            FontWeight.w300,
                                                                           )),
                                                                       // TextSpan(
                                                                       //     text: 'read more',
@@ -1054,10 +1141,14 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                           ),
                                                           // const Spacer(),
                                                           Padding(
-                                                            padding: const EdgeInsets.symmetric(vertical: 3.0),
+                                                            padding: const EdgeInsets.symmetric(
+                                                                vertical: 3.0),
                                                             child: Text(
-                                                              DateFormat.yMMMd().format(DateTime.parse(
-                                                                  DateTime.fromMillisecondsSinceEpoch(int.parse(reviewList.time))
+                                                              DateFormat.yMMMd().format(
+                                                                  DateTime.parse(DateTime
+                                                                      .fromMillisecondsSinceEpoch(
+                                                                      int.parse(
+                                                                          reviewList.time))
                                                                       .toString())),
                                                               style: const TextStyle(
                                                                 color: Color(0xFF969AA3),
@@ -1073,9 +1164,10 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                       ),
                                                       index != 2
                                                           ? Divider(
-                                                              color: const Color(0xFF698EDE).withOpacity(.1),
-                                                              thickness: 2,
-                                                            )
+                                                        color: const Color(0xFF698EDE)
+                                                            .withOpacity(.1),
+                                                        thickness: 2,
+                                                      )
                                                           : const SizedBox(),
                                                       const SizedBox(
                                                         height: 12,
@@ -1083,7 +1175,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     ],
                                                   );
                                                 })
-                                          ]),
+                                          ])
                                     )
                               ],
                             )),

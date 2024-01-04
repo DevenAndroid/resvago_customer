@@ -88,6 +88,7 @@ class FirebaseService {
       dynamic offer,
       dynamic couponDiscount,
       dynamic total,
+      dynamic admin_commission,
       required Map<String, dynamic> restaurantInfo,
       required Map<String, dynamic> profileData,
       dynamic time}) async {
@@ -104,7 +105,8 @@ class FirebaseService {
         "order_type": "COD",
         "order_status": "Place Order",
         "fcm_token": fcm,
-        "total": total
+        "total": total,
+        "admin_commission": admin_commission
       });
       showToast("Order Placed Successfully");
     } catch (e) {

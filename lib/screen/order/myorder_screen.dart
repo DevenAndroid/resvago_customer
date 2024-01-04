@@ -43,6 +43,7 @@ class _MyOrderState extends State<MyOrder> {
         .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
+      log(jsonEncode(value.docs.first.data()));
       for (var element in value.docs) {
         var gg = element.data();
         myOrder ??= [];

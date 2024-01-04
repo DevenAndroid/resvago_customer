@@ -14,6 +14,7 @@ import 'package:resvago_customer/model/resturant_model.dart';
 import 'package:resvago_customer/model/wishListModel.dart';
 import 'package:resvago_customer/routers/routers.dart';
 import 'package:resvago_customer/screen/helper.dart';
+import 'package:resvago_customer/screen/review_rating_screen.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
 import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
@@ -303,78 +304,73 @@ class _HomePageState extends State<HomePage> {
             //     ),
             //   ),
             // ),
-            user != null ?
-            Badge(
-              label: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('checkOut')
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: Text(" 0 "));
-                  }
+            user != null
+                ? Badge(
+                    label: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('checkOut')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: Text(" 0 "));
+                        }
 
-                  if (snapshot.hasError) {
-                    return const Center(child: Text(" 0 "));
-                  }
+                        if (snapshot.hasError) {
+                          return const Center(child: Text(" 0 "));
+                        }
 
-                  if (!snapshot.hasData || !snapshot.data!.exists) {
-                    return const Center(child: Text(" 0 "));
-                  }
-
-                  // Access the menuList from the document snapshot
-                  List<dynamic> menuList = snapshot.data!['menuList'];
-
-                  // Now you can use the menuList as needed
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                    child: Text("${menuList.length.toString()}"),
-                  );
-                },
-              ),
-              backgroundColor: Colors.black,
-              padding: EdgeInsets.zero,
-              child: GestureDetector(
-                onTap: () {
-                  FirebaseAuth _auth = FirebaseAuth.instance;
-                  User? user = _auth.currentUser;
-                  if (user != null) {
-                    Get.toNamed(MyRouters.cartScreen);
-                  } else {
-                    Get.to(() => LoginScreen());
-                  }
-                  // Get.toNamed(MyRouters.cartScreen);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/images/shoppinbag.png',
-                    height: 30,
+                        if (!snapshot.hasData || !snapshot.data!.exists) {
+                          return const Center(child: Text(" 0 "));
+                        }
+                        List<dynamic> menuList = snapshot.data!['menuList'];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                          child: Text("${menuList.length.toString()}"),
+                        );
+                      },
+                    ),
+                    backgroundColor: Colors.black,
+                    padding: EdgeInsets.zero,
+                    child: GestureDetector(
+                      onTap: () {
+                        FirebaseAuth _auth = FirebaseAuth.instance;
+                        User? user = _auth.currentUser;
+                        if (user != null) {
+                          Get.toNamed(MyRouters.cartScreen);
+                        } else {
+                          Get.to(() => LoginScreen());
+                        }
+                        // Get.toNamed(MyRouters.cartScreen);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/images/shoppinbag.png',
+                          height: 30,
+                        ),
+                      ),
+                    ),
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      FirebaseAuth _auth = FirebaseAuth.instance;
+                      User? user = _auth.currentUser;
+                      if (user != null) {
+                        Get.toNamed(MyRouters.cartScreen);
+                      } else {
+                        Get.to(() => LoginScreen());
+                      }
+                      // Get.toNamed(MyRouters.cartScreen);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        'assets/images/shoppinbag.png',
+                        height: 30,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ):
-            GestureDetector(
-              onTap: () {
-                FirebaseAuth _auth = FirebaseAuth.instance;
-                User? user = _auth.currentUser;
-                if (user != null) {
-                  Get.toNamed(MyRouters.cartScreen);
-                } else {
-                  Get.to(() => LoginScreen());
-                }
-                // Get.toNamed(MyRouters.cartScreen);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  'assets/images/shoppinbag.png',
-                  height: 30,
-                ),
-              ),
-            ),
             GestureDetector(
               onTap: () {
                 FirebaseAuth _auth = FirebaseAuth.instance;
@@ -568,7 +564,7 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 10),
                 if (categoryList != null)
                   SizedBox(
-                    height: 80,
+                    height: 100,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: min(6, categoryList!.length),
@@ -577,16 +573,18 @@ class _HomePageState extends State<HomePage> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.to(() =>
-                                RestaurantByCategory(categoryName: categoryList![index].name.toString(), restaurantType: ""));
+                            Get.to(() => RestaurantByCategory(
+                                categoryName: categoryList![index].name.toString(), restaurantType: ""));
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: SizedBox(
-                              width: 60,
+                              width: 70,
                               child: Column(
                                 children: [
-                                  Expanded(
+                                  SizedBox(
+                                    height: 60,
+                                    width: 60,
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(100),
                                         child: CachedNetworkImage(
@@ -797,7 +795,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 if (categoryList != null)
                   SizedBox(
-                    height: 80,
+                    height: 100,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: min(6, categoryList!.length),
@@ -807,15 +805,17 @@ class _HomePageState extends State<HomePage> {
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
                             Get.to(() => RestaurantByCategory(
-                                categoryName: categoryList![index].name.toString(), restaurantType: "Delivery"));
+                                categoryName: categoryList![index].name.toString(), restaurantType: ""));
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: SizedBox(
-                              width: 60,
+                              width: 70,
                               child: Column(
                                 children: [
-                                  Expanded(
+                                  SizedBox(
+                                    height: 60,
+                                    width: 60,
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(100),
                                         child: CachedNetworkImage(
@@ -848,9 +848,17 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(
-                  '  Popular restaurants',
-                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(ReviewAndRatingScreen(
+                      orderId: '',
+                      vendorId: '',
+                    ));
+                  },
+                  child: Text(
+                    '  Popular restaurants',
+                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
+                  ),
                 ),
                 const SizedBox(
                   height: 10,

@@ -136,12 +136,17 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                   height: 390,
                   child: Stack(children: [
                     Hero(
-                      tag: widget.restaurantItem!.image,
+                      tag: widget.restaurantItem!.image.toString(),
                       child: Image.network(
                         widget.restaurantItem!.image.toString(),
                         width: size.width,
                         height: size.height * .20,
                         fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return Container(width: size.width,
+                              height: size.height * .20,child: const Icon(Icons.error,color: Colors.red,size: 20,));
+                        },
                       ),
                     ),
                     Positioned(
