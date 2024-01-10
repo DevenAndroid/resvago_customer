@@ -1310,6 +1310,7 @@ class _MyOrderState extends State<MyOrder> {
                                                 color: Color(0xffE8E8E8),
                                                 thickness: 1,
                                               ),
+                                              orderItem.restaurantInfo!.cancellation == true?
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
@@ -1347,7 +1348,7 @@ class _MyOrderState extends State<MyOrder> {
                                                     ),
                                                   ),
                                                 ],
-                                              ),
+                                              ):SizedBox(),
                                             ],
                                           )).appPaddingForScreen,
                                     );

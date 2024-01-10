@@ -8,6 +8,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import '../../model/resturant_model.dart';
 import '../../widget/addsize.dart';
+import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/custom_textfield.dart';
 import '../delivery_screen/single_store_delivery_screen.dart';
@@ -65,10 +66,10 @@ class _SerachListScreenState extends State<SerachListScreen> {
     if (query.isEmpty) {
       return menus; // Return all users if the search query is empty
     } else {
-      // Filter the users based on the search query
       return menus.where((menu) {
         if (menu.category is String) {
-          return menu.category.toLowerCase().contains(query.toLowerCase());
+          return menu.category.toLowerCase().contains(query.toLowerCase()) |
+              menu.restaurantName.toLowerCase().contains(query.toLowerCase());
         }
         return false;
       }).toList();
@@ -251,7 +252,10 @@ class _SerachListScreenState extends State<SerachListScreen> {
                                               borderRadius: BorderRadius.circular(50),
                                               child: CachedNetworkImage(
                                                 imageUrl: menuItem.image.toString(),
-                                                errorWidget: (_, __, ___) => const SizedBox(),
+                                                errorWidget: (_, __, ___) => Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Image.asset(AppAssets.storeIcon),
+                                                ),
                                                 placeholder: (_, __) => const SizedBox(),
                                                 fit: BoxFit.cover,
                                               ),
@@ -277,7 +281,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                             );
                           })
                       : Center(
-                          child: Text("No Menu Created".tr),
+                          child: Text("Restaurant not found".tr),
                         );
                 }
                 return const SizedBox.shrink();
@@ -323,7 +327,10 @@ class _SerachListScreenState extends State<SerachListScreen> {
                                               borderRadius: BorderRadius.circular(50),
                                               child: CachedNetworkImage(
                                                 imageUrl: menuItem.image.toString(),
-                                                errorWidget: (_, __, ___) => const SizedBox(),
+                                                errorWidget: (_, __, ___) => Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Image.asset(AppAssets.storeIcon),
+                                                ),
                                                 placeholder: (_, __) => const SizedBox(),
                                                 fit: BoxFit.cover,
                                               ),

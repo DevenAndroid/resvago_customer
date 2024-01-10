@@ -189,72 +189,102 @@ class MenuList {
 }
 
 class RestaurantInfo {
-  dynamic image;
-  dynamic aboutUs;
+  List<String>? restaurantImage;
+  List<String>? menuGalleryImages;
+
+  double get storeLat => double.tryParse(latitude.toString()) ?? 0;
+  double get storeLong => double.tryParse(longitude.toString()) ?? 0;
+
+  dynamic password;
   dynamic address;
+  dynamic latitude;
+  dynamic longitude;
+  dynamic restaurantName;
   dynamic docid;
   dynamic mobileNumber;
-  dynamic latitude;
-  dynamic userID;
-  dynamic password;
-  dynamic restaurantName;
   dynamic confirmPassword;
-  List<String>? restaurantImage;
-  List<String>? menuImage;
   dynamic category;
+  dynamic userID;
   dynamic email;
-  dynamic longitude;
+  dynamic aboutUs;
+  dynamic image;
+  dynamic preparationTime;
+  dynamic averageMealForMember;
+  dynamic setDelivery;
+  dynamic cancellation;
+  dynamic menuSelection;
+  dynamic order_count = 0;
 
-  RestaurantInfo(
-      {this.image,
-      this.aboutUs,
-      this.address,
-      this.docid,
-      this.mobileNumber,
-      this.latitude,
-      this.userID,
-      this.password,
-      this.restaurantImage,
-      this.restaurantName,
-      this.confirmPassword,
-      this.menuImage,
-      this.category,
-      this.email,
-      this.longitude});
+  RestaurantInfo({
+    this.restaurantImage,
+    this.menuGalleryImages,
+    this.password,
+    this.image,
+    this.address,
+    this.latitude,
+    this.longitude,
+    this.restaurantName,
+    this.docid,
+    this.mobileNumber,
+    this.confirmPassword,
+    this.category,
+    this.userID,
+    this.email,
+    this.aboutUs,
+    this.preparationTime,
+    this.averageMealForMember,
+    this.setDelivery,
+    this.cancellation,
+    this.menuSelection,
+    this.order_count,
+  });
 
-  RestaurantInfo.fromJson(Map<String, dynamic> json) {
-    image = json['image'];
-    aboutUs = json['aboutUs'];
-    address = json['address'];
-    docid = json['docid'];
-    mobileNumber = json['mobileNumber'];
-    latitude = json['latitude'];
-    userID = json['userID'];
+  RestaurantInfo.fromJson(Map<String, dynamic> json,) {
+    restaurantImage = json['restaurantImage'] != null ? json['restaurantImage'].cast<String>() : [];
+    menuGalleryImages = json['menuImage'] != null ? json['menuImage'].cast<String>() : [];
     password = json['password'];
-    restaurantImage = json['restaurantImage'].cast<String>();
-    menuImage = json['menuImage'].cast<String>();
-    restaurantName = json['restaurantName'];
-    category = json['category'];
-    email = json['email'];
+    image = json['image'];
+    address = json['address'];
+    latitude = json['latitude'];
     longitude = json['longitude'];
+    restaurantName = json['restaurantName'];
+    mobileNumber = json['mobileNumber'];
+    confirmPassword = json['confirmPassword'];
+    category = json['category'];
+    userID = json['userID'];
+    email = json['email'];
+    aboutUs = json['aboutUs'];
+    preparationTime = json['preparationTime'];
+    averageMealForMember = json['averageMealForMember'];
+    setDelivery = json['setDelivery'];
+    cancellation = json['cancellation'];
+    menuSelection = json['menuSelection'];
+    order_count = json['order_count'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['image'] = image;
-    data['aboutUs'] = aboutUs;
+    data['restaurantImage'] = restaurantImage;
+    data['menuImage'] = menuGalleryImages;
+    data['password'] = password;
     data['address'] = address;
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
+    data['restaurantName'] = restaurantName;
     data['docid'] = docid;
     data['mobileNumber'] = mobileNumber;
-    data['latitude'] = latitude;
-    data['userID'] = userID;
-    data['password'] = password;
-    data['restaurantImage'] = restaurantImage;
-    data['restaurantName'] = restaurantName;
-    data['menuImage'] = menuImage;
+    data['confirmPassword'] = confirmPassword;
     data['category'] = category;
+    data['userID'] = userID;
     data['email'] = email;
-    data['longitude'] = longitude;
+    data['aboutUs'] = aboutUs;
+    data['preparationTime'] = preparationTime;
+    data['averageMealForMember'] = averageMealForMember;
+    data['setDelivery'] = setDelivery;
+    data['cancellation'] = cancellation;
+    data['menuSelection'] = menuSelection;
+    data['order_count'] = order_count;
     return data;
   }
 }

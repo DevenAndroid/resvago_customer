@@ -26,6 +26,7 @@ import '../../firebase_service/firebase_service.dart';
 import '../../model/add_address_modal.dart';
 import '../../model/category_model.dart';
 import '../../model/profile_model.dart';
+import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../widget/custom_textfield.dart';
@@ -477,6 +478,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
         //toolbarHeight: 70,
       ),
       body: RefreshIndicator(
+        color: AppTheme.primaryColor,
         onRefresh: () async {
           await getRestaurantList();
           await getWishList();
@@ -730,9 +732,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                             child: CachedNetworkImage(
                                               imageUrl: restaurantListItem.image.toString(),
                                               fit: BoxFit.cover,
-                                              errorWidget: (_, __, ___) => Icon(
-                                                Icons.error,
-                                                color: Colors.red,
+                                              errorWidget: (_, __, ___) => Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Image.asset(AppAssets.storeIcon),
                                               ),
                                             )),
                                       ),
@@ -741,6 +743,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                           right: 0,
                                           child: LikeButtonWidget(
                                             restaurantModel: restaurantListItem,
+                                            restaurantType: "Delivery",
                                           )),
                                     ],
                                   ),
@@ -784,14 +787,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                         CalculateDistanceFromStoreWidget(
                                           latLng: LatLng(restaurantListItem.storeLat, restaurantListItem.storeLong),
                                         ),
-                                        // Text(
-                                        //   _calculateDistance(
-                                        //     lat1: restaurantListItem.latitude.toString(),
-                                        //     lon1: restaurantListItem.longitude.toString(),
-                                        //   ),
-                                        //   style: GoogleFonts.poppins(
-                                        //       fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff384953)),
-                                        // ),
                                         const SizedBox(
                                           width: 3,
                                         ),
@@ -949,9 +944,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                             child: CachedNetworkImage(
                                               imageUrl: restaurantListItem.image.toString(),
                                               fit: BoxFit.cover,
-                                              errorWidget: (_, __, ___) => Icon(
-                                                Icons.error,
-                                                color: Colors.red,
+                                              errorWidget: (_, __, ___) => Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Image.asset(AppAssets.storeIcon),
                                               ),
                                             )),
                                       ),
@@ -960,6 +955,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                           right: 0,
                                           child: LikeButtonWidget(
                                             restaurantModel: restaurantListItem,
+                                            restaurantType: "Delivery",
                                           )),
                                     ],
                                   ),

@@ -42,6 +42,7 @@ class SelectDateFlowScreen extends StatefulWidget {
 class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   RestaurantModel? get restaurantData => widget.restaurantItem;
   double kk = 0.0;
+  double result = 0.0;
   List<String> fields = [
     "Date",
     "Time",
@@ -333,6 +334,9 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                           itemCount: menuList!.length,
                           itemBuilder: (context, index) {
                             var menuListData = menuList![index];
+                            double? priceValue = double.tryParse(menuListData.price);
+                            double? discountValue = double.tryParse(menuListData.discount);
+                            result = priceValue! - (priceValue * discountValue!) / 100;
                             return Column(children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -386,10 +390,24 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                         const SizedBox(
                                           height: 3,
                                         ),
-                                        Text(
-                                          "\$${menuListData.price ?? "0"}",
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 14, fontWeight: FontWeight.w300, color: const Color(0xFF74848C)),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "\$${menuListData.price.toString()} ",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                decoration: TextDecoration.lineThrough,
+                                                color: const Color(0xFF8E9196),
+                                              ),
+                                            ),
+                                            Text(
+                                              "\$${result.toString()}",
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  // fontWeight: FontWeight.w400,
+                                                  color: const Color(0xFF1E2538)),
+                                            ),
+                                          ],
                                         ),
                                         const SizedBox(
                                           height: 10,
@@ -416,8 +434,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-                              if (menuList!.where((e) => e.isCheck == true).toList().isNotEmpty) {
-                                log("aaaaaaa-----${jsonEncode(menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList())}");
                                 dynamic discountValue = 0;
                                 if (couponData != null) {
                                   discountValue = couponData!.discount;
@@ -425,20 +441,33 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                 FirebaseAuth _auth = FirebaseAuth.instance;
                                 User? user = _auth.currentUser;
                                 if (user != null) {
-                                  Get.to(() => OderScreen(
-                                      discountValue: discountValue,
-                                      lunchSelected: lunchSelected,
-                                      slot: slot,
-                                      guest: guest,
-                                      date: today,
-                                      restaurantItem: widget.restaurantItem,
-                                      menuList: menuList!.where((e) => e.isCheck == true).toList()));
+                                  if (widget.restaurantItem!.menuSelection != true) {
+                                    Get.to(() => OderScreen(
+                                        discountValue: discountValue,
+                                        lunchSelected: lunchSelected,
+                                        slot: slot,
+                                        guest: guest,
+                                        date: today,
+                                        restaurantItem: widget.restaurantItem,
+                                        menuList: menuList!.where((e) => e.isCheck == true).toList()));
+                                  } else {
+                                    if (menuList!.where((e) => e.isCheck == true).toList().isNotEmpty) {
+                                      log("aaaaaaa-----${jsonEncode(menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList())}");
+                                      Get.to(() => OderScreen(
+                                          discountValue: discountValue,
+                                          lunchSelected: lunchSelected,
+                                          slot: slot,
+                                          guest: guest,
+                                          date: today,
+                                          restaurantItem: widget.restaurantItem,
+                                          menuList: menuList!.where((e) => e.isCheck == true).toList()));
+                                    } else {
+                                      showToast("Please select menu");
+                                    }
+                                  }
                                 } else {
                                   Get.to(() => LoginScreen());
                                 }
-                              } else {
-                                showToast("Please select menu");
-                              }
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.primaryColor,

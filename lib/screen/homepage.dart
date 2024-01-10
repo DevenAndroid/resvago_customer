@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:card_swiper/card_swiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -20,6 +19,7 @@ import 'package:resvago_customer/screen/single_store_screens/setting_for_restaur
 import 'package:resvago_customer/screen/single_store_screens/single_restaurants_screen.dart';
 import 'package:resvago_customer/screen/widgets/address_widget.dart';
 import 'package:resvago_customer/screen/widgets/calculate_distance.dart';
+import 'package:resvago_customer/widget/appassets.dart';
 import 'package:resvago_customer/widget/like_button.dart';
 import '../controller/bottomnavbar_controller.dart';
 import '../controller/location_controller.dart';
@@ -28,7 +28,6 @@ import '../controller/wishlist_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/add_address_modal.dart';
 import '../model/category_model.dart';
-import '../model/checkout_model.dart';
 import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'package:rxdart/rxdart.dart';
@@ -412,6 +411,7 @@ class _HomePageState extends State<HomePage> {
         //toolbarHeight: 70,
       ),
       body: RefreshIndicator(
+        color: AppTheme.primaryColor,
         onRefresh: () async {
           await getRestaurantList();
           await getWishList();
@@ -573,8 +573,8 @@ class _HomePageState extends State<HomePage> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.to(() => RestaurantByCategory(
-                                categoryName: categoryList![index].name.toString(), restaurantType: ""));
+                            Get.to(() =>
+                                RestaurantByCategory(categoryName: categoryList![index].name.toString(), restaurantType: ""));
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
@@ -663,9 +663,9 @@ class _HomePageState extends State<HomePage> {
                                               child: CachedNetworkImage(
                                                 imageUrl: restaurantListItem.image.toString(),
                                                 fit: BoxFit.cover,
-                                                errorWidget: (_, __, ___) => Icon(
-                                                  Icons.error,
-                                                  color: Colors.red,
+                                                errorWidget: (_, __, ___) => Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Image.asset(AppAssets.storeIcon),
                                                 ),
                                               )),
                                         ),
@@ -674,6 +674,7 @@ class _HomePageState extends State<HomePage> {
                                             right: 0,
                                             child: LikeButtonWidget(
                                               restaurantModel: restaurantListItem,
+                                              restaurantType: "Dining",
                                             )),
                                       ],
                                     ),
@@ -804,8 +805,8 @@ class _HomePageState extends State<HomePage> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.to(() => RestaurantByCategory(
-                                categoryName: categoryList![index].name.toString(), restaurantType: ""));
+                            Get.to(() =>
+                                RestaurantByCategory(categoryName: categoryList![index].name.toString(), restaurantType: ""));
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
@@ -904,9 +905,9 @@ class _HomePageState extends State<HomePage> {
                                                 child: CachedNetworkImage(
                                                   imageUrl: restaurantListItem.image.toString(),
                                                   fit: BoxFit.cover,
-                                                  errorWidget: (_, __, ___) => Icon(
-                                                    Icons.error,
-                                                    color: Colors.red,
+                                                  errorWidget: (_, __, ___) => Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Image.asset(AppAssets.storeIcon),
                                                   ),
                                                 ),
                                               )),
@@ -934,6 +935,7 @@ class _HomePageState extends State<HomePage> {
                                             right: 0,
                                             child: LikeButtonWidget(
                                               restaurantModel: restaurantListItem,
+                                              restaurantType: "Dining",
                                             )),
                                       ],
                                     ),

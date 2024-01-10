@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller/wishlist_controller.dart';
 import '../model/resturant_model.dart';
+import '../screen/login_screen.dart';
 
 class LikeButtonWidget extends StatefulWidget {
-  const LikeButtonWidget({super.key, required this.restaurantModel});
-
+   LikeButtonWidget({super.key, required this.restaurantModel,required this.restaurantType});
+  String restaurantType;
   final RestaurantModel restaurantModel;
 
   @override
@@ -19,6 +22,13 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
   final wishListController = Get.put(WishListController());
 
   bool get isInWishlist => wishListController.wishListRestaurants[info.docid] != null;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? user;
+  @override
+  void initState() {
+    super.initState();
+    user = _auth.currentUser;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +36,26 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
       if (wishListController.refreshInt.value > 0) {}
       return IconButton(
         onPressed: () {
-          if (isInWishlist) {
-            wishListController.removeFromWishList(docId: info.docid.toString());
+          if (user != null) {
+            if (isInWishlist) {
+              wishListController.removeFromWishList(docId: info.docid.toString());
+              FirebaseFirestore.instance
+                  .collection("wishlist")
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection("my_wishlist")
+                  .doc(info.docid.toString())
+                  .update({"wishlist": ""});
+            } else {
+              wishListController.addToWishList(restaurantInfo: info.toJson(), docId: info.docid.toString());
+              FirebaseFirestore.instance
+                  .collection("wishlist")
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection("my_wishlist")
+                  .doc(info.docid.toString())
+                  .update({"wishlist": widget.restaurantType});
+            }
           } else {
-            wishListController.addToWishList(restaurantInfo: info.toJson(), docId: info.docid.toString());
+            Get.to(() => LoginScreen());
           }
         },
         icon: Container(

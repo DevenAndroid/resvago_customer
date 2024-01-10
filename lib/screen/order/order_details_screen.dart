@@ -1,11 +1,16 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:resvago_customer/model/dinig_order.dart';
 import 'package:resvago_customer/screen/helper.dart';
+import 'package:screenshot/screenshot.dart';
 import '../../model/order_model.dart';
 import '../../widget/appassets.dart';
 import '../../widget/common_text_field.dart';
@@ -89,6 +94,8 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
       throw 'Could not open the map.';
     }
   }
+
+  ScreenshotController screenshotController = ScreenshotController();
 
   @override
   Widget build(BuildContext context) {
@@ -354,10 +361,6 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   ],
                                 ),
                               ),
-                              Image.asset(
-                                AppAssets.qr,
-                                height: 80,
-                              )
                             ],
                           ))),
                   Padding(
@@ -918,10 +921,29 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                       ],
                                     ),
                                   ),
-                                  Image.asset(
-                                    AppAssets.qr,
-                                    height: 80,
-                                  )
+                                  GestureDetector(
+                                    onTap: (){
+                                      screenshotController.capture().then((value) async {
+                                        final item = await getTemporaryDirectory();
+                                        File file = File(item.path+"/qrCode.png");
+                                        file.createSync();
+                                        file.writeAsBytes(value!.toList());
+                                        // File file = File.fromRawPath(value!);
+                                        OpenFilex.open(file.path);
+                                      });
+                                    },
+                                    child: Screenshot(
+                                      controller: screenshotController,
+                                      child: Container(
+                                        color: Colors.white,
+                                        child: QrImageView(
+                                          data: myOrderModel.orderId.toString(),
+                                          version: QrVersions.auto,
+                                          size: 100.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ))),
                       Padding(

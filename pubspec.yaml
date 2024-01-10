@@ -58,6 +58,7 @@ dependencies:
   percent_indicator: ^4.2.3
   google_maps_flutter: ^2.5.0
   google_places_flutter: ^2.0.6
+  flutter_google_places_hoc081098:
   table_calendar: ^3.0.9
   google_api_headers: ^2.0.3
   intl:
@@ -79,6 +80,12 @@ dependencies:
   webview_flutter: ^4.2.0
   carousel_slider: ^4.2.1
   flutter_animate: ^4.3.0
+  flutter_stripe: ^7.0.0
+  flutter_inappwebview: ^6.0.0
+  qr_flutter: ^4.1.0
+  screenshot: ^2.1.0
+  open_filex: ^4.3.4
+  path_provider: ^2.1.2
 #  flutter_google_places_hoc081098: ^1.2.0
 #  google_maps_webservice: ^0.0.19
   flutter_paypal:

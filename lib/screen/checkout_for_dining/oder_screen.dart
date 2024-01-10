@@ -153,7 +153,7 @@ class _OderScreenState extends State<OderScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     log(restaurantData!.toJson().toString());
-    log(menuListData!.toString());
+    log("jhkhkj"+menuListData!.toString());
     return Scaffold(
         appBar: backAppBar(
           title: "CheckOut",
@@ -334,7 +334,8 @@ class _OderScreenState extends State<OderScreen> {
                         ],
                       ),
                     )),
-                Padding(
+                  menuListData!.isNotEmpty ?
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                         width: size.width,
@@ -477,47 +478,7 @@ class _OderScreenState extends State<OderScreen> {
                                       ]),
                                     );
                                   }),
-                            ]))),
-                // Padding(
-                //     padding: const EdgeInsets.all(8.0),
-                //     child: Container(
-                //       width: size.width,
-                //       padding: const EdgeInsets.all(14),
-                //       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
-                //         BoxShadow(
-                //           color: const Color(0xFF37C666).withOpacity(0.10),
-                //           offset: const Offset(
-                //             1,
-                //             1,
-                //           ),
-                //           blurRadius: 20.0,
-                //           spreadRadius: 1.0,
-                //         ),
-                //       ]),
-                //       child: Row(
-                //           mainAxisAlignment: MainAxisAlignment.start,
-                //           crossAxisAlignment: CrossAxisAlignment.start,
-                //           children: [
-                //             Image.asset(
-                //               'assets/icons/discount.png',
-                //               height: 20,
-                //             ),
-                //             const SizedBox(
-                //               width: 13,
-                //             ),
-                //             Text(
-                //               ' Your Offer',
-                //               style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: AppTheme.primaryColor),
-                //             ),
-                //             const Spacer(),
-                //             Text(
-                //               'Applied',
-                //               style:
-                //                   GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: const Color(0xff34AD00)),
-                //             ),
-                //           ]),
-                //     )),
-
+                            ]))):SizedBox(),
                 InkWell(
                   onTap: () {
                     Get.to(() => PromoCodeList(

@@ -35,6 +35,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
   int currentDrawer = 0;
   int currentMenu = 0;
   int currentStep = 0;
+  double result = 0.0;
   DateTime today = DateTime.now();
   bool value = false;
 
@@ -67,9 +68,67 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
         reviewModel ??= [];
         reviewModel!.add(ReviewModel.fromJson(gg));
       }
+      averageRating = calculateAverageRating();
+      categoryPercentages = calculatePercentageByCategory();
       setState(() {});
     });
   }
+
+  double calculateAverageRating() {
+    if (reviewModel == null || reviewModel!.isEmpty) {
+      return 0.0;
+    }
+    double totalRating = 0;
+    for (var review in reviewModel!) {
+      totalRating += review.fullRating;
+    }
+
+    return totalRating / reviewModel!.length;
+  }
+
+  double averageRating = 0.0;
+
+  Map<String, double> calculatePercentageByCategory() {
+    if (reviewModel == null || reviewModel!.isEmpty) {
+      return {
+        'Excellent': 0.0,
+        'Good': 0.0,
+        'Average': 0.0,
+        'Below Average': 0.0,
+        'Poor': 0.0,
+      };
+    }
+    int excellentCount = 0;
+    int goodCount = 0;
+    int averageCount = 0;
+    int belowAverageCount = 0;
+    int poorCount = 0;
+
+    for (var review in reviewModel!) {
+      if (review.fullRating >= 4.5) {
+        excellentCount++;
+      } else if (review.fullRating >= 3.5) {
+        goodCount++;
+      } else if (review.fullRating >= 2.5) {
+        averageCount++;
+      } else if (review.fullRating >= 1.5) {
+        belowAverageCount++;
+      } else {
+        poorCount++;
+      }
+    }
+
+    int totalReviews = reviewModel!.length;
+    return {
+      'Excellent': excellentCount / totalReviews,
+      'Good': goodCount / totalReviews,
+      'Average': averageCount / totalReviews,
+      'Below Average': belowAverageCount / totalReviews,
+      'Poor': poorCount / totalReviews,
+    };
+  }
+
+  Map<String, double> categoryPercentages = {};
 
   @override
   void initState() {
@@ -142,10 +201,15 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                         width: size.width,
                         height: size.height * .20,
                         fit: BoxFit.cover,
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                          return Container(width: size.width,
-                              height: size.height * .20,child: const Icon(Icons.error,color: Colors.red,size: 20,));
+                        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                          return Container(
+                              width: size.width,
+                              height: size.height * .20,
+                              child: const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 20,
+                              ));
                         },
                       ),
                     ),
@@ -194,7 +258,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                     height: 10,
                                   ),
                                   Text(
-                                    "Layers of delicious restoring",
+                                    widget.restaurantItem!.restaurantName.toString(),
                                     style: GoogleFonts.poppins(
                                         fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xff1E2538)),
                                   ),
@@ -245,11 +309,6 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                       SettingDataScreen(
                                         docId: widget.restaurantItem!.docid.toString(),
                                       ),
-                                      // Text(
-                                      //   "Average price \$20",
-                                      //   style: GoogleFonts.poppins(
-                                      //       fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
-                                      // ),
                                       const Spacer(),
                                       Column(
                                         children: [
@@ -590,6 +649,9 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                               itemCount: menuList!.length,
                                               itemBuilder: (context, index) {
                                                 var menuListData = menuList![index];
+                                                double? priceValue = double.tryParse(menuListData.price);
+                                                double? discountValue = double.tryParse(menuListData.discount);
+                                                result = priceValue! - (priceValue * discountValue!) / 100;
                                                 return Column(children: [
                                                   const SizedBox(
                                                     height: 10,
@@ -677,12 +739,24 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       Column(
                                                         crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
-                                                          Text(
-                                                            "\$${menuListData.price.toString()}",
-                                                            style: GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                // fontWeight: FontWeight.w400,
-                                                                color: const Color(0xFF1E2538)),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                "\$${menuListData.price.toString()} ",
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  decoration: TextDecoration.lineThrough,
+                                                                  color: const Color(0xFF8E9196),
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                "\$${result.toString()}",
+                                                                style: GoogleFonts.poppins(
+                                                                    fontSize: 14,
+                                                                    // fontWeight: FontWeight.w400,
+                                                                    color: const Color(0xFF1E2538)),
+                                                              ),
+                                                            ],
                                                           ),
                                                           const SizedBox(
                                                             height: 5,
@@ -734,11 +808,11 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                 padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
                                                 child: Column(children: [
                                                   Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                                    const Text(
-                                                      '4.8',
-                                                      style: TextStyle(
+                                                    Text(
+                                                      averageRating.toStringAsFixed(2).toString(),
+                                                      style: const TextStyle(
                                                         color: Color(0xFF1B233A),
-                                                        fontSize: 48,
+                                                        fontSize: 40,
                                                         fontWeight: FontWeight.w600,
                                                       ),
                                                     ),
@@ -747,7 +821,8 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                     ),
                                                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                                       RatingBar.builder(
-                                                        initialRating: 4,
+                                                        initialRating: averageRating,
+                                                        allowHalfRating: true,
                                                         minRating: 1,
                                                         unratedColor: const Color(0xFF698EDE).withOpacity(.2),
                                                         itemCount: 5,
@@ -765,11 +840,11 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       const SizedBox(
                                                         height: 8,
                                                       ),
-                                                      const Padding(
-                                                        padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                         child: Text(
-                                                          'basad on 23 reviews',
-                                                          style: TextStyle(
+                                                          'based on ${reviewModel!.length} reviews',
+                                                          style: const TextStyle(
                                                             color: Color(0xFF969AA3),
                                                             fontSize: 13,
                                                             fontWeight: FontWeight.w400,
@@ -801,7 +876,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       backgroundColor: const Color(0xFFE6F9ED),
                                                       animation: true,
                                                       progressColor: const Color(0xFF5DAF5E),
-                                                      percent: 0.9,
+                                                      percent: categoryPercentages['Excellent'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -831,7 +906,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       backgroundColor: const Color(0xFFF2FFCF),
                                                       animation: true,
                                                       progressColor: const Color(0xFFA4D131),
-                                                      percent: 0.7,
+                                                      percent: categoryPercentages['Good'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -861,7 +936,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       backgroundColor: const Color(0xFFF5FFDB),
                                                       animation: true,
                                                       progressColor: const Color(0xFFF7E742),
-                                                      percent: 0.6,
+                                                      percent: categoryPercentages['Average'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -891,7 +966,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       backgroundColor: const Color(0xFFFFF5E5),
                                                       animation: true,
                                                       progressColor: const Color(0xFFF8B859),
-                                                      percent: 0.5,
+                                                      percent: categoryPercentages['Below Average'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -921,7 +996,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       backgroundColor: const Color(0xFFFFE9E4),
                                                       animation: true,
                                                       progressColor: const Color(0xFFEE3D1C),
-                                                      percent: 0.3,
+                                                      percent: categoryPercentages['Poor'] ?? 0.0,
                                                       animationDuration: 1200,
                                                     ),
                                                   ),
@@ -983,7 +1058,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                                   height: 6,
                                                                 ),
                                                                 RatingBar.builder(
-                                                                  initialRating: reviewList.fullRating,
+                                                                  initialRating: double.tryParse(reviewList.fullRating.toString())!,
                                                                   minRating: 1,
                                                                   unratedColor: const Color(0xff3B5998).withOpacity(.2),
                                                                   itemCount: 5,
@@ -1029,7 +1104,8 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                             padding: const EdgeInsets.symmetric(vertical: 3.0),
                                                             child: Text(
                                                               DateFormat.yMMMd().format(DateTime.parse(
-                                                                  DateTime.fromMillisecondsSinceEpoch(int.parse(reviewList.time))
+                                                                  DateTime.fromMillisecondsSinceEpoch(
+                                                                      int.parse(reviewList.time))
                                                                       .toString())),
                                                               style: const TextStyle(
                                                                 color: Color(0xFF969AA3),
@@ -1045,9 +1121,9 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       ),
                                                       index != 2
                                                           ? Divider(
-                                                              color: const Color(0xFF698EDE).withOpacity(.1),
-                                                              thickness: 2,
-                                                            )
+                                                        color: const Color(0xFF698EDE).withOpacity(.1),
+                                                        thickness: 2,
+                                                      )
                                                           : const SizedBox(),
                                                       const SizedBox(
                                                         height: 12,

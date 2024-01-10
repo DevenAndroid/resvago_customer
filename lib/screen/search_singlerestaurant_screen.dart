@@ -238,6 +238,7 @@ class _SearchRestaurantScreenState extends State<SearchRestaurantScreen> {
                                       right: 0,
                                       child: LikeButtonWidget(
                                         restaurantModel: categoryList[index],
+                                        restaurantType: "Delivery",
                                       )),
                                 ],
                               ),

@@ -145,9 +145,9 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                           return SizedBox(
                                             height: 150,
                                             width: double.maxFinite,
-                                            child: Icon(
-                                              Icons.error,
-                                              color: Colors.red,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Image.asset(AppAssets.storeIcon),
                                             ),
                                           );
                                         },
@@ -155,8 +155,12 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                       Positioned(
                                           top: 0,
                                           right: 0,
-                                          child: LikeButtonWidget(
+                                          child:widget.restaurantType == "Delivery" ?  LikeButtonWidget(
                                             restaurantModel: restaurantListItem,
+                                            restaurantType: 'Delivery',
+                                          ):LikeButtonWidget(
+                                            restaurantModel: restaurantListItem,
+                                            restaurantType: 'Dining',
                                           )),
                                     ]),
                                   ),
@@ -259,7 +263,8 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                               .fade(
                                 duration: Duration(milliseconds: 800),
                                 delay: Duration(milliseconds: (index + 1) * 100),
-                              ));
+                              )
+                      );
                     });
               })
           : const SizedBox.shrink(),

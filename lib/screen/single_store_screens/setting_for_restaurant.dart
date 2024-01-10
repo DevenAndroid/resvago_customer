@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,11 +24,16 @@ class _SettingDataScreenState extends State<SettingDataScreen> {
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
         if(snapshot.hasData && snapshot.data!.data() != null){
           SettingModel settingData = SettingModel.fromJson(snapshot.data!.data()!);
+          log("gfhfjfj"+settingData.averageMealForMember.toString());
             return InkWell(
               onTap: (){
                 Get.to(()=>RestaurantTimingScreenList(docId: widget.docId));
               },
-              child: Text(
+              child:settingData.averageMealForMember == "" || settingData.averageMealForMember==null ?  Text(
+                "Average Price",
+                style: GoogleFonts.poppins(
+                    fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+              ):Text(
               "Average Price \$${settingData.averageMealForMember ?? ""}",
                 style: GoogleFonts.poppins(
                     fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),

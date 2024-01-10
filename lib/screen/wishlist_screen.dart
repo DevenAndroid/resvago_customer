@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -94,6 +95,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                       right: 0,
                                       child: LikeButtonWidget(
                                         restaurantModel: restaurantListItem,
+                                        restaurantType: "Delivery",
                                       )),
                                 ]),
                               ),
@@ -149,14 +151,14 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                 child: Row(
                                   children: List.generate(
                                       kIsWeb ? 100 : 40,
-                                          (index) => Padding(
-                                        padding: const EdgeInsets.only(left: 2, right: 2),
-                                        child: Container(
-                                          color: Colors.grey[300],
-                                          height: 2,
-                                          width: 10,
-                                        ),
-                                      )),
+                                      (index) => Padding(
+                                            padding: const EdgeInsets.only(left: 2, right: 2),
+                                            child: Container(
+                                              color: Colors.grey[300],
+                                              height: 2,
+                                              width: 10,
+                                            ),
+                                          )),
                                 ),
                               ),
                               const SizedBox(
@@ -170,7 +172,19 @@ class _WishlistScreenState extends State<WishlistScreen> {
                             ],
                           ),
                         ).appPaddingForScreen,
-                      ),
+                      )
+                          .animate(
+                            key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
+                          )
+                          .slideY(
+                              duration: Duration(milliseconds: 600),
+                              delay: Duration(milliseconds: (index + 1) * 100),
+                              end: 0,
+                              begin: .50)
+                          .fade(
+                            duration: Duration(milliseconds: 800),
+                            delay: Duration(milliseconds: (index + 1) * 100),
+                          ),
                     );
                   })
               : Center(

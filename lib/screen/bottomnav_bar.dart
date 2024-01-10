@@ -8,14 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:resvago_customer/screen/delivery_screen.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import 'package:resvago_customer/screen/wishlist_screen.dart';
-
 import '../controller/bottomnavbar_controller.dart';
-
 import '../controller/profile_controller.dart';
 import '../model/profile_model.dart';
 import '../model/resturant_model.dart';

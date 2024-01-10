@@ -36,4 +36,5 @@ class AppAssets {
   static const String contact = "assets/images/contact.png";
   static const String details = "assets/images/details.png";
   static const String customerLocation = "assets/images/customerlocation.png";
+  static const String storeIcon = "assets/icons/resto_icon.png";
 }

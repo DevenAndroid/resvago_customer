@@ -45,7 +45,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
   int currentMenu = 0;
   int currentStep = 0;
   DateTime today = DateTime.now();
-
+  double result = 0.0;
   bool value = false;
 
   List<MenuData>? menuList;
@@ -122,7 +122,6 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
 
   double averageRating = 0.0;
 
-
   Map<String, double> calculatePercentageByCategory() {
     if (reviewModel == null || reviewModel!.isEmpty) {
       return {
@@ -164,8 +163,6 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
   }
 
   Map<String, double> categoryPercentages = {};
-
-
 
   Future updateVendor(int count, vendorId) async {
     await FirebaseFirestore.instance.collection("vendor_users").doc(vendorId).update({"order_count": ++count});
@@ -243,9 +240,9 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                           child: CachedNetworkImage(
                             imageUrl: widget.restaurantItem!.image.toString(),
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => Icon(
-                              Icons.error,
-                              color: Colors.red,
+                            errorWidget: (_, __, ___) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(AppAssets.storeIcon),
                             ),
                           )),
                     ),
@@ -607,6 +604,9 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 itemCount: menuList!.length,
                                                 itemBuilder: (context, index) {
                                                   var menuListData = menuList![index];
+                                                  double? priceValue = double.tryParse(menuListData.price);
+                                                  double? discountValue = double.tryParse(menuListData.discount);
+                                                  result = priceValue! - (priceValue * discountValue!) / 100;
                                                   return Column(children: [
                                                     const SizedBox(
                                                       height: 10,
@@ -758,12 +758,24 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                         Column(
                                                           crossAxisAlignment: CrossAxisAlignment.end,
                                                           children: [
-                                                            Text(
-                                                              "\$${menuListData.price.toString()}",
-                                                              style: GoogleFonts.poppins(
-                                                                  fontSize: 14,
-                                                                  // fontWeight: FontWeight.w400,
-                                                                  color: const Color(0xFF1E2538)),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  "\$${menuListData.price.toString()} ",
+                                                                  style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    decoration: TextDecoration.lineThrough,
+                                                                    color: const Color(0xFF8E9196),
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  "\$${result.toString()}",
+                                                                  style: GoogleFonts.poppins(
+                                                                      fontSize: 14,
+                                                                      // fontWeight: FontWeight.w400,
+                                                                      color: const Color(0xFF1E2538)),
+                                                                ),
+                                                              ],
                                                             ),
                                                             const SizedBox(
                                                               height: 5,
@@ -799,384 +811,352 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                 if (currentMenu == 2)
                                   if (reviewModel != null)
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 10),
-                                      child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Review(${reviewModel!.length})",
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: const Color(0xFF1E2538)),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Text(
-                                              "Overall Rating",
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: const Color(0xFF969AA3)),
-                                            ),
-                                            Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                    vertical: 15.0, horizontal: 10),
-                                                child: Column(children: [
-                                                  Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        Text(
-                                                          averageRating.toString(),
-                                                          style: const TextStyle(
-                                                            color: Color(0xFF1B233A),
-                                                            fontSize: 40,
-                                                            fontWeight: FontWeight.w600,
+                                        padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 10),
+                                        child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Review(${reviewModel!.length})",
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                "Overall Rating",
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF969AA3)),
+                                              ),
+                                              Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
+                                                  child: Column(children: [
+                                                    Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                                      Text(
+                                                        averageRating.toStringAsFixed(2).toString(),
+                                                        style: const TextStyle(
+                                                          color: Color(0xFF1B233A),
+                                                          fontSize: 40,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 20,
+                                                      ),
+                                                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                        RatingBar.builder(
+                                                          initialRating: averageRating,
+                                                          allowHalfRating: true,
+                                                          minRating: 1,
+                                                          unratedColor: const Color(0xFF698EDE).withOpacity(.2),
+                                                          itemCount: 5,
+                                                          itemSize: 16.0,
+                                                          itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                          updateOnDrag: true,
+                                                          itemBuilder: (context, index) => Image.asset(
+                                                            'assets/icons/star.png',
+                                                            color: const Color(0xff3B5998),
                                                           ),
+                                                          onRatingUpdate: (ratingvalue) {
+                                                            null;
+                                                          },
                                                         ),
                                                         const SizedBox(
-                                                          width: 20,
+                                                          height: 8,
                                                         ),
-                                                        Column(
-                                                            crossAxisAlignment:
-                                                            CrossAxisAlignment.start,
-                                                            children: [
-                                                              RatingBar.builder(
-                                                                initialRating: averageRating,
-                                                                allowHalfRating: true,
-                                                                minRating: 1,
-                                                                unratedColor: const Color(0xFF698EDE)
-                                                                    .withOpacity(.2),
-                                                                itemCount: 5,
-                                                                itemSize: 16.0,
-                                                                itemPadding:
-                                                                const EdgeInsets.symmetric(
-                                                                    horizontal: 4.0),
-                                                                updateOnDrag: true,
-                                                                itemBuilder: (context, index) =>
-                                                                    Image.asset(
+                                                        Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                          child: Text(
+                                                            'based on ${reviewModel!.length} reviews',
+                                                            style: const TextStyle(
+                                                              color: Color(0xFF969AA3),
+                                                              fontSize: 13,
+                                                              fontWeight: FontWeight.w400,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ]),
+                                                    ]),
+                                                  ])),
+                                              Column(children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    const Expanded(
+                                                      child: Text(
+                                                        'Excellent',
+                                                        style: TextStyle(
+                                                          color: Color(0xFF969AA3),
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 3,
+                                                      child: LinearPercentIndicator(
+                                                        lineHeight: 6.0,
+                                                        barRadius: const Radius.circular(16),
+                                                        backgroundColor: const Color(0xFFE6F9ED),
+                                                        animation: true,
+                                                        progressColor: const Color(0xFF5DAF5E),
+                                                        percent: categoryPercentages['Excellent'] ?? 0.0,
+                                                        animationDuration: 1200,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    const Expanded(
+                                                      child: Text(
+                                                        'Good',
+                                                        style: TextStyle(
+                                                          color: Color(0xFF969AA3),
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 3,
+                                                      child: LinearPercentIndicator(
+                                                        lineHeight: 6.0,
+                                                        barRadius: const Radius.circular(16),
+                                                        backgroundColor: const Color(0xFFF2FFCF),
+                                                        animation: true,
+                                                        progressColor: const Color(0xFFA4D131),
+                                                        percent: categoryPercentages['Good'] ?? 0.0,
+                                                        animationDuration: 1200,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    const Expanded(
+                                                      child: Text(
+                                                        'Average',
+                                                        style: TextStyle(
+                                                          color: Color(0xFF969AA3),
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 3,
+                                                      child: LinearPercentIndicator(
+                                                        lineHeight: 6.0,
+                                                        barRadius: const Radius.circular(16),
+                                                        backgroundColor: const Color(0xFFF5FFDB),
+                                                        animation: true,
+                                                        progressColor: const Color(0xFFF7E742),
+                                                        percent: categoryPercentages['Average'] ?? 0.0,
+                                                        animationDuration: 1200,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    const Expanded(
+                                                      child: Text(
+                                                        'Below Average',
+                                                        style: TextStyle(
+                                                          color: Color(0xFF969AA3),
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 3,
+                                                      child: LinearPercentIndicator(
+                                                        lineHeight: 6.0,
+                                                        barRadius: const Radius.circular(16),
+                                                        backgroundColor: const Color(0xFFFFF5E5),
+                                                        animation: true,
+                                                        progressColor: const Color(0xFFF8B859),
+                                                        percent: categoryPercentages['Below Average'] ?? 0.0,
+                                                        animationDuration: 1200,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    const Expanded(
+                                                      child: Text(
+                                                        'Poor',
+                                                        style: TextStyle(
+                                                          color: Color(0xFF969AA3),
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 3,
+                                                      child: LinearPercentIndicator(
+                                                        lineHeight: 6.0,
+                                                        barRadius: const Radius.circular(16),
+                                                        backgroundColor: const Color(0xFFFFE9E4),
+                                                        animation: true,
+                                                        progressColor: const Color(0xFFEE3D1C),
+                                                        percent: categoryPercentages['Poor'] ?? 0.0,
+                                                        animationDuration: 1200,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ]),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Divider(
+                                                color: const Color(0xFF698EDE).withOpacity(.1),
+                                                thickness: 2,
+                                              ),
+                                              const SizedBox(
+                                                height: 8,
+                                              ),
+                                              ListView.builder(
+                                                  shrinkWrap: true,
+                                                  itemCount: reviewModel!.length,
+                                                  physics: const NeverScrollableScrollPhysics(),
+                                                  itemBuilder: (context, index) {
+                                                    var reviewList = reviewModel![index];
+                                                    return Column(
+                                                      children: [
+                                                        Row(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            ClipRRect(
+                                                              borderRadius: BorderRadius.circular(20),
+                                                              child: const SizedBox(
+                                                                height: 40,
+                                                                width: 40,
+                                                                child: Icon(Icons.person),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 20,
+                                                            ),
+                                                            Expanded(
+                                                              child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                                                    child: Text(
+                                                                      reviewList.userName.toString(),
+                                                                      style: GoogleFonts.poppins(
+                                                                        color: const Color(0xFF1B233A),
+                                                                        fontSize: 16,
+                                                                        fontWeight: FontWeight.w600,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 6,
+                                                                  ),
+                                                                  RatingBar.builder(
+                                                                    initialRating: double.tryParse(reviewList.fullRating.toString())!,
+                                                                    minRating: 1,
+                                                                    unratedColor: const Color(0xff3B5998).withOpacity(.2),
+                                                                    itemCount: 5,
+                                                                    itemSize: 16.0,
+                                                                    itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                                    updateOnDrag: true,
+                                                                    itemBuilder: (context, index) => Image.asset(
                                                                       'assets/icons/star.png',
                                                                       color: const Color(0xff3B5998),
                                                                     ),
-                                                                onRatingUpdate: (ratingvalue) {
-                                                                  null;
-                                                                },
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 8,
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets.symmetric(
-                                                                    horizontal: 4.0),
-                                                                child: Text(
-                                                                  'based on ${reviewModel!.length} reviews',
-                                                                  style: const TextStyle(
-                                                                    color: Color(0xFF969AA3),
-                                                                    fontSize: 13,
-                                                                    fontWeight: FontWeight.w400,
+                                                                    onRatingUpdate: (ratingvalue) {
+                                                                      null;
+                                                                    },
                                                                   ),
-                                                                ),
-                                                              ),
-                                                            ]),
-                                                      ]),
-                                                ])),
-                                            Column(children: [
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  const Expanded(
-                                                    child: Text(
-                                                      'Excellent',
-                                                      style: TextStyle(
-                                                        color: Color(0xFF969AA3),
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: LinearPercentIndicator(
-                                                      lineHeight: 6.0,
-                                                      barRadius: const Radius.circular(16),
-                                                      backgroundColor: const Color(0xFFE6F9ED),
-                                                      animation: true,
-                                                      progressColor: const Color(0xFF5DAF5E),
-                                                      percent: categoryPercentages['Excellent'] ?? 0.0,
-                                                      animationDuration: 1200,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: [
-                                                  const Expanded(
-                                                    child: Text(
-                                                      'Good',
-                                                      style: TextStyle(
-                                                        color: Color(0xFF969AA3),
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: LinearPercentIndicator(
-                                                      lineHeight: 6.0,
-                                                      barRadius: const Radius.circular(16),
-                                                      backgroundColor: const Color(0xFFF2FFCF),
-                                                      animation: true,
-                                                      progressColor: const Color(0xFFA4D131),
-                                                      percent: categoryPercentages['Good'] ?? 0.0,
-                                                      animationDuration: 1200,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  const Expanded(
-                                                    child: Text(
-                                                      'Average',
-                                                      style: TextStyle(
-                                                        color: Color(0xFF969AA3),
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: LinearPercentIndicator(
-                                                      lineHeight: 6.0,
-                                                      barRadius: const Radius.circular(16),
-                                                      backgroundColor: const Color(0xFFF5FFDB),
-                                                      animation: true,
-                                                      progressColor: const Color(0xFFF7E742),
-                                                      percent:categoryPercentages['Average'] ?? 0.0,
-                                                      animationDuration: 1200,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  const Expanded(
-                                                    child: Text(
-                                                      'Below Average',
-                                                      style: TextStyle(
-                                                        color: Color(0xFF969AA3),
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: LinearPercentIndicator(
-                                                      lineHeight: 6.0,
-                                                      barRadius: const Radius.circular(16),
-                                                      backgroundColor: const Color(0xFFFFF5E5),
-                                                      animation: true,
-                                                      progressColor: const Color(0xFFF8B859),
-                                                      percent: categoryPercentages['Below Average'] ?? 0.0,
-                                                      animationDuration: 1200,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  const Expanded(
-                                                    child: Text(
-                                                      'Poor',
-                                                      style: TextStyle(
-                                                        color: Color(0xFF969AA3),
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: LinearPercentIndicator(
-                                                      lineHeight: 6.0,
-                                                      barRadius: const Radius.circular(16),
-                                                      backgroundColor: const Color(0xFFFFE9E4),
-                                                      animation: true,
-                                                      progressColor: const Color(0xFFEE3D1C),
-                                                      percent: categoryPercentages['Poor'] ?? 0.0,
-                                                      animationDuration: 1200,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                ],
-                                              ),
-                                            ]),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Divider(
-                                              color: const Color(0xFF698EDE).withOpacity(.1),
-                                              thickness: 2,
-                                            ),
-                                            const SizedBox(
-                                              height: 8,
-                                            ),
-                                            ListView.builder(
-                                                shrinkWrap: true,
-                                                itemCount: reviewModel!.length,
-                                                physics: const NeverScrollableScrollPhysics(),
-                                                itemBuilder: (context, index) {
-                                                  var reviewList = reviewModel![index];
-                                                  return Column(
-                                                    children: [
-                                                      Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          ClipRRect(
-                                                            borderRadius: BorderRadius.circular(20),
-                                                            child: const SizedBox(
-                                                              height: 40,
-                                                              width: 40,
-                                                              child: Icon(Icons.person),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 20,
-                                                          ),
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                              CrossAxisAlignment.start,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets.symmetric(
-                                                                      horizontal: 5.0),
-                                                                  child: Text(
-                                                                    reviewList.userName.toString(),
-                                                                    style: GoogleFonts.poppins(
-                                                                      color: const Color(0xFF1B233A),
-                                                                      fontSize: 16,
-                                                                      fontWeight: FontWeight.w600,
+                                                                  const SizedBox(
+                                                                    height: 8,
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                                                    child: RichText(
+                                                                      text: TextSpan(children: [
+                                                                        TextSpan(
+                                                                            text: reviewList.about,
+                                                                            style: GoogleFonts.poppins(
+                                                                              color: const Color(0xFF969AA3),
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.w300,
+                                                                            )),
+                                                                        // TextSpan(
+                                                                        //     text: 'read more',
+                                                                        //     style: GoogleFonts.poppins(
+                                                                        //         fontSize: 14,
+                                                                        //         fontWeight: FontWeight.w400,
+                                                                        //         color: const Color(0xFF567DF4)))
+                                                                      ]),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                                const SizedBox(
-                                                                  height: 6,
-                                                                ),
-                                                                RatingBar.builder(
-                                                                  initialRating:
-                                                                  reviewList.fullRating,
-                                                                  minRating: 1,
-                                                                  unratedColor:
-                                                                  const Color(0xff3B5998)
-                                                                      .withOpacity(.2),
-                                                                  itemCount: 5,
-                                                                  itemSize: 16.0,
-                                                                  itemPadding:
-                                                                  const EdgeInsets.symmetric(
-                                                                      horizontal: 4.0),
-                                                                  updateOnDrag: true,
-                                                                  itemBuilder: (context, index) =>
-                                                                      Image.asset(
-                                                                        'assets/icons/star.png',
-                                                                        color: const Color(0xff3B5998),
-                                                                      ),
-                                                                  onRatingUpdate: (ratingvalue) {
-                                                                    null;
-                                                                  },
-                                                                ),
-                                                                const SizedBox(
-                                                                  height: 8,
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.symmetric(
-                                                                      horizontal: 5.0),
-                                                                  child: RichText(
-                                                                    text: TextSpan(children: [
-                                                                      TextSpan(
-                                                                          text: reviewList.about,
-                                                                          style: GoogleFonts.poppins(
-                                                                            color: const Color(
-                                                                                0xFF969AA3),
-                                                                            fontSize: 14,
-                                                                            fontWeight:
-                                                                            FontWeight.w300,
-                                                                          )),
-                                                                      // TextSpan(
-                                                                      //     text: 'read more',
-                                                                      //     style: GoogleFonts.poppins(
-                                                                      //         fontSize: 14,
-                                                                      //         fontWeight: FontWeight.w400,
-                                                                      //         color: const Color(0xFF567DF4)))
-                                                                    ]),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          // const Spacer(),
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(
-                                                                vertical: 3.0),
-                                                            child: Text(
-                                                              DateFormat.yMMMd().format(
-                                                                  DateTime.parse(DateTime
-                                                                      .fromMillisecondsSinceEpoch(
-                                                                      int.parse(
-                                                                          reviewList.time))
-                                                                      .toString())),
-                                                              style: const TextStyle(
-                                                                color: Color(0xFF969AA3),
-                                                                fontSize: 12,
-                                                                fontWeight: FontWeight.w400,
+                                                                ],
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      index != 2
-                                                          ? Divider(
-                                                        color: const Color(0xFF698EDE)
-                                                            .withOpacity(.1),
-                                                        thickness: 2,
-                                                      )
-                                                          : const SizedBox(),
-                                                      const SizedBox(
-                                                        height: 12,
-                                                      ),
-                                                    ],
-                                                  );
-                                                })
-                                          ])
-                                    )
+                                                            // const Spacer(),
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(vertical: 3.0),
+                                                              child: Text(
+                                                                DateFormat.yMMMd().format(DateTime.parse(
+                                                                    DateTime.fromMillisecondsSinceEpoch(
+                                                                            int.parse(reviewList.time))
+                                                                        .toString())),
+                                                                style: const TextStyle(
+                                                                  color: Color(0xFF969AA3),
+                                                                  fontSize: 12,
+                                                                  fontWeight: FontWeight.w400,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        index != 2
+                                                            ? Divider(
+                                                                color: const Color(0xFF698EDE).withOpacity(.1),
+                                                                thickness: 2,
+                                                              )
+                                                            : const SizedBox(),
+                                                        const SizedBox(
+                                                          height: 12,
+                                                        ),
+                                                      ],
+                                                    );
+                                                  })
+                                            ]))
                               ],
                             )),
                       ),
