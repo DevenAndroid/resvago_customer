@@ -1050,22 +1050,3 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Widget drawerTile({required bool active, required String title, required ImageIcon icon, required VoidCallback onTap}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-    child: ListTile(
-      selectedTileColor: AppTheme.primaryColor,
-      leading: icon,
-      minLeadingWidth: 25,
-      title: Text(
-        title,
-        style: GoogleFonts.poppins(
-          fontSize: 14,
-          color: AppTheme.drawerColor,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-      onTap: active ? onTap : null,
-    ),
-  );
-}

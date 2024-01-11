@@ -26,11 +26,11 @@ class FirebaseService {
       DocumentReference.set({
         "userName": userName,
         "email": email,
-        "docid": docid,
+        "docid": FirebaseAuth.instance.currentUser!.uid,
         "mobileNumber": mobileNumber,
         "userID": mobileNumber,
         "profile_image": "",
-        "password": "123456",
+        "password": password,
         "deactivate": false,
       }).then((value) {});
     } catch (e) {
@@ -117,6 +117,7 @@ class FirebaseService {
   Future manageOrderForDining(
       {required String orderId,
       dynamic vendorId,
+      dynamic orderType,
       dynamic fcm,
       dynamic address,
       dynamic date,
@@ -183,7 +184,7 @@ class FirebaseService {
         "slot": slot,
         "guest": guest,
         "offer": "20%",
-        "order_type": "COD",
+        "order_type": orderType,
         "order_status": "Place Order",
         "fcm_token": fcm,
         "total": total

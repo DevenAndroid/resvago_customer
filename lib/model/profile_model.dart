@@ -9,6 +9,8 @@ class ProfileData {
   dynamic deactivate;
   dynamic code;
   dynamic country;
+  dynamic password;
+  dynamic twoStepVerification;
 
   ProfileData({
     this.userName,
@@ -21,6 +23,8 @@ class ProfileData {
     this.deactivate,
     this.code,
     this.country,
+    this.password,
+    this.twoStepVerification,
   });
 
   ProfileData.fromJson(Map<String, dynamic> json) {
@@ -33,6 +37,8 @@ class ProfileData {
     deactivate = json['deactivate'];
     code = json['code'];
     country = json['country'];
+    password = json['password'];
+    twoStepVerification = json['twoStepVerification'];
     profile_image = json['profile_image'] ?? "";
   }
 
@@ -48,6 +54,8 @@ class ProfileData {
     data['profile_image'] = profile_image;
     data['code'] = code;
     data['country'] = country;
+    data['twoStepVerification'] = twoStepVerification;
+    data['password'] = password;
     return data;
   }
 }

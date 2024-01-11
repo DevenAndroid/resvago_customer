@@ -795,6 +795,22 @@ class _CartScreenState extends State<CartScreen> {
                                     .collection("checkOut")
                                     .doc(FirebaseAuth.instance.currentUser!.uid)
                                     .delete();
+                                FirebaseFirestore.instance.collection("send_mail").add({
+                                  "to": "${profileData!.email}",
+                                  "message": {
+                                    "subject": "This is a basic email",
+                                    "html": "Your order has been created",
+                                    "text": "asdfgwefddfgwefwn",
+                                  }
+                                });
+                                FirebaseFirestore.instance.collection("send_mail").add({
+                                  "to": "${cartModel.restaurantInfo!.email}",
+                                  "message": {
+                                    "subject": "This is a basic email",
+                                    "html": "Your order has been created",
+                                    "text": "asdfgwefddfgwefwn",
+                                  }
+                                });
                                 Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
                               });
                               // try {
@@ -866,6 +882,22 @@ class _CartScreenState extends State<CartScreen> {
                                               .collection("checkOut")
                                               .doc(FirebaseAuth.instance.currentUser!.uid)
                                               .delete();
+                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                            "to": "${profileData!.email}",
+                                            "message": {
+                                              "subject": "This is a basic email",
+                                              "html": "Your order has been created",
+                                              "text": "asdfgwefddfgwefwn",
+                                            }
+                                          });
+                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                            "to": "${cartModel.restaurantInfo!.email}",
+                                            "message": {
+                                              "subject": "This is a basic email",
+                                              "html": "Your order has been created",
+                                              "text": "asdfgwefddfgwefwn",
+                                            }
+                                          });
                                           Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
                                         });
                                       },

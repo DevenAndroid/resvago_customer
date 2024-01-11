@@ -1,14 +1,13 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import '../controller/logn_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../routers/routers.dart';
@@ -30,28 +29,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   late GeoFlutterFire geo;
   String code = "+353";
   String verificationId = "";
   bool value = false;
+  bool passwordSecure = false;
   bool showValidation = false;
   FirebaseService firebaseService = FirebaseService();
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: "123456");
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
     if (FirebaseAuth.instance.currentUser != null) {
       await firebaseService
           .manageRegisterUsers(
               userName: userNameController.text.trim(),
               email: emailController.text.trim(),
-              // mobileNumber: code + phoneNumberController.text.trim(),
-              password: "123456")
+              password: passwordController.text.trim())
           .then((value) async {
         Helper.hideLoader(loader);
-        // await FirebaseAuth.instance.signOut();
+        if (!kIsWeb) {
+          Fluttertoast.showToast(msg: 'User created successfully');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("User created successfully"),
+          ));
+        }
         Get.toNamed(MyRouters.loginScreen);
       });
     }
@@ -59,20 +65,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void checkEmailInFirestore() async {
     final QuerySnapshot result =
-        await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
+        await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Email already exits');
       return;
     }
-    // final QuerySnapshot phoneResult = await FirebaseFirestore.instance
-    //     .collection('customer_users')
-    //     .where('mobileNumber', isEqualTo: code + phoneNumberController.text.trim())
-    //     .get();
-    //
-    // if (phoneResult.docs.isNotEmpty) {
-    //   Fluttertoast.showToast(msg: 'Mobile Number already exits');
-    //   return;
-    // }
     addUserToFirestore();
   }
 
@@ -84,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Container(
               decoration: const BoxDecoration(
                   image: DecorationImage(
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                       image: AssetImage(
                         "assets/images/login.png",
                       ))),
@@ -156,6 +153,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 EmailValidator(errorText: "Valid Email is required"),
                                 RequiredValidator(errorText: "Email is required")
                               ]).call),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            'Enter Password',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          CommonTextFieldWidget(
+                              obscureText: passwordSecure,
+                              controller: passwordController,
+                              textInputAction: TextInputAction.next,
+                              hint: 'Enter your password',
+                              keyboardType: TextInputType.text,
+                              suffix: GestureDetector(
+                                  onTap: () {
+                                    passwordSecure = !passwordSecure;
+                                    setState(() {});
+                                  },
+                                  child: Icon(
+                                    passwordSecure ? Icons.visibility : Icons.visibility_off,
+                                    size: 20,
+                                    color: Colors.white,
+                                  )),
+                              validator: MultiValidator([
+                                RequiredValidator(
+                                    errorText: 'Please enter your password'),
+                                MinLengthValidator(8,
+                                    errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                                PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
+                                    errorText: "Password must be at least with 1 special character & 1 numerical"),
+                              ])
+                          ),
                           const SizedBox(
                             height: 15,
                           ),

@@ -64,7 +64,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
         .where("orderId", isEqualTo: widget.orderId.toString())
         .get()
         .then((value) {
-      myDiningOrderModel = MyDiningOrderModel.fromJson(value.docs.first.data(),value.docs.first.id);
+      myDiningOrderModel = MyDiningOrderModel.fromJson(value.docs.first.data(), value.docs.first.id);
       setState(() {});
     });
   }
@@ -922,10 +922,10 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       screenshotController.capture().then((value) async {
                                         final item = await getTemporaryDirectory();
-                                        File file = File(item.path+"/qrCode.png");
+                                        File file = File(item.path + "/qrCode.png");
                                         file.createSync();
                                         file.writeAsBytes(value!.toList());
                                         // File file = File.fromRawPath(value!);
@@ -937,7 +937,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                       child: Container(
                                         color: Colors.white,
                                         child: QrImageView(
-                                          data: myOrderModel.orderId.toString(),
+                                          data: myDiningOrderModel!.orderId.toString(),
                                           version: QrVersions.auto,
                                           size: 100.0,
                                         ),

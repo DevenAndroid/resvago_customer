@@ -8,9 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/screen/change_password.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/homepage.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
+import 'package:resvago_customer/screen/setting_screen.dart';
 import 'package:resvago_customer/screen/wishlist_screen.dart';
 import '../controller/bottomnavbar_controller.dart';
 import '../controller/profile_controller.dart';
@@ -74,6 +76,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
       });
     }
   }
+
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
   @override
@@ -86,7 +89,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
       profileController.getProfileData();
     }
   }
-   RestaurantModel? restaurantModel;
+
+  RestaurantModel? restaurantModel;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -104,7 +108,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    height: size.height * 0.30,
+                    height: kIsWeb ? 250 : size.height * 0.30,
                     width: size.width,
                     color: AppTheme.primaryColor,
                     child: Column(
@@ -134,7 +138,9 @@ class _BottomNavbarState extends State<BottomNavbar> {
                                     if (profileController.refreshInt.value > 0) {}
                                     return CachedNetworkImage(
                                       fit: BoxFit.cover,
-                                      imageUrl: profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
+                                      imageUrl: profileController.profileData != null
+                                          ? profileController.profileData!.profile_image.toString()
+                                          : "",
                                       errorWidget: (_, __, ___) => const Icon(Icons.person),
                                       placeholder: (_, __) => const SizedBox(),
                                     );
@@ -246,11 +252,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       drawerTile(
                           active: true,
                           title: "My Wishlist".tr,
-                          icon: const ImageIcon(
-                            AssetImage(AppAssets.myAddress),
-                            size: 22,
-                            color: AppTheme.drawerColor,
-                          ),
+                          icon: Icon(Icons.favorite_border_rounded),
                           onTap: () {
                             FirebaseAuth _auth = FirebaseAuth.instance;
                             User? user = _auth.currentUser;
@@ -299,19 +301,57 @@ class _BottomNavbarState extends State<BottomNavbar> {
                         height: 5,
                         color: Color(0xffF2F2F2),
                       ),
-                      if(user != null)
                       drawerTile(
                           active: true,
-                          title: "Logout".tr,
-                          icon: const ImageIcon(
-                            AssetImage(AppAssets.logOut),
-                            size: 22,
-                            color: AppTheme.drawerColor,
-                          ),
-                          onTap: () async {
-                            await FirebaseAuth.instance.signOut();
-                            Get.offAll(const LoginScreen());
+                          title: "Setting".tr,
+                          icon: Icon(Icons.settings),
+                          onTap: () {
+                            FirebaseAuth _auth = FirebaseAuth.instance;
+                            User? user = _auth.currentUser;
+                            if (user != null) {
+                              Get.to(() => SettingScreen());
+                            } else {
+                              Get.to(() => LoginScreen());
+                            }
+                            // Get.back();
+                            // widget.onItemTapped(1);
                           }),
+                      const Divider(
+                        height: 5,
+                        color: Color(0xffF2F2F2),
+                      ),
+                      drawerTile(
+                          active: true,
+                          title: "Change Password".tr,
+                          icon: Icon(Icons.password),
+                          onTap: () {
+                            FirebaseAuth _auth = FirebaseAuth.instance;
+                            User? user = _auth.currentUser;
+                            if (user != null) {
+                              Get.to(() => ChangePasswordScreen());
+                            } else {
+                              Get.to(() => LoginScreen());
+                            }
+                            // Get.back();
+                            // widget.onItemTapped(1);
+                          }),
+                      const Divider(
+                        height: 5,
+                        color: Color(0xffF2F2F2),
+                      ),
+                      if (user != null)
+                        drawerTile(
+                            active: true,
+                            title: "Logout".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.logOut),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () async {
+                              await FirebaseAuth.instance.signOut();
+                              Get.offAll(const LoginScreen());
+                            }),
                     ],
                   ),
                   // SizedBox(height:20,)
@@ -445,11 +485,11 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           ),
                           bottomController.pageIndex.value == 2
                               ? const Text(
-                                  "Oders",
+                                  "Orders",
                                   style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                               : const Text(
-                                  "Oders",
+                                  "Orders",
                                   style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -498,6 +538,26 @@ class _BottomNavbarState extends State<BottomNavbar> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget drawerTile({required bool active, required String title, required Widget icon, required VoidCallback onTap}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListTile(
+        selectedTileColor: AppTheme.primaryColor,
+        leading: icon,
+        minLeadingWidth: 25,
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: AppTheme.drawerColor,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        onTap: active ? onTap : null,
+      ),
     );
   }
 }

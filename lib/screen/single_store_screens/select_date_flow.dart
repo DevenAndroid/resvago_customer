@@ -336,7 +336,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                             var menuListData = menuList![index];
                             double? priceValue = double.tryParse(menuListData.price);
                             double? discountValue = double.tryParse(menuListData.discount);
-                            result = priceValue! - (priceValue * discountValue!) / 100;
+                            result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
                             return Column(children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,

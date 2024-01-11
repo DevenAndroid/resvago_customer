@@ -72,7 +72,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     String? imageUrl = kIsWeb ? null : categoryFile.path;
-    ;
     // if (kIsWeb) {
     //   if (pickedFile != null) {
     //     UploadTask uploadTask = FirebaseStorage.instance.ref("profile_image}").child("image").putData(pickedFile!);
@@ -123,6 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         "userName": firstNameController.text.trim(),
         "email": emailController.text.trim(),
         "mobileNumber": mobileController.text.trim(),
+        "docid": FirebaseAuth.instance.currentUser!.uid,
         "code": code,
         "country": country,
         "profile_image": imageUrlProfile,

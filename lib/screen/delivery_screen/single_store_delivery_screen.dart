@@ -606,7 +606,9 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                   var menuListData = menuList![index];
                                                   double? priceValue = double.tryParse(menuListData.price);
                                                   double? discountValue = double.tryParse(menuListData.discount);
-                                                  result = priceValue! - (priceValue * discountValue!) / 100;
+                                                  result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
+
+                                                  log("Fhghgh${menuListData.discount.toString()}");
                                                   return Column(children: [
                                                     const SizedBox(
                                                       height: 10,
@@ -761,7 +763,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                             Row(
                                                               children: [
                                                                 Text(
-                                                                  "\$${menuListData.price.toString()} ",
+                                                                  "\$${(menuListData.price).toString()} ",
                                                                   style: TextStyle(
                                                                     fontSize: 14,
                                                                     decoration: TextDecoration.lineThrough,
@@ -780,13 +782,14 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                             const SizedBox(
                                                               height: 5,
                                                             ),
-                                                            Text(
-                                                              "${menuListData.discount.toString()}% Discount",
-                                                              style: GoogleFonts.poppins(
-                                                                  fontSize: 14,
-                                                                  // fontWeight: FontWeight.w400,
-                                                                  color: const Color(0xFF74848C)),
-                                                            ),
+                                                            // if(menuListData.discount != "" || menuListData.discount !=null)
+                                                            // Text(
+                                                            //   "${menuListData.discount.toString()}% Discount",
+                                                            //   style: GoogleFonts.poppins(
+                                                            //       fontSize: 14,
+                                                            //       // fontWeight: FontWeight.w400,
+                                                            //       color: const Color(0xFF74848C)),
+                                                            // ),
                                                           ],
                                                         )
                                                       ],

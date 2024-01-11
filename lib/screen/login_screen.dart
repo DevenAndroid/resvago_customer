@@ -8,10 +8,14 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:resvago_customer/screen/forgot_password.dart';
 import 'package:resvago_customer/screen/otpscreen.dart';
+import 'package:resvago_customer/screen/two_step_verification.dart';
 import '../controller/logn_controller.dart';
+import '../model/profile_model.dart';
 import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
+import 'bottomnav_bar.dart';
 import 'helper.dart';
 import 'dart:math';
 
@@ -27,6 +31,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool showOtpField = false;
+  bool passwordSecure = false;
   EmailOTP myauth = EmailOTP();
   String verificationId = "";
   String code = "+353";
@@ -53,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (kk["deactivate"] == true) {
         Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
       } else {
-        login(kk["email"].toString());
+        // login(kk["email"].toString());
       }
     } else {
       Fluttertoast.showToast(msg: 'Phone Number not register yet Please Signup');
@@ -74,33 +79,49 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void checkEmailInFirestore() async {
+    OverlayEntry loader = Helper.overlayLoader(context);
+    Overlay.of(context).insert(loader);
     generateOTP();
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection('customer_users').where('email', isEqualTo: emailController.text).get();
     if (result.docs.isNotEmpty) {
+      print("gfdgdgh" + result.docs.first.toString());
       Map kk = result.docs.first.data() as Map;
       if (kk["deactivate"] == false) {
-        FirebaseFirestore.instance.collection("send_mail").add({
-          "to": emailController.text,
-          "message": {
-            "subject": "This is a otp email",
-            "html": "Your otp is $otp",
-            "text": "asdfgwefddfgwefwn",
-          }
-        }).then((value) {
+        if (kk["email"] == emailController.text.trim() && kk["password"] == passwordController.text.trim()) {
+          FirebaseAuth.instance
+              .signInWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          )
+              .then((value) async {
+            Helper.hideLoader(loader);
+            if (!kIsWeb) {
+              Fluttertoast.showToast(msg: 'Login successfully');
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Login successfully"),
+              ));
+            }
+            if (kk["twoStepVerification"] == true) {
+              Get.to(() => TwoStepVerificationScreen(email: emailController.text, password: passwordController.text));
+            } else {
+              Get.offAllNamed(MyRouters.bottomNavbar);
+            }
+          });
+          return;
+        } else {
+          Helper.hideLoader(loader);
           if (!kIsWeb) {
-            Fluttertoast.showToast(msg: 'Otp send successfully');
+            Fluttertoast.showToast(msg: 'Incorrect Credential');
           } else {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Otp send successfully"),
+              content: Text("Incorrect Credential"),
             ));
           }
-        });
-        setState(() {
-          showOtpField = true;
-        });
-        return;
+        }
       } else {
+        Helper.hideLoader(loader);
         if (!kIsWeb) {
           Fluttertoast.showToast(msg: 'Your account has been deactivated, Please contact administrator');
         } else {
@@ -110,6 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       }
     } else {
+      Helper.hideLoader(loader);
       if (!kIsWeb) {
         Fluttertoast.showToast(msg: 'Email not register yet Please Signup');
       } else {
@@ -117,41 +139,6 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text("Email not register yet Please Signup"),
         ));
       }
-    }
-  }
-
-  login(String email) async {
-    await FirebaseAuth.instance.signOut();
-    // await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: "123456");
-    OverlayEntry loader = Helper.overlayLoader(context);
-    Overlay.of(context).insert(loader);
-    try {
-      final String phoneNumber = code + loginController.mobileController.text.trim();
-      await _auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) {
-          print("Verification Failed: $credential");
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          print("Verification Failed: $e");
-        },
-        codeSent: (String verificationId, [int? resendToken]) {
-          // Update the parameter to accept nullable int
-          print("Code Sent: $verificationId");
-          this.verificationId = verificationId;
-          Get.to(() => OtpScreen(
-                verificationId: verificationId,
-                code: code,
-                email: email,
-              ));
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          print("Auto Retrieval Timeout: $verificationId");
-        },
-      );
-      Helper.hideLoader(loader);
-    } catch (e) {
-      Helper.hideLoader(loader);
     }
   }
 
@@ -307,105 +294,75 @@ class _LoginScreenState extends State<LoginScreen> {
                     //     ),
                     //   ),
                     // if (loginOption == LoginOption.EmailPassword)
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: emailController,
-                              cursorColor: Colors.white,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                hintText: 'Enter Email',
-                                hintStyle: const TextStyle(color: Colors.white),
-                                suffixIcon: TextButton(
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      checkEmailInFirestore();
-                                    }
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          CommonTextFieldWidget(
+                            controller: emailController,
+                            textInputAction: TextInputAction.next,
+                            hint: 'Enter your email',
+                            keyboardType: TextInputType.emailAddress,
+                            validator: MultiValidator([
+                              RequiredValidator(errorText: 'Please enter your email'),
+                              EmailValidator(errorText: 'Enter a valid email address'),
+                            ]).call,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CommonTextFieldWidget(
+                              obscureText: passwordSecure,
+                              controller: passwordController,
+                              textInputAction: TextInputAction.next,
+                              hint: 'Enter your password',
+                              keyboardType: TextInputType.text,
+                              suffix: GestureDetector(
+                                  onTap: () {
+                                    passwordSecure = !passwordSecure;
+                                    setState(() {});
                                   },
-                                  child: const Text(
-                                    'send',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                filled: true,
-                                fillColor: Colors.white.withOpacity(.10),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                  borderRadius: BorderRadius.circular(6.0),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                    borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
-                                    borderRadius: BorderRadius.circular(6.0)),
-                              ),
+                                  child: Icon(
+                                    passwordSecure ? Icons.visibility : Icons.visibility_off,
+                                    size: 20,
+                                    color: Colors.white,
+                                  )),
                               validator: MultiValidator([
-                                RequiredValidator(errorText: 'Please enter your email'),
-                                EmailValidator(errorText: 'Enter a valid email address'),
-                              ]).call,
-                              keyboardType: TextInputType.emailAddress,
-                              // textInputAction: TextInputAction.next,
+                                RequiredValidator(errorText: "Password is required"),
+                                MinLengthValidator(8,
+                                    errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
+                                PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
+                                    errorText: "Password must be at least with 1 special character & 1 numerical"),
+                              ])),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 15),
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.to(() => ForgotPassword());
+                          },
+                          child: Text(
+                            'Forgot Password',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 14,
+                              // fontFamily: 'poppins',
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            // if (!showOtpField)
-                              TextFormField(
-                                cursorColor: Colors.white,
-                                style: const TextStyle(color: Colors.white),
-                                controller: otpController,
-                                maxLength: 6,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  hintText: 'Enter Otp',
-                                  hintStyle: const TextStyle(color: Colors.white),
-                                  fillColor: Colors.white.withOpacity(.10),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
-                                  // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                    borderRadius: BorderRadius.circular(6.0),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                                      borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
-                                      borderRadius: BorderRadius.circular(6.0)),
-                                ),
-                              )
-                            // else
-                            //   TextFormField(
-                            //     style: const TextStyle(color: Colors.white),
-                            //     controller: otpController,
-                            //     keyboardType: TextInputType.number,
-                            //     maxLength: 6,
-                            //     decoration: InputDecoration(
-                            //       hintText: 'Enter Otp',
-                            //       hintStyle: const TextStyle(color: Colors.white),
-                            //       filled: true,
-                            //       fillColor: Colors.white.withOpacity(.10),
-                            //       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
-                            //       // .copyWith(top: maxLines! > 4 ? AddSize.size18 : 0),
-                            //       focusedBorder: OutlineInputBorder(
-                            //         borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                            //         borderRadius: BorderRadius.circular(6.0),
-                            //       ),
-                            //       enabledBorder: OutlineInputBorder(
-                            //           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24)),
-                            //           borderRadius: const BorderRadius.all(Radius.circular(6.0))),
-                            //       border: OutlineInputBorder(
-                            //           borderSide: BorderSide(color: const Color(0xFFffffff).withOpacity(.24), width: 3.0),
-                            //           borderRadius: BorderRadius.circular(6.0)),
-                            //     ),
-                            //   ),
-                          ],
+                          ),
                         ),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                       child: Column(
@@ -416,60 +373,33 @@ class _LoginScreenState extends State<LoginScreen> {
                           CommonButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                if (otpController.text.isEmpty) {
-                                  if (!kIsWeb) {
-                                    Fluttertoast.showToast(msg: 'Please enter otp');
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                      content: Text("Please enter otp"),
-                                    ));
-                                  }
-                                } else if (otp != otpController.text || otpController.text.length < 6) {
-                                  if (!kIsWeb) {
-                                    Fluttertoast.showToast(msg: 'Invalid otp');
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                      content: Text("Invalid otp"),
-                                    ));
-                                  }
-                                } else {
-                                  OverlayEntry loader = Helper.overlayLoader(context);
-                                  Overlay.of(context).insert(loader);
-                                  FirebaseAuth.instance
-                                      .signInWithEmailAndPassword(
-                                    email: emailController.text.trim(),
-                                    password: "123456",
-                                  )
-                                      .then((value) {
-                                    Helper.hideLoader(loader);
-                                    if (!kIsWeb) {
-                                      Fluttertoast.showToast(msg: 'Verify otp successfully');
-                                    } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                        content: Text("Verify otp successfully"),
-                                      ));
-                                    }
-                                    Get.offAllNamed(MyRouters.bottomNavbar);
-                                  });
-                                }
+                                checkEmailInFirestore();
                               }
                             },
-                                  title: 'Login'.tr,
-                                ),
-                              // : CommonButton(
-                              //     onPressed: () async {
-                              //       if (_formKey.currentState!.validate()) {
-                              //         checkPhoneNumberInFirestore();
-                              //       }
-                              //     },
-                              //     title: 'Login',
-                              //   ),
+                            title: 'Login'.tr,
+                          ),
                           const SizedBox(
                             height: 20,
                           ),
-                          Text(
-                            'Customer Booking?',
-                            style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "Don't Have an Account?",
+                                style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Get.toNamed(MyRouters.signupScreen);
+                                },
+                                child: Text(
+                                  '  Signup',
+                                  style: GoogleFonts.poppins(
+                                      color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
+                                ),
+                              )
+                            ],
                           ),
                           const SizedBox(
                             height: 10,
@@ -570,28 +500,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                           ),
                           const SizedBox(
-                            height: 50,
+                            height: 30,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "Don't Have an Account?",
-                                style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Get.toNamed(MyRouters.signupScreen);
-                                },
-                                child: Text(
-                                  '  Signup',
-                                  style: GoogleFonts.poppins(
-                                      color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
-                                ),
-                              )
-                            ],
-                          )
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => BottomNavbar());
+                            },
+                            child: Text(
+                              'Customer Booking?',
+                              style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                          ),
                         ],
                       ),
                     )

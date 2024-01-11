@@ -86,6 +86,7 @@ class CommonTextFieldWidget extends StatelessWidget {
             fontWeight: FontWeight.w300,
           ),
           counterText: "",
+          errorMaxLines: 2,
           filled: true,
           fillColor: Colors.white.withOpacity(.10),
           contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),

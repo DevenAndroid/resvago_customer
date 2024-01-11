@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -651,7 +650,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                 var menuListData = menuList![index];
                                                 double? priceValue = double.tryParse(menuListData.price);
                                                 double? discountValue = double.tryParse(menuListData.discount);
-                                                result = priceValue! - (priceValue * discountValue!) / 100;
+                                                result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
                                                 return Column(children: [
                                                   const SizedBox(
                                                     height: 10,
@@ -761,13 +760,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                           const SizedBox(
                                                             height: 5,
                                                           ),
-                                                          Text(
-                                                            "${menuListData.discount.toString()}% Discount",
-                                                            style: GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                // fontWeight: FontWeight.w400,
-                                                                color: const Color(0xFF74848C)),
-                                                          ),
+                                                          // // if(menuListData.discount != "" || menuListData.discount !=null)
+                                                          //   Text(
+                                                          //     "${menuListData.discount.toString()}% Discount",
+                                                          //     style: GoogleFonts.poppins(
+                                                          //         fontSize: 14,
+                                                          //         // fontWeight: FontWeight.w400,
+                                                          //         color: const Color(0xFF74848C)),
+                                                          //   ),
                                                         ],
                                                       )
                                                     ],
@@ -1058,7 +1058,8 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                                   height: 6,
                                                                 ),
                                                                 RatingBar.builder(
-                                                                  initialRating: double.tryParse(reviewList.fullRating.toString())!,
+                                                                  initialRating:
+                                                                      double.tryParse(reviewList.fullRating.toString())!,
                                                                   minRating: 1,
                                                                   unratedColor: const Color(0xff3B5998).withOpacity(.2),
                                                                   itemCount: 5,
@@ -1104,8 +1105,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                             padding: const EdgeInsets.symmetric(vertical: 3.0),
                                                             child: Text(
                                                               DateFormat.yMMMd().format(DateTime.parse(
-                                                                  DateTime.fromMillisecondsSinceEpoch(
-                                                                      int.parse(reviewList.time))
+                                                                  DateTime.fromMillisecondsSinceEpoch(int.parse(reviewList.time))
                                                                       .toString())),
                                                               style: const TextStyle(
                                                                 color: Color(0xFF969AA3),
@@ -1121,9 +1121,9 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                       ),
                                                       index != 2
                                                           ? Divider(
-                                                        color: const Color(0xFF698EDE).withOpacity(.1),
-                                                        thickness: 2,
-                                                      )
+                                                              color: const Color(0xFF698EDE).withOpacity(.1),
+                                                              thickness: 2,
+                                                            )
                                                           : const SizedBox(),
                                                       const SizedBox(
                                                         height: 12,
