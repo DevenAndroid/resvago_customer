@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:resvago_customer/screen/delivery_screen/thank__you_screen.dart';
 import 'package:resvago_customer/widget/apptheme.dart';
 import '../../firebase_service/firebase_service.dart';
+import '../../firebase_service/notification.dart';
 import '../../model/coupon_modal.dart';
 import '../../model/menu_model.dart';
 import '../../model/profile_model.dart';
@@ -52,7 +53,7 @@ class _OderScreenState extends State<OderScreen> {
   double getTotalPrice() {
     totalPrice = 0;
     for (int i = 0; i < menuListData!.length; i++) {
-      totalPrice = totalPrice + double.parse(menuListData![i].qty.toString()) * result;
+      totalPrice = totalPrice + double.parse(menuListData![i].qty.toString()) * double.parse(menuListData![i].price.toString());
       log(totalPrice.toString());
     }
     return totalPrice;
@@ -101,7 +102,7 @@ class _OderScreenState extends State<OderScreen> {
     setState(() {});
   }
 
-  Future<int> order(String vendorId,String orderType) async {
+  Future<int> order(String vendorId, String orderType) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     String? fcm = "fcm";
@@ -155,7 +156,7 @@ class _OderScreenState extends State<OderScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     log(restaurantData!.toJson().toString());
-    log("jhkhkj"+menuListData!.toString());
+    log("jhkhkj" + menuListData!.toString());
     return Scaffold(
         appBar: backAppBar(
           title: "CheckOut",
@@ -336,330 +337,8 @@ class _OderScreenState extends State<OderScreen> {
                         ],
                       ),
                     )),
-                  menuListData!.isNotEmpty ?
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                        width: size.width,
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF37C666).withOpacity(0.10),
-                            offset: const Offset(
-                              1,
-                              1,
-                            ),
-                            blurRadius: 20.0,
-                            spreadRadius: 1.0,
-                          ),
-                        ]),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Selected Items",
-                                style: GoogleFonts.poppins(
-                                    fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: menuListData!.length,
-                                  itemBuilder: (context, index) {
-                                    var menuListItem = menuListData![index];
-                                    double? priceValue = double.tryParse(menuListItem.price);
-                                    double? discountValue = double.tryParse(menuListItem.discount);
-                                    result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 5),
-                                      child: Column(children: [
-                                        Row(children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(10),
-                                            child: Image.network(
-                                              menuListItem.image ?? "",
-                                              height: 60,
-                                              width: 80,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Expanded(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  menuListItem.dishName ?? "",
-                                                  style: GoogleFonts.poppins(
-                                                      fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
-                                                ),
-                                                const SizedBox(
-                                                  height: 3,
-                                                ),
-
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      "\$${(menuListItem.price).toString()} ",
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        decoration: TextDecoration.lineThrough,
-                                                        color: const Color(0xFF8E9196),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      "\$${result.toString()}",
-                                                      style: GoogleFonts.poppins(
-                                                          fontSize: 14,
-                                                          // fontWeight: FontWeight.w400,
-                                                          color: const Color(0xFF1E2538)),
-                                                    ),
-                                                  ],
-                                                ),
-                                                // DottedLine(
-                                                //   dashColor: Colors.black,
-                                                // )
-                                              ],
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                height: 28,
-                                                width: 28,
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(color: Colors.black),
-                                                    borderRadius: const BorderRadius.all(
-                                                      Radius.circular(20),
-                                                    )),
-                                                child: InkWell(
-                                                    onTap: () {
-                                                      if (menuListItem.qty == 1) {
-                                                        null;
-                                                      } else {
-                                                        menuListItem.qty--;
-                                                        getTotalPrice();
-                                                        getCheckOutData();
-                                                      }
-                                                      setState(() {});
-                                                    },
-                                                    child: const Icon(
-                                                      Icons.remove,
-                                                      size: 18,
-                                                    )),
-                                              ),
-                                              const SizedBox(
-                                                width: 8,
-                                              ),
-                                              Text(
-                                                menuListItem.qty.toString(),
-                                                style: GoogleFonts.alegreyaSans(
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 8,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    height: 28,
-                                                    width: 28,
-                                                    decoration: const BoxDecoration(
-                                                        color: AppTheme.primaryColor,
-                                                        borderRadius: BorderRadius.all(
-                                                          Radius.circular(20),
-                                                        )),
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        menuListItem.qty++;
-                                                        getTotalPrice();
-                                                        getCheckOutData();
-                                                        setState(() {});
-                                                      },
-                                                      child: const Icon(
-                                                        Icons.add,
-                                                        color: Colors.white,
-                                                        size: 18,
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ])
-                                      ]),
-                                    );
-                                  }),
-                            ]))):SizedBox(),
-                  menuListData!.isNotEmpty ?
-                InkWell(
-                  onTap: () {
-                    Get.to(() => PromoCodeList(
-                          id: restaurantData!.userID,
-                          couponData: (CouponData coupon) {
-                            couponData = coupon;
-                            setState(() {});
-                          },
-                        ));
-                  },
-                  child: Container(
-                    width: size.width,
-                    margin: const EdgeInsets.all(8),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF37C666).withOpacity(0.10),
-                        offset: const Offset(
-                          1,
-                          1,
-                        ),
-                        blurRadius: 20.0,
-                        spreadRadius: 1.0,
-                      ),
-                    ]),
-                    child: Column(
-                      children: [
-                        Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Image.asset(
-                            'assets/icons/coupon.png',
-                            height: 20,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            'Use Coupons',
-                            style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
-                          ),
-                        ]),
-                        if (couponData != null)
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'assets/icons/verified.png',
-                                  height: 20,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${couponData!.code} Applied Successfully',
-                                      style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538).withOpacity(.8)),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      'You saved \$${couponDiscount.toStringAsFixed(2)}',
-                                      style: GoogleFonts.poppins(fontSize: 12, color: AppTheme.primaryColor),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    )
-                                  ],
-                                ),
-                              ]),
-                      ],
-                    ),
-                  ),
-                ):SizedBox(),
-                  menuListData!.isNotEmpty ? Column(
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: size.width,
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF37C666).withOpacity(0.10),
-                              offset: const Offset(
-                                1,
-                                1,
-                              ),
-                              blurRadius: 20.0,
-                              spreadRadius: 1.0,
-                            ),
-                          ]),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Payable Amount",
-                                  style:
-                                  GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      ' Subtotal',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
-                                    ),
-                                    Text(
-                                      '\$${totalPrice.toStringAsFixed(2)}',
-                                      style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Save Coupon',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
-                                    ),
-                                    Text(
-                                      "\$${couponDiscount.toStringAsFixed(2)}",
-                                      style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Total',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
-                                    ),
-                                    Text(
-                                      '\$${calculateTotalPrice.toStringAsFixed(2)}',
-                                      style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                              ]),
-                        )),
-                    Padding(
+                menuListData!.isNotEmpty
+                    ? Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                             width: size.width,
@@ -676,99 +355,434 @@ class _OderScreenState extends State<OderScreen> {
                               ),
                             ]),
                             child: Column(
-                              children: [
-                                Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Selected Items",
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: menuListData!.length,
+                                      itemBuilder: (context, index) {
+                                        var menuListItem = menuListData![index];
+                                        double? priceValue = double.tryParse(menuListItem.price);
+                                        double? discountValue = double.tryParse(menuListItem.discount);
+                                        result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 5),
+                                          child: Column(children: [
+                                            Row(children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(10),
+                                                child: Image.network(
+                                                  menuListItem.image ?? "",
+                                                  height: 60,
+                                                  width: 80,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      menuListItem.dishName ?? "",
+                                                      style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w400,
+                                                          color: const Color(0xFF1E2538)),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 3,
+                                                    ),
+
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          "\$${(menuListItem.price).toString()} ",
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                            decoration: TextDecoration.lineThrough,
+                                                            color: const Color(0xFF8E9196),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          "\$${result.toString()}",
+                                                          style: GoogleFonts.poppins(
+                                                              fontSize: 14,
+                                                              // fontWeight: FontWeight.w400,
+                                                              color: const Color(0xFF1E2538)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    // DottedLine(
+                                                    //   dashColor: Colors.black,
+                                                    // )
+                                                  ],
+                                                ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    height: 28,
+                                                    width: 28,
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(color: Colors.black),
+                                                        borderRadius: const BorderRadius.all(
+                                                          Radius.circular(20),
+                                                        )),
+                                                    child: InkWell(
+                                                        onTap: () {
+                                                          if (menuListItem.qty == 1) {
+                                                            null;
+                                                          } else {
+                                                            menuListItem.qty--;
+                                                            getTotalPrice();
+                                                            getCheckOutData();
+                                                          }
+                                                          setState(() {});
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.remove,
+                                                          size: 18,
+                                                        )),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  Text(
+                                                    menuListItem.qty.toString(),
+                                                    style: GoogleFonts.alegreyaSans(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        height: 28,
+                                                        width: 28,
+                                                        decoration: const BoxDecoration(
+                                                            color: AppTheme.primaryColor,
+                                                            borderRadius: BorderRadius.all(
+                                                              Radius.circular(20),
+                                                            )),
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            menuListItem.qty++;
+                                                            getTotalPrice();
+                                                            getCheckOutData();
+                                                            setState(() {});
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.add,
+                                                            color: Colors.white,
+                                                            size: 18,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ])
+                                          ]),
+                                        );
+                                      }),
+                                ])))
+                    : SizedBox(),
+                menuListData!.isNotEmpty
+                    ? InkWell(
+                        onTap: () {
+                          Get.to(() => PromoCodeList(
+                                id: restaurantData!.userID,
+                                couponData: (CouponData coupon) {
+                                  couponData = coupon;
+                                  setState(() {});
+                                },
+                              ));
+                        },
+                        child: Container(
+                          width: size.width,
+                          margin: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF37C666).withOpacity(0.10),
+                              offset: const Offset(
+                                1,
+                                1,
+                              ),
+                              blurRadius: 20.0,
+                              spreadRadius: 1.0,
+                            ),
+                          ]),
+                          child: Column(
+                            children: [
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    Image.asset(
+                                      'assets/icons/coupon.png',
+                                      height: 20,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
                                     Text(
-                                      "Payment Method",
+                                      'Use Coupons',
                                       style: GoogleFonts.poppins(
-                                          fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                          fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
                                     ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    const SizedBox(
-                                      height: 12,
-                                    ),
-                                    Container(
-                                      height: 23,
-                                      width: 23,
-                                      decoration: const BoxDecoration(
-                                          color: Color(0xffFAAF40),
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(20),
-                                          )),
-                                      child: const Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                        size: 18,
+                                  ]),
+                              if (couponData != null)
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Image.asset(
+                                        'assets/icons/verified.png',
+                                        height: 20,
                                       ),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 14,
-                                ),
-                                Container(
-                                  width: size.width,
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                      border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                          "assets/icons/debvitcard.png",
-                                          height: 20,
-                                        ),
-                                        const SizedBox(
-                                          width: 18,
-                                        ),
-                                        Text(
-                                          'Debit/Credit Card',
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
-                                        )
-                                      ],
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${couponData!.code} Applied Successfully',
+                                            style:
+                                                GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538).withOpacity(.8)),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            'You saved \$${couponDiscount.toStringAsFixed(2)}',
+                                            style: GoogleFonts.poppins(fontSize: 12, color: AppTheme.primaryColor),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          )
+                                        ],
+                                      ),
+                                    ]),
+                            ],
+                          ),
+                        ),
+                      )
+                    : SizedBox(),
+                menuListData!.isNotEmpty
+                    ? Column(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: size.width,
+                                padding: const EdgeInsets.all(14),
+                                decoration:
+                                    BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF37C666).withOpacity(0.10),
+                                    offset: const Offset(
+                                      1,
+                                      1,
                                     ),
+                                    blurRadius: 20.0,
+                                    spreadRadius: 1.0,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 12,
-                                ),
-                                Container(
+                                ]),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Payable Amount",
+                                        style: GoogleFonts.poppins(
+                                            fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            ' Subtotal',
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
+                                          ),
+                                          Text(
+                                            '\$${totalPrice.toStringAsFixed(2)}',
+                                            style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Save Coupon',
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
+                                          ),
+                                          Text(
+                                            "\$${couponDiscount.toStringAsFixed(2)}",
+                                            style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Total',
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
+                                          ),
+                                          Text(
+                                            '\$${calculateTotalPrice.toStringAsFixed(2)}',
+                                            style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538)),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ]),
+                              )),
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
                                   width: size.width,
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                      border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                          "assets/icons/phonepay.png",
-                                          height: 20,
-                                        ),
-                                        const SizedBox(
-                                          width: 18,
-                                        ),
-                                        Text(
-                                          'PayPay',
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
-                                        ),
-                                      ],
+                                  padding: const EdgeInsets.all(14),
+                                  decoration:
+                                      BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF37C666).withOpacity(0.10),
+                                      offset: const Offset(
+                                        1,
+                                        1,
+                                      ),
+                                      blurRadius: 20.0,
+                                      spreadRadius: 1.0,
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            ))),
-                  ],
-                ):SizedBox(),
+                                  ]),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Payment Method",
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                          ),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
+                                          const SizedBox(
+                                            height: 12,
+                                          ),
+                                          Container(
+                                            height: 23,
+                                            width: 23,
+                                            decoration: const BoxDecoration(
+                                                color: Color(0xffFAAF40),
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(20),
+                                                )),
+                                            child: const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 18,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 14,
+                                      ),
+                                      Container(
+                                        width: size.width,
+                                        decoration: BoxDecoration(
+                                            borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                            border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                                          child: Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/icons/debvitcard.png",
+                                                height: 20,
+                                              ),
+                                              const SizedBox(
+                                                width: 18,
+                                              ),
+                                              Text(
+                                                'Debit/Credit Card',
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 12,
+                                      ),
+                                      Container(
+                                        width: size.width,
+                                        decoration: BoxDecoration(
+                                            borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                            border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                                          child: Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/icons/phonepay.png",
+                                                height: 20,
+                                              ),
+                                              const SizedBox(
+                                                width: 18,
+                                              ),
+                                              Text(
+                                                'PayPay',
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                    ],
+                                  ))),
+                        ],
+                      )
+                    : SizedBox(),
                 Container(
                     margin: const EdgeInsets.only(top: 20),
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -810,7 +824,7 @@ class _OderScreenState extends State<OderScreen> {
                           ]);
                           // return;
                           if (kIsWeb) {
-                            order(restaurantData!.docid,"COD").then((value) {
+                            order(restaurantData!.docid, "COD").then((value) {
                               updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
                               FirebaseFirestore.instance
                                   .collection("checkOut")
@@ -828,7 +842,7 @@ class _OderScreenState extends State<OderScreen> {
                                 "to": "${widget.restaurantItem!.email}",
                                 "message": {
                                   "subject": "This is a basic email",
-                                  "html": "Your order has been created",
+                                  "html": "You have received a new order for Dining",
                                   "text": "asdfgwefddfgwefwn",
                                 }
                               });
@@ -840,16 +854,17 @@ class _OderScreenState extends State<OderScreen> {
                               ));
                             });
                           } else {
-
-                            if(menuListData!.isNotEmpty){
+                            if (menuListData!.isNotEmpty) {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (BuildContext context) => UsePaypal(
                                       sandboxMode: true,
                                       // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
                                       // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
-                                      clientId: "AYBmWmZ1iXnGwAqSsmGdqTZFeJ6RYu-rBjGWFLnuX-kDfvLqa8qp75RPCzhaetorPoFrxqZJu0cPccd_",
-                                      secretKey: "EJIKzLSexzl_2VKzn9aoNa_J6tpdDFzz4zgm2xAPxw3WWZvkInjPW8wGVlRk-zvz5QhFiCbPrJrtBy8H",
+                                      clientId:
+                                          "AYBmWmZ1iXnGwAqSsmGdqTZFeJ6RYu-rBjGWFLnuX-kDfvLqa8qp75RPCzhaetorPoFrxqZJu0cPccd_",
+                                      secretKey:
+                                          "EJIKzLSexzl_2VKzn9aoNa_J6tpdDFzz4zgm2xAPxw3WWZvkInjPW8wGVlRk-zvz5QhFiCbPrJrtBy8H",
                                       returnURL: "https://samplesite.com/return",
                                       cancelURL: "https://samplesite.com/cancel",
                                       transactions: [
@@ -886,7 +901,7 @@ class _OderScreenState extends State<OderScreen> {
                                       note: "Contact us for any questions on your order.",
                                       onSuccess: (Map params) async {
                                         print("onSuccess: ${params}");
-                                        order(restaurantData!.docid,"online").then((value) {
+                                        order(restaurantData!.docid, "online").then((value) {
                                           updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
                                           FirebaseFirestore.instance
                                               .collection("checkOut")
@@ -904,7 +919,7 @@ class _OderScreenState extends State<OderScreen> {
                                             "to": "${widget.restaurantItem!.email}",
                                             "message": {
                                               "subject": "This is a basic email",
-                                              "html": "Your order has been created",
+                                              "html": "You have received a new order for Dining",
                                               "text": "asdfgwefddfgwefwn",
                                             }
                                           });
@@ -914,6 +929,13 @@ class _OderScreenState extends State<OderScreen> {
                                             orderType: "Dining",
                                             orderId: value.toString(),
                                           ));
+                                          sendPushNotification(
+                                              body: "Order received",
+                                              deviceToken: widget.restaurantItem!.fcm,
+                                              image:
+                                                  "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                              title: "You have received a new order for Dining",
+                                              orderID: "");
                                         });
                                       },
                                       onError: (error) {
@@ -924,9 +946,8 @@ class _OderScreenState extends State<OderScreen> {
                                       }),
                                 ),
                               );
-                            }
-                            else{
-                              order(restaurantData!.docid,"COD").then((value) {
+                            } else {
+                              order(restaurantData!.docid, "COD").then((value) {
                                 updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
                                 FirebaseFirestore.instance
                                     .collection("checkOut")
@@ -944,7 +965,7 @@ class _OderScreenState extends State<OderScreen> {
                                   "to": "${widget.restaurantItem!.email}",
                                   "message": {
                                     "subject": "This is a basic email",
-                                    "html": "Your order has been created",
+                                    "html": "You have received a new order for Dining",
                                     "text": "asdfgwefddfgwefwn",
                                   }
                                 });
@@ -954,6 +975,12 @@ class _OderScreenState extends State<OderScreen> {
                                   orderType: "Dining",
                                   orderId: value.toString(),
                                 ));
+                                sendPushNotification(
+                                    body: "Order received",
+                                    deviceToken: widget.restaurantItem!.fcm,
+                                    image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                    title: "You have received a new order for Dining",
+                                    orderID: "");
                               });
                             }
                           }

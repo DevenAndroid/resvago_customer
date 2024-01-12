@@ -249,10 +249,10 @@ class _MyOrderState extends State<MyOrder> {
           throw Exception(e);
         },
       );
-      await firestore.collection('dining_order').doc(docId).update({
-        "order_status": "Order Rejected",
-        'reasonOfCancel': reasonOfCancel1.text.trim()
-      });
+      await firestore
+          .collection('dining_order')
+          .doc(docId)
+          .update({"order_status": "Order Rejected", 'reasonOfCancel': reasonOfCancel1.text.trim()});
       showToast("Order Rejected");
     } catch (e) {
       throw Exception(e);
@@ -531,7 +531,12 @@ class _MyOrderState extends State<MyOrder> {
                                                     height: 28,
                                                     child: ElevatedButton(
                                                       onPressed: () {
-                                                        _showPopup1(docid: orderItem.docid);
+                                                        if (orderItem.orderDetails!.restaurantInfo!.cancellation == true) {
+                                                          _showPopup1(docid: orderItem.docid);
+                                                        }
+                                                        else{
+                                                          showToast("You can't cancel your order");
+                                                        }
                                                       },
                                                       style: ElevatedButton.styleFrom(
                                                           backgroundColor: Colors.white,
@@ -581,40 +586,40 @@ class _MyOrderState extends State<MyOrder> {
                                     );
                                   })
                               : Column(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(
-                                  top: 18,
-                                ),
-                                decoration: const BoxDecoration(
-                                  color: Color(0xffFFFFFF),
-                                ),
-                                child: Column(
-                                  // mainAxisAlignment: MainAxisAlignment.start,
-                                  // crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Image.asset(AppAssets.orderEmpty,
-                                        height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
-                                    Text(
-                                      'Empty',
-                                      style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Text(
-                                      'You do not have an active order of this time',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
-                                    ),
-                                    const SizedBox(
-                                      height: 40,
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 18,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xffFFFFFF),
+                                      ),
+                                      child: Column(
+                                        // mainAxisAlignment: MainAxisAlignment.start,
+                                        // crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Image.asset(AppAssets.orderEmpty,
+                                              height: kIsWeb ? 500 : 200, width: kIsWeb ? 500 : 200),
+                                          Text(
+                                            'Empty',
+                                            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          Text(
+                                            'You do not have an active order of this time',
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff747474)),
+                                          ),
+                                          const SizedBox(
+                                            height: 40,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
-                                ),
-                              ),
-                            ],
-                          );
+                                );
                         }
                         return const SizedBox.shrink();
                       },
@@ -1310,45 +1315,51 @@ class _MyOrderState extends State<MyOrder> {
                                                 color: Color(0xffE8E8E8),
                                                 thickness: 1,
                                               ),
-                                              orderItem.restaurantInfo!.cancellation == true?
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 28,
-                                                    child: ElevatedButton(
-                                                      onPressed: () {
-                                                        _showPopup(
-                                                            vendorId: orderItem.vendorId,
-                                                            date: orderItem.date,
-                                                            slot: orderItem.slot,
-                                                            guest: orderItem.guest,
-                                                            restaurantInfo: orderItem.restaurantInfo,
-                                                            menuList: orderItem.menuList,
-                                                            context: context,
-                                                            docid: orderItem.docid,
-                                                            orderId: orderItem.orderId,
-                                                            profileData: orderItem.customerData);
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                          backgroundColor: Colors.white,
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(3),
-                                                              side: const BorderSide(
-                                                                color: Color(0xFF3B5998),
-                                                              )),
-                                                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                                                      child: Text(
-                                                        "Cancel Order",
-                                                        style: GoogleFonts.poppins(
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: AppTheme.primaryColor),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ):SizedBox(),
+                                              orderItem.restaurantInfo!.cancellation == true
+                                                  ? Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 28,
+                                                          child: ElevatedButton(
+                                                            onPressed: () {
+                                                              if (orderItem.restaurantInfo!.cancellation == true) {
+                                                                _showPopup(
+                                                                    vendorId: orderItem.vendorId,
+                                                                    date: orderItem.date,
+                                                                    slot: orderItem.slot,
+                                                                    guest: orderItem.guest,
+                                                                    restaurantInfo: orderItem.restaurantInfo,
+                                                                    menuList: orderItem.menuList,
+                                                                    context: context,
+                                                                    docid: orderItem.docid,
+                                                                    orderId: orderItem.orderId,
+                                                                    profileData: orderItem.customerData);
+                                                              } else {
+                                                                showToast("You can't cancel your order");
+                                                              }
+                                                            },
+                                                            style: ElevatedButton.styleFrom(
+                                                                backgroundColor: Colors.white,
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(3),
+                                                                    side: const BorderSide(
+                                                                      color: Color(0xFF3B5998),
+                                                                    )),
+                                                                textStyle:
+                                                                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                            child: Text(
+                                                              "Cancel Order",
+                                                              style: GoogleFonts.poppins(
+                                                                  fontSize: 12,
+                                                                  fontWeight: FontWeight.w500,
+                                                                  color: AppTheme.primaryColor),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : SizedBox(),
                                             ],
                                           )).appPaddingForScreen,
                                     );
@@ -1406,12 +1417,12 @@ class _MyOrderState extends State<MyOrder> {
                                     var orderItem = myOrder[index];
                                     return Column(children: [
                                       GestureDetector(
-                                        onTap: (){
+                                        onTap: () {
                                           Get.to(() => OderDetailsScreen(
-                                            orderType: 'Dining',
-                                            orderId: orderItem.orderId,
-                                            data: '',
-                                          ));
+                                                orderType: 'Dining',
+                                                orderId: orderItem.orderId,
+                                                data: '',
+                                              ));
                                         },
                                         child: Container(
                                             margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
@@ -1617,7 +1628,8 @@ class _MyOrderState extends State<MyOrder> {
                                                                 side: const BorderSide(
                                                                   color: Color(0xFF3B5998),
                                                                 )),
-                                                            textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                                                            textStyle:
+                                                                const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                                                         child: Text(
                                                           "Leave a review",
                                                           style: GoogleFonts.poppins(

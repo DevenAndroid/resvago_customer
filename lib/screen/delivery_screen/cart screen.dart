@@ -20,6 +20,7 @@ import 'package:url_launcher/url_launcher.dart';
 // import 'package:youcanpay_sdk/youcanpay_sdk.dart';
 import '../../controller/bottomnavbar_controller.dart';
 import '../../firebase_service/firebase_service.dart';
+import '../../firebase_service/notification.dart';
 import '../../model/add_address_modal.dart';
 import '../../model/checkout_model.dart';
 import '../../model/coupon_modal.dart';
@@ -179,8 +180,6 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -219,6 +218,9 @@ class _CartScreenState extends State<CartScreen> {
                                     itemCount: cartModel.menuList!.length,
                                     itemBuilder: (context, index) {
                                       var item = cartModel.menuList![index];
+                                      double? priceValue = double.tryParse(item.price);
+                                      double? discountValue = double.tryParse(item.discount);
+                                      result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
                                       return Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 5),
                                         child: Column(children: [
@@ -237,14 +239,17 @@ class _CartScreenState extends State<CartScreen> {
                                                     ),
                                                   )),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 15),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     item.dishName ?? "",
+                                                    maxLines: 2,
                                                     style: GoogleFonts.poppins(
                                                         fontSize: 14,
                                                         fontWeight: FontWeight.w400,
@@ -253,9 +258,24 @@ class _CartScreenState extends State<CartScreen> {
                                                   const SizedBox(
                                                     height: 3,
                                                   ),
-                                                  Text(
-                                                    "\$${item.price}",
-                                                    style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF74848C)),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        "\$${(item.price).toString()} ",
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          decoration: TextDecoration.lineThrough,
+                                                          color: const Color(0xFF8E9196),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "\$${result.toString()}",
+                                                        style: GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            // fontWeight: FontWeight.w400,
+                                                            color: const Color(0xFF1E2538)),
+                                                      ),
+                                                    ],
                                                   ),
 
                                                   // DottedLine(
@@ -264,7 +284,6 @@ class _CartScreenState extends State<CartScreen> {
                                                 ],
                                               ),
                                             ),
-                                            const Spacer(),
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
@@ -807,7 +826,7 @@ class _CartScreenState extends State<CartScreen> {
                                   "to": "${cartModel.restaurantInfo!.email}",
                                   "message": {
                                     "subject": "This is a basic email",
-                                    "html": "Your order has been created",
+                                    "html": "You have received a new order for Delivery",
                                     "text": "asdfgwefddfgwefwn",
                                   }
                                 });
@@ -894,11 +913,18 @@ class _CartScreenState extends State<CartScreen> {
                                             "to": "${cartModel.restaurantInfo!.email}",
                                             "message": {
                                               "subject": "This is a basic email",
-                                              "html": "Your order has been created",
+                                              "html": "You have received a new order for Delivery",
                                               "text": "asdfgwefddfgwefwn",
                                             }
                                           });
                                           Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
+                                          sendPushNotification(
+                                              body: "Order received",
+                                              deviceToken: cartModel.restaurantInfo!.fcm,
+                                              image:
+                                                  "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                              title: "You have received a new order for Delivery",
+                                              orderID: "");
                                         });
                                       },
                                       onError: (error) {
@@ -974,92 +1000,4 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ));
   }
-
-  String? initialLink;
-  Future<void> initUniLinks() async {
-    try {
-      initialLink = await getInitialLink();
-      handleDeepLink(Uri.parse(initialLink.toString()));
-    } on Exception catch (e) {
-      // Handle error
-      print('Error initializing deep links: $e');
-    }
-    uriLinkStream.listen((Uri? uri) {
-      handleDeepLink(uri);
-    });
-  }
-
-  void handleDeepLink(Uri? uri) {
-    if (uri != null) {
-      print('Received deep link: $uri');
-      if (uri.path == '/payment-success') {
-        order(cartModel.vendorId).then((value2) {
-          FirebaseFirestore.instance.collection("checkOut").doc(FirebaseAuth.instance.currentUser!.uid).delete();
-          Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
-        });
-      } else if (uri.path == '/payment-cancel') {}
-    }
-  }
-
-  // Widget payWithCardButton() {
-  //   return ElevatedButton(
-  //       onPressed: () => payWithCard(),
-  //       child: SizedBox(
-  //           height: 50,
-  //           width: MediaQuery.of(context).size.width,
-  //           child: const Center(
-  //               child: Text(
-  //             "Pay with card",
-  //             style: TextStyle(fontSize: 20),
-  //           ))));
-  // }
-  //
-  // Widget payWithCashPlusButton() {
-  //   return ElevatedButton(
-  //       style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-  //       onPressed: () => payWithCashPlus(),
-  //       child: SizedBox(
-  //           height: 50,
-  //           width: MediaQuery.of(context).size.width,
-  //           child: const Center(
-  //               child: Text(
-  //             "Pay with CashPlus",
-  //             style: TextStyle(fontSize: 20),
-  //           ))));
-  // }
-  //
-  // void payWithCashPlus() {
-  //   ycPay.payWithCashPlus(
-  //       token: token,
-  //       onSuccessfulPayment: (transactionId, cashPlusToken) {
-  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //           content: Text('pay success cashPlus token: $transactionId'),
-  //           backgroundColor: Colors.green,
-  //         ));
-  //       },
-  //       onFailedPayment: (message) {
-  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //           content: Text('pay failed $message'),
-  //           backgroundColor: Colors.red,
-  //         ));
-  //       });
-  // }
-  //
-  // void payWithCard() {
-  //   ycPay.payWithCard(
-  //       token: token,
-  //       cardInformation: cardInformation,
-  //       onSuccessfulPayment: (transactionId) {
-  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //           content: Text('pay success $transactionId'),
-  //           backgroundColor: Colors.green,
-  //         ));
-  //       },
-  //       onFailedPayment: (message) {
-  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //           content: Text('pay failed $message'),
-  //           backgroundColor: Colors.red,
-  //         ));
-  //       });
-  // }
 }

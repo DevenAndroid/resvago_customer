@@ -83,6 +83,8 @@ class _SettingScreenState extends State<SettingScreen> {
                 onPressed: () {
                   FirebaseFirestore.instance.collection('customer_users').doc(FirebaseAuth.instance.currentUser!.uid).update({
                     "twoStepVerification": twoStepVerification,
+                  }).then((value){
+                    showToast("Setting updated successfully");
                   });
                 },
               ),

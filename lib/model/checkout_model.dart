@@ -48,6 +48,7 @@ class CheckOutModel {
 
 class RestaurantInfo {
   dynamic aboutUs;
+  dynamic fcm;
   dynamic image;
   dynamic address;
   dynamic mobileNumber;
@@ -66,6 +67,7 @@ class RestaurantInfo {
 
   RestaurantInfo(
       {this.aboutUs,
+        this.fcm,
         this.image,
         this.address,
         this.mobileNumber,
@@ -84,6 +86,7 @@ class RestaurantInfo {
 
   RestaurantInfo.fromJson(Map<String, dynamic> json) {
     aboutUs = json['aboutUs'];
+    fcm = json['fcm'];
     image = json['image'];
     address = json['address'];
     mobileNumber = json['mobileNumber'];
@@ -104,6 +107,7 @@ class RestaurantInfo {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['aboutUs'] = aboutUs;
+    data['fcm'] = fcm;
     data['image'] = image;
     data['address'] = address;
     data['mobileNumber'] = mobileNumber;

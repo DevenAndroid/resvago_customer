@@ -17,6 +17,7 @@ class RestaurantModel {
   dynamic userID;
   dynamic email;
   dynamic aboutUs;
+  dynamic fcm;
   dynamic image;
   dynamic preparationTime;
   dynamic averageMealForMember;
@@ -41,6 +42,7 @@ class RestaurantModel {
     this.userID,
     this.email,
     this.aboutUs,
+    this.fcm,
     this.preparationTime,
     this.averageMealForMember,
     this.setDelivery,
@@ -65,6 +67,7 @@ class RestaurantModel {
     userID = json['userID'];
     email = json['email'];
     aboutUs = json['aboutUs'];
+    fcm = json['fcm'];
     preparationTime = json['preparationTime'];
     averageMealForMember = json['averageMealForMember'];
     setDelivery = json['setDelivery'];
@@ -90,6 +93,7 @@ class RestaurantModel {
     data['userID'] = userID;
     data['email'] = email;
     data['aboutUs'] = aboutUs;
+    data['fcm'] = fcm;
     data['preparationTime'] = preparationTime;
     data['averageMealForMember'] = averageMealForMember;
     data['setDelivery'] = setDelivery;

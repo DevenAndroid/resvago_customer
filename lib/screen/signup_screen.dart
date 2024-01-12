@@ -30,19 +30,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  TextEditingController confirmController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late GeoFlutterFire geo;
   String code = "+353";
   String verificationId = "";
   bool value = false;
-  bool passwordSecure = false;
+  bool passwordSecure = true;
+  var confirmPasswordSecure = true;
   bool showValidation = false;
   FirebaseService firebaseService = FirebaseService();
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
     if (FirebaseAuth.instance.currentUser != null) {
       await firebaseService
           .manageRegisterUsers(
@@ -179,18 +181,56 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     setState(() {});
                                   },
                                   child: Icon(
-                                    passwordSecure ? Icons.visibility : Icons.visibility_off,
+                                    passwordSecure ? Icons.visibility_off : Icons.visibility,
                                     size: 20,
                                     color: Colors.white,
                                   )),
                               validator: MultiValidator([
-                                RequiredValidator(
-                                    errorText: 'Please enter your password'),
+                                RequiredValidator(errorText: 'Please enter your password'),
                                 MinLengthValidator(8,
                                     errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
                                 PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
                                     errorText: "Password must be at least with 1 special character & 1 numerical"),
-                              ])
+                              ])),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            'Confirm Password',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          CommonTextFieldWidget(
+                            obscureText: confirmPasswordSecure,
+                            controller: confirmController,
+                            textInputAction: TextInputAction.next,
+                            hint: 'Enter your confirm password',
+                            keyboardType: TextInputType.text,
+                            suffix: GestureDetector(
+                                onTap: () {
+                                  confirmPasswordSecure = !confirmPasswordSecure;
+                                  setState(() {});
+                                },
+                                child: Icon(
+                                  confirmPasswordSecure ? Icons.visibility_off : Icons.visibility,
+                                  size: 20,
+                                  color: Colors.white,
+                                )),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your confirm password';
+                              }
+                              if (value.toString() == passwordController.text) {
+                                return null;
+                              }
+                              return "Confirm password not matching with password";
+                            },
                           ),
                           const SizedBox(
                             height: 15,
@@ -284,6 +324,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           CommonButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
+                                FocusManager.instance.primaryFocus!.unfocus();
                                 if (value == true) {
                                   checkEmailInFirestore();
                                 } else {
@@ -391,7 +432,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Get.toNamed(MyRouters.loginScreen);
+                                  Get.back();
                                 },
                                 child: Text(
                                   '  Login',

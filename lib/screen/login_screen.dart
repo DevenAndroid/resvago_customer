@@ -11,6 +11,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_customer/screen/forgot_password.dart';
 import 'package:resvago_customer/screen/otpscreen.dart';
 import 'package:resvago_customer/screen/two_step_verification.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/logn_controller.dart';
 import '../model/profile_model.dart';
 import '../routers/routers.dart';
@@ -31,7 +32,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool showOtpField = false;
-  bool passwordSecure = false;
+  bool passwordSecure = true;
   EmailOTP myauth = EmailOTP();
   String verificationId = "";
   String code = "+353";
@@ -88,35 +89,61 @@ class _LoginScreenState extends State<LoginScreen> {
       print("gfdgdgh" + result.docs.first.toString());
       Map kk = result.docs.first.data() as Map;
       if (kk["deactivate"] == false) {
-        if (kk["email"] == emailController.text.trim() && kk["password"] == passwordController.text.trim()) {
-          FirebaseAuth.instance
+        try {
+          await FirebaseAuth.instance
               .signInWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text.trim(),
           )
               .then((value) async {
             Helper.hideLoader(loader);
+            SharedPreferences pref = await SharedPreferences.getInstance();
+            pref.setString("password", passwordController.text.trim());
             if (!kIsWeb) {
-              Fluttertoast.showToast(msg: 'Login successfully');
+              if (kk["twoStepVerification"] == true) {
+              } else {
+                Fluttertoast.showToast(msg: 'Login successfully');
+              }
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Login successfully"),
-              ));
+              if (kk["twoStepVerification"] == true) {
+              } else {}
             }
             if (kk["twoStepVerification"] == true) {
-              Get.to(() => TwoStepVerificationScreen(email: emailController.text, password: passwordController.text));
+              FirebaseFirestore.instance.collection("send_mail").add({
+                "to": emailController.text.trim(),
+                "message": {
+                  "subject": "This is a otp email",
+                  "html": "Your otp is $otp",
+                  "text": "asdfgwefddfgwefwn",
+                }
+              }).then((value) {
+                if (!kIsWeb) {
+                  Fluttertoast.showToast(msg: 'Otp email sent to ${emailController.text.trim()}');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Otp email sent to ${emailController.text.trim()}"),
+                  ));
+                }
+                Get.to(() => TwoStepVerificationScreen(email: emailController.text, password: passwordController.text, otp: otp));
+              });
             } else {
               Get.offAllNamed(MyRouters.bottomNavbar);
             }
           });
           return;
-        } else {
+        } catch (e) {
           Helper.hideLoader(loader);
+          print(e.toString());
           if (!kIsWeb) {
-            Fluttertoast.showToast(msg: 'Incorrect Credential');
+            if (e.toString() ==
+                "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
+              Fluttertoast.showToast(msg: "credential is incorrect");
+            } else {
+              Fluttertoast.showToast(msg: e.toString());
+            }
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Incorrect Credential"),
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(e.toString()),
             ));
           }
         }
@@ -323,7 +350,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     setState(() {});
                                   },
                                   child: Icon(
-                                    passwordSecure ? Icons.visibility : Icons.visibility_off,
+                                    passwordSecure ? Icons.visibility_off : Icons.visibility,
                                     size: 20,
                                     color: Colors.white,
                                   )),
@@ -373,6 +400,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           CommonButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
+                                FocusManager.instance.primaryFocus!.unfocus();
                                 checkEmailInFirestore();
                               }
                             },
@@ -404,9 +432,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            'Sign in as a business',
-                            style: GoogleFonts.poppins(color: const Color(0xFFFAAF40), fontSize: 16, fontWeight: FontWeight.w600),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Sign in as a business',
+                              style:
+                                  GoogleFonts.poppins(color: const Color(0xFFFAAF40), fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
                           ),
                           const SizedBox(
                             height: 30,
@@ -502,13 +534,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(
                             height: 30,
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Get.to(() => BottomNavbar());
-                            },
-                            child: Text(
-                              'Customer Booking?',
-                              style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                          Align(
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(() => BottomNavbar());
+                              },
+                              child: Text(
+                                'Customer Booking?',
+                                style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
                             ),
                           ),
                         ],

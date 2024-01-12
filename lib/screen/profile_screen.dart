@@ -40,6 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   File categoryFile = File("");
   Uint8List? pickedFile;
   String fileUrl = "";
+  bool twoStepVerification = false;
   void fetchdata() {
     FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
@@ -55,6 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         firstNameController.text = (profileData.userName ?? "").toString();
         lastNameController.text = (profileData.userName ?? "").toString();
         emailController.text = (profileData.email ?? "").toString();
+        twoStepVerification = profileData.twoStepVerification ?? false;
         kk++;
         setState(() {});
         if (!kIsWeb) {
