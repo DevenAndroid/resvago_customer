@@ -220,7 +220,13 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             color: AppTheme.drawerColor,
                           ),
                           onTap: () {
-                            Get.toNamed(MyRouters.notification);
+                            FirebaseAuth _auth = FirebaseAuth.instance;
+                            User? user = _auth.currentUser;
+                            if (user != null) {
+                              Get.toNamed(MyRouters.notification);
+                            } else {
+                              Get.to(() => LoginScreen());
+                            }
                           }),
                       const Divider(
                         height: 5,

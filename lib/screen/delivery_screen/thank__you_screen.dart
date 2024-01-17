@@ -28,12 +28,96 @@ class _ThankuScreenState extends State<ThankuScreen> {
     log(widget.date.toString());
     return Scaffold(
         backgroundColor: Colors.white,
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: Container(
-              padding: const EdgeInsets.only(bottom: 20),
+        body: Stack(
+          children: [
+            Container(
+              width: size.width,
+              height: size.height,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(
+                        "assets/images/Thank you.png",
+                      ))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 100),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      'assets/images/thnaku.png',
+                      height: 130,
+                    ),
+                    const SizedBox(
+                      height: 13,
+                    ),
+                    Text(
+                      'Thank you '.toUpperCase(),
+                      style: GoogleFonts.poppins(fontSize: 40, fontWeight: FontWeight.w600, color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Your reservation is confirmed',
+                      style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 18,
+                    ),
+                    Container(
+                      width: kIsWeb ? 800 : size.width * .85,
+                      height: 43,
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(20)),
+                          color: const Color(0xffFAAF40).withOpacity(.3),
+                          border: Border.all(color: const Color(0xffFAAF40))
+                          // color: Color()
+                          ),
+                      child: Center(
+                        child: widget.orderType == "Dining"
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${widget.guestNo.toString()} Guest, ",
+                                    style: GoogleFonts.poppins(
+                                        color: const Color(
+                                          0xffFAAF40,
+                                        ),
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    DateFormat("MMM-dd-yyyy").format(DateTime.parse(widget.date.toString())),
+                                    style: GoogleFonts.poppins(
+                                        color: const Color(
+                                          0xffFAAF40,
+                                        ),
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              )
+                            : Text(
+                                "Your OrderId: #${widget.orderId.toString()}",
+                                style: GoogleFonts.poppins(
+                                    color: const Color(
+                                      0xffFAAF40,
+                                    ),
+                                    fontWeight: FontWeight.w500),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ).appPaddingForScreen,
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
               child: SizedBox(
-                width: kIsWeb ? 600 : size.width,
+                width: size.width,
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
@@ -59,88 +143,9 @@ class _ThankuScreenState extends State<ThankuScreen> {
                     style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: AppTheme.primaryColor),
                   ),
                 ),
-              )),
-        ),
-        body: Container(
-          width: size.width,
-          height: size.height,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage(
-                    "assets/images/Thank you.png",
-                  ))),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 100),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Image.asset(
-                  'assets/images/thnaku.png',
-                  height: 130,
-                ),
-                const SizedBox(
-                  height: 13,
-                ),
-                Text(
-                  'Thank you '.toUpperCase(),
-                  style: GoogleFonts.poppins(fontSize: 40, fontWeight: FontWeight.w600, color: Colors.white),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  'your reservation is confirmed',
-                  style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
-                ),
-                const SizedBox(
-                  height: 18,
-                ),
-                Container(
-                  width: size.width * .85,
-                  height: 43,
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      color: const Color(0xffFAAF40).withOpacity(.3),
-                      border: Border.all(color: const Color(0xffFAAF40))
-                      // color: Color()
-                      ),
-                  child: Center(
-                    child: widget.orderType == "Dining"
-                        ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("${widget.guestNo.toString()} Guest, ",
-                                style: GoogleFonts.poppins(
-                                    color: const Color(
-                                      0xffFAAF40,
-                                    ),
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              Text(
-                                DateFormat("MMM-dd-yyyy").format(DateTime.parse(widget.date.toString())),
-                                style: GoogleFonts.poppins(
-                                    color: const Color(
-                                      0xffFAAF40,
-                                    ),
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          )
-                        : Text(
-                            "Your OrderId: #${widget.orderId.toString()}",
-                            style: GoogleFonts.poppins(
-                                color: const Color(
-                                  0xffFAAF40,
-                                ),
-                                fontWeight: FontWeight.w500),
-                          ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ).appPadding);
+              ).appPaddingForScreen,
+            )
+          ],
+        ));
   }
 }

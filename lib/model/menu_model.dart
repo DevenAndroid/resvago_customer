@@ -4,6 +4,7 @@ class MenuData {
   dynamic vendorId;
   dynamic category;
   dynamic price;
+  dynamic sellingPrice;
   dynamic docid;
   dynamic discount;
   dynamic description;
@@ -15,16 +16,32 @@ class MenuData {
   dynamic qty = 0;
   bool isCheck = false;
 
-  MenuData({this.dishName, this.category, this.price, this.docid, this.discount, this.description, this.image, this.booking,this.time,this.menuId,this.vendorId,this.bookingForDelivery,this.bookingForDining,required this.qty});
+  MenuData(
+      {this.dishName,
+      this.category,
+      this.price,
+      this.sellingPrice,
+      this.docid,
+      this.discount,
+      this.description,
+      this.image,
+      this.booking,
+      this.time,
+      this.menuId,
+      this.vendorId,
+      this.bookingForDelivery,
+      this.bookingForDining,
+      required this.qty});
 
   Map<String, dynamic> toMap() {
     return {
       "menuId": menuId,
-      "qty":qty,
+      "qty": qty,
       "vendorId": vendorId,
       "dishName": dishName,
       "category": category,
       "price": price,
+      "sellingPrice": sellingPrice,
       "docid": docid,
       "discount": discount,
       "description": description,
@@ -44,6 +61,7 @@ class MenuData {
       menuId: menuId,
       category: map['category'],
       price: map['price'],
+      sellingPrice: map['sellingPrice'],
       discount: map['discount'],
       docid: map['docid'],
       description: map['description'],

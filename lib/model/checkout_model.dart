@@ -6,18 +6,10 @@ class CheckOutModel {
   dynamic time;
   dynamic userId;
 
-  CheckOutModel(
-      {this.restaurantInfo,
-        this.menuList,
-        this.cartId,
-        this.vendorId,
-        this.time,
-        this.userId});
+  CheckOutModel({this.restaurantInfo, this.menuList, this.cartId, this.vendorId, this.time, this.userId});
 
   CheckOutModel.fromJson(Map<String, dynamic> json) {
-    restaurantInfo = json['restaurantInfo'] != null
-        ? RestaurantInfo.fromJson(json['restaurantInfo'])
-        : null;
+    restaurantInfo = json['restaurantInfo'] != null ? RestaurantInfo.fromJson(json['restaurantInfo']) : null;
     if (json['menuList'] != null) {
       menuList = <MenuList>[];
       json['menuList'].forEach((v) {
@@ -67,22 +59,22 @@ class RestaurantInfo {
 
   RestaurantInfo(
       {this.aboutUs,
-        this.fcm,
-        this.image,
-        this.address,
-        this.mobileNumber,
-        this.docid,
-        this.latitude,
-        this.userID,
-        this.password,
-        this.restaurantName,
-        this.restaurantImage,
-        this.confirmPassword,
-        this.menuImage,
-        this.category,
-        this.email,
-        this.order_count,
-        this.longitude});
+      this.fcm,
+      this.image,
+      this.address,
+      this.mobileNumber,
+      this.docid,
+      this.latitude,
+      this.userID,
+      this.password,
+      this.restaurantName,
+      this.restaurantImage,
+      this.confirmPassword,
+      this.menuImage,
+      this.category,
+      this.email,
+      this.order_count,
+      this.longitude});
 
   RestaurantInfo.fromJson(Map<String, dynamic> json) {
     aboutUs = json['aboutUs'];
@@ -136,6 +128,7 @@ class MenuList {
   dynamic discount;
   bool? bookingForDining;
   dynamic price;
+  dynamic sellingPrice;
   dynamic qty;
   bool? bookingForDelivery;
   dynamic menuId;
@@ -145,19 +138,20 @@ class MenuList {
 
   MenuList(
       {this.image,
-        this.booking,
-        this.docid,
-        this.vendorId,
-        this.description,
-        this.discount,
-        this.bookingForDining,
-        this.price,
-        this.qty,
-        this.bookingForDelivery,
-        this.menuId,
-        this.dishName,
-        this.time,
-        this.category});
+      this.booking,
+      this.docid,
+      this.vendorId,
+      this.description,
+      this.discount,
+      this.bookingForDining,
+      this.price,
+      this.sellingPrice,
+      this.qty,
+      this.bookingForDelivery,
+      this.menuId,
+      this.dishName,
+      this.time,
+      this.category});
 
   MenuList.fromJson(Map<String, dynamic> json) {
     image = json['image'];
@@ -168,6 +162,7 @@ class MenuList {
     discount = json['discount'];
     bookingForDining = json['bookingForDining'];
     price = json['price'];
+    sellingPrice = json['sellingPrice'];
     qty = json['qty'];
     bookingForDelivery = json['bookingForDelivery'];
     menuId = json['menuId'];
@@ -186,6 +181,7 @@ class MenuList {
     data['discount'] = discount;
     data['bookingForDining'] = bookingForDining;
     data['price'] = price;
+    data['sellingPrice'] = sellingPrice;
     data['qty'] = qty;
     data['bookingForDelivery'] = bookingForDelivery;
     data['menuId'] = menuId;

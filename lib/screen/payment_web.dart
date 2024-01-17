@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 class PaymentScreen extends StatefulWidget {
@@ -24,7 +23,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
       body: Center(
         child: url.isNotEmpty ?
-        WebViewWidget(controller: webViewController!)
+        WebViewWidget(controller: webViewController!,)
             : ElevatedButton(
           onPressed: () async {
             try {
@@ -88,11 +87,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
     url = paymentUrl;
     webViewController = WebViewController();
     webViewController!.loadRequest(Uri.parse(url));
-    // webViewController.platform.se
     setState(() {});
     launch(paymentUrl);
-    // Open a webview or launch a browser to the payment URL
-    // Handle the return URL in the webview or browser navigation
     print('Payment URL: $paymentUrl');
   }
 }

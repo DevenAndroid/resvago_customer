@@ -28,7 +28,7 @@ class FirebaseService {
         "email": email,
         "docid": FirebaseAuth.instance.currentUser!.uid,
         "mobileNumber": mobileNumber,
-        "userID": mobileNumber,
+        "userID": FirebaseAuth.instance.currentUser!.uid,
         "profile_image": "",
         "password": password,
         "deactivate": false,

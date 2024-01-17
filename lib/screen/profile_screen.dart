@@ -128,7 +128,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         "code": code,
         "country": country,
         "profile_image": imageUrlProfile,
-        "deactivate": false,
       }).then((value) => Fluttertoast.showToast(msg: "Profile Updated"));
       log("profile data" + profileData.mobileNumber.toString());
       Helper.hideLoader(loader);

@@ -334,9 +334,9 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                           itemCount: menuList!.length,
                           itemBuilder: (context, index) {
                             var menuListData = menuList![index];
-                            double? priceValue = double.tryParse(menuListData.price);
-                            double? discountValue = double.tryParse(menuListData.discount);
-                            result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
+                            // double? priceValue = double.tryParse(menuListData.price);
+                            // double? discountValue = double.tryParse(menuListData.discount);
+                            // result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
                             return Column(children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -401,7 +401,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                               ),
                                             ),
                                             Text(
-                                              "\$${result.toString()}",
+                                              "\$${menuListData.sellingPrice.toString()}",
                                               style: GoogleFonts.poppins(
                                                   fontSize: 14,
                                                   // fontWeight: FontWeight.w400,

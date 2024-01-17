@@ -15,29 +15,24 @@ import '../widget/custom_textfield.dart';
 import 'helper.dart';
 import 'dart:math';
 
-enum TwoStepVerification { Mobile, EmailPassword }
+enum OtpVerify { Mobile, EmailPassword }
 
-class TwoStepVerificationScreen extends StatefulWidget {
+class OtpVerifyScreen extends StatefulWidget {
+  OtpVerifyScreen({super.key, required this.email, required this.otp});
   String email;
-  String password;
   String otp;
-  TwoStepVerificationScreen({super.key, required this.email, required this.password, required this.otp});
-
   @override
-  State<TwoStepVerificationScreen> createState() => _TwoStepVerificationScreenState();
+  State<OtpVerifyScreen> createState() => _OtpVerifyScreenState();
 }
 
-class _TwoStepVerificationScreenState extends State<TwoStepVerificationScreen> {
+class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool showOtpField = false;
   EmailOTP myauth = EmailOTP();
   String verificationId = "";
   String code = "+353";
-  TwoStepVerification loginOption = TwoStepVerification.Mobile;
-  TextEditingController emailController = TextEditingController();
+  OtpVerify loginOption = OtpVerify.Mobile;
   TextEditingController otpController = TextEditingController();
-  // TextEditingController passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   final loginController = Get.put(LoginController());
   List<TextEditingController> otpControllers = List.generate(6, (index) => TextEditingController());
 
@@ -45,9 +40,6 @@ class _TwoStepVerificationScreenState extends State<TwoStepVerificationScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (widget.email.isNotEmpty) {
-      emailController.text = widget.email;
-    }
     FirebaseAuth.instance.signOut();
   }
 
@@ -129,32 +121,22 @@ class _TwoStepVerificationScreenState extends State<TwoStepVerificationScreen> {
                                                           ));
                                                         }
                                                       } else {
-                                                        OverlayEntry loader = Helper.overlayLoader(context);
-                                                        Overlay.of(context).insert(loader);
-                                                        FirebaseAuth.instance
-                                                            .signInWithEmailAndPassword(
-                                                          email: widget.email,
-                                                          password: widget.password,
-                                                        )
-                                                            .then((value) {
-                                                          Helper.hideLoader(loader);
-                                                          FirebaseFirestore.instance.collection("send_mail").add({
-                                                            "to": widget.email.trim(),
-                                                            "message": {
-                                                              "subject": "This is a otp email",
-                                                              "html": "You have logged in new device",
-                                                              "text": "asdfgwefddfgwefwn",
-                                                            }
-                                                          });
-                                                          if (!kIsWeb) {
-                                                            Fluttertoast.showToast(msg: 'Verify otp successfully');
-                                                          } else {
-                                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                              content: Text("Verify otp successfully"),
-                                                            ));
+                                                        FirebaseFirestore.instance.collection("send_mail").add({
+                                                          "to": widget.email,
+                                                          "message": {
+                                                            "subject": "This is a otp email",
+                                                            "html": "You have logged in new device",
+                                                            "text": "asdfgwefddfgwefwn",
                                                           }
-                                                          Get.offAllNamed(MyRouters.bottomNavbar);
                                                         });
+                                                        if (!kIsWeb) {
+                                                          Fluttertoast.showToast(msg: 'Verify otp successfully');
+                                                        } else {
+                                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                            content: Text("Verify otp successfully"),
+                                                          ));
+                                                        }
+                                                        Get.offAllNamed(MyRouters.loginScreen);
                                                       }
                                                     }
                                                   },
@@ -199,24 +181,22 @@ class _TwoStepVerificationScreenState extends State<TwoStepVerificationScreen> {
                                           ));
                                         }
                                       } else {
-                                        OverlayEntry loader = Helper.overlayLoader(context);
-                                        Overlay.of(context).insert(loader);
-                                        FirebaseAuth.instance
-                                            .signInWithEmailAndPassword(
-                                          email: widget.email,
-                                          password: widget.password,
-                                        )
-                                            .then((value) {
-                                          Helper.hideLoader(loader);
-                                          if (!kIsWeb) {
-                                            Fluttertoast.showToast(msg: 'Verify otp successfully');
-                                          } else {
-                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                              content: Text("Verify otp successfully"),
-                                            ));
+                                        FirebaseFirestore.instance.collection("send_mail").add({
+                                          "to": widget.email,
+                                          "message": {
+                                            "subject": "This is a otp email",
+                                            "html": "You have logged in new device",
+                                            "text": "asdfgwefddfgwefwn",
                                           }
-                                          Get.offAllNamed(MyRouters.bottomNavbar);
                                         });
+                                        if (!kIsWeb) {
+                                          Fluttertoast.showToast(msg: 'Verify otp successfully');
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                            content: Text("Verify otp successfully"),
+                                          ));
+                                        }
+                                        Get.offAllNamed(MyRouters.loginScreen);
                                       }
                                     }),
                               const SizedBox(

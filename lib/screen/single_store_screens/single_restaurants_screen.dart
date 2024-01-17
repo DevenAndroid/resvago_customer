@@ -204,10 +204,9 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                           return Container(
                               width: size.width,
                               height: size.height * .20,
-                              child: const Icon(
-                                Icons.error,
-                                color: Colors.red,
-                                size: 20,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.asset(AppAssets.storeIcon),
                               ));
                         },
                       ),
@@ -417,7 +416,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                           )),
                                       textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                               child: Text(
-                                "Select Date",
+                                "Booking",
                                 style: currentDrawer == 0
                                     ? GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white)
                                     : GoogleFonts.poppins(
@@ -457,7 +456,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                             color: Color(0xFF3B5998),
                                           )),
                                       textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                              child: Text("Menu List",
+                              child: Text("Details",
                                   style: currentDrawer == 1
                                       ? GoogleFonts.poppins(
                                           fontSize: 15,
@@ -648,9 +647,9 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                               itemCount: menuList!.length,
                                               itemBuilder: (context, index) {
                                                 var menuListData = menuList![index];
-                                                double? priceValue = double.tryParse(menuListData.price);
-                                                double? discountValue = double.tryParse(menuListData.discount);
-                                                result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
+                                                // double? priceValue = double.tryParse(menuListData.price);
+                                                // double? discountValue = double.tryParse(menuListData.discount);
+                                                // result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
                                                 return Column(children: [
                                                   const SizedBox(
                                                     height: 10,
@@ -749,7 +748,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                                 ),
                                                               ),
                                                               Text(
-                                                                "\$${result.toString()}",
+                                                                "\$${menuListData.sellingPrice.toString()}",
                                                                 style: GoogleFonts.poppins(
                                                                     fontSize: 14,
                                                                     // fontWeight: FontWeight.w400,

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/screen/verify_otp_screen.dart';
 import '../controller/logn_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../routers/routers.dart';
@@ -37,12 +39,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String verificationId = "";
   bool value = false;
   bool passwordSecure = true;
-  var confirmPasswordSecure = true;
+  bool confirmPasswordSecure = true;
   bool showValidation = false;
+
+  String otp = '';
+  void generateOTP() {
+    int otpLength = 6;
+    Random random = Random();
+    String otpCode = '';
+    for (int i = 0; i < otpLength; i++) {
+      otpCode += random.nextInt(10).toString();
+    }
+    setState(() {
+      otp = otpCode;
+    });
+  }
   FirebaseService firebaseService = FirebaseService();
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
+    generateOTP();
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
     if (FirebaseAuth.instance.currentUser != null) {
@@ -53,14 +69,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
               password: passwordController.text.trim())
           .then((value) async {
         Helper.hideLoader(loader);
-        if (!kIsWeb) {
-          Fluttertoast.showToast(msg: 'User created successfully');
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("User created successfully"),
-          ));
-        }
-        Get.toNamed(MyRouters.loginScreen);
+        FirebaseFirestore.instance.collection("send_mail").add({
+          "to": emailController.text.trim(),
+          "message": {
+            "subject": "This is a otp email",
+            "html": "Your otp is $otp",
+            "text": "asdfgwefddfgwefwn",
+          }
+        }).then((value) {
+          if (!kIsWeb) {
+            Fluttertoast.showToast(msg: 'Otp email sent to ${emailController.text.trim()}');
+          }
+          else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Otp email sent to ${emailController.text.trim()}"),
+            ));
+          }
+          Get.to(() => OtpVerifyScreen(email: emailController.text,otp: otp));
+        });
+        // if (!kIsWeb) {
+        //   Fluttertoast.showToast(msg: 'User created successfully');
+        // } else {
+        //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        //     content: Text("User created successfully"),
+        //   ));
+        // }
+        // Get.toNamed(MyRouters.loginScreen);
       });
     }
   }
@@ -93,7 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child:
                       Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                     const SizedBox(
-                      height: 220,
+                      height: 240,
                     ),
                     Align(
                       alignment: Alignment.center,

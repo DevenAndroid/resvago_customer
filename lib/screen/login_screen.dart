@@ -119,7 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
               }).then((value) {
                 if (!kIsWeb) {
                   Fluttertoast.showToast(msg: 'Otp email sent to ${emailController.text.trim()}');
-                } else {
+                }
+                else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text("Otp email sent to ${emailController.text.trim()}"),
                   ));
@@ -127,6 +128,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 Get.to(() => TwoStepVerificationScreen(email: emailController.text, password: passwordController.text, otp: otp));
               });
             } else {
+              FirebaseFirestore.instance.collection("send_mail").add({
+                "to": emailController.text.trim(),
+                "message": {
+                  "subject": "This is a otp email",
+                  "html": "You have logged in new device",
+                  "text": "asdfgwefddfgwefwn",
+                }
+              });
               Get.offAllNamed(MyRouters.bottomNavbar);
             }
           });
@@ -141,10 +150,17 @@ class _LoginScreenState extends State<LoginScreen> {
             } else {
               Fluttertoast.showToast(msg: e.toString());
             }
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(e.toString()),
-            ));
+          }  else {
+            if (e.toString() == "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("credential is incorrect"),
+              ));
+            }
+            else{
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(e.toString()),
+              ));
+            }
           }
         }
       } else {

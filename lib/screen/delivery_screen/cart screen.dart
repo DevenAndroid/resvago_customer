@@ -67,7 +67,7 @@ class _CartScreenState extends State<CartScreen> {
         return {
           "name": item["dishName"],
           "quantity": item["qty"],
-          "price": double.parse(item["price"]).toStringAsFixed(2).toString(),
+          "price": double.parse(item["sellingPrice"].toString()).toStringAsFixed(2).toString(),
           "currency": "USD"
         };
       }).toList();
@@ -101,7 +101,7 @@ class _CartScreenState extends State<CartScreen> {
     if (cartModel.menuList == null) return 0;
     totalPrice = 0;
     for (int i = 0; i < cartModel.menuList!.length; i++) {
-      totalPrice = totalPrice + double.parse(cartModel.menuList![i].qty.toString()) * double.parse(cartModel.menuList![i].price);
+      totalPrice = totalPrice + double.parse(cartModel.menuList![i].qty.toString()) * double.parse(cartModel.menuList![i].sellingPrice.toString());
       if (adminModel != null) {
         result = (totalPrice * double.parse(adminModel!.adminCommission)) / 100;
         log("sadsfgdg" + result.toString());
@@ -167,7 +167,7 @@ class _CartScreenState extends State<CartScreen> {
               address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
               couponDiscount: couponDiscount,
               fcm: fcm,
-              total: totalPrice,
+              total: calculateTotalPrice,
               admin_commission: result)
           .then((value) {
         Helper.hideLoader(loader);
@@ -303,6 +303,7 @@ class _CartScreenState extends State<CartScreen> {
                                                           cartModel.menuList!.removeAt(index);
                                                         }
                                                         await updateFirebaseValues();
+                                                        getCheckOutData();
                                                         getTotalPrice();
                                                         setState(() {});
                                                       },
@@ -337,6 +338,7 @@ class _CartScreenState extends State<CartScreen> {
                                                         onTap: () async {
                                                           item.qty++;
                                                           await updateFirebaseValues();
+                                                          getCheckOutData();
                                                           getTotalPrice();
                                                           setState(() {});
                                                         },
@@ -550,7 +552,7 @@ class _CartScreenState extends State<CartScreen> {
                           style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                         ),
                         Text(
-                          '\$$totalPrice',
+                          '\$$calculateTotalPrice',
                           style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
                         ),
                       ],
@@ -809,7 +811,7 @@ class _CartScreenState extends State<CartScreen> {
                             // return;
 
                             if (kIsWeb) {
-                              order(cartModel.vendorId).then((value2) {
+                              order(cartModel.vendorId).then((value) {
                                 FirebaseFirestore.instance
                                     .collection("checkOut")
                                     .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -830,7 +832,15 @@ class _CartScreenState extends State<CartScreen> {
                                     "text": "asdfgwefddfgwefwn",
                                   }
                                 });
-                                Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
+                                FirebaseFirestore.instance
+                                    .collection('notification')
+                                    .add({
+                                  'title': "Your Order has been created with Order ID ${value.toString()}",
+                                  'body': "Your Order has been created with Order ID ${value.toString()}",
+                                  'date': DateTime.now(),
+                                  'userId': FirebaseAuth.instance.currentUser!.uid
+                                });
+                                Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
                               });
                               // try {
                               //   await payPalService.createOrder().then((value) async {
@@ -916,6 +926,14 @@ class _CartScreenState extends State<CartScreen> {
                                               "html": "You have received a new order for Delivery",
                                               "text": "asdfgwefddfgwefwn",
                                             }
+                                          });
+                                          FirebaseFirestore.instance
+                                              .collection('notification')
+                                              .add({
+                                            'title': "Your Order has been created with Order ID ${value.toString()}",
+                                            'body': "Your Order has been created with Order ID ${value.toString()}",
+                                            'date': DateTime.now(),
+                                            'userId': FirebaseAuth.instance.currentUser!.uid
                                           });
                                           Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
                                           sendPushNotification(

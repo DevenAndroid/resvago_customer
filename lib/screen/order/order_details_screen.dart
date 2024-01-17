@@ -338,7 +338,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                         height: 3,
                                                       ),
                                                       Text(
-                                                        "\$${menuData.price}",
+                                                        "\$${menuData.sellingPrice}",
                                                         style: GoogleFonts.poppins(
                                                             color: const Color(0xFF384953),
                                                             fontWeight: FontWeight.w300,
@@ -900,7 +900,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                             height: 6,
                                                           ),
                                                           Text(
-                                                            "\$${menuData.price}",
+                                                            "\$${menuData.sellingPrice}",
                                                             style: GoogleFonts.poppins(
                                                                 color: const Color(0xFF384953),
                                                                 fontWeight: FontWeight.w300,

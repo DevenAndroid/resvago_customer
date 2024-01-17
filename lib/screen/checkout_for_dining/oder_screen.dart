@@ -49,11 +49,11 @@ class _OderScreenState extends State<OderScreen> {
   List<MenuData>? get menuListData => widget.menuList;
   CouponData? couponData;
   var totalPrice = 0.0;
-  double result = 0.0;
   double getTotalPrice() {
     totalPrice = 0;
     for (int i = 0; i < menuListData!.length; i++) {
-      totalPrice = totalPrice + double.parse(menuListData![i].qty.toString()) * double.parse(menuListData![i].price.toString());
+      totalPrice =
+          totalPrice + double.parse(menuListData![i].qty.toString()) * double.parse(menuListData![i].sellingPrice.toString());
       log(totalPrice.toString());
     }
     return totalPrice;
@@ -83,7 +83,7 @@ class _OderScreenState extends State<OderScreen> {
       return {
         "name": item["dishName"],
         "quantity": item["qty"],
-        "price": double.parse(item["price"]).toString(),
+        "price": double.parse(item["sellingPrice"].toString()).toString(),
         "currency": "USD"
       };
     }).toList();
@@ -372,9 +372,9 @@ class _OderScreenState extends State<OderScreen> {
                                       itemCount: menuListData!.length,
                                       itemBuilder: (context, index) {
                                         var menuListItem = menuListData![index];
-                                        double? priceValue = double.tryParse(menuListItem.price);
-                                        double? discountValue = double.tryParse(menuListItem.discount);
-                                        result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
+                                        // double? priceValue = double.tryParse(menuListItem.price);
+                                        // double? discountValue = double.tryParse(menuListItem.discount);
+                                        // result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
                                         return Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 5),
                                           child: Column(children: [
@@ -416,7 +416,7 @@ class _OderScreenState extends State<OderScreen> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          "\$${result.toString()}",
+                                                          "\$${menuListItem.sellingPrice.toString()}",
                                                           style: GoogleFonts.poppins(
                                                               fontSize: 14,
                                                               // fontWeight: FontWeight.w400,
@@ -750,28 +750,136 @@ class _OderScreenState extends State<OderScreen> {
                                       const SizedBox(
                                         height: 12,
                                       ),
-                                      Container(
-                                        width: size.width,
-                                        decoration: BoxDecoration(
-                                            borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                            border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                                          child: Row(
-                                            children: [
-                                              Image.asset(
-                                                "assets/icons/phonepay.png",
-                                                height: 20,
+                                      GestureDetector(
+                                        onTap: (){
+                                          if (menuListData!.isNotEmpty) {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (BuildContext context) => UsePaypal(
+                                                    sandboxMode: true,
+                                                    // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
+                                                    // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
+                                                    clientId:
+                                                    "AYBmWmZ1iXnGwAqSsmGdqTZFeJ6RYu-rBjGWFLnuX-kDfvLqa8qp75RPCzhaetorPoFrxqZJu0cPccd_",
+                                                    secretKey:
+                                                    "EJIKzLSexzl_2VKzn9aoNa_J6tpdDFzz4zgm2xAPxw3WWZvkInjPW8wGVlRk-zvz5QhFiCbPrJrtBy8H",
+                                                    returnURL: "https://samplesite.com/return",
+                                                    cancelURL: "https://samplesite.com/cancel",
+                                                    transactions: [
+                                                      {
+                                                        "amount": {
+                                                          "total": calculateTotalPrice.toString(),
+                                                          "currency": "USD",
+                                                          "details": {
+                                                            "subtotal": calculateTotalPrice.toString(),
+                                                            "shipping": '0',
+                                                            "shipping_discount": 0
+                                                          }
+                                                        },
+                                                        "description": "The payment transaction description.",
+                                                        // "payment_options": {
+                                                        //   "allowed_payment_method":
+                                                        //       "INSTANT_FUNDING_SOURCE"
+                                                        // },
+                                                        "item_list": {
+                                                          "items": extractedData,
+                                                        },
+                                                        // shipping address is not required though
+                                                        // "shipping_address": {
+                                                        //   "recipient_name": "Jane Foster",
+                                                        //   "line1": "Travis County",
+                                                        //   "line2": "",
+                                                        //   "city": "Austin",
+                                                        //   "country_code": "US",
+                                                        //   "phone": "+00000000",
+                                                        //   "state": "Texas"
+                                                        // },
+                                                      }
+                                                    ],
+                                                    note: "Contact us for any questions on your order.",
+                                                    onSuccess: (Map params) async {
+                                                      print("onSuccess: ${params}");
+                                                      order(restaurantData!.docid, "online").then((value) {
+                                                        updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
+                                                        FirebaseFirestore.instance
+                                                            .collection("checkOut")
+                                                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                                                            .delete();
+                                                        FirebaseFirestore.instance.collection("send_mail").add({
+                                                          "to": "${profileData!.email}",
+                                                          "message": {
+                                                            "subject": "This is a basic email",
+                                                            "html": "Your order has been created",
+                                                            "text": "asdfgwefddfgwefwn",
+                                                          }
+                                                        });
+                                                        FirebaseFirestore.instance.collection("send_mail").add({
+                                                          "to": "${widget.restaurantItem!.email}",
+                                                          "message": {
+                                                            "subject": "This is a basic email",
+                                                            "html": "You have received a new order for Dining",
+                                                            "text": "asdfgwefddfgwefwn",
+                                                          }
+                                                        });
+                                                        FirebaseFirestore.instance
+                                                            .collection('notification')
+                                                            .add({
+                                                          'title': "Your Order has been created with Order ID ${value.toString()}",
+                                                          'body': "Your Order has been created with Order ID ${value.toString()}",
+                                                          'date': DateTime.now(),
+                                                          'userId': FirebaseAuth.instance.currentUser!.uid
+                                                        });
+                                                        Get.offAll(ThankuScreen(
+                                                          date: widget.date.toString(),
+                                                          guestNo: widget.guest,
+                                                          orderType: "Dining",
+                                                          orderId: value.toString(),
+                                                        ));
+                                                        sendPushNotification(
+                                                            body: "Order received",
+                                                            deviceToken: widget.restaurantItem!.fcm,
+                                                            image:
+                                                            "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                                            title: "You have received a new order for Dining",
+                                                            orderID: "");
+                                                      });
+                                                    },
+                                                    onError: (error) {
+                                                      print("onError: $error");
+                                                    },
+                                                    onCancel: (params) {
+                                                      print('cancelled: $params');
+                                                    }),
                                               ),
-                                              const SizedBox(
-                                                width: 18,
-                                              ),
-                                              Text(
-                                                'PayPay',
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
-                                              ),
-                                            ],
+                                            );
+                                          }
+                                          else{
+                                            showToast("Menu is required");
+                                          }
+                                        },
+                                        child: Container(
+                                          width: size.width,
+                                          decoration: BoxDecoration(
+                                              borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                              border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  "assets/icons/phonepay.png",
+                                                  height: 20,
+                                                ),
+                                                const SizedBox(
+                                                  width: 18,
+                                                ),
+                                                Text(
+                                                  'PayPay',
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -846,6 +954,14 @@ class _OderScreenState extends State<OderScreen> {
                                   "text": "asdfgwefddfgwefwn",
                                 }
                               });
+                              FirebaseFirestore.instance
+                                  .collection('notification')
+                                  .add({
+                                'title': "Your Order has been created with Order ID ${value.toString()}",
+                                'body': "Your Order has been created with Order ID ${value.toString()}",
+                                'date': DateTime.now(),
+                                'userId': FirebaseAuth.instance.currentUser!.uid
+                              });
                               Get.offAll(ThankuScreen(
                                 date: widget.date.toString(),
                                 guestNo: widget.guest,
@@ -854,135 +970,194 @@ class _OderScreenState extends State<OderScreen> {
                               ));
                             });
                           } else {
-                            if (menuListData!.isNotEmpty) {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => UsePaypal(
-                                      sandboxMode: true,
-                                      // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
-                                      // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
-                                      clientId:
-                                          "AYBmWmZ1iXnGwAqSsmGdqTZFeJ6RYu-rBjGWFLnuX-kDfvLqa8qp75RPCzhaetorPoFrxqZJu0cPccd_",
-                                      secretKey:
-                                          "EJIKzLSexzl_2VKzn9aoNa_J6tpdDFzz4zgm2xAPxw3WWZvkInjPW8wGVlRk-zvz5QhFiCbPrJrtBy8H",
-                                      returnURL: "https://samplesite.com/return",
-                                      cancelURL: "https://samplesite.com/cancel",
-                                      transactions: [
-                                        {
-                                          "amount": {
-                                            "total": calculateTotalPrice.toString(),
-                                            "currency": "USD",
-                                            "details": {
-                                              "subtotal": calculateTotalPrice.toString(),
-                                              "shipping": '0',
-                                              "shipping_discount": 0
-                                            }
-                                          },
-                                          "description": "The payment transaction description.",
-                                          // "payment_options": {
-                                          //   "allowed_payment_method":
-                                          //       "INSTANT_FUNDING_SOURCE"
-                                          // },
-                                          "item_list": {
-                                            "items": extractedData,
-                                          },
-                                          // shipping address is not required though
-                                          // "shipping_address": {
-                                          //   "recipient_name": "Jane Foster",
-                                          //   "line1": "Travis County",
-                                          //   "line2": "",
-                                          //   "city": "Austin",
-                                          //   "country_code": "US",
-                                          //   "phone": "+00000000",
-                                          //   "state": "Texas"
-                                          // },
-                                        }
-                                      ],
-                                      note: "Contact us for any questions on your order.",
-                                      onSuccess: (Map params) async {
-                                        print("onSuccess: ${params}");
-                                        order(restaurantData!.docid, "online").then((value) {
-                                          updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
-                                          FirebaseFirestore.instance
-                                              .collection("checkOut")
-                                              .doc(FirebaseAuth.instance.currentUser!.uid)
-                                              .delete();
-                                          FirebaseFirestore.instance.collection("send_mail").add({
-                                            "to": "${profileData!.email}",
-                                            "message": {
-                                              "subject": "This is a basic email",
-                                              "html": "Your order has been created",
-                                              "text": "asdfgwefddfgwefwn",
-                                            }
-                                          });
-                                          FirebaseFirestore.instance.collection("send_mail").add({
-                                            "to": "${widget.restaurantItem!.email}",
-                                            "message": {
-                                              "subject": "This is a basic email",
-                                              "html": "You have received a new order for Dining",
-                                              "text": "asdfgwefddfgwefwn",
-                                            }
-                                          });
-                                          Get.offAll(ThankuScreen(
-                                            date: widget.date.toString(),
-                                            guestNo: widget.guest,
-                                            orderType: "Dining",
-                                            orderId: value.toString(),
-                                          ));
-                                          sendPushNotification(
-                                              body: "Order received",
-                                              deviceToken: widget.restaurantItem!.fcm,
-                                              image:
-                                                  "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                              title: "You have received a new order for Dining",
-                                              orderID: "");
-                                        });
-                                      },
-                                      onError: (error) {
-                                        print("onError: $error");
-                                      },
-                                      onCancel: (params) {
-                                        print('cancelled: $params');
-                                      }),
-                                ),
-                              );
-                            } else {
-                              order(restaurantData!.docid, "COD").then((value) {
-                                updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
-                                FirebaseFirestore.instance
-                                    .collection("checkOut")
-                                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                                    .delete();
-                                FirebaseFirestore.instance.collection("send_mail").add({
-                                  "to": "${profileData!.email}",
-                                  "message": {
-                                    "subject": "This is a basic email",
-                                    "html": "Your order has been created",
-                                    "text": "asdfgwefddfgwefwn",
-                                  }
-                                });
-                                FirebaseFirestore.instance.collection("send_mail").add({
-                                  "to": "${widget.restaurantItem!.email}",
-                                  "message": {
-                                    "subject": "This is a basic email",
-                                    "html": "You have received a new order for Dining",
-                                    "text": "asdfgwefddfgwefwn",
-                                  }
-                                });
-                                Get.offAll(ThankuScreen(
-                                  date: widget.date.toString(),
-                                  guestNo: widget.guest,
-                                  orderType: "Dining",
-                                  orderId: value.toString(),
-                                ));
-                                sendPushNotification(
-                                    body: "Order received",
-                                    deviceToken: widget.restaurantItem!.fcm,
-                                    image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                    title: "You have received a new order for Dining",
-                                    orderID: "");
+                            order(restaurantData!.docid, "COD").then((value) {
+                              updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
+                              FirebaseFirestore.instance
+                                  .collection("checkOut")
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                                  .delete();
+                              FirebaseFirestore.instance.collection("send_mail").add({
+                                "to": "${profileData!.email}",
+                                "message": {
+                                  "subject": "This is a basic email",
+                                  "html": "Your order has been created",
+                                  "text": "asdfgwefddfgwefwn",
+                                }
                               });
-                            }
+                              FirebaseFirestore.instance.collection("send_mail").add({
+                                "to": "${widget.restaurantItem!.email}",
+                                "message": {
+                                  "subject": "This is a basic email",
+                                  "html": "You have received a new order for Dining",
+                                  "text": "asdfgwefddfgwefwn",
+                                }
+                              });
+                              FirebaseFirestore.instance
+                                  .collection('notification')
+                                  .add({
+                                'title': "Your Order has been created with Order ID ${value.toString()}",
+                                'body': "Your Order has been created with Order ID ${value.toString()}",
+                                'date': DateTime.now(),
+                                'userId': FirebaseAuth.instance.currentUser!.uid
+                              });
+                              Get.offAll(ThankuScreen(
+                                date: widget.date.toString(),
+                                guestNo: widget.guest,
+                                orderType: "Dining",
+                                orderId: value.toString(),
+                              ));
+                              sendPushNotification(
+                                  body: "Order received",
+                                  deviceToken: widget.restaurantItem!.fcm,
+                                  image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                  title: "You have received a new order for Dining",
+                                  orderID: "");
+                            });
+                            // if (menuListData!.isNotEmpty) {
+                            //   Navigator.of(context).push(
+                            //     MaterialPageRoute(
+                            //       builder: (BuildContext context) => UsePaypal(
+                            //           sandboxMode: true,
+                            //           // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
+                            //           // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
+                            //           clientId:
+                            //               "AYBmWmZ1iXnGwAqSsmGdqTZFeJ6RYu-rBjGWFLnuX-kDfvLqa8qp75RPCzhaetorPoFrxqZJu0cPccd_",
+                            //           secretKey:
+                            //               "EJIKzLSexzl_2VKzn9aoNa_J6tpdDFzz4zgm2xAPxw3WWZvkInjPW8wGVlRk-zvz5QhFiCbPrJrtBy8H",
+                            //           returnURL: "https://samplesite.com/return",
+                            //           cancelURL: "https://samplesite.com/cancel",
+                            //           transactions: [
+                            //             {
+                            //               "amount": {
+                            //                 "total": calculateTotalPrice.toString(),
+                            //                 "currency": "USD",
+                            //                 "details": {
+                            //                   "subtotal": calculateTotalPrice.toString(),
+                            //                   "shipping": '0',
+                            //                   "shipping_discount": 0
+                            //                 }
+                            //               },
+                            //               "description": "The payment transaction description.",
+                            //               // "payment_options": {
+                            //               //   "allowed_payment_method":
+                            //               //       "INSTANT_FUNDING_SOURCE"
+                            //               // },
+                            //               "item_list": {
+                            //                 "items": extractedData,
+                            //               },
+                            //               // shipping address is not required though
+                            //               // "shipping_address": {
+                            //               //   "recipient_name": "Jane Foster",
+                            //               //   "line1": "Travis County",
+                            //               //   "line2": "",
+                            //               //   "city": "Austin",
+                            //               //   "country_code": "US",
+                            //               //   "phone": "+00000000",
+                            //               //   "state": "Texas"
+                            //               // },
+                            //             }
+                            //           ],
+                            //           note: "Contact us for any questions on your order.",
+                            //           onSuccess: (Map params) async {
+                            //             print("onSuccess: ${params}");
+                            //             order(restaurantData!.docid, "online").then((value) {
+                            //               updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
+                            //               FirebaseFirestore.instance
+                            //                   .collection("checkOut")
+                            //                   .doc(FirebaseAuth.instance.currentUser!.uid)
+                            //                   .delete();
+                            //               FirebaseFirestore.instance.collection("send_mail").add({
+                            //                 "to": "${profileData!.email}",
+                            //                 "message": {
+                            //                   "subject": "This is a basic email",
+                            //                   "html": "Your order has been created",
+                            //                   "text": "asdfgwefddfgwefwn",
+                            //                 }
+                            //               });
+                            //               FirebaseFirestore.instance.collection("send_mail").add({
+                            //                 "to": "${widget.restaurantItem!.email}",
+                            //                 "message": {
+                            //                   "subject": "This is a basic email",
+                            //                   "html": "You have received a new order for Dining",
+                            //                   "text": "asdfgwefddfgwefwn",
+                            //                 }
+                            //               });
+                            //               FirebaseFirestore.instance
+                            //                   .collection('notification')
+                            //                   .add({
+                            //                 'title': "Your Order has been created with Order ID ${value.toString()}",
+                            //                 'body': "Your Order has been created with Order ID ${value.toString()}",
+                            //                 'date': DateTime.now(),
+                            //                 'userId': FirebaseAuth.instance.currentUser!.uid
+                            //               });
+                            //               Get.offAll(ThankuScreen(
+                            //                 date: widget.date.toString(),
+                            //                 guestNo: widget.guest,
+                            //                 orderType: "Dining",
+                            //                 orderId: value.toString(),
+                            //               ));
+                            //               sendPushNotification(
+                            //                   body: "Order received",
+                            //                   deviceToken: widget.restaurantItem!.fcm,
+                            //                   image:
+                            //                       "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                            //                   title: "You have received a new order for Dining",
+                            //                   orderID: "");
+                            //             });
+                            //           },
+                            //           onError: (error) {
+                            //             print("onError: $error");
+                            //           },
+                            //           onCancel: (params) {
+                            //             print('cancelled: $params');
+                            //           }),
+                            //     ),
+                            //   );
+                            // } else {
+                            //   order(restaurantData!.docid, "COD").then((value) {
+                            //     updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
+                            //     FirebaseFirestore.instance
+                            //         .collection("checkOut")
+                            //         .doc(FirebaseAuth.instance.currentUser!.uid)
+                            //         .delete();
+                            //     FirebaseFirestore.instance.collection("send_mail").add({
+                            //       "to": "${profileData!.email}",
+                            //       "message": {
+                            //         "subject": "This is a basic email",
+                            //         "html": "Your order has been created",
+                            //         "text": "asdfgwefddfgwefwn",
+                            //       }
+                            //     });
+                            //     FirebaseFirestore.instance.collection("send_mail").add({
+                            //       "to": "${widget.restaurantItem!.email}",
+                            //       "message": {
+                            //         "subject": "This is a basic email",
+                            //         "html": "You have received a new order for Dining",
+                            //         "text": "asdfgwefddfgwefwn",
+                            //       }
+                            //     });
+                            //     FirebaseFirestore.instance
+                            //         .collection('notification')
+                            //         .add({
+                            //       'title': "Your Order has been created with Order ID ${value.toString()}",
+                            //       'body': "Your Order has been created with Order ID ${value.toString()}",
+                            //       'date': DateTime.now(),
+                            //       'userId': FirebaseAuth.instance.currentUser!.uid
+                            //     });
+                            //     Get.offAll(ThankuScreen(
+                            //       date: widget.date.toString(),
+                            //       guestNo: widget.guest,
+                            //       orderType: "Dining",
+                            //       orderId: value.toString(),
+                            //     ));
+                            //     sendPushNotification(
+                            //         body: "Order received",
+                            //         deviceToken: widget.restaurantItem!.fcm,
+                            //         image: "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                            //         title: "You have received a new order for Dining",
+                            //         orderID: "");
+                            //   });
+                            // }
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -997,7 +1172,7 @@ class _OderScreenState extends State<OderScreen> {
                           textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                         ),
                         child: Text(
-                          "Place Order",
+                          "Book table".toUpperCase(),
                           style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                         ),
                       ),

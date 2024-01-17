@@ -259,6 +259,7 @@ class MenuList {
   dynamic discount;
   dynamic bookingForDining;
   dynamic price;
+  dynamic sellingPrice;
   dynamic qty;
   dynamic bookingForDelivery;
   dynamic menuId;
@@ -275,6 +276,7 @@ class MenuList {
       this.discount,
       this.bookingForDining,
       this.price,
+      this.sellingPrice,
       this.qty,
       this.bookingForDelivery,
       this.menuId,
@@ -291,6 +293,7 @@ class MenuList {
     discount = json['discount'];
     bookingForDining = json['bookingForDining'];
     price = json['price'];
+    sellingPrice = json['sellingPrice'];
     qty = json['qty'];
     bookingForDelivery = json['bookingForDelivery'];
     menuId = json['menuId'];
@@ -309,6 +312,7 @@ class MenuList {
     data['discount'] = discount;
     data['bookingForDining'] = bookingForDining;
     data['price'] = price;
+    data['sellingPrice'] = sellingPrice;
     data['qty'] = qty;
     data['bookingForDelivery'] = bookingForDelivery;
     data['menuId'] = menuId;

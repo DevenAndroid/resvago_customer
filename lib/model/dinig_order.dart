@@ -33,7 +33,7 @@ class MyDiningOrderModel {
       this.docid,
       this.customerData});
 
-  MyDiningOrderModel.fromJson(Map<String, dynamic> json,String docid) {
+  MyDiningOrderModel.fromJson(Map<String, dynamic> json, String docid) {
     date = json['date'];
     if (json['menuList'] != null) {
       menuList = <MenuList>[];
@@ -90,14 +90,13 @@ class CustomerData {
   dynamic mobileNumber;
   dynamic email;
 
-
-  CustomerData(
-      {this.userId,
-        this.userName,
-        this.email,
-        this.mobileNumber,
-        this.docid,
-      });
+  CustomerData({
+    this.userId,
+    this.userName,
+    this.email,
+    this.mobileNumber,
+    this.docid,
+  });
 
   CustomerData.fromJson(Map<String, dynamic> json) {
     userId = json['userId'];
@@ -105,7 +104,6 @@ class CustomerData {
     docid = json['docid'];
     email = json['email'];
     mobileNumber = json['mobileNumber'];
-
   }
 
   Map<String, dynamic> toJson() {
@@ -118,7 +116,6 @@ class CustomerData {
   }
 }
 
-
 class MenuList {
   dynamic image;
   dynamic booking;
@@ -128,6 +125,7 @@ class MenuList {
   dynamic description;
   dynamic bookingForDining;
   dynamic price;
+  dynamic sellingPrice;
   dynamic qty;
   dynamic bookingForDelivery;
   dynamic menuId;
@@ -144,6 +142,7 @@ class MenuList {
       this.description,
       this.bookingForDining,
       this.price,
+      this.sellingPrice,
       this.qty,
       this.bookingForDelivery,
       this.menuId,
@@ -160,6 +159,7 @@ class MenuList {
     description = json['description'];
     bookingForDining = json['bookingForDining'];
     price = json['price'];
+    sellingPrice = json['sellingPrice'];
     qty = json['qty'];
     bookingForDelivery = json['bookingForDelivery'];
     menuId = json['menuId'];
@@ -178,6 +178,7 @@ class MenuList {
     data['description'] = description;
     data['bookingForDining'] = bookingForDining;
     data['price'] = price;
+    data['sellingPrice'] = sellingPrice;
     data['qty'] = qty;
     data['bookingForDelivery'] = bookingForDelivery;
     data['menuId'] = menuId;
@@ -239,7 +240,9 @@ class RestaurantInfo {
     this.order_count,
   });
 
-  RestaurantInfo.fromJson(Map<String, dynamic> json,) {
+  RestaurantInfo.fromJson(
+    Map<String, dynamic> json,
+  ) {
     restaurantImage = json['restaurantImage'] != null ? json['restaurantImage'].cast<String>() : [];
     menuGalleryImages = json['menuImage'] != null ? json['menuImage'].cast<String>() : [];
     password = json['password'];
