@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:resvago_customer/screen/bottomnav_bar.dart';
 import 'package:resvago_customer/screen/onboarding_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_service/firebase_service.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -24,10 +25,21 @@ class _SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(builder: (context) => const BottomNavbar()),
       );
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
-      );
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool _seen = (prefs.getBool('seen') ?? false);
+
+      if (_seen) {
+        Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(builder: (context) => new BottomNavbar()));
+      } else {
+        await prefs.setBool('seen', true);
+        Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(builder: (context) => new OnBoardingScreen()));
+      }
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
+      // );
     }
   }
 

@@ -208,6 +208,14 @@ class _TwoStepVerificationScreenState extends State<TwoStepVerificationScreen> {
                                         )
                                             .then((value) {
                                           Helper.hideLoader(loader);
+                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                            "to": widget.email.trim(),
+                                            "message": {
+                                              "subject": "This is a otp email",
+                                              "html": "You have logged in new device",
+                                              "text": "asdfgwefddfgwefwn",
+                                            }
+                                          });
                                           if (!kIsWeb) {
                                             Fluttertoast.showToast(msg: 'Verify otp successfully');
                                           } else {

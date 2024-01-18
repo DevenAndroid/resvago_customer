@@ -217,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'WELCOME BACK',
+                        'WELCOME BACK'.tr,
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -231,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'Login your account.',
+                        'Login your account.'.tr,
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w300,
@@ -344,7 +344,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           CommonTextFieldWidget(
                             controller: emailController,
                             textInputAction: TextInputAction.next,
-                            hint: 'Enter your email',
+                            hint: 'Enter your email'.tr,
                             keyboardType: TextInputType.emailAddress,
                             validator: MultiValidator([
                               RequiredValidator(errorText: 'Please enter your email'),
@@ -358,7 +358,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               obscureText: passwordSecure,
                               controller: passwordController,
                               textInputAction: TextInputAction.next,
-                              hint: 'Enter your password',
+                              hint: 'Enter your password'.tr,
                               keyboardType: TextInputType.text,
                               suffix: GestureDetector(
                                   onTap: () {
@@ -392,7 +392,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Get.to(() => ForgotPassword());
                           },
                           child: Text(
-                            'Forgot Password',
+                            'Forgot Password'.tr,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w300,
@@ -430,15 +430,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                "Don't Have an Account?",
+                                "Don't Have an Account?".tr,
                                 style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
                               ),
+                              SizedBox(width: 5),
                               InkWell(
                                 onTap: () {
                                   Get.toNamed(MyRouters.signupScreen);
                                 },
                                 child: Text(
-                                  '  Signup',
+                                  'Signup'.tr,
                                   style: GoogleFonts.poppins(
                                       color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 15),
                                 ),
@@ -451,7 +452,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'Sign in as a business',
+                              'Sign in as a business'.tr,
                               style:
                                   GoogleFonts.poppins(color: const Color(0xFFFAAF40), fontSize: 16, fontWeight: FontWeight.w600),
                             ),
@@ -462,23 +463,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                height: 1,
-                                width: 110,
-                                color: const Color(0xFFD2D8DC),
+                              Expanded(
+                                child: Container(
+                                  height: 1,
+                                  // width: 110,
+                                  color: const Color(0xFFD2D8DC),
+                                ),
                               ),
-                              //SizedBox(width: 10,),
-                              Text('Or Login with',
+                              SizedBox(width: 5,),
+                              Text('Or Login with'.tr,
                                   style: GoogleFonts.poppins(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                   )),
-                              //SizedBox(width: 10,),
-                              Container(
-                                height: 1,
-                                width: 110,
-                                color: const Color(0xFFD2D8DC),
+                              SizedBox(width: 5,),
+                              Expanded(
+                                child: Container(
+                                  height: 1,
+                                  // width: 110,
+                                  color: const Color(0xFFD2D8DC),
+                                ),
                               ),
                             ],
                           ),
@@ -509,7 +514,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         width: 10,
                                       ),
                                       Text(
-                                        'Facebook',
+                                        'Facebook'.tr,
                                         style:
                                             GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
                                       )
@@ -557,7 +562,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Get.to(() => BottomNavbar());
                               },
                               child: Text(
-                                'Customer Booking?',
+                                'Customer Booking?'.tr,
                                 style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                               ),
                             ),

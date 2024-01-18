@@ -125,7 +125,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                                           "to": widget.email,
                                                           "message": {
                                                             "subject": "This is a otp email",
-                                                            "html": "You have logged in new device",
+                                                            "html": "Your account has been created",
                                                             "text": "asdfgwefddfgwefwn",
                                                           }
                                                         });
@@ -185,7 +185,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                           "to": widget.email,
                                           "message": {
                                             "subject": "This is a otp email",
-                                            "html": "You have logged in new device",
+                                            "html": "Your account has been created",
                                             "text": "asdfgwefddfgwefwn",
                                           }
                                         });

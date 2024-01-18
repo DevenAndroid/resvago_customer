@@ -86,6 +86,7 @@ dependencies:
   screenshot: ^2.1.0
   open_filex: ^4.3.4
   path_provider: ^2.1.2
+  flutter_launcher_icons: ^0.13.1
 #  flutter_google_places_hoc081098: ^1.2.0
 #  google_maps_webservice: ^0.0.19
   flutter_paypal:
@@ -95,7 +96,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/customer_app_icon.png"
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

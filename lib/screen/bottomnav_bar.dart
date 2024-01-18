@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/change_password.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/homepage.dart';
+import 'package:resvago_customer/screen/language_change_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import 'package:resvago_customer/screen/setting_screen.dart';
 import 'package:resvago_customer/screen/wishlist_screen.dart';
@@ -269,6 +270,17 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             }
                             // Get.back();
                             // widget.onItemTapped(1);
+                          }),
+                      const Divider(
+                        height: 5,
+                        color: Color(0xffF2F2F2),
+                      ),
+                      drawerTile(
+                          active: true,
+                          title: "Change Language".tr,
+                          icon: Icon(Icons.language),
+                          onTap: () {
+                              Get.to(() => LanguageChangeScreen());
                           }),
                       const Divider(
                         height: 5,

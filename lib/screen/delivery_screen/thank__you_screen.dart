@@ -114,8 +114,8 @@ class _ThankuScreenState extends State<ThankuScreen> {
             ).appPaddingForScreen,
             Positioned(
               bottom: 20,
-              left: 0,
-              right: 0,
+              left: 20,
+              right: 20,
               child: SizedBox(
                 width: size.width,
                 height: 50,

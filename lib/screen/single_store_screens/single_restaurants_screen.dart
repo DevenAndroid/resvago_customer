@@ -604,6 +604,134 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                               },
                                             ),
                                           ),
+                                        menuList != null
+                                            ? Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text("Menu  items",style: GoogleFonts.poppins(
+                                                fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),),
+                                            ListView.builder(
+                                                shrinkWrap: true,
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                itemCount: menuList!.length,
+                                                itemBuilder: (context, index) {
+                                                  var menuListData = menuList![index];
+                                                  double? priceValue = double.tryParse(menuListData.price);
+                                                  double? discountValue = double.tryParse(menuListData.discount);
+                                                  result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
+
+                                                  return Column(children: [
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 60,
+                                                          width: 80,
+                                                          child: ClipRRect(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            child: CachedNetworkImage(
+                                                              imageUrl: menuListData.image,
+                                                              fit: BoxFit.cover,
+                                                              errorWidget: (_, __, ___) => Icon(
+                                                                Icons.error,
+                                                                color: Colors.red,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                menuListData.dishName.toString(),
+                                                                maxLines: 2,
+                                                                style: GoogleFonts.poppins(
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.w400,
+                                                                    color: const Color(0xFF1E2538)),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 3,
+                                                              ),
+                                                              Text(
+                                                                menuListData.description.toString(),
+                                                                maxLines: 2,
+                                                                style: GoogleFonts.poppins(
+                                                                    fontSize: 10,
+                                                                    fontWeight: FontWeight.w300,
+                                                                    color: const Color(0xFF74848C)),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  "\$${(menuListData.price).toString()} ",
+                                                                  style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    decoration: TextDecoration.lineThrough,
+                                                                    color: const Color(0xFF8E9196),
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  "\$${menuListData.sellingPrice.toString()}",
+                                                                  style: GoogleFonts.poppins(
+                                                                      fontSize: 14,
+                                                                      // fontWeight: FontWeight.w400,
+                                                                      color: const Color(0xFF1E2538)),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            // if(menuListData.discount != "" || menuListData.discount !=null)
+                                                            // Text(
+                                                            //   "${menuListData.discount.toString()}% Discount",
+                                                            //   style: GoogleFonts.poppins(
+                                                            //       fontSize: 14,
+                                                            //       // fontWeight: FontWeight.w400,
+                                                            //       color: const Color(0xFF74848C)),
+                                                            // ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    index != menuList!.length - 1
+                                                        ? const DottedLine(
+                                                      dashColor: Color(0xffBCBCBC),
+                                                      dashGapLength: 1,
+                                                    )
+                                                        : const SizedBox(),
+                                                  ]);
+                                                }),
+                                          ],
+                                        )
+                                            : Center(
+                                          child: Text("Menu not available"),
+                                        ),
                                       ],
                                     ),
                                   if (currentMenu == 1)

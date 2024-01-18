@@ -24,6 +24,7 @@ class RestaurantModel {
   dynamic setDelivery;
   dynamic cancellation;
   dynamic menuSelection;
+  dynamic paymentEnabled;
   dynamic order_count = 0;
 
   RestaurantModel({
@@ -48,6 +49,7 @@ class RestaurantModel {
     this.setDelivery,
     this.cancellation,
     this.menuSelection,
+    this.paymentEnabled,
     this.order_count,
   });
 
@@ -73,6 +75,7 @@ class RestaurantModel {
     setDelivery = json['setDelivery'];
     cancellation = json['cancellation'];
     menuSelection = json['menuSelection'];
+    paymentEnabled = json['paymentEnabled'];
     order_count = json['order_count'] ?? 0;
   }
 
@@ -99,6 +102,7 @@ class RestaurantModel {
     data['setDelivery'] = setDelivery;
     data['cancellation'] = cancellation;
     data['menuSelection'] = menuSelection;
+    data['paymentEnabled'] = paymentEnabled;
     data['order_count'] = order_count;
     return data;
   }
