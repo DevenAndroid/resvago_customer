@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       translations: LocaleString(),
       locale: const Locale('en', 'US'),
-      title: 'Flutter Demo',
+      title: 'Resvago Customer',
       scrollBehavior: MaterialScrollBehavior().copyWith(
         dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
       ),

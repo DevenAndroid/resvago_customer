@@ -146,14 +146,15 @@ class _LoginScreenState extends State<LoginScreen> {
           if (!kIsWeb) {
             if (e.toString() ==
                 "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
-              Fluttertoast.showToast(msg: "credential is incorrect");
+              Fluttertoast.showToast(msg: "Credential is incorrect");
             } else {
               Fluttertoast.showToast(msg: e.toString());
             }
-          }  else {
+          }
+          else {
             if (e.toString() == "[firebase_auth/invalid-credential] The supplied auth credential is incorrect, malformed or has expired.") {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("credential is incorrect"),
+                content: Text("Credential is incorrect"),
               ));
             }
             else{

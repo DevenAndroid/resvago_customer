@@ -832,6 +832,14 @@ class _CartScreenState extends State<CartScreen> {
                                     "text": "asdfgwefddfgwefwn",
                                   }
                                 });
+                                FirebaseFirestore.instance.collection("send_mail").add({
+                                  "to": "${adminModel!.email}",
+                                  "message": {
+                                    "subject": "This is a basic email",
+                                    "html": "You have received a new order for Delivery",
+                                    "text": "asdfgwefddfgwefwn",
+                                  }
+                                });
                                 FirebaseFirestore.instance
                                     .collection('notification')
                                     .add({
@@ -921,6 +929,14 @@ class _CartScreenState extends State<CartScreen> {
                                           });
                                           FirebaseFirestore.instance.collection("send_mail").add({
                                             "to": "${cartModel.restaurantInfo!.email}",
+                                            "message": {
+                                              "subject": "This is a basic email",
+                                              "html": "You have received a new order for Delivery",
+                                              "text": "asdfgwefddfgwefwn",
+                                            }
+                                          });
+                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                            "to": "${adminModel!.email}",
                                             "message": {
                                               "subject": "This is a basic email",
                                               "html": "You have received a new order for Delivery",

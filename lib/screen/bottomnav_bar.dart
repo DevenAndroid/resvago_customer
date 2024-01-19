@@ -15,6 +15,7 @@ import 'package:resvago_customer/screen/language_change_screen.dart';
 import 'package:resvago_customer/screen/profile_screen.dart';
 import 'package:resvago_customer/screen/setting_screen.dart';
 import 'package:resvago_customer/screen/wishlist_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/bottomnavbar_controller.dart';
 import '../controller/profile_controller.dart';
 import '../model/profile_model.dart';
@@ -94,6 +95,9 @@ class _BottomNavbarState extends State<BottomNavbar> {
   RestaurantModel? restaurantModel;
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialogLanguage(context);
+    });
     Size size = MediaQuery.of(context).size;
     return Obx(() {
       return Scaffold(
@@ -280,7 +284,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           title: "Change Language".tr,
                           icon: Icon(Icons.language),
                           onTap: () {
-                              Get.to(() => LanguageChangeScreen());
+                            Get.to(() => LanguageChangeScreen());
                           }),
                       const Divider(
                         height: 5,
@@ -557,6 +561,169 @@ class _BottomNavbarState extends State<BottomNavbar> {
         ),
       ],
     );
+  }
+
+  updateLanguage(String gg) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("app_language", gg);
+  }
+
+  RxString selectedLAnguage = "English".obs;
+  checkLanguage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? appLanguage = sharedPreferences.getString("app_language");
+    if (appLanguage == null || appLanguage == "English") {
+      Get.updateLocale(const Locale('en', 'US'));
+      selectedLAnguage.value = "English";
+    } else if (appLanguage == "Spanish") {
+      Get.updateLocale(const Locale('es', 'ES'));
+      selectedLAnguage.value = "Spanish";
+    } else if (appLanguage == "French") {
+      Get.updateLocale(const Locale('fr', 'FR'));
+      selectedLAnguage.value = "French";
+    } else if (appLanguage == "Arabic") {
+      Get.updateLocale(const Locale('ar', 'AE'));
+      selectedLAnguage.value = "Arabic";
+    }
+  }
+
+  final keyIsFirstLoaded = 'is_first_loaded';
+
+  Future<void> showDialogLanguage(context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isFirstLoaded = prefs.getBool(keyIsFirstLoaded);
+    if (isFirstLoaded == null) {
+      return showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.clear_rounded,
+                            color: Colors.black,
+                          ),
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            prefs.setBool(keyIsFirstLoaded, false);
+                          },
+                        )
+                      ],
+                    ),
+                    RadioListTile(
+                        value: "English",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "English",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('en', 'US');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("English");
+                          Get.back();
+                          setState(() {});
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    RadioListTile(
+                        value: "Spanish",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "Spanish",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('es', 'ES');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("Spanish");
+                          Get.back();
+                          setState(() {});
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    RadioListTile(
+                        value: "French",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "French",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('fr', 'FR');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("French");
+                          Get.back();
+                          setState(() {});
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    RadioListTile(
+                        value: "Arabic",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "Arabic",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('ar', 'AE');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("Arabic");
+                          Get.back();
+                          setState(() {});
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            updateLanguage(selectedLAnguage.value);
+                            prefs.setBool(keyIsFirstLoaded, false);
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Update",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          });
+    }
   }
 
   Widget drawerTile({required bool active, required String title, required Widget icon, required VoidCallback onTap}) {

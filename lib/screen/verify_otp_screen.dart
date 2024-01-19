@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +12,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controller/logn_controller.dart';
+import '../model/admin_model.dart';
 import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
 import 'helper.dart';
@@ -35,12 +38,19 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
   TextEditingController otpController = TextEditingController();
   final loginController = Get.put(LoginController());
   List<TextEditingController> otpControllers = List.generate(6, (index) => TextEditingController());
+  AdminModel? adminModel;
+  void getAdminData() {
+    FirebaseFirestore.instance.collection("admin_login").get().then((value) {
+      adminModel = AdminModel.fromJson(value.docs.first.data());
+    });
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     FirebaseAuth.instance.signOut();
+    getAdminData();
   }
 
   @override
@@ -129,6 +139,14 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                                             "text": "asdfgwefddfgwefwn",
                                                           }
                                                         });
+                                                        FirebaseFirestore.instance.collection("send_mail").add({
+                                                          "to": adminModel!.email,
+                                                          "message": {
+                                                            "subject": "This is a otp email",
+                                                            "html": "Your account has been created",
+                                                            "text": "asdfgwefddfgwefwn",
+                                                          }
+                                                        });
                                                         if (!kIsWeb) {
                                                           Fluttertoast.showToast(msg: 'Verify otp successfully');
                                                         } else {
@@ -183,6 +201,14 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                       } else {
                                         FirebaseFirestore.instance.collection("send_mail").add({
                                           "to": widget.email,
+                                          "message": {
+                                            "subject": "This is a otp email",
+                                            "html": "Your account has been created",
+                                            "text": "asdfgwefddfgwefwn",
+                                          }
+                                        });
+                                        FirebaseFirestore.instance.collection("send_mail").add({
+                                          "to": adminModel!.email,
                                           "message": {
                                             "subject": "This is a otp email",
                                             "html": "Your account has been created",
