@@ -80,11 +80,12 @@ showToast(message) {
   Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.BOTTOM,
+      gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.white,
-      textColor: AppTheme.primaryColor,
-      fontSize: 14);
+      backgroundColor: AppTheme.primaryColor,
+      textColor: AppTheme.backgroundcolor,
+      fontSize: 16,
+  );
 }
 
 loading() {

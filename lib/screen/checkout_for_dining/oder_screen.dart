@@ -953,7 +953,13 @@ class _OderScreenState extends State<OderScreen> {
                                 "to": "${profileData!.email}",
                                 "message": {
                                   "subject": "This is a basic email",
-                                  "html": "Your order has been created",
+                                  "html": getOrderConfirmationHtml(
+                                      orderId: value.toString(),
+                                      date: widget.date.toString(),
+                                      total: calculateTotalPrice.toString(),
+                                      address: profileData!.selected_address,
+                                      orderItems: menuListData,
+                                      orderType: "COD"),
                                   "text": "asdfgwefddfgwefwn",
                                 }
                               });
@@ -961,7 +967,13 @@ class _OderScreenState extends State<OderScreen> {
                                 "to": "${widget.restaurantItem!.email}",
                                 "message": {
                                   "subject": "This is a basic email",
-                                  "html": "You have received a new order for Dining",
+                                  "html": getOrderConfirmationHtml(
+                                      orderId: value.toString(),
+                                      date: widget.date.toString(),
+                                      total: calculateTotalPrice.toString(),
+                                      address: profileData!.selected_address,
+                                      orderItems: menuListData,
+                                      orderType: "COD"),
                                   "text": "asdfgwefddfgwefwn",
                                 }
                               });
@@ -969,7 +981,13 @@ class _OderScreenState extends State<OderScreen> {
                                 "to": "${adminModel!.email}",
                                 "message": {
                                   "subject": "This is a basic email",
-                                  "html": "You have received a new order for Dining",
+                                  "html": getOrderConfirmationHtml(
+                                      orderId: value.toString(),
+                                      date: widget.date.toString(),
+                                      total: calculateTotalPrice.toString(),
+                                      address: profileData!.selected_address,
+                                      orderItems: menuListData,
+                                      orderType: "COD"),
                                   "text": "asdfgwefddfgwefwn",
                                 }
                               });
@@ -1045,7 +1063,14 @@ class _OderScreenState extends State<OderScreen> {
                                               "to": "${profileData!.email}",
                                               "message": {
                                                 "subject": "This is a basic email",
-                                                "html": "Your order has been created",
+                                                "html": getOrderConfirmationHtml(
+                                                    orderId: value.toString(),
+                                                    date: widget.date.toString(),
+                                                    total: calculateTotalPrice.toString(),
+                                                    address: profileData!.selected_address,
+                                                    orderItems:
+                                                        menuListData!,
+                                                    orderType: "COD"),
                                                 "text": "asdfgwefddfgwefwn",
                                               }
                                             });
@@ -1053,7 +1078,14 @@ class _OderScreenState extends State<OderScreen> {
                                               "to": "${widget.restaurantItem!.email}",
                                               "message": {
                                                 "subject": "This is a basic email",
-                                                "html": "You have received a new order for Dining",
+                                                "html": getOrderConfirmationHtml(
+                                                    orderId: value.toString(),
+                                                    date: widget.date.toString(),
+                                                    total: calculateTotalPrice.toString(),
+                                                    address: profileData!.selected_address,
+                                                    orderItems:
+                                                        menuListData!,
+                                                    orderType: "COD"),
                                                 "text": "asdfgwefddfgwefwn",
                                               }
                                             });
@@ -1061,7 +1093,14 @@ class _OderScreenState extends State<OderScreen> {
                                               "to": "${adminModel!.email}",
                                               "message": {
                                                 "subject": "This is a basic email",
-                                                "html": "You have received a new order for Dining",
+                                                "html": getOrderConfirmationHtml(
+                                                    orderId: value.toString(),
+                                                    date: widget.date.toString(),
+                                                    total: calculateTotalPrice.toString(),
+                                                    address: profileData!.selected_address,
+                                                    orderItems:
+                                                        menuListData!,
+                                                    orderType: "COD"),
                                                 "text": "asdfgwefddfgwefwn",
                                               }
                                             });
@@ -1105,7 +1144,13 @@ class _OderScreenState extends State<OderScreen> {
                                     "to": "${profileData!.email}",
                                     "message": {
                                       "subject": "This is a basic email",
-                                      "html": "Your order has been created",
+                                      "html": getOrderConfirmationHtml(
+                                          orderId: value.toString(),
+                                          date: widget.date.toString(),
+                                          total: calculateTotalPrice.toString(),
+                                          address: profileData!.selected_address,
+                                          orderItems: menuListData!,
+                                          orderType: "COD"),
                                       "text": "asdfgwefddfgwefwn",
                                     }
                                   });
@@ -1113,7 +1158,13 @@ class _OderScreenState extends State<OderScreen> {
                                     "to": "${widget.restaurantItem!.email}",
                                     "message": {
                                       "subject": "This is a basic email",
-                                      "html": "You have received a new order for Dining",
+                                      "html": getOrderConfirmationHtml(
+                                          orderId: value.toString(),
+                                          date: widget.date.toString(),
+                                          total: calculateTotalPrice.toString(),
+                                          address: profileData!.selected_address,
+                                          orderItems: menuListData!,
+                                          orderType: "COD"),
                                       "text": "asdfgwefddfgwefwn",
                                     }
                                   });
@@ -1121,7 +1172,13 @@ class _OderScreenState extends State<OderScreen> {
                                     "to": "${adminModel!.email}",
                                     "message": {
                                       "subject": "This is a basic email",
-                                      "html": "You have received a new order for Dining",
+                                      "html": getOrderConfirmationHtml(
+                                          orderId: value.toString(),
+                                          date: widget.date.toString(),
+                                          total: calculateTotalPrice.toString(),
+                                          address: profileData!.selected_address,
+                                          orderItems: menuListData!,
+                                          orderType: "COD"),
                                       "text": "asdfgwefddfgwefwn",
                                     }
                                   });
@@ -1157,7 +1214,13 @@ class _OderScreenState extends State<OderScreen> {
                                   "to": "${profileData!.email}",
                                   "message": {
                                     "subject": "This is a basic email",
-                                    "html": "Your order has been created",
+                                    "html": getOrderConfirmationHtml(
+                                        orderId: value.toString(),
+                                        date: widget.date.toString(),
+                                        total: calculateTotalPrice.toString(),
+                                        address: profileData!.selected_address,
+                                        orderItems: menuListData!,
+                                        orderType: "COD"),
                                     "text": "asdfgwefddfgwefwn",
                                   }
                                 });
@@ -1165,7 +1228,13 @@ class _OderScreenState extends State<OderScreen> {
                                   "to": "${widget.restaurantItem!.email}",
                                   "message": {
                                     "subject": "This is a basic email",
-                                    "html": "You have received a new order for Dining",
+                                    "html": getOrderConfirmationHtml(
+                                        orderId: value.toString(),
+                                        date: widget.date.toString(),
+                                        total: calculateTotalPrice.toString(),
+                                        address: profileData!.selected_address,
+                                        orderItems: menuListData!,
+                                        orderType: "COD"),
                                     "text": "asdfgwefddfgwefwn",
                                   }
                                 });
@@ -1173,7 +1242,13 @@ class _OderScreenState extends State<OderScreen> {
                                   "to": "${adminModel!.email}",
                                   "message": {
                                     "subject": "This is a basic email",
-                                    "html": "You have received a new order for Dining",
+                                    "html": getOrderConfirmationHtml(
+                                        orderId: value.toString(),
+                                        date: widget.date.toString(),
+                                        total: calculateTotalPrice.toString(),
+                                        address: profileData!.selected_address,
+                                        orderItems: menuListData,
+                                        orderType: "COD"),
                                     "text": "asdfgwefddfgwefwn",
                                   }
                                 });
@@ -1221,5 +1296,65 @@ class _OderScreenState extends State<OderScreen> {
                 )
               ]).appPaddingForScreen)
             : const Center(child: CircularProgressIndicator()));
+  }
+
+  String getOrderConfirmationHtml(
+      {String? orderId, String? date, String? address, String? total, String? adminCommission = "0.0", String? orderType, List<MenuData>? orderItems}) {
+    String orderItemsHtml = '';
+    for (var item in orderItems!) {
+      orderItemsHtml += '''
+        <li>
+          <img src="${item.image}" alt="${item.dishName}" style="width: 50px; height: 50px;">
+          <strong>${item.dishName}</strong> - ${item.discount * item.qty}
+        </li>
+      ''';
+    }
+
+    // HTML template for the email
+    String emailHtml = '''
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: 'Arial', sans-serif;
+              margin: 20px;
+            }
+            h1 {
+              color: #333;
+            }
+            p {
+              margin-bottom: 10px;
+            }
+            ul {
+              list-style-type: none;
+              padding: 0;
+            }
+            li {
+              margin-bottom: 5px;
+            }
+            strong {
+              color: #555;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Order Confirmation</h1>
+          <p><strong>Order ID:</strong> $orderId</p>
+          <p><strong>Date:</strong> $date</p>
+          <p><strong>Address:</strong> $address</p>
+          <p><strong>Total:</strong> $total</p>
+          <p><strong>Admin Commission:</strong> $adminCommission</p>
+          <p><strong>Order Type:</strong> $orderType</p>
+          <p><strong>Order Items:</strong></p>
+          <ul>
+            $orderItemsHtml
+          </ul>
+          <p>Your order has been placed successfully. Thank you for choosing our services!</p>
+        </body>
+      </html>
+    ''';
+
+    return emailHtml;
   }
 }

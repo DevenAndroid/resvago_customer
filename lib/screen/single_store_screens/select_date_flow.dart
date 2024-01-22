@@ -57,7 +57,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   }
 
   DateTime today = DateTime.now();
-  List<MenuData>? menuList;
+  List<MenuData>? menuList = [];
   getMenuList() {
     FirebaseFirestore.instance
         .collection("vendor_menu")
@@ -449,7 +449,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                         guest: guest,
                                         date: today,
                                         restaurantItem: widget.restaurantItem,
-                                        menuList: menuList!.where((e) => e.isCheck == true).toList()));
+                                        menuList:menuList != null ? menuList!.where((e) => e.isCheck == true).toList() : []));
                                   } else {
                                     if (menuList!.where((e) => e.isCheck == true).toList().isNotEmpty) {
                                       log("aaaaaaa-----${jsonEncode(menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList())}");
@@ -460,7 +460,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                           guest: guest,
                                           date: today,
                                           restaurantItem: widget.restaurantItem,
-                                          menuList: menuList!.where((e) => e.isCheck == true).toList()));
+                                          menuList: menuList != null ? menuList!.where((e) => e.isCheck == true).toList() : []));
                                     } else {
                                       showToast("Please select menu");
                                     }
@@ -497,6 +497,67 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
       ),
     );
   }
+
+  String getOrderConfirmationHtml(
+      {String? orderId, String? date, String? address, String? total, String? adminCommission, String? orderType, orderItems}) {
+    String orderItemsHtml = '';
+    for (var item in orderItems) {
+      orderItemsHtml += '''
+        <li>
+          <img src="${item['image']}" alt="${item['name']}" style="width: 50px; height: 50px;">
+          <strong>${item['name']}</strong> - $total
+        </li>
+      ''';
+    }
+
+    // HTML template for the email
+    String emailHtml = '''
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: 'Arial', sans-serif;
+              margin: 20px;
+            }
+            h1 {
+              color: #333;
+            }
+            p {
+              margin-bottom: 10px;
+            }
+            ul {
+              list-style-type: none;
+              padding: 0;
+            }
+            li {
+              margin-bottom: 5px;
+            }
+            strong {
+              color: #555;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Order Confirmation</h1>
+          <p><strong>Order ID:</strong> $orderId</p>
+          <p><strong>Date:</strong> $date</p>
+          <p><strong>Address:</strong> $address</p>
+          <p><strong>Total:</strong> $total</p>
+          <p><strong>Admin Commission:</strong> $adminCommission</p>
+          <p><strong>Order Type:</strong> $orderType</p>
+          <p><strong>Order Items:</strong></p>
+          <ul>
+            $orderItemsHtml
+          </ul>
+          <p>Your order has been placed successfully. Thank you for choosing our services!</p>
+        </body>
+      </html>
+    ''';
+
+    return emailHtml;
+  }
+
 
   guestCountWidget() {
     return Column(

@@ -54,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       otp = otpCode;
     });
   }
+
   FirebaseService firebaseService = FirebaseService();
   Future<void> addUserToFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
@@ -79,13 +80,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }).then((value) {
           if (!kIsWeb) {
             Fluttertoast.showToast(msg: 'Otp email sent to ${emailController.text.trim()}');
-          }
-          else {
+          } else {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("Otp email sent to ${emailController.text.trim()}"),
             ));
           }
-          Get.to(() => OtpVerifyScreen(email: emailController.text,otp: otp));
+          Get.to(() => OtpVerifyScreen(email: emailController.text, otp: otp));
         });
         // if (!kIsWeb) {
         //   Fluttertoast.showToast(msg: 'User created successfully');

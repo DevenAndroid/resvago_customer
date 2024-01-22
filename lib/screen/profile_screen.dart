@@ -42,6 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool twoStepVerification = false;
   void fetchdata() {
     FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+      log("hdhfgh1");
       if (value.exists) {
         if (value.data() == null) return;
         profileData = ProfileData.fromJson(value.data()!);
@@ -150,6 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log("Fgjhgjgh   " + FirebaseAuth.instance.currentUser!.uid);
     var size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: const Color(0xFFF6F6F6),

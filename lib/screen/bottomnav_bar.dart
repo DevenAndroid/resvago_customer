@@ -95,9 +95,9 @@ class _BottomNavbarState extends State<BottomNavbar> {
   RestaurantModel? restaurantModel;
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialogLanguage(context);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   showDialogLanguage(context);
+    // });
     Size size = MediaQuery.of(context).size;
     return Obx(() {
       return Scaffold(

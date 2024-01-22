@@ -24,6 +24,7 @@ import '../../firebase_service/notification.dart';
 import '../../model/add_address_modal.dart';
 import '../../model/checkout_model.dart';
 import '../../model/coupon_modal.dart';
+import '../../model/menu_model.dart';
 import '../../model/resturant_model.dart';
 import '../../widget/apptheme.dart';
 import '../../widget/common_text_field.dart';
@@ -44,6 +45,7 @@ class _CartScreenState extends State<CartScreen> {
   final bottomController = Get.put(BottomNavBarController());
   String token = "token";
   String publicKey = "pubKey";
+
   // late YCPay ycPay;
   // late CardInformation cardInformation;
   CheckOutModel cartModel = CheckOutModel();
@@ -97,11 +99,13 @@ class _CartScreenState extends State<CartScreen> {
 
   var totalPrice = 0.0;
   double result = 0.0;
+
   double getTotalPrice() {
     if (cartModel.menuList == null) return 0;
     totalPrice = 0;
     for (int i = 0; i < cartModel.menuList!.length; i++) {
-      totalPrice = totalPrice + double.parse(cartModel.menuList![i].qty.toString()) * double.parse(cartModel.menuList![i].sellingPrice.toString());
+      totalPrice = totalPrice +
+          double.parse(cartModel.menuList![i].qty.toString()) * double.parse(cartModel.menuList![i].sellingPrice.toString());
       if (adminModel != null) {
         result = (totalPrice * double.parse(adminModel!.adminCommission)) / 100;
         log("sadsfgdg" + result.toString());
@@ -112,9 +116,12 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   double get discountAmount => totalPrice * couponData!.maximumDiscount;
-  double get calculateTotalPrice => getTotalPrice() > 0
-      ? (getTotalPrice() - (couponData == null ? 0 : math.min(discountAmount, couponData!.maximumDiscountAmount)))
-      : 0;
+
+  double get calculateTotalPrice =>
+      getTotalPrice() > 0
+          ? (getTotalPrice() - (couponData == null ? 0 : math.min(discountAmount, couponData!.maximumDiscountAmount)))
+          : 0;
+
   double get couponDiscount => (couponData == null ? 0 : math.min(discountAmount, couponData!.maximumDiscountAmount));
 
   @override
@@ -129,6 +136,7 @@ class _CartScreenState extends State<CartScreen> {
   CouponData? couponData;
   AddressModel? addressData;
   ProfileData? profileData;
+
   void fetchdata() {
     FirebaseFirestore.instance.collection("customer_users").doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       if (value.exists) {
@@ -140,6 +148,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   AdminModel? adminModel;
+
   void getAdminData() {
     FirebaseFirestore.instance.collection("admin_login").get().then((value) {
       adminModel = AdminModel.fromJson(value.docs.first.data());
@@ -148,6 +157,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   FirebaseService firebaseService = FirebaseService();
+
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
@@ -155,20 +165,22 @@ class _CartScreenState extends State<CartScreen> {
     if (!kIsWeb) {
       fcm = await FirebaseMessaging.instance.getToken();
     }
-    int gg = DateTime.now().millisecondsSinceEpoch;
+    int gg = DateTime
+        .now()
+        .millisecondsSinceEpoch;
     try {
       await firebaseService
           .manageOrder(
-              profileData: profileData!.toJson(),
-              orderId: gg.toString(),
-              restaurantInfo: cartModel.toJson(),
-              vendorId: vendorId,
-              time: gg,
-              address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
-              couponDiscount: couponDiscount,
-              fcm: fcm,
-              total: calculateTotalPrice,
-              admin_commission: result)
+          profileData: profileData!.toJson(),
+          orderId: gg.toString(),
+          restaurantInfo: cartModel.toJson(),
+          vendorId: vendorId,
+          time: gg,
+          address: addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
+          couponDiscount: couponDiscount,
+          fcm: fcm,
+          total: calculateTotalPrice,
+          admin_commission: result)
           .then((value) {
         Helper.hideLoader(loader);
         return gg;
@@ -182,7 +194,9 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    var size = MediaQuery
+        .of(context)
+        .size;
     return Scaffold(
         appBar: backAppBar(
           title: "CheckOut",
@@ -190,186 +204,11 @@ class _CartScreenState extends State<CartScreen> {
         ),
         body: cartModel.menuList != null && cartModel.menuList!.isNotEmpty
             ? SingleChildScrollView(
-                child: Column(children: [
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                        width: size.width,
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF37C666).withOpacity(0.10),
-                            offset: const Offset(
-                              1,
-                              1,
-                            ),
-                            blurRadius: 20.0,
-                            spreadRadius: 1.0,
-                          ),
-                        ]),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (cartModel.menuList != null)
-                                ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: cartModel.menuList!.length,
-                                    itemBuilder: (context, index) {
-                                      var item = cartModel.menuList![index];
-                                      double? priceValue = double.tryParse(item.price);
-                                      double? discountValue = double.tryParse(item.discount);
-                                      result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 5),
-                                        child: Column(children: [
-                                          Row(children: [
-                                            SizedBox(
-                                              height: 60,
-                                              width: 80,
-                                              child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: item.image,
-                                                    fit: BoxFit.cover,
-                                                    errorWidget: (_, __, ___) => Icon(
-                                                      Icons.error,
-                                                      color: Colors.red,
-                                                    ),
-                                                  )),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    item.dishName ?? "",
-                                                    maxLines: 2,
-                                                    style: GoogleFonts.poppins(
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w400,
-                                                        color: const Color(0xFF1E2538)),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 3,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        "\$${(item.price).toString()} ",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          decoration: TextDecoration.lineThrough,
-                                                          color: const Color(0xFF8E9196),
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        "\$${result.toString()}",
-                                                        style: GoogleFonts.poppins(
-                                                            fontSize: 14,
-                                                            // fontWeight: FontWeight.w400,
-                                                            color: const Color(0xFF1E2538)),
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                  // DottedLine(
-                                                  //   dashColor: Colors.black,
-                                                  // )
-                                                ],
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  height: 28,
-                                                  width: 28,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(color: Colors.black),
-                                                      borderRadius: const BorderRadius.all(
-                                                        Radius.circular(20),
-                                                      )),
-                                                  child: InkWell(
-                                                      onTap: () async {
-                                                        if (item.qty < 1) return;
-                                                        item.qty--;
-                                                        if (item.qty == 0) {
-                                                          cartModel.menuList!.removeAt(index);
-                                                        }
-                                                        await updateFirebaseValues();
-                                                        getCheckOutData();
-                                                        getTotalPrice();
-                                                        setState(() {});
-                                                      },
-                                                      child: const Icon(
-                                                        Icons.remove,
-                                                        size: 18,
-                                                      )),
-                                                ),
-                                                const SizedBox(
-                                                  width: 8,
-                                                ),
-                                                Text(
-                                                  item.qty.toString(),
-                                                  style: GoogleFonts.alegreyaSans(
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 8,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      height: 28,
-                                                      width: 28,
-                                                      decoration: const BoxDecoration(
-                                                          color: AppTheme.primaryColor,
-                                                          borderRadius: BorderRadius.all(
-                                                            Radius.circular(20),
-                                                          )),
-                                                      child: InkWell(
-                                                        onTap: () async {
-                                                          item.qty++;
-                                                          await updateFirebaseValues();
-                                                          getCheckOutData();
-                                                          getTotalPrice();
-                                                          setState(() {});
-                                                        },
-                                                        child: const Icon(
-                                                          Icons.add,
-                                                          color: Colors.white,
-                                                          size: 18,
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ])
-                                        ]),
-                                      );
-                                    }),
-                            ]))),
-                InkWell(
-                  onTap: () {
-                    Get.to(() => MyAddressList(
-                          addressChanged: (AddressModel address) {
-                            addressData = address;
-                            setState(() {});
-                          },
-                        ));
-                  },
+            child: Column(children: [
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Container(
                       width: size.width,
-                      margin: const EdgeInsets.all(8),
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
                         BoxShadow(
@@ -382,86 +221,169 @@ class _CartScreenState extends State<CartScreen> {
                           spreadRadius: 1.0,
                         ),
                       ]),
-                      child: Column(children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Deliver To',
-                                style: GoogleFonts.poppins(
-                                    fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Get.to(() => const MyAddressList());
-                                },
-                                child: const Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  color: Color(0xff04666E),
-                                  size: 20,
-                                ),
-                              )
-                            ]),
-                        if (addressData != null)
-                          ListTile(
-                            horizontalTitleGap: -0,
-                            contentPadding: EdgeInsets.zero,
-                            visualDensity: VisualDensity.comfortable,
-                            title: Transform.translate(
-                              offset: const Offset(-16, 0),
-                              child: Text(
-                                addressData!.AddressType ?? "Home",
-                                style: const TextStyle(color: Color(0xff384953), fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            leading: Transform.translate(
-                              offset: const Offset(-16, 0),
-                              child: const CircleAvatar(
-                                maxRadius: 40,
-                                minRadius: 40,
-                                backgroundColor: Color(0x1a3b5998),
-                                child: CircleAvatar(
-                                  maxRadius: 20,
-                                  minRadius: 20,
-                                  backgroundColor: Color(0xff3B5998),
-                                  child: Icon(
-                                    Icons.location_on,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            subtitle: Transform.translate(
-                              offset: const Offset(-16, 0),
-                              child: Text(
-                                addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
-                                style: const TextStyle(fontSize: 15),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          )
-                        else
-                          const Center(
-                            child: Text(
-                              "Please choose address",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          )
-                      ])),
-                ),
-                InkWell(
-                  onTap: () {
-                    Get.to(() => PromoCodeList(
-                          id: cartModel.vendorId,
-                          couponData: (CouponData coupon) {
-                            couponData = coupon;
-                            getCheckOutData();
-                            setState(() {});
-                          },
-                        ));
-                  },
-                  child: Container(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (cartModel.menuList != null)
+                              ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: cartModel.menuList!.length,
+                                  itemBuilder: (context, index) {
+                                    var item = cartModel.menuList![index];
+                                    double? priceValue = double.tryParse(item.price);
+                                    double? discountValue = double.tryParse(item.discount);
+                                    result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 5),
+                                      child: Column(children: [
+                                        Row(children: [
+                                          SizedBox(
+                                            height: 60,
+                                            width: 80,
+                                            child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: item.image,
+                                                  fit: BoxFit.cover,
+                                                  errorWidget: (_, __, ___) =>
+                                                      Icon(
+                                                        Icons.error,
+                                                        color: Colors.red,
+                                                      ),
+                                                )),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  item.dishName ?? "",
+                                                  maxLines: 2,
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w400,
+                                                      color: const Color(0xFF1E2538)),
+                                                ),
+                                                const SizedBox(
+                                                  height: 3,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "\$${(item.price).toString()} ",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        decoration: TextDecoration.lineThrough,
+                                                        color: const Color(0xFF8E9196),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "\$${result.toString()}",
+                                                      style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          // fontWeight: FontWeight.w400,
+                                                          color: const Color(0xFF1E2538)),
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                // DottedLine(
+                                                //   dashColor: Colors.black,
+                                                // )
+                                              ],
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                height: 28,
+                                                width: 28,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(color: Colors.black),
+                                                    borderRadius: const BorderRadius.all(
+                                                      Radius.circular(20),
+                                                    )),
+                                                child: InkWell(
+                                                    onTap: () async {
+                                                      if (item.qty < 1) return;
+                                                      item.qty--;
+                                                      if (item.qty == 0) {
+                                                        cartModel.menuList!.removeAt(index);
+                                                      }
+                                                      await updateFirebaseValues();
+                                                      getCheckOutData();
+                                                      getTotalPrice();
+                                                      setState(() {});
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.remove,
+                                                      size: 18,
+                                                    )),
+                                              ),
+                                              const SizedBox(
+                                                width: 8,
+                                              ),
+                                              Text(
+                                                item.qty.toString(),
+                                                style: GoogleFonts.alegreyaSans(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 8,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    height: 28,
+                                                    width: 28,
+                                                    decoration: const BoxDecoration(
+                                                        color: AppTheme.primaryColor,
+                                                        borderRadius: BorderRadius.all(
+                                                          Radius.circular(20),
+                                                        )),
+                                                    child: InkWell(
+                                                      onTap: () async {
+                                                        item.qty++;
+                                                        await updateFirebaseValues();
+                                                        getCheckOutData();
+                                                        getTotalPrice();
+                                                        setState(() {});
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                        size: 18,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ])
+                                      ]),
+                                    );
+                                  }),
+                          ]))),
+              InkWell(
+                onTap: () {
+                  Get.to(() =>
+                      MyAddressList(
+                        addressChanged: (AddressModel address) {
+                          addressData = address;
+                          setState(() {});
+                        },
+                      ));
+                },
+                child: Container(
                     width: size.width,
                     margin: const EdgeInsets.all(8),
                     padding: const EdgeInsets.all(14),
@@ -476,58 +398,87 @@ class _CartScreenState extends State<CartScreen> {
                         spreadRadius: 1.0,
                       ),
                     ]),
-                    child: Column(
-                      children: [
-                        Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Image.asset(
-                            'assets/icons/coupon.png',
-                            height: 20,
+                    child: Column(children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Deliver To',
+                              style: GoogleFonts.poppins(
+                                  fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Get.to(() => const MyAddressList());
+                              },
+                              child: const Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Color(0xff04666E),
+                                size: 20,
+                              ),
+                            )
+                          ]),
+                      if (addressData != null)
+                        ListTile(
+                          horizontalTitleGap: -0,
+                          contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.comfortable,
+                          title: Transform.translate(
+                            offset: const Offset(-16, 0),
+                            child: Text(
+                              addressData!.AddressType ?? "Home",
+                              style: const TextStyle(color: Color(0xff384953), fontWeight: FontWeight.bold),
+                            ),
                           ),
-                          const SizedBox(
-                            width: 10,
+                          leading: Transform.translate(
+                            offset: const Offset(-16, 0),
+                            child: const CircleAvatar(
+                              maxRadius: 40,
+                              minRadius: 40,
+                              backgroundColor: Color(0x1a3b5998),
+                              child: CircleAvatar(
+                                maxRadius: 20,
+                                minRadius: 20,
+                                backgroundColor: Color(0xff3B5998),
+                                child: Icon(
+                                  Icons.location_on,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
-                          Text(
-                            'Use Coupons',
-                            style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
+                          subtitle: Transform.translate(
+                            offset: const Offset(-16, 0),
+                            child: Text(
+                              addressData!.flatAddress + ", " + addressData!.streetAddress ?? "",
+                              style: const TextStyle(fontSize: 15),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ]),
-                        if (couponData != null)
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'assets/icons/verified.png',
-                                  height: 20,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${couponData!.code} Applied Successfully',
-                                      style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538).withOpacity(.8)),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      'You saved \$${couponDiscount.toStringAsFixed(2)}',
-                                      style: GoogleFonts.poppins(fontSize: 12, color: AppTheme.primaryColor),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    )
-                                  ],
-                                ),
-                              ]),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
+                        )
+                      else
+                        const Center(
+                          child: Text(
+                            "Please choose address",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        )
+                    ])),
+              ),
+              InkWell(
+                onTap: () {
+                  Get.to(() =>
+                      PromoCodeList(
+                        id: cartModel.vendorId,
+                        couponData: (CouponData coupon) {
+                          couponData = coupon;
+                          getCheckOutData();
+                          setState(() {});
+                        },
+                      ));
+                },
+                child: Container(
                   width: size.width,
                   margin: const EdgeInsets.all(8),
                   padding: const EdgeInsets.all(14),
@@ -542,496 +493,660 @@ class _CartScreenState extends State<CartScreen> {
                       spreadRadius: 1.0,
                     ),
                   ]),
-                  child:
-                      Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Subtotal',
-                          style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
-                        ),
-                        Text(
-                          '\$$calculateTotalPrice',
-                          style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const DottedLine(
-                      dashColor: Color(0xffBCBCBC),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Tax And Fees',
-                          style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
-                        ),
-                        Text(
-                          '\$0.00',
-                          style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const DottedLine(
-                      dashColor: Color(0xffBCBCBC),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Delivery',
-                          style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
-                        ),
-                        Text(
-                          "\$0.00",
-                          style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const DottedLine(
-                      dashColor: Color(0xffBCBCBC),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Save Coupon',
-                          style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
-                        ),
-                        Text(
-                          "\$${couponDiscount.toStringAsFixed(2)}",
-                          style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const DottedLine(
-                      dashColor: Color(0xffBCBCBC),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Total',
-                          style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
-                        ),
-                        const Spacer(),
-                        if (cartModel.menuList != null)
-                          Text(
-                            "(${cartModel.menuList!.length} Items)",
-                            style: GoogleFonts.poppins(fontSize: 10, color: const Color(0xff3B5998), fontStyle: FontStyle.italic),
-                          ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          "\$$calculateTotalPrice",
-                          style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ]),
-                ),
-                Container(
-                    width: size.width,
-                    margin: const EdgeInsets.all(8),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF37C666).withOpacity(0.10),
-                        offset: const Offset(
-                          1,
-                          1,
-                        ),
-                        blurRadius: 20.0,
-                        spreadRadius: 1.0,
-                      ),
-                    ]),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Payment Method",
-                              style:
-                                  GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            const SizedBox(
-                              height: 12,
-                            ),
-                            Container(
-                              height: 23,
-                              width: 23,
-                              decoration: const BoxDecoration(
-                                  color: Color(0xffFAAF40),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  )),
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 14,
-                        ),
-                        Container(
-                          width: size.width,
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(8)),
-                              border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/debvitcard.png",
-                                  height: 20,
-                                ),
-                                const SizedBox(
-                                  width: 18,
-                                ),
-                                Text(
-                                  'Debit/Credit Card',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Container(
-                          width: size.width,
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(8)),
-                              border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/phonepay.png",
-                                  height: 20,
-                                ),
-                                const SizedBox(
-                                  width: 18,
-                                ),
-                                Text(
-                                  'PayPal',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
+                  child: Column(
+                    children: [
+                      Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Image.asset(
+                          'assets/icons/coupon.png',
                           height: 20,
                         ),
-                      ],
-                    )),
-                Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: SizedBox(
-                      width: size.width,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (addressData == null) {
-                            showToast("Please choose address");
-                          } else {
-                            print([
-                              {
-                                "amount": {
-                                  "total": calculateTotalPrice.toStringAsFixed(2).toString(),
-                                  "currency": "USD",
-                                  "details": {
-                                    "subtotal": calculateTotalPrice.toStringAsFixed(2).toString(),
-                                    "shipping": '0',
-                                    "shipping_discount": 0
-                                  }
-                                },
-                                "description": "The payment transaction description.",
-                                // "payment_options": {
-                                //   "allowed_payment_method":
-                                //       "INSTANT_FUNDING_SOURCE"
-                                // },
-                                "item_list": {
-                                  "items": extractedData,
-                                  // shipping address is not required though
-                                  // "shipping_address": {
-                                  //   "recipient_name": "Jane Foster",
-                                  //   "line1": "Travis County",
-                                  //   "line2": "",
-                                  //   "city": "Austin",
-                                  //   "country_code": "US",sqxc3v4bgy5un6mi7,o8.p[/j vm],nl̥ō'{}|9+
-                                  //   "phone": "+00000000",
-                                  //   "state": "Texas"
-                                  // },
-                                }
-                              }
-                            ]);
-                            // return;
-
-                            if (kIsWeb) {
-                              order(cartModel.vendorId).then((value) {
-                                FirebaseFirestore.instance
-                                    .collection("checkOut")
-                                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                                    .delete();
-                                FirebaseFirestore.instance.collection("send_mail").add({
-                                  "to": "${profileData!.email}",
-                                  "message": {
-                                    "subject": "This is a basic email",
-                                    "html": "Your order has been created",
-                                    "text": "asdfgwefddfgwefwn",
-                                  }
-                                });
-                                FirebaseFirestore.instance.collection("send_mail").add({
-                                  "to": "${cartModel.restaurantInfo!.email}",
-                                  "message": {
-                                    "subject": "This is a basic email",
-                                    "html": "You have received a new order for Delivery",
-                                    "text": "asdfgwefddfgwefwn",
-                                  }
-                                });
-                                FirebaseFirestore.instance.collection("send_mail").add({
-                                  "to": "${adminModel!.email}",
-                                  "message": {
-                                    "subject": "This is a basic email",
-                                    "html": "You have received a new order for Delivery",
-                                    "text": "asdfgwefddfgwefwn",
-                                  }
-                                });
-                                FirebaseFirestore.instance
-                                    .collection('notification')
-                                    .add({
-                                  'title': "Your Order has been created with Order ID ${value.toString()}",
-                                  'body': "Your Order has been created with Order ID ${value.toString()}",
-                                  'date': DateTime.now(),
-                                  'userId': FirebaseAuth.instance.currentUser!.uid
-                                });
-                                Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
-                              });
-                              // try {
-                              //   await payPalService.createOrder().then((value) async {
-                              //     print("fsdgdfghh" + value.toString());
-                              //     await payPalService.capturePayment(value).then((value1) {
-                              //       order(cartModel.vendorId).then((value2) {
-                              //         FirebaseFirestore.instance
-                              //             .collection("checkOut")
-                              //             .doc(FirebaseAuth.instance.currentUser!.uid)
-                              //             .delete();
-                              //         Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
-                              //       });
-                              //     });
-                              //   });
-                              // } catch (e) {
-                              //   print('Error: $e');
-                              // }
-                              // ;
-                            } else {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => UsePaypal(
-                                      sandboxMode: true,
-                                      // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
-                                      // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
-                                      clientId:
-                                          "Ab5v6E4R-gNbD13BbcdgpzK0G66oJ8ij1Va8i85qzGTtgA4TXkmt2h4oRpCXGRTBQs8Fn1SMqgyVkQ19",
-                                      secretKey:
-                                          "ELCzlUANZYqBS27CGrYqP3RNyoob11TbOj_J4kYp6QULFkDWh9veSi_zkpQoe8nu-VS3FN8XJf-o5WJx",
-                                      returnURL: "https://samplesite.com/return",
-                                      cancelURL: "https://samplesite.com/cancel",
-                                      transactions: [
-                                        {
-                                          "amount": {
-                                            "total": calculateTotalPrice.toStringAsFixed(2).toString(),
-                                            "currency": "USD",
-                                            "details": {
-                                              "subtotal": calculateTotalPrice.toStringAsFixed(2).toString(),
-                                              "shipping": '0',
-                                              "shipping_discount": 0
-                                            }
-                                          },
-                                          "description": "The payment transaction description.",
-                                          // "payment_options": {
-                                          //   "allowed_payment_method":
-                                          //       "INSTANT_FUNDING_SOURCE"
-                                          // },
-                                          "item_list": {
-                                            "items": extractedData,
-                                            // shipping address is not required though
-                                            "shipping_address": {
-                                              "recipient_name": "Jane Foster",
-                                              "line1": "aaa",
-                                              "line2": "aaa",
-                                              "city": addressData!.streetAddress.toString(),
-                                              "country_code": "IN",
-                                              "phone": "+91",
-                                              "state": addressData!.streetAddress.toString(),
-                                            },
-                                          }
-                                        }
-                                      ],
-                                      note: "Contact us for any questions on your order.",
-                                      onSuccess: (Map params) async {
-                                        print("onSuccess: ${params}");
-                                        order(cartModel.vendorId).then((value) {
-                                          FirebaseFirestore.instance
-                                              .collection("checkOut")
-                                              .doc(FirebaseAuth.instance.currentUser!.uid)
-                                              .delete();
-                                          FirebaseFirestore.instance.collection("send_mail").add({
-                                            "to": "${profileData!.email}",
-                                            "message": {
-                                              "subject": "This is a basic email",
-                                              "html": "Your order has been created",
-                                              "text": "asdfgwefddfgwefwn",
-                                            }
-                                          });
-                                          FirebaseFirestore.instance.collection("send_mail").add({
-                                            "to": "${cartModel.restaurantInfo!.email}",
-                                            "message": {
-                                              "subject": "This is a basic email",
-                                              "html": "You have received a new order for Delivery",
-                                              "text": "asdfgwefddfgwefwn",
-                                            }
-                                          });
-                                          FirebaseFirestore.instance.collection("send_mail").add({
-                                            "to": "${adminModel!.email}",
-                                            "message": {
-                                              "subject": "This is a basic email",
-                                              "html": "You have received a new order for Delivery",
-                                              "text": "asdfgwefddfgwefwn",
-                                            }
-                                          });
-                                          FirebaseFirestore.instance
-                                              .collection('notification')
-                                              .add({
-                                            'title': "Your Order has been created with Order ID ${value.toString()}",
-                                            'body': "Your Order has been created with Order ID ${value.toString()}",
-                                            'date': DateTime.now(),
-                                            'userId': FirebaseAuth.instance.currentUser!.uid
-                                          });
-                                          Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
-                                          sendPushNotification(
-                                              body: "Order received",
-                                              deviceToken: cartModel.restaurantInfo!.fcm,
-                                              image:
-                                                  "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
-                                              title: "You have received a new order for Delivery",
-                                              orderID: "");
-                                        });
-                                      },
-                                      onError: (error) {
-                                        print("onError: $error");
-                                      },
-                                      onCancel: (params) {
-                                        print('cancelled: $params');
-                                      }),
-                                ),
-                              );
-                            }
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: const BorderSide(
-                              width: 2.0,
-                              color: Color(0xFF3B5998),
-                            ),
-                          ),
-                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                        const SizedBox(
+                          width: 10,
                         ),
-                        child: Text(
-                          "Place Order",
-                          style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                        Text(
+                          'Use Coupons',
+                          style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
+                        ),
+                      ]),
+                      if (couponData != null)
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                'assets/icons/verified.png',
+                                height: 20,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${couponData!.code} Applied Successfully',
+                                    style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xff1E2538).withOpacity(.8)),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    'You saved \$${couponDiscount.toStringAsFixed(2)}',
+                                    style: GoogleFonts.poppins(fontSize: 12, color: AppTheme.primaryColor),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  )
+                                ],
+                              ),
+                            ]),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                width: size.width,
+                margin: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF37C666).withOpacity(0.10),
+                    offset: const Offset(
+                      1,
+                      1,
+                    ),
+                    blurRadius: 20.0,
+                    spreadRadius: 1.0,
+                  ),
+                ]),
+                child:
+                Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Subtotal',
+                        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
+                      ),
+                      Text(
+                        '\$$calculateTotalPrice',
+                        style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const DottedLine(
+                    dashColor: Color(0xffBCBCBC),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Tax And Fees',
+                        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
+                      ),
+                      Text(
+                        '\$0.00',
+                        style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const DottedLine(
+                    dashColor: Color(0xffBCBCBC),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Delivery',
+                        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
+                      ),
+                      Text(
+                        "\$0.00",
+                        style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const DottedLine(
+                    dashColor: Color(0xffBCBCBC),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Save Coupon',
+                        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
+                      ),
+                      Text(
+                        "\$${couponDiscount.toStringAsFixed(2)}",
+                        style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const DottedLine(
+                    dashColor: Color(0xffBCBCBC),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Total',
+                        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
+                      ),
+                      const Spacer(),
+                      if (cartModel.menuList != null)
+                        Text(
+                          "(${cartModel.menuList!.length} Items)",
+                          style: GoogleFonts.poppins(fontSize: 10, color: const Color(0xff3B5998), fontStyle: FontStyle.italic),
+                        ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        "\$$calculateTotalPrice",
+                        style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xffBCBCBC)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ]),
+              ),
+              Container(
+                  width: size.width,
+                  margin: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF37C666).withOpacity(0.10),
+                      offset: const Offset(
+                        1,
+                        1,
+                      ),
+                      blurRadius: 20.0,
+                      spreadRadius: 1.0,
+                    ),
+                  ]),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "Payment Method",
+                            style:
+                            GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Container(
+                            height: 23,
+                            width: 23,
+                            decoration: const BoxDecoration(
+                                color: Color(0xffFAAF40),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                )),
+                            child: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 14,
+                      ),
+                      Container(
+                        width: size.width,
+                        decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(8)),
+                            border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "assets/icons/debvitcard.png",
+                                height: 20,
+                              ),
+                              const SizedBox(
+                                width: 18,
+                              ),
+                              Text(
+                                'Debit/Credit Card',
+                                style: GoogleFonts.poppins(
+                                    fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    )),
-                // payWithCardButton(),
-                // const SizedBox(height: 20),
-                // payWithCashPlusButton(),
-                const SizedBox(
-                  height: 100,
-                )
-              ]).appPaddingForScreen)
-            : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text("Cart is empty"),
-                    Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: SizedBox(
-                          width: size.width * .40,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Get.offAll(const BottomNavbar());
-                              bottomController.updateIndexValue(1);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.primaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                side: const BorderSide(
-                                  width: 2.0,
-                                  color: Color(0xFF3B5998),
-                                ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Container(
+                        width: size.width,
+                        decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(8)),
+                            border: Border.all(color: const Color(0xff3B5998).withOpacity(.3))),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "assets/icons/phonepay.png",
+                                height: 20,
                               ),
-                              textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                            ),
-                            child: Text(
-                              "Browse",
-                              style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
-                            ),
+                              const SizedBox(
+                                width: 18,
+                              ),
+                              Text(
+                                'PayPal',
+                                style: GoogleFonts.poppins(
+                                    fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
+                              ),
+                            ],
                           ),
-                        )),
-                  ],
-                ),
-              ));
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  )),
+              Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: SizedBox(
+                    width: size.width,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (addressData == null) {
+                          showToast("Please choose address");
+                        } else {
+                          print([
+                            {
+                              "amount": {
+                                "total": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                "currency": "USD",
+                                "details": {
+                                  "subtotal": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                  "shipping": '0',
+                                  "shipping_discount": 0
+                                }
+                              },
+                              "description": "The payment transaction description.",
+                              // "payment_options": {
+                              //   "allowed_payment_method":
+                              //       "INSTANT_FUNDING_SOURCE"
+                              // },
+                              "item_list": {
+                                "items": extractedData,
+                                // shipping address is not required though
+                                // "shipping_address": {
+                                //   "recipient_name": "Jane Foster",
+                                //   "line1": "Travis County",
+                                //   "line2": "",
+                                //   "city": "Austin",
+                                //   "country_code": "US",sqxc3v4bgy5un6mi7,o8.p[/j vm],nl̥ō'{}|9+
+                                //   "phone": "+00000000",
+                                //   "state": "Texas"
+                                // },
+                              }
+                            }
+                          ]);
+                          // return;
+
+                          if (kIsWeb) {
+                            order(cartModel.vendorId).then((value) {
+                              FirebaseFirestore.instance
+                                  .collection("checkOut")
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                                  .delete();
+                              FirebaseFirestore.instance.collection("send_mail").add({
+                                "to": "${profileData!.email}",
+                                "message": {
+                                  "subject": "This is a basic email",
+                                  "html": getOrderConfirmationHtml(
+                                      orderId: value.toString(),
+                                      date: DateTime.now().toString(),
+                                      total: calculateTotalPrice.toString(),
+                                      address: profileData!.selected_address,
+                                      orderItems: cartModel,
+                                      orderType: "COD"),
+                                  "text": "asdfgwefddfgwefwn",
+                                }
+                              });
+                              FirebaseFirestore.instance.collection("send_mail").add({
+                                "to": "${cartModel.restaurantInfo!.email}",
+                                "message": {
+                                  "subject": "This is a basic email",
+                                  "html": getOrderConfirmationHtml(
+                                      orderId: value.toString(),
+                                      date: DateTime.now().toString(),
+                                      total: calculateTotalPrice.toString(),
+                                      address: profileData!.selected_address,
+                                      orderItems: cartModel,
+                                      orderType: "COD"),
+                                  "text": "asdfgwefddfgwefwn",
+                                }
+                              });
+                              FirebaseFirestore.instance.collection("send_mail").add({
+                                "to": "${adminModel!.email}",
+                                "message": {
+                                  "subject": "This is a basic email",
+                                  "html": getOrderConfirmationHtml(
+                                      orderId: value.toString(),
+                                      date: DateTime.now().toString(),
+                                      total: calculateTotalPrice.toString(),
+                                      address: profileData!.selected_address,
+                                      orderItems: cartModel,
+                                      orderType: "COD"),
+                                  "text": "asdfgwefddfgwefwn",
+                                }
+                              });
+                              FirebaseFirestore.instance
+                                  .collection('notification')
+                                  .add({
+                                'title': "Your Order has been created with Order ID ${value.toString()}",
+                                'body': "Your Order has been created with Order ID ${value.toString()}",
+                                'date': DateTime.now(),
+                                'userId': FirebaseAuth.instance.currentUser!.uid
+                              });
+                              Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
+                            });
+                            // try {
+                            //   await payPalService.createOrder().then((value) async {
+                            //     print("fsdgdfghh" + value.toString());
+                            //     await payPalService.capturePayment(value).then((value1) {
+                            //       order(cartModel.vendorId).then((value2) {
+                            //         FirebaseFirestore.instance
+                            //             .collection("checkOut")
+                            //             .doc(FirebaseAuth.instance.currentUser!.uid)
+                            //             .delete();
+                            //         Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value2.toString()));
+                            //       });
+                            //     });
+                            //   });
+                            // } catch (e) {
+                            //   print('Error: $e');
+                            // }
+                            // ;
+                          } else {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    UsePaypal(
+                                        sandboxMode: true,
+                                        // clientId: "AXzzNizO268LtEWEhlORqtjSut6XpJerxfosziugQke9gzo9P8HJSajCF9e2r7Xp1WZ68Ab68TkMmuxF",
+                                        // secretKey: "EOM7dx9y1e-EbyVNxKaEEAgHMTZJ-GUpO9e4CzfrfI0zu-emIZdszR-8hX22H-gt8FPzV7nc5yzX3BT5",
+                                        clientId:
+                                        "Ab5v6E4R-gNbD13BbcdgpzK0G66oJ8ij1Va8i85qzGTtgA4TXkmt2h4oRpCXGRTBQs8Fn1SMqgyVkQ19",
+                                        secretKey:
+                                        "ELCzlUANZYqBS27CGrYqP3RNyoob11TbOj_J4kYp6QULFkDWh9veSi_zkpQoe8nu-VS3FN8XJf-o5WJx",
+                                        returnURL: "https://samplesite.com/return",
+                                        cancelURL: "https://samplesite.com/cancel",
+                                        transactions: [
+                                          {
+                                            "amount": {
+                                              "total": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                              "currency": "USD",
+                                              "details": {
+                                                "subtotal": calculateTotalPrice.toStringAsFixed(2).toString(),
+                                                "shipping": '0',
+                                                "shipping_discount": 0
+                                              }
+                                            },
+                                            "description": "The payment transaction description.",
+                                            // "payment_options": {
+                                            //   "allowed_payment_method":
+                                            //       "INSTANT_FUNDING_SOURCE"
+                                            // },
+                                            "item_list": {
+                                              "items": extractedData,
+                                              // shipping address is not required though
+                                              "shipping_address": {
+                                                "recipient_name": "Jane Foster",
+                                                "line1": "aaa",
+                                                "line2": "aaa",
+                                                "city": addressData!.streetAddress.toString(),
+                                                "country_code": "IN",
+                                                "phone": "+91",
+                                                "state": addressData!.streetAddress.toString(),
+                                              },
+                                            }
+                                          }
+                                        ],
+                                        note: "Contact us for any questions on your order.",
+                                        onSuccess: (Map params) async {
+                                          print("onSuccess: ${params}");
+                                          order(cartModel.vendorId).then((value) {
+                                            FirebaseFirestore.instance
+                                                .collection("checkOut")
+                                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                                .delete();
+                                            FirebaseFirestore.instance.collection("send_mail").add({
+                                              "to": "${profileData!.email}",
+                                              "message": {
+                                                "subject": "This is a basic email",
+                                                "html": getOrderConfirmationHtml(
+                                                    orderId: value.toString(),
+                                                    date: DateTime.now().toString(),
+                                                    total: calculateTotalPrice.toString(),
+                                                    address: profileData!.selected_address,
+                                                    orderItems: cartModel,
+                                                    orderType: "COD"),
+                                                "text": "asdfgwefddfgwefwn",
+                                              }
+                                            });
+                                            FirebaseFirestore.instance.collection("send_mail").add({
+                                              "to": "${cartModel.restaurantInfo!.email}",
+                                              "message": {
+                                                "subject": "This is a basic email",
+                                                "html": getOrderConfirmationHtml(
+                                                    orderId: value.toString(),
+                                                    date: DateTime.now().toString(),
+                                                    total: calculateTotalPrice.toString(),
+                                                    address: profileData!.selected_address,
+                                                    orderItems: cartModel,
+                                                    orderType: "COD"),
+                                                "text": "asdfgwefddfgwefwn",
+                                              }
+                                            });
+                                            FirebaseFirestore.instance.collection("send_mail").add({
+                                              "to": "${adminModel!.email}",
+                                              "message": {
+                                                "subject": "This is a basic email",
+                                                "html": getOrderConfirmationHtml(
+                                                    orderId: value.toString(),
+                                                    date: DateTime.now().toString(),
+                                                    total: calculateTotalPrice.toString(),
+                                                    address: profileData!.selected_address,
+                                                    orderItems: cartModel,
+                                                    orderType: "COD"),
+                                                "text": "asdfgwefddfgwefwn",
+                                              }
+                                            });
+                                            FirebaseFirestore.instance
+                                                .collection('notification')
+                                                .add({
+                                              'title': "Your Order has been created with Order ID ${value.toString()}",
+                                              'body': "Your Order has been created with Order ID ${value.toString()}",
+                                              'date': DateTime.now(),
+                                              'userId': FirebaseAuth.instance.currentUser!.uid
+                                            });
+                                            Get.offAll(ThankuScreen(orderType: "Delivery", orderId: value.toString()));
+                                            sendPushNotification(
+                                                body: "Order received",
+                                                deviceToken: cartModel.restaurantInfo!.fcm,
+                                                image:
+                                                "https://www.funfoodfrolic.com/wp-content/uploads/2021/08/Macaroni-Thumbnail-Blog.jpg",
+                                                title: "You have received a new order for Delivery",
+                                                orderID: "");
+                                          });
+                                        },
+                                        onError: (error) {
+                                          print("onError: $error");
+                                        },
+                                        onCancel: (params) {
+                                          print('cancelled: $params');
+                                        }),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: const BorderSide(
+                            width: 2.0,
+                            color: Color(0xFF3B5998),
+                          ),
+                        ),
+                        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      child: Text(
+                        "Place Order",
+                        style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                      ),
+                    ),
+                  )),
+              // payWithCardButton(),
+              // const SizedBox(height: 20),
+              // payWithCashPlusButton(),
+              const SizedBox(
+                height: 100,
+              )
+            ]).appPaddingForScreen)
+            : Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text("Cart is empty"),
+              Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: SizedBox(
+                    width: size.width * .40,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.offAll(const BottomNavbar());
+                        bottomController.updateIndexValue(1);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: const BorderSide(
+                            width: 2.0,
+                            color: Color(0xFF3B5998),
+                          ),
+                        ),
+                        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      child: Text(
+                        "Browse",
+                        style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                      ),
+                    ),
+                  )),
+            ],
+          ),
+        ));
+  }
+
+  String getOrderConfirmationHtml(
+      {String? orderId, String? date, String? address, String? total, String? adminCommission = "0.0", String? orderType, CheckOutModel? orderItems}) {
+    String orderItemsHtml = '';
+    for (var item in orderItems!.menuList!) {
+      orderItemsHtml += '''
+        <li>
+          <img src="${item.image}" alt="${item.dishName}" style="width: 50px; height: 50px;">
+          <strong>${item.dishName}</strong> - ${item.discount * item.qty}
+        </li>
+      ''';
+    }
+
+    // HTML template for the email
+    String emailHtml = '''
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: 'Arial', sans-serif;
+              margin: 20px;
+            }
+            h1 {
+              color: #333;
+            }
+            p {
+              margin-bottom: 10px;
+            }
+            ul {
+              list-style-type: none;
+              padding: 0;
+            }
+            li {
+              margin-bottom: 5px;
+            }
+            strong {
+              color: #555;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Order Confirmation</h1>
+          <p><strong>Order ID:</strong> $orderId</p>
+          <p><strong>Date:</strong> $date</p>
+          <p><strong>Address:</strong> $address</p>
+          <p><strong>Total:</strong> $total</p>
+          <p><strong>Admin Commission:</strong> $adminCommission</p>
+          <p><strong>Order Type:</strong> $orderType</p>
+          <p><strong>Order Items:</strong></p>
+          <ul>
+            $orderItemsHtml
+          </ul>
+          <p>Your order has been placed successfully. Thank you for choosing our services!</p>
+        </body>
+      </html>
+    ''';
+
+    return emailHtml;
   }
 }
+
