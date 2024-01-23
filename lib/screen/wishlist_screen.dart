@@ -56,19 +56,19 @@ class _WishlistScreenState extends State<WishlistScreen> {
               const SizedBox(
                 width: 20,
               ),
-              Text("Wishlist",
+              Text("My Wishlist".tr,
                   style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17))
             ],
           ),
-          bottom: const TabBar(
+          bottom:  TabBar(
             dividerColor: Colors.grey,
             indicatorSize: TabBarIndicatorSize.tab,
             tabs: [
               Tab(
-                child: Text("Dine In"),
+                child: Text("Dine In".tr),
               ),
               Tab(
-                child: Text("Delivery"),
+                child: Text("Delivery".tr),
               ),
             ],
           ),
@@ -226,7 +226,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                         );
                       })
                   : Center(
-                      child: Text("Wishlist is Empty"),
+                      child: Text("Wishlist is Empty".tr),
                     );
             }).appPaddingForScreen,
             Obx(() {

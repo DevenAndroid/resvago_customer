@@ -117,7 +117,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                           ],
                           color: Colors.white),
                       child: CommonTextFieldWidget1(
-                        hint: 'Find for food or restaurant...',
+                        hint: 'Find for food or restaurant...'.tr,
                         prefix: InkWell(
                           onTap: () {},
                           child: Icon(
@@ -174,16 +174,16 @@ class _SerachListScreenState extends State<SerachListScreen> {
                               PopupMenuItem(
                                 value: 1,
                                 onTap: () {},
-                                child: const Column(
-                                  children: [Text("Offers"), Divider()],
+                                child:  Column(
+                                  children: [Text("Offers".tr), Divider()],
                                 ),
                               ),
                               PopupMenuItem(
                                 value: 1,
                                 onTap: () {},
-                                child: const Column(
+                                child:  Column(
                                   children: [
-                                    Text("Popular"),
+                                    Text("Popular".tr),
                                     Divider(
                                       color: Colors.white,
                                     )
@@ -196,15 +196,15 @@ class _SerachListScreenState extends State<SerachListScreen> {
               ],
             ),
           ),
-          bottom: const TabBar(
+          bottom:  TabBar(
             dividerColor: Colors.grey,
             indicatorSize: TabBarIndicatorSize.tab,
             tabs: [
               Tab(
-                child: Text("Dine In"),
+                child: Text("Dine In".tr),
               ),
               Tab(
-                child: Text("Delivery"),
+                child: Text("Delivery".tr),
               ),
             ],
           ),

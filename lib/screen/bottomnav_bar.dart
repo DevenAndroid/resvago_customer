@@ -437,12 +437,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 0
-                              ? const Text(
-                                  "Dining",
+                              ? Text(
+                                  "Dining".tr,
                                   style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Dining",
+                              : Text(
+                                  "Dining".tr,
                                   style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -470,12 +470,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 1
-                              ? const Text(
-                                  "Delivery",
+                              ? Text(
+                                  "Delivery".tr,
                                   style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Delivery",
+                              : Text(
+                                  "Delivery".tr,
                                   style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -506,12 +506,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 2
-                              ? const Text(
-                                  "Orders",
+                              ? Text(
+                                  "Orders".tr,
                                   style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Orders",
+                              : Text(
+                                  "Orders".tr,
                                   style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
@@ -542,12 +542,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             height: 5,
                           ),
                           bottomController.pageIndex.value == 3
-                              ? const Text(
-                                  "Profile",
+                              ?  Text(
+                                  "Profile".tr,
                                   style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
-                              : const Text(
-                                  "Profile",
+                              :  Text(
+                                  "Profile".tr,
                                   style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],

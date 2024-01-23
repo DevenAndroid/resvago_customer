@@ -45,7 +45,7 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Setting", context: context),
+      appBar: backAppBar(title: "Setting".tr, context: context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -61,7 +61,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "Enable 2 step Verification",
+                        "Enable 2 step Verification".tr,
                         style: GoogleFonts.poppins(color: const Color(0xFF292F45), fontSize: 15, fontWeight: FontWeight.w400),
                       ),
                       const Spacer(),
@@ -79,7 +79,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               SizedBox(height: 50),
               CommonButtonBlue(
-                title: "Submit",
+                title: "Submit".tr,
                 onPressed: () {
                   FirebaseFirestore.instance.collection('customer_users').doc(FirebaseAuth.instance.currentUser!.uid).update({
                     "twoStepVerification": twoStepVerification,

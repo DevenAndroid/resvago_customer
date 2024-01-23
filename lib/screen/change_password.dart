@@ -2,16 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:resvago_customer/widget/appassets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/logn_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/profile_model.dart';
 import '../routers/routers.dart';
+import '../widget/addsize.dart';
 import '../widget/custom_textfield.dart';
 import 'helper.dart';
 
@@ -123,6 +126,22 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          leadingWidth: AddSize.size22 * 1.6,
+          leading: Padding(
+            padding: EdgeInsets.only(left: AddSize.padding10),
+            child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  Get.back();
+                },
+                child: SvgPicture.asset(AppAssets.back)),
+          ),
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+        ),
+        extendBodyBehindAppBar: true,
         body: SingleChildScrollView(
           child: Container(
               height: Get.height,
@@ -143,7 +162,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'Change Password',
+                        'Change Password'.tr,
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -158,7 +177,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Old Password',
+                            'Old Password'.tr,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w400,
@@ -172,7 +191,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               obscureText: oldPasswordSecure,
                               controller: oldPasswordController,
                               textInputAction: TextInputAction.next,
-                              hint: 'Enter your old password',
+                              hint: 'Enter your old password'.tr,
                               keyboardType: TextInputType.text,
                               suffix: GestureDetector(
                                   onTap: () {
@@ -195,7 +214,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             height: 15,
                           ),
                           Text(
-                            'Password',
+                            'Password'.tr,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w400,
@@ -209,7 +228,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               obscureText: passwordSecure,
                               controller: passwordController,
                               textInputAction: TextInputAction.next,
-                              hint: 'Enter your password',
+                              hint: 'Enter your password'.tr,
                               keyboardType: TextInputType.text,
                               suffix: GestureDetector(
                                   onTap: () {
@@ -232,7 +251,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             height: 15,
                           ),
                           Text(
-                            'Confirm Password',
+                            'Confirm Password'.tr,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w400,
@@ -246,7 +265,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             obscureText: confirmPasswordSecure,
                             controller: confirmController,
                             textInputAction: TextInputAction.next,
-                            hint: 'Enter your confirm password',
+                            hint: 'Enter your confirm password'.tr,
                             keyboardType: TextInputType.text,
                             suffix: GestureDetector(
                                 onTap: () {
@@ -281,7 +300,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     oldPassword: oldPasswordController.text.trim());
                               }
                             },
-                            title: 'Change Password',
+                            title: 'Change Password'.tr,
                           ),
                           const SizedBox(
                             height: 30,

@@ -107,7 +107,7 @@ class _CartScreenState extends State<CartScreen> {
       totalPrice = totalPrice +
           double.parse(cartModel.menuList![i].qty.toString()) * double.parse(cartModel.menuList![i].sellingPrice.toString());
       if (adminModel != null) {
-        result = (totalPrice * double.parse(adminModel!.adminCommission)) / 100;
+        result = (totalPrice * double.parse(adminModel!.adminCommission ?? "0")) / 100;
         log("sadsfgdg" + result.toString());
       }
       log(totalPrice.toString());
@@ -153,6 +153,9 @@ class _CartScreenState extends State<CartScreen> {
     FirebaseFirestore.instance.collection("admin_login").get().then((value) {
       adminModel = AdminModel.fromJson(value.docs.first.data());
       log(jsonEncode(value.docs.first.data()).toString());
+      setState(() {
+
+      });
     });
   }
 
@@ -199,7 +202,7 @@ class _CartScreenState extends State<CartScreen> {
         .size;
     return Scaffold(
         appBar: backAppBar(
-          title: "CheckOut",
+          title: "CheckOut".tr,
           context: context,
         ),
         body: cartModel.menuList != null && cartModel.menuList!.isNotEmpty
@@ -404,7 +407,7 @@ class _CartScreenState extends State<CartScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Deliver To',
+                              'Deliver To'.tr,
                               style: GoogleFonts.poppins(
                                   fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
                             ),
@@ -458,9 +461,9 @@ class _CartScreenState extends State<CartScreen> {
                           ),
                         )
                       else
-                        const Center(
+                         Center(
                           child: Text(
-                            "Please choose address",
+                            "Please choose address".tr,
                             style: TextStyle(fontSize: 16),
                           ),
                         )
@@ -504,7 +507,7 @@ class _CartScreenState extends State<CartScreen> {
                           width: 10,
                         ),
                         Text(
-                          'Use Coupons',
+                          'Use Coupons'.tr,
                           style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500, color: const Color(0xff293044)),
                         ),
                       ]),
@@ -565,7 +568,7 @@ class _CartScreenState extends State<CartScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Subtotal',
+                        'Subtotal'.tr,
                         style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                       ),
                       Text(
@@ -587,7 +590,7 @@ class _CartScreenState extends State<CartScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Tax And Fees',
+                        'Tax And Fees'.tr,
                         style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                       ),
                       Text(
@@ -609,7 +612,7 @@ class _CartScreenState extends State<CartScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Delivery',
+                        'Delivery'.tr,
                         style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                       ),
                       Text(
@@ -631,7 +634,7 @@ class _CartScreenState extends State<CartScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Save Coupon',
+                        'Save Coupon'.tr,
                         style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                       ),
                       Text(
@@ -653,7 +656,7 @@ class _CartScreenState extends State<CartScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Total',
+                        'Total'.tr,
                         style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff1E2538)),
                       ),
                       const Spacer(),
@@ -696,7 +699,7 @@ class _CartScreenState extends State<CartScreen> {
                       Row(
                         children: [
                           Text(
-                            "Payment Method",
+                            "Payment Method".tr,
                             style:
                             GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
                           ),
@@ -742,7 +745,7 @@ class _CartScreenState extends State<CartScreen> {
                                 width: 18,
                               ),
                               Text(
-                                'Debit/Credit Card',
+                                'Debit/Credit Card'.tr,
                                 style: GoogleFonts.poppins(
                                     fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
                               )
@@ -770,7 +773,7 @@ class _CartScreenState extends State<CartScreen> {
                                 width: 18,
                               ),
                               Text(
-                                'PayPal',
+                                'PayPal'.tr,
                                 style: GoogleFonts.poppins(
                                     fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF1E2538)),
                               ),
@@ -1038,7 +1041,7 @@ class _CartScreenState extends State<CartScreen> {
                         textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                       ),
                       child: Text(
-                        "Place Order",
+                        "Place Order".tr,
                         style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
                       ),
                     ),

@@ -106,6 +106,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Fluttertoast.showToast(msg: 'Email already exits');
       return;
     }
+    final QuerySnapshot result1 =
+    await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
+    if (result1.docs.isNotEmpty) {
+      Fluttertoast.showToast(msg: 'Email already used in vendor please use another account');
+      return;
+    }
     addUserToFirestore();
   }
 

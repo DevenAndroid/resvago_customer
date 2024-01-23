@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:open_filex/open_filex.dart';
@@ -102,7 +103,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
     var size = MediaQuery.of(context).size;
     log(widget.orderId.toString());
     return Scaffold(
-      appBar: backAppBar(title: "Orders Details", context: context, dispose: widget.data!),
+      appBar: backAppBar(title: "Orders Details".tr, context: context, dispose: widget.data!),
       body: widget.orderType == "Delivery" && myOrderModel.orderDetails != null
           ? SingleChildScrollView(
               child: Column(
@@ -127,10 +128,23 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "Order ID: ${myOrderModel.orderId.toString()}",
-                                  style: GoogleFonts.poppins(
-                                      color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "Order ID:".tr,
+                                        style: GoogleFonts.poppins(
+                                            color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        " ${myOrderModel.orderId.toString()}",
+                                        style: GoogleFonts.poppins(
+                                            color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   DateFormat.yMMMMd().format(DateTime.parse(
@@ -274,7 +288,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Selected Items",
+                                      "Selected Items".tr,
                                       style: GoogleFonts.poppins(
                                           color: const Color(0xFF1A2E33), fontWeight: FontWeight.w600, fontSize: 16),
                                     ),
@@ -373,7 +387,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Restaurant Details",
+                                "Restaurant Details".tr,
                                 style: GoogleFonts.poppins(
                                     color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                               ),
@@ -398,7 +412,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Restaurant Name",
+                                            "Restaurant Name".tr,
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                           ),
@@ -438,7 +452,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Restaurant Number",
+                                            "Restaurant Number".tr,
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                           ),
@@ -484,7 +498,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Restaurant Address",
+                                            "Restaurant Address".tr,
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                           ),
@@ -583,7 +597,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Total",
+                                    "Total".tr,
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                                   ),
@@ -626,10 +640,23 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Order ID: ${myDiningOrderModel!.orderId.toString()}",
-                                      style: GoogleFonts.poppins(
-                                          color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "Order ID:".tr,
+                                            style: GoogleFonts.poppins(
+                                                color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            " ${myDiningOrderModel!.orderId.toString()}",
+                                            style: GoogleFonts.poppins(
+                                                color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 15),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     Text(
                                       DateFormat.yMMMMd().format(DateTime.parse(
@@ -727,7 +754,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        "Date",
+                                                        "Date".tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 11,
                                                             fontWeight: FontWeight.w300,
@@ -754,7 +781,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
-                                                          "Time",
+                                                          "Time".tr,
                                                           style: GoogleFonts.poppins(
                                                               fontSize: 11,
                                                               fontWeight: FontWeight.w300,
@@ -780,7 +807,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        "Guest",
+                                                        "Guest".tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 11,
                                                             fontWeight: FontWeight.w300,
@@ -804,7 +831,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                   Column(
                                                     children: [
                                                       Text(
-                                                        "offer",
+                                                        "offer".tr,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 11,
                                                             fontWeight: FontWeight.w300,
@@ -847,7 +874,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Selected Items",
+                                          "Selected Items".tr,
                                           style: GoogleFonts.poppins(
                                               color: const Color(0xFF1A2E33), fontWeight: FontWeight.w600, fontSize: 16),
                                         ),
@@ -956,7 +983,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Restaurant Details",
+                                    "Restaurant Details".tr,
                                     style: GoogleFonts.poppins(
                                         color: const Color(0xFF1A2E33), fontWeight: FontWeight.w500, fontSize: 16),
                                   ),
@@ -980,7 +1007,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Restaurant Name",
+                                              "Restaurant Name".tr,
                                               style: GoogleFonts.poppins(
                                                   color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                             ),
@@ -1018,7 +1045,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Restaurant Number",
+                                              "Restaurant Number".tr,
                                               style: GoogleFonts.poppins(
                                                   color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                             ),
@@ -1056,7 +1083,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Restaurant Address",
+                                                "Restaurant Address".tr,
                                                 style: GoogleFonts.poppins(
                                                     color: const Color(0xFF486769), fontWeight: FontWeight.w300, fontSize: 14),
                                               ),
@@ -1146,7 +1173,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Total",
+                                        "Total".tr,
                                         style: GoogleFonts.poppins(
                                             color: const Color(0xFF3A3A3A), fontWeight: FontWeight.w500, fontSize: 16),
                                       ),

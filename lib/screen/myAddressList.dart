@@ -39,7 +39,7 @@ class _MyAddressListState extends State<MyAddressList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: backAppBar(
-        title: "My Address",
+        title: "My Address".tr,
         context: context,
         icon2: GestureDetector(
           behavior: HitTestBehavior.translucent,

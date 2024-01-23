@@ -120,66 +120,59 @@ class MaxRatingScreen extends StatefulWidget {
 }
 
 class _MaxRatingScreenState extends State<MaxRatingScreen> {
+
+  List<ReviewModel>? reviewModel;
+  getReviewList() {
+    FirebaseFirestore.instance
+        .collection("Review")
+        .where("vendorID", isEqualTo:  widget.docId)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        var gg = element.data();
+        reviewModel ??= [];
+        reviewModel!.add(ReviewModel.fromJson(gg));
+      }
+      averageRating = calculateAverageRating();
+      setState(() {});
+    });
+  }
+
+  double calculateAverageRating() {
+    if (reviewModel == null || reviewModel!.isEmpty) {
+      return 0.0;
+    }
+    double totalRating = 0;
+    for (var review in reviewModel!) {
+      totalRating += review.fullRating;
+    }
+
+    return totalRating / reviewModel!.length;
+  }
+
+  double averageRating = 0.0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getReviewList();
+  }
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
       print("ffgghdfh${widget.docId}");
     }
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection("Review")
-          .where("vendorID", isEqualTo: widget.docId)
-          .limit(1)
-          .snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data == null) {
-            return const SizedBox();
-          }
-          if (snapshot.data!.docs.isNotEmpty) {
-            ReviewModel reviewData = ReviewModel.fromJson(snapshot.data!.docs.first.data());
-            log(snapshot.data!.docs.first.data().toString());
-            return Row(
-              children: [
-                const SizedBox(width: 5),
-                const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
-                const SizedBox(width: 2),
-                Text(
-                  "${(reviewData.fullRating ?? "")}".toString(),
-                  style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-                ),
-              ],
-            );
-          } else {
-            return Row(
-              children: [
-                const Icon(
-                  Icons.star_rounded,
-                  color: Colors.amber,
-                  size: 20,
-                ),
-                Text(
-                  "0.0",
-                  style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-                ),
-              ],
-            );
-          }
-        }
-        return Row(
-          children: [
-            const Icon(
-              Icons.star_rounded,
-              color: Colors.amber,
-              size: 20,
-            ),
-            Text(
-              "0.0",
-              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
-            ),
-          ],
-        );
-      },
+    return  Row(
+      children: [
+        const SizedBox(width: 5),
+        const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
+        const SizedBox(width: 2),
+        Text(
+          "${(averageRating)}".toString(),
+          style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xff3B5998)),
+        ),
+      ],
     );
   }
 }

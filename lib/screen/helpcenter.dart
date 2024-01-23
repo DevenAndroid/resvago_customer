@@ -20,7 +20,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: backAppBar(
-        title: "Help Center",
+        title: "Help Center".tr,
         context: context,
       ),
       body: Padding(
@@ -48,7 +48,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       width: 20,
                     ),
                     Text(
-                      "Chat/Email",
+                      "Chat/Email".tr,
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 19, color: const Color(0xFF1A2E33)),
                     ),
                   ],
@@ -77,7 +77,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       width: 20,
                     ),
                     Text(
-                      "Resvago team",
+                      "Resvago team".tr,
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 19, color: const Color(0xFF1A2E33)),
                     ),
                   ],
@@ -107,7 +107,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                       width: 20,
                     ),
                     Text(
-                      "FAQ",
+                      "FAQ".tr,
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 19, color: const Color(0xFF1A2E33)),
                     ),
                   ],

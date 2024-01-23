@@ -44,10 +44,10 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   double kk = 0.0;
   double result = 0.0;
   List<String> fields = [
-    "Date",
-    "Time",
-    "Guest",
-    "Offer",
+    "Date".tr,
+    "Time".tr,
+    "Guest".tr,
+    "Offer".tr,
   ];
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
@@ -200,7 +200,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
                   fields.length,
-                  (index) => Text(fields[index]),
+                  (index) => Text(fields[index].tr),
                 ),
               ),
             ),
@@ -242,7 +242,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                 width: 10,
                               ),
                               Text(
-                                "Select Your Offer",
+                                "Select Your Offer".tr,
                                 style: GoogleFonts.poppins(
                                     fontSize: 15, fontWeight: FontWeight.w600, color: const Color(0xFF3B5998)),
                               ),
@@ -314,14 +314,14 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                 )
                               ],
                             ))
-                        : const Center(
-                            child: Text("No Offer Selected"),
+                        :  Center(
+                            child: Text("No Offer Selected".tr),
                           ),
                     const SizedBox(
                       height: 13,
                     ),
                     Text(
-                      'Restaurants Menu Chosen For You',
+                      'Restaurants Menu Chosen For You'.tr,
                       style: GoogleFonts.poppins(color: const Color(0xFF1E2538), fontWeight: FontWeight.w500, fontSize: 17),
                     ),
                     const SizedBox(
@@ -479,7 +479,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                     )),
                                 textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                             child: Text(
-                              "Checkout".toUpperCase(),
+                              "Checkout".toUpperCase().tr,
                               style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                             ),
                           ),
@@ -569,7 +569,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
-            'Number Of Guests',
+            'Number Of Guests'.tr,
             style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
           ),
         ),
@@ -698,7 +698,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
-            'Lunch',
+            'Lunch'.tr,
             style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
           ),
         ),
@@ -790,7 +790,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
-            'Dinner',
+            'Dinner'.tr,
             style: GoogleFonts.poppins(color: const Color(0xFF545B61), fontWeight: FontWeight.w500, fontSize: 16),
           ),
         ),

@@ -371,7 +371,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Name',
+                                'Name'.tr,
                                 style:
                                     GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                               ),
@@ -381,12 +381,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               RegisterTextFieldWidget(
                                   controller: firstNameController,
                                   validator: RequiredValidator(errorText: 'Please enter your name').call,
-                                  hint: "Name"),
+                                  hint: "Name".tr),
                               const SizedBox(
                                 height: 20,
                               ),
                               Text(
-                                "Email",
+                                "Email".tr,
                                 style:
                                     GoogleFonts.poppins(color: AppTheme.registortext, fontWeight: FontWeight.w500, fontSize: 15),
                               ),
@@ -464,7 +464,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     updateProfileToFirestore();
                                   }
                                 },
-                                title: 'Save',
+                                title: 'Save'.tr,
                               ),
                             ],
                           ).appPaddingForScreen,
@@ -486,8 +486,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Select Picture from',
+        title:  Text(
+          'Select Picture from'.tr,
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
@@ -525,7 +525,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Get.back();
               });
             },
-            child: const Text("Camera"),
+            child: Text("Camera".tr),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -562,14 +562,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Get.back();
               });
             },
-            child: const Text('Gallery'),
+            child: Text('Gallery'.tr),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Get.back();
             },
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
         ],
       ),

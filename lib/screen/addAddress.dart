@@ -166,8 +166,8 @@ class _ChooseAddressState extends State<ChooseAddress> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "Enter complete address",
+                                  Text(
+                                    "Enter complete address".tr,
                                     style: TextStyle(color: AppTheme.blackcolor, fontWeight: FontWeight.w600, fontSize: 17),
                                   ),
                                   SizedBox(
@@ -177,22 +177,22 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: List.generate(
                                       choiceAddress.length,
-                                      (index) => chipList(choiceAddress[index]),
+                                      (index) => chipList(choiceAddress[index].tr),
                                     ),
                                   ),
                                   SizedBox(
                                     height: AddSize.size20,
                                   ),
                                   if (customTip.value)
-                                    const CommonTextFiel1dWidget(
-                                      hint: "Other",
+                                    CommonTextFiel1dWidget(
+                                      hint: "Other".tr,
                                     ),
                                   SizedBox(
                                     height: AddSize.size20,
                                   ),
                                   CommonTextFiel1dWidget(
                                     controller: streetAddressController,
-                                    hint: "Flat, House no, Floor, Tower,Street",
+                                    hint: "Flat, House no, Floor, Tower,Street".tr,
                                     validator: MultiValidator([
                                       RequiredValidator(errorText: 'Flat, House no, Floor, Tower,Street'),
                                     ]).call,
@@ -202,7 +202,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                   ),
                                   CommonTextFiel1dWidget(
                                     controller: flatAddressController,
-                                    hint: "Street, Society, Landmark",
+                                    hint: "Street, Society, Landmark".tr,
                                     validator: MultiValidator([
                                       RequiredValidator(errorText: 'Select city'),
                                     ]).call,
@@ -211,7 +211,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                     height: AddSize.size20,
                                   ),
                                   CommonTextFiel1dWidget(
-                                    hint: "Recipient’s name",
+                                    hint: "Recipient’s name".tr,
                                     controller: nameController,
                                     validator: MultiValidator([
                                       RequiredValidator(errorText: 'Recipient’s name'),
@@ -221,7 +221,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                                     height: AddSize.size20,
                                   ),
                                   CommonButtonBlue(
-                                    title: 'save address'.toUpperCase(),
+                                    title: 'SAVE ADDRESS'.tr,
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
                                         AddAddresstofirebase();
@@ -341,7 +341,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
         },
         child: Scaffold(
             appBar: backAppBar(
-                title: _isValue.value == true ? "Complete Address" : "Choose Address",
+                title: _isValue.value == true ? "Complete Address".tr : "Choose Address".tr,
                 context: context,
                 dispose: "dispose",
                 disposeController: () {
@@ -477,7 +477,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                               height: AddSize.size30,
                             ),
                             CommonButtonBlue(
-                              title: "Enter complete address",
+                              title: "Enter complete address".tr,
                               onPressed: () {
                                 setState(() {
                                   _isValue.value = !_isValue.value;

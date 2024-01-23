@@ -86,10 +86,19 @@ class NotificationScreenState extends State<NotificationScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Date: ${formatDate(item.date.toDate())}",
-                                      style:
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Date:".tr,
+                                          style:
+                                              const TextStyle(color: Color(0xffFAAF40), fontSize: 12, fontWeight: FontWeight.normal),
+                                        ),
+                                        Text(
+                                          " ${formatDate(item.date.toDate())}",
+                                          style:
                                           const TextStyle(color: Color(0xffFAAF40), fontSize: 12, fontWeight: FontWeight.normal),
+                                        ),
+                                      ],
                                     ),
                                     Text(
                                       item.body.toString(),

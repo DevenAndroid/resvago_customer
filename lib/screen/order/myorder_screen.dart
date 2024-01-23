@@ -280,7 +280,7 @@ class _MyOrderState extends State<MyOrder> {
               ),
               elevation: 1,
               title: Text(
-                "My Orders",
+                "My Orders".tr,
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -317,8 +317,8 @@ class _MyOrderState extends State<MyOrder> {
                                     log(orderType.toString());
                                     setState(() {});
                                   },
-                                  child: const Column(
-                                    children: [Text("Dining Orders"), Divider()],
+                                  child:  Column(
+                                    children: [Text("Dining Orders".tr), Divider()],
                                   ),
                                 ),
                                 PopupMenuItem(
@@ -328,9 +328,9 @@ class _MyOrderState extends State<MyOrder> {
                                     log(orderType.toString());
                                     setState(() {});
                                   },
-                                  child: const Column(
+                                  child:  Column(
                                     children: [
-                                      Text("Delivery Orders"),
+                                      Text("Delivery Orders".tr),
                                       Divider(
                                         color: Colors.white,
                                       )
@@ -355,7 +355,7 @@ class _MyOrderState extends State<MyOrder> {
                 tabs: [
                   Tab(
                     child: Text(
-                      "Active",
+                      "Active".tr,
                       style: currentDrawer == 0
                           ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
                           : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
@@ -363,7 +363,7 @@ class _MyOrderState extends State<MyOrder> {
                   ),
                   Tab(
                     child: Text(
-                      "Completed",
+                      "Completed".tr,
                       style: currentDrawer == 1
                           ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
                           : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),
@@ -371,7 +371,7 @@ class _MyOrderState extends State<MyOrder> {
                   ),
                   Tab(
                     child: Text(
-                      "Cancelled",
+                      "Cancelled".tr,
                       style: currentDrawer == 2
                           ? GoogleFonts.poppins(color: AppTheme.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)
                           : GoogleFonts.poppins(color: const Color(0xff9B9B9B), fontSize: 16, fontWeight: FontWeight.w500),

@@ -27,7 +27,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: backAppBar(
-          title: "Promo code List",
+          title: "Promo code List".tr,
           context: context,
         ),
         body: SingleChildScrollView(
@@ -43,7 +43,7 @@ class _PromoCodeListState extends State<PromoCodeList> {
               } else if (snapshot.hasError) {
                 return Center(child: Text("Error: ${snapshot.error}"));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("No Coupon Found"));
+                return Center(child: Text("No Coupon Found".tr));
               } else {
                 List<CouponData>? users = snapshot.data;
                 final filteredUsers = filterUsers(users!, searchQuery);
@@ -219,8 +219,8 @@ class _PromoCodeListState extends State<PromoCodeList> {
                                 )
                               : SizedBox();
                         })
-                    : const Center(
-                        child: Text("No Coupon Found"),
+                    : Center(
+                        child: Text("No Coupon Found".tr),
                       );
               }
             },

@@ -5,9 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/apptheme.dart';
 import '../widget/common_text_field.dart';
 
-
-
-
 Locale locale = const Locale('en', 'US');
 
 class LanguageChangeScreen extends StatefulWidget {
@@ -31,8 +28,6 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString("app_language", gg);
   }
-
-
 
   checkLanguage() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -70,9 +65,8 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
               const SizedBox(
                 height: 25,
               ),
-
               InkWell(
-                onTap: ()=>showDialogLanguage(context),
+                onTap: () => showDialogLanguage(context),
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 10),
                   padding: const EdgeInsets.only(left: 12, right: 12),
@@ -86,8 +80,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         color: Colors.grey.withOpacity(.06),
                         spreadRadius: 2,
                         blurRadius: 15,
-                        offset: const Offset(
-                            0, 1), // changes position of shadow
+                        offset: const Offset(0, 1), // changes position of shadow
                       ),
                     ],
                   ),
@@ -95,16 +88,14 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'LANGUAGE'.tr,
-                        style: const TextStyle(
-                            color: AppTheme.blackcolor, fontSize: 16),
+                        'Language'.tr,
+                        style: const TextStyle(color: AppTheme.blackcolor, fontSize: 16),
                       ),
                       const Icon(Icons.keyboard_arrow_right)
                     ],
                   ),
                 ),
               ),
-
             ],
           ),
         ),
@@ -118,8 +109,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
         context: context,
         builder: (context) {
           return Dialog(
-            shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
@@ -141,7 +131,8 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         setState(() {});
                         print(selectedLAnguage);
                       }),
-                  RadioListTile( value: "Spanish",
+                  RadioListTile(
+                      value: "Spanish",
                       groupValue: selectedLAnguage.value,
                       title: const Text(
                         "Spanish",
@@ -155,7 +146,8 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         setState(() {});
                         print(selectedLAnguage);
                       }),
-                  RadioListTile( value: "French",
+                  RadioListTile(
+                      value: "French",
                       groupValue: selectedLAnguage.value,
                       title: const Text(
                         "French",
@@ -169,7 +161,8 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                         setState(() {});
                         print(selectedLAnguage);
                       }),
-                  RadioListTile( value: "Arabic",
+                  RadioListTile(
+                      value: "Arabic",
                       groupValue: selectedLAnguage.value,
                       title: const Text(
                         "Arabic",
@@ -186,17 +179,17 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                   Align(
                     alignment: Alignment.center,
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Get.back();
                       },
-                      child:  Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: AppTheme.primaryColor
-                          ),
-                          child: const Padding(
+                      child: Container(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
+                          child: Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text("Update",style: TextStyle(color: Colors.white),),
+                            child: Text(
+                              "Update".tr,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           )),
                     ),
                   )

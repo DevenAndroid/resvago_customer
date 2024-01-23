@@ -19,7 +19,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: backAppBar(
-          title: "Privacy Policy",
+          title: "Privacy Policy".tr,
           context: context,
         ),
         body: SingleChildScrollView(
