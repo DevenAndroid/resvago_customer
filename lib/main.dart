@@ -8,12 +8,13 @@ import 'package:resvago_customer/routers/routers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:resvago_customer/widget/local_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Stripe.publishableKey = "pk_test_51HFC16KfptQuy0MRiIcEnoRjyw81a9ApmSqi7DyKY2jAkqh3AGmrMsGbGNYfqYY6o5ukM5b9GqnodYXYckV37WFm00ReA1XoUZ";
-  // Stripe.instance.applySettings();
+  Stripe.publishableKey = "pk_test_51HFC16KfptQuy0MRiIcEnoRjyw81a9ApmSqi7DyKY2jAkqh3AGmrMsGbGNYfqYY6o5ukM5b9GqnodYXYckV37WFm00ReA1XoUZ";
+  Stripe.instance.applySettings();
   if (kIsWeb) {
+    // WebView.platform = SurfaceAndroidWebView();
     await Firebase.initializeApp(
       options: FirebaseOptions(
           apiKey: "AIzaSyBN7-pBlJcY6p8stbdeDRgo-JVF6MO2K30",

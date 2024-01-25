@@ -10,7 +10,6 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:resvago_customer/model/dinig_order.dart';
 import 'package:resvago_customer/model/order_model.dart';
 import 'package:resvago_customer/screen/delivery_screen/cart%20screen.dart';

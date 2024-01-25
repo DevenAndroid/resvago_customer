@@ -4,8 +4,10 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/helper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widget/common_text_field.dart';
+import 'faq_screen.dart';
 
 class HelpCenterScreen extends StatefulWidget {
   const HelpCenterScreen({Key? key}) : super(key: key);
@@ -15,6 +17,23 @@ class HelpCenterScreen extends StatefulWidget {
 }
 
 class _HelpCenterScreenState extends State<HelpCenterScreen> {
+  _sendingMails() async {
+    const emailAddress = 'anjalikumari5845@gmail.com';
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: emailAddress,
+    );
+    try {
+      if (await canLaunchUrl(Uri.parse(emailLaunchUri.toString()))) {
+        await launchUrl(Uri.parse(emailLaunchUri.toString()));
+      } else {
+        print('Could not launch $emailAddress');
+      }
+    } catch (e) {
+      print('Error launching email: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,16 +46,22 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
         child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              child: InkWell(
-                onTap: () {
-                  // Get.toNamed(ChatScreen.chatScreen);
-                },
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () async {
+                final url = Uri.parse('mailto:example@developerxon.com?subject=Test&body=Test email');
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                 child: Row(
                   children: [
                     Image.asset(
@@ -89,7 +114,9 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             ),
             GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () {},
+              onTap: () {
+                Get.to(() => FaqScreen());
+              },
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,

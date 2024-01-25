@@ -628,12 +628,12 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
         const SizedBox(
           height: 10,
         ),
-        Center(
-          child: Text(
-            'We have max $guestNo sitting capacity'.toUpperCase(),
-            style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: const Color(0xFFFF2D2D)),
-          ),
-        ),
+        // Center(
+        //   child: Text(
+        //     'We have max $guestNo sitting capacity'.toUpperCase(),
+        //     style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: const Color(0xFFFF2D2D)),
+        //   ),
+        // ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(

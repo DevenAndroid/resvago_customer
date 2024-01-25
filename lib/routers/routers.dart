@@ -47,7 +47,7 @@ class MyRouters {
 
   static var route = [
     // GetPage(name: '/', page: () => OtpScreen(verificationId: '',email: "",code: "",)),
-    // GetPage(name: '/', page: () => const SplashScreen()),
+    // GetPage(name: '/', page: () => const PaymentDemo()),
     GetPage(name: '/', page: () => const SplashScreen()),
     GetPage(name: '/onBoardingScreen', page: () => const OnBoardingScreen()),
     GetPage(name: MyRouters.loginScreen, page: () => const LoginScreen()),

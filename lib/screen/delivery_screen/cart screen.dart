@@ -148,19 +148,16 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   AdminModel? adminModel;
-
   void getAdminData() {
     FirebaseFirestore.instance.collection("admin_login").get().then((value) {
       adminModel = AdminModel.fromJson(value.docs.first.data());
       log(jsonEncode(value.docs.first.data()).toString());
       setState(() {
-
       });
     });
   }
 
   FirebaseService firebaseService = FirebaseService();
-
   Future<int> order(String vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
@@ -968,7 +965,7 @@ class _CartScreenState extends State<CartScreen> {
                                                     total: calculateTotalPrice.toString(),
                                                     address: profileData!.selected_address,
                                                     orderItems: cartModel,
-                                                    orderType: "COD"),
+                                                    orderType: "Online"),
                                                 "text": "asdfgwefddfgwefwn",
                                               }
                                             });
@@ -982,7 +979,7 @@ class _CartScreenState extends State<CartScreen> {
                                                     total: calculateTotalPrice.toString(),
                                                     address: profileData!.selected_address,
                                                     orderItems: cartModel,
-                                                    orderType: "COD"),
+                                                    orderType: "Online"),
                                                 "text": "asdfgwefddfgwefwn",
                                               }
                                             });
@@ -996,7 +993,7 @@ class _CartScreenState extends State<CartScreen> {
                                                     total: calculateTotalPrice.toString(),
                                                     address: profileData!.selected_address,
                                                     orderItems: cartModel,
-                                                    orderType: "COD"),
+                                                    orderType: "Online"),
                                                 "text": "asdfgwefddfgwefwn",
                                               }
                                             });

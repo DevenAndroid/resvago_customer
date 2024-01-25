@@ -49,7 +49,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    FirebaseAuth.instance.signOut();
+    // FirebaseAuth.instance.signOut();
     getAdminData();
   }
 
@@ -154,7 +154,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                                             content: Text("Verify otp successfully"),
                                                           ));
                                                         }
-                                                        Get.offAllNamed(MyRouters.loginScreen);
+                                                        Get.offAllNamed(MyRouters.bottomNavbar);
                                                       }
                                                     }
                                                   },

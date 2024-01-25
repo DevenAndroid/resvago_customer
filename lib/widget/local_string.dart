@@ -290,7 +290,7 @@ class LocaleString extends Translations {
         },
 
         //Spanish LANGUAGE
-        'es-ES': {
+        'es_ES': {
           "Promo code List": "Lista de Códigos Promocionales",
           "Wishlist is Empty": "La Lista de Deseos está Vacía",
           "Language": "Idioma",
@@ -679,7 +679,7 @@ class LocaleString extends Translations {
           "CONTINUE": "CONTINUER",
           'My Orders': 'Mes commandes',
           "My Profile": "Mon profil",
-          "Notification": "Mon profil",
+          "Notification": "Notification",
           "My Address": "Mon adresse",
           "Privacy Policy": "politique de confidentialité",
           'Help Center': 'Centre d\'aide',

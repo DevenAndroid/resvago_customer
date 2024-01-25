@@ -100,292 +100,297 @@ class _BottomNavbarState extends State<BottomNavbar> {
     // });
     Size size = MediaQuery.of(context).size;
     return Obx(() {
-      return Scaffold(
-        key: bottomController.scaffoldKey,
-        drawer: SizedBox(
-          width: kIsWeb ? 300 : MediaQuery.of(context).size.width * 0.7,
-          child: Drawer(
-              child: Container(
-            // width: MediaQuery.of(context).size.width * 0.8,
-            color: AppTheme.backgroundcolor,
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: kIsWeb ? 250 : size.height * 0.30,
-                    width: size.width,
-                    color: AppTheme.primaryColor,
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.05,
-                        ),
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            // Get.to(navigationPage.elementAt(_currentPage))
-                            // Get.to(MyProfile());
-                          },
-                          child: Card(
-                            elevation: 1,
-                            shape: const CircleBorder(),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: Container(
-                                decoration:
-                                    BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Obx(() {
-                                    if (profileController.refreshInt.value > 0) {}
-                                    return CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      imageUrl: profileController.profileData != null
-                                          ? profileController.profileData!.profile_image.toString()
-                                          : "",
-                                      errorWidget: (_, __, ___) => const Icon(Icons.person),
-                                      placeholder: (_, __) => const SizedBox(),
-                                    );
-                                  }),
+      return Theme(
+        data: ThemeData(
+          useMaterial3: true,
+        ),
+        child: Scaffold(
+          key: bottomController.scaffoldKey,
+          drawer: SizedBox(
+            width: kIsWeb ? 300 : MediaQuery.of(context).size.width * 0.7,
+            child: Drawer(
+                child: Container(
+              // width: MediaQuery.of(context).size.width * 0.8,
+              color: AppTheme.backgroundcolor,
+              child: SingleChildScrollView(
+                // physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: kIsWeb ? 250 : size.height * 0.30,
+                      width: size.width,
+                      color: AppTheme.primaryColor,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.05,
+                          ),
+                          GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              // Get.to(navigationPage.elementAt(_currentPage))
+                              // Get.to(MyProfile());
+                            },
+                            child: Card(
+                              elevation: 1,
+                              shape: const CircleBorder(),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: Container(
+                                  decoration:
+                                      BoxDecoration(border: Border.all(color: Colors.white, width: 2), shape: BoxShape.circle),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: Obx(() {
+                                      if (profileController.refreshInt.value > 0) {}
+                                      return CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: profileController.profileData != null
+                                            ? profileController.profileData!.profile_image.toString()
+                                            : "",
+                                        errorWidget: (_, __, ___) => const Icon(Icons.person),
+                                        placeholder: (_, __) => const SizedBox(),
+                                      );
+                                    }),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: size.height * 0.01,
-                        ),
-                        Text(profileData.userName ?? "",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600)),
-                        Text(profileData.email ?? "",
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
-                      ],
+                          SizedBox(
+                            height: size.height * 0.01,
+                          ),
+                          Text(profileData.userName ?? "",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600)),
+                          Text(profileData.email ?? "",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400)),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Column(
-                    children: [
-                      drawerTile(
-                          active: true,
-                          title: "My Orders".tr,
-                          icon: const ImageIcon(
-                            AssetImage(AppAssets.order),
-                            size: 22,
-                            color: AppTheme.drawerColor,
-                          ),
-                          onTap: () {
-                            FirebaseAuth _auth = FirebaseAuth.instance;
-                            User? user = _auth.currentUser;
-                            if (user != null) {
-                              bottomController.updateIndexValue(2);
-                              Get.back();
-                            } else {
-                              Get.to(() => LoginScreen());
-                            }
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      drawerTile(
-                          active: true,
-                          title: "My Profile".tr,
-                          icon: const ImageIcon(
-                            AssetImage(AppAssets.profilee),
-                            size: 22,
-                            color: AppTheme.drawerColor,
-                          ),
-                          onTap: () async {
-                            FirebaseAuth _auth = FirebaseAuth.instance;
-                            User? user = _auth.currentUser;
-                            if (user != null) {
-                              bottomController.updateIndexValue(3);
-                              Get.back();
-                            } else {
-                              Get.to(() => LoginScreen());
-                            }
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      drawerTile(
-                          active: true,
-                          title: "Notification".tr,
-                          icon: const ImageIcon(
-                            AssetImage(AppAssets.notification),
-                            size: 22,
-                            color: AppTheme.drawerColor,
-                          ),
-                          onTap: () {
-                            FirebaseAuth _auth = FirebaseAuth.instance;
-                            User? user = _auth.currentUser;
-                            if (user != null) {
-                              Get.toNamed(MyRouters.notification);
-                            } else {
-                              Get.to(() => LoginScreen());
-                            }
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      drawerTile(
-                          active: true,
-                          title: "My Address".tr,
-                          icon: const ImageIcon(
-                            AssetImage(AppAssets.myAddress),
-                            size: 22,
-                            color: AppTheme.drawerColor,
-                          ),
-                          onTap: () {
-                            FirebaseAuth _auth = FirebaseAuth.instance;
-                            User? user = _auth.currentUser;
-                            if (user != null) {
-                              Get.to(() => MyAddressList());
-                            } else {
-                              Get.to(() => LoginScreen());
-                            }
-                            // Get.back();
-                            // widget.onItemTapped(1);
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      drawerTile(
-                          active: true,
-                          title: "My Wishlist".tr,
-                          icon: Icon(Icons.favorite_border_rounded),
-                          onTap: () {
-                            FirebaseAuth _auth = FirebaseAuth.instance;
-                            User? user = _auth.currentUser;
-                            if (user != null) {
-                              Get.to(() => WishlistScreen());
-                            } else {
-                              Get.to(() => LoginScreen());
-                            }
-                            // Get.back();
-                            // widget.onItemTapped(1);
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      drawerTile(
-                          active: true,
-                          title: "Change Language".tr,
-                          icon: Icon(Icons.language),
-                          onTap: () {
-                            Get.to(() => LanguageChangeScreen());
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      drawerTile(
-                          active: true,
-                          title: "Privacy Policy".tr,
-                          icon: const ImageIcon(
-                            AssetImage(AppAssets.privacyPolicy),
-                            size: 22,
-                            color: AppTheme.drawerColor,
-                          ),
-                          onTap: () async {
-                            Get.toNamed(MyRouters.privacyPolicyScreen);
-
-                            // }
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      drawerTile(
-                          active: true,
-                          title: "Help Center".tr,
-                          icon: const ImageIcon(
-                            AssetImage(AppAssets.helpCenter),
-                            size: 22,
-                            color: AppTheme.drawerColor,
-                          ),
-                          onTap: () async {
-                            Get.toNamed(MyRouters.helpCenterScreen);
-                            // }
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      drawerTile(
-                          active: true,
-                          title: "Setting".tr,
-                          icon: Icon(Icons.settings),
-                          onTap: () {
-                            FirebaseAuth _auth = FirebaseAuth.instance;
-                            User? user = _auth.currentUser;
-                            if (user != null) {
-                              Get.to(() => SettingScreen());
-                            } else {
-                              Get.to(() => LoginScreen());
-                            }
-                            // Get.back();
-                            // widget.onItemTapped(1);
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      drawerTile(
-                          active: true,
-                          title: "Change Password".tr,
-                          icon: Icon(Icons.password),
-                          onTap: () {
-                            FirebaseAuth _auth = FirebaseAuth.instance;
-                            User? user = _auth.currentUser;
-                            if (user != null) {
-                              Get.to(() => ChangePasswordScreen());
-                            } else {
-                              Get.to(() => LoginScreen());
-                            }
-                            // Get.back();
-                            // widget.onItemTapped(1);
-                          }),
-                      const Divider(
-                        height: 5,
-                        color: Color(0xffF2F2F2),
-                      ),
-                      if (user != null)
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Column(
+                      children: [
                         drawerTile(
                             active: true,
-                            title: "Logout".tr,
+                            title: "My Orders".tr,
                             icon: const ImageIcon(
-                              AssetImage(AppAssets.logOut),
+                              AssetImage(AppAssets.order),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () {
+                              FirebaseAuth _auth = FirebaseAuth.instance;
+                              User? user = _auth.currentUser;
+                              if (user != null) {
+                                bottomController.updateIndexValue(2);
+                                Get.back();
+                              } else {
+                                Get.to(() => LoginScreen());
+                              }
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        drawerTile(
+                            active: true,
+                            title: "My Profile".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.profilee),
                               size: 22,
                               color: AppTheme.drawerColor,
                             ),
                             onTap: () async {
-                              await FirebaseAuth.instance.signOut();
-                              Get.offAll(const LoginScreen());
+                              FirebaseAuth _auth = FirebaseAuth.instance;
+                              User? user = _auth.currentUser;
+                              if (user != null) {
+                                bottomController.updateIndexValue(3);
+                                Get.back();
+                              } else {
+                                Get.to(() => LoginScreen());
+                              }
                             }),
-                    ],
-                  ),
-                  // SizedBox(height:20,)
-                ],
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        drawerTile(
+                            active: true,
+                            title: "Notification".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.notification),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () {
+                              FirebaseAuth _auth = FirebaseAuth.instance;
+                              User? user = _auth.currentUser;
+                              if (user != null) {
+                                Get.toNamed(MyRouters.notification);
+                              } else {
+                                Get.to(() => LoginScreen());
+                              }
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        drawerTile(
+                            active: true,
+                            title: "My Address".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.myAddress),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () {
+                              FirebaseAuth _auth = FirebaseAuth.instance;
+                              User? user = _auth.currentUser;
+                              if (user != null) {
+                                Get.to(() => MyAddressList());
+                              } else {
+                                Get.to(() => LoginScreen());
+                              }
+                              // Get.back();
+                              // widget.onItemTapped(1);
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        drawerTile(
+                            active: true,
+                            title: "My Wishlist".tr,
+                            icon: Icon(Icons.favorite_border_rounded),
+                            onTap: () {
+                              FirebaseAuth _auth = FirebaseAuth.instance;
+                              User? user = _auth.currentUser;
+                              if (user != null) {
+                                Get.to(() => WishlistScreen());
+                              } else {
+                                Get.to(() => LoginScreen());
+                              }
+                              // Get.back();
+                              // widget.onItemTapped(1);
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        drawerTile(
+                            active: true,
+                            title: "Change Language".tr,
+                            icon: Icon(Icons.language),
+                            onTap: () {
+                              Get.to(() => LanguageChangeScreen());
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        drawerTile(
+                            active: true,
+                            title: "Privacy Policy".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.privacyPolicy),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () async {
+                              Get.toNamed(MyRouters.privacyPolicyScreen);
+
+                              // }
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        drawerTile(
+                            active: true,
+                            title: "Help Center".tr,
+                            icon: const ImageIcon(
+                              AssetImage(AppAssets.helpCenter),
+                              size: 22,
+                              color: AppTheme.drawerColor,
+                            ),
+                            onTap: () async {
+                              Get.toNamed(MyRouters.helpCenterScreen);
+                              // }
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        drawerTile(
+                            active: true,
+                            title: "Setting".tr,
+                            icon: Icon(Icons.settings),
+                            onTap: () {
+                              FirebaseAuth _auth = FirebaseAuth.instance;
+                              User? user = _auth.currentUser;
+                              if (user != null) {
+                                Get.to(() => SettingScreen());
+                              } else {
+                                Get.to(() => LoginScreen());
+                              }
+                              // Get.back();
+                              // widget.onItemTapped(1);
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        drawerTile(
+                            active: true,
+                            title: "Change Password".tr,
+                            icon: Icon(Icons.password),
+                            onTap: () {
+                              FirebaseAuth _auth = FirebaseAuth.instance;
+                              User? user = _auth.currentUser;
+                              if (user != null) {
+                                Get.to(() => ChangePasswordScreen());
+                              } else {
+                                Get.to(() => LoginScreen());
+                              }
+                              // Get.back();
+                              // widget.onItemTapped(1);
+                            }),
+                        const Divider(
+                          height: 5,
+                          color: Color(0xffF2F2F2),
+                        ),
+                        if (user != null)
+                          drawerTile(
+                              active: true,
+                              title: "Logout".tr,
+                              icon: const ImageIcon(
+                                AssetImage(AppAssets.logOut),
+                                size: 22,
+                                color: AppTheme.drawerColor,
+                              ),
+                              onTap: () async {
+                                await FirebaseAuth.instance.signOut();
+                                Get.offAll(const LoginScreen());
+                              }),
+                      ],
+                    ),
+                    // SizedBox(height:20,)
+                  ],
+                ),
               ),
-            ),
-          )),
+            )),
+          ),
+          body: pages.elementAt(bottomController.pageIndex.value),
+          extendBody: true,
+          backgroundColor: Colors.white,
+          bottomNavigationBar: buildMyNavBar(context),
         ),
-        body: pages.elementAt(bottomController.pageIndex.value),
-        extendBody: true,
-        backgroundColor: Colors.white,
-        bottomNavigationBar: buildMyNavBar(context),
       );
     });
   }
