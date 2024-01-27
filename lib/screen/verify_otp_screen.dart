@@ -21,9 +21,10 @@ import 'dart:math';
 enum OtpVerify { Mobile, EmailPassword }
 
 class OtpVerifyScreen extends StatefulWidget {
-  OtpVerifyScreen({super.key, required this.email, required this.otp});
+  OtpVerifyScreen({super.key, required this.email, required this.otp, required this.pass});
   String email;
   String otp;
+  String pass;
   @override
   State<OtpVerifyScreen> createState() => _OtpVerifyScreenState();
 }
@@ -130,31 +131,39 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                                             content: Text("Invalid otp"),
                                                           ));
                                                         }
-                                                      } else {
-                                                        FirebaseFirestore.instance.collection("send_mail").add({
-                                                          "to": widget.email,
-                                                          "message": {
-                                                            "subject": "This is a otp email",
-                                                            "html": "Your account has been created",
-                                                            "text": "asdfgwefddfgwefwn",
+                                                      }
+                                                      else {
+                                                        FirebaseAuth.instance
+                                                            .signInWithEmailAndPassword(
+                                                          email: widget.email,
+                                                          password: widget.pass,
+                                                        )
+                                                            .then((value) {
+                                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                                            "to": widget.email,
+                                                            "message": {
+                                                              "subject": "This is a email",
+                                                              "html": "Your account has been created",
+                                                              "text": "asdfgwefddfgwefwn",
+                                                            }
+                                                          });
+                                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                                            "to": adminModel!.email,
+                                                            "message": {
+                                                              "subject": "This is a otp email",
+                                                              "html": "Your account has been created",
+                                                              "text": "asdfgwefddfgwefwn",
+                                                            }
+                                                          });
+                                                          if (!kIsWeb) {
+                                                            Fluttertoast.showToast(msg: 'Verify otp successfully');
+                                                          } else {
+                                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                              content: Text("Verify otp successfully"),
+                                                            ));
                                                           }
+                                                          Get.offAllNamed(MyRouters.bottomNavbar);
                                                         });
-                                                        FirebaseFirestore.instance.collection("send_mail").add({
-                                                          "to": adminModel!.email,
-                                                          "message": {
-                                                            "subject": "This is a otp email",
-                                                            "html": "Your account has been created",
-                                                            "text": "asdfgwefddfgwefwn",
-                                                          }
-                                                        });
-                                                        if (!kIsWeb) {
-                                                          Fluttertoast.showToast(msg: 'Verify otp successfully');
-                                                        } else {
-                                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                            content: Text("Verify otp successfully"),
-                                                          ));
-                                                        }
-                                                        Get.offAllNamed(MyRouters.bottomNavbar);
                                                       }
                                                     }
                                                   },
@@ -198,31 +207,39 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                             content: Text("Invalid otp"),
                                           ));
                                         }
-                                      } else {
-                                        FirebaseFirestore.instance.collection("send_mail").add({
-                                          "to": widget.email,
-                                          "message": {
-                                            "subject": "This is a otp email",
-                                            "html": "Your account has been created",
-                                            "text": "asdfgwefddfgwefwn",
+                                      }
+                                      else {
+                                        FirebaseAuth.instance
+                                            .signInWithEmailAndPassword(
+                                          email: widget.email,
+                                          password: widget.pass,
+                                        )
+                                            .then((value) {
+                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                            "to": widget.email,
+                                            "message": {
+                                              "subject": "This is a email",
+                                              "html": "Your account has been created",
+                                              "text": "asdfgwefddfgwefwn",
+                                            }
+                                          });
+                                          FirebaseFirestore.instance.collection("send_mail").add({
+                                            "to": adminModel!.email,
+                                            "message": {
+                                              "subject": "This is a otp email",
+                                              "html": "Your account has been created",
+                                              "text": "asdfgwefddfgwefwn",
+                                            }
+                                          });
+                                          if (!kIsWeb) {
+                                            Fluttertoast.showToast(msg: 'Verify otp successfully');
+                                          } else {
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              content: Text("Verify otp successfully"),
+                                            ));
                                           }
+                                          Get.offAllNamed(MyRouters.bottomNavbar);
                                         });
-                                        FirebaseFirestore.instance.collection("send_mail").add({
-                                          "to": adminModel!.email,
-                                          "message": {
-                                            "subject": "This is a otp email",
-                                            "html": "Your account has been created",
-                                            "text": "asdfgwefddfgwefwn",
-                                          }
-                                        });
-                                        if (!kIsWeb) {
-                                          Fluttertoast.showToast(msg: 'Verify otp successfully');
-                                        } else {
-                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                            content: Text("Verify otp successfully"),
-                                          ));
-                                        }
-                                        Get.offAllNamed(MyRouters.loginScreen);
                                       }
                                     }),
                               const SizedBox(

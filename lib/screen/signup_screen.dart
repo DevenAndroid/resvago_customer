@@ -85,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               content: Text("Otp email sent to ${emailController.text.trim()}"),
             ));
           }
-          Get.to(() => OtpVerifyScreen(email: emailController.text, otp: otp));
+          Get.to(() => OtpVerifyScreen(email: emailController.text, otp: otp, pass: passwordController.text));
         });
         // if (!kIsWeb) {
         //   Fluttertoast.showToast(msg: 'User created successfully');
@@ -107,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
     final QuerySnapshot result1 =
-    await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
+        await FirebaseFirestore.instance.collection('vendor_users').where('email', isEqualTo: emailController.text).get();
     if (result1.docs.isNotEmpty) {
       Fluttertoast.showToast(msg: 'Email already used in vendor please use another account');
       return;
