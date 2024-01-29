@@ -17,9 +17,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/widget/custom_textfield.dart';
 import '../widget/addsize.dart';
-import '../widget/appassets.dart';
 import '../widget/apptheme.dart';
 import '../widget/common_text_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChooseAddress extends StatefulWidget {
   String? streetAddress;
@@ -285,9 +285,18 @@ class _ChooseAddressState extends State<ChooseAddress> {
     }
   }
 
+  String? appLanguage = "English";
+  getLanguage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    appLanguage = sharedPreferences.getString("app_language");
+    print("hfgdhfgh$appLanguage");
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
+    getLanguage();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _getCurrentPosition();
     });
@@ -297,7 +306,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
     selectedChip.value = widget.selectedChip ?? "Home";
   }
 
-  String googleApikey = "AIzaSyDDl-_JOy_bj4MyQhYbKbGkZ0sfpbTZDNU";
+  String googleApikey = "AIzaSyAP9njE_z7lH2tii68WLoQGju0DF8KryXA";
   GoogleMapController? mapController1; //contrller for Google map
   CameraPosition? cameraPosition;
   String location = "Search Location";
@@ -329,6 +338,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
 
   @override
   Widget build(BuildContext context) {
+    log(appLanguage.toString());
     return WillPopScope(
       onWillPop: () async {
         mapController!.dispose();
@@ -382,7 +392,7 @@ class _ChooseAddressState extends State<ChooseAddress> {
                               types: [],
                               strictbounds: false,
                               // components: [
-                              //   Component(Component.country, 'np')
+                              //   Component(Component.country, appLanguage == "French" ? "fr" : appLanguage == "Spanish"?"es": appLanguage == "Arabic"?"ar":appLanguage == "English"?"en":"en")
                               // ],
                               onError: (err) {
                                 log("error.....   ${err.errorMessage}");
@@ -442,53 +452,55 @@ class _ChooseAddressState extends State<ChooseAddress> {
                           horizontal: AddSize.padding16,
                           vertical: AddSize.padding10,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on,
-                                        color: AppTheme.primaryColor,
-                                        size: AddSize.size25,
-                                      ),
-                                      SizedBox(
-                                        width: AddSize.size12,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          _address.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall!
-                                              .copyWith(fontWeight: FontWeight.w500, fontSize: AddSize.font16),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          color: AppTheme.primaryColor,
+                                          size: AddSize.size25,
                                         ),
-                                      )
-                                    ],
+                                        SizedBox(
+                                          width: AddSize.size12,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            _address.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .copyWith(fontWeight: FontWeight.w500, fontSize: AddSize.font16),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: AddSize.size30,
-                            ),
-                            CommonButtonBlue(
-                              title: "Enter complete address".tr,
-                              onPressed: () {
-                                setState(() {
-                                  _isValue.value = !_isValue.value;
-                                });
-                                // FocusManager.instance.primaryFocus!.unfocus();
-                                showChangeAddressSheet();
-                                // Get.toNamed(MyRouter.chooseAddressScreen);
-                              },
-                            ),
-                          ],
-                        ).appPaddingForScreen,
+                                ],
+                              ),
+                              SizedBox(
+                                height: AddSize.size30,
+                              ),
+                              CommonButtonBlue(
+                                title: "Enter complete address".tr,
+                                onPressed: () {
+                                  setState(() {
+                                    _isValue.value = !_isValue.value;
+                                  });
+                                  // FocusManager.instance.primaryFocus!.unfocus();
+                                  showChangeAddressSheet();
+                                  // Get.toNamed(MyRouter.chooseAddressScreen);
+                                },
+                              ),
+                            ],
+                          ).appPaddingForScreen,
+                        ),
                       ),
                     ).appPaddingForScreen)
               ],

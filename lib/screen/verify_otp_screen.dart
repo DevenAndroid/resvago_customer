@@ -50,7 +50,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // FirebaseAuth.instance.signOut();
+    FirebaseAuth.instance.signOut();
     getAdminData();
   }
 

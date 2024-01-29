@@ -96,6 +96,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
   void initState() {
     super.initState();
     getMenuList();
+    _onDaySelected;
   }
 
   CouponData? couponData;
