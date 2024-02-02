@@ -18,12 +18,6 @@ class LanguageChangeScreen extends StatefulWidget {
 class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
   RxString selectedLAnguage = "English".obs;
 
-  @override
-  void initState() {
-    super.initState();
-    checkLanguage();
-  }
-
   updateLanguage(String gg) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString("app_language", gg);
@@ -46,6 +40,13 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
       selectedLAnguage.value = "Arabic";
     }
   }
+
+  @override
+  void initState() {
+    super.initState();
+    checkLanguage();
+  }
+
 
   @override
   Widget build(BuildContext context) {

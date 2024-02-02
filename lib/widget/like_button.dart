@@ -45,7 +45,8 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
                   .collection("my_wishlist")
                   .doc(info.docid.toString())
                   .update({"wishlist": ""});
-            } else {
+            }
+            else {
               wishListController.addToWishList(restaurantInfo: info.toJson(), docId: info.docid.toString());
               FirebaseFirestore.instance
                   .collection("wishlist")

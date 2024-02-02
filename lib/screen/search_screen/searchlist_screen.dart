@@ -87,7 +87,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           title: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(left: 0, right: 10),
             child: Row(
               children: [
                 InkWell(
@@ -95,7 +95,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                     Get.back();
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 13.0),
+                    padding: const EdgeInsets.only(right: 15.0),
                     child: SvgPicture.asset("assets/images/back.svg"),
                   ),
                 ),
@@ -137,62 +137,62 @@ class _SerachListScreenState extends State<SerachListScreen> {
                 const SizedBox(
                   width: 10,
                 ),
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: Colors.white,
-                  ),
-                  child: Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: PopupMenuButton<int>(
-                          shadowColor: Colors.white,
-                          padding: EdgeInsets.zero,
-                          icon: const Icon(
-                            Icons.filter_list_sharp,
-                            color: Colors.black,
-                          ),
-                          color: Colors.white,
-                          surfaceTintColor: Colors.white,
-                          itemBuilder: (context) {
-                            return [
-                              PopupMenuItem(
-                                value: 1,
-                                onTap: () {},
-                                child: const Column(
-                                  children: [Text("Near By"), Divider()],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 1,
-                                onTap: () {},
-                                child: const Column(
-                                  children: [Text("Rating"), Divider()],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 1,
-                                onTap: () {},
-                                child:  Column(
-                                  children: [Text("Offers".tr), Divider()],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 1,
-                                onTap: () {},
-                                child:  Column(
-                                  children: [
-                                    Text("Popular".tr),
-                                    Divider(
-                                      color: Colors.white,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ];
-                          })),
-                ),
+                // Container(
+                //   height: 40,
+                //   width: 40,
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(4),
+                //     color: Colors.white,
+                //   ),
+                //   child: Padding(
+                //       padding: const EdgeInsets.all(2.0),
+                //       child: PopupMenuButton<int>(
+                //           shadowColor: Colors.white,
+                //           padding: EdgeInsets.zero,
+                //           icon: const Icon(
+                //             Icons.filter_list_sharp,
+                //             color: Colors.black,
+                //           ),
+                //           color: Colors.white,
+                //           surfaceTintColor: Colors.white,
+                //           itemBuilder: (context) {
+                //             return [
+                //               PopupMenuItem(
+                //                 value: 1,
+                //                 onTap: () {},
+                //                 child: const Column(
+                //                   children: [Text("Near By"), Divider()],
+                //                 ),
+                //               ),
+                //               PopupMenuItem(
+                //                 value: 1,
+                //                 onTap: () {},
+                //                 child: const Column(
+                //                   children: [Text("Rating"), Divider()],
+                //                 ),
+                //               ),
+                //               PopupMenuItem(
+                //                 value: 1,
+                //                 onTap: () {},
+                //                 child:  Column(
+                //                   children: [Text("Offers".tr), Divider()],
+                //                 ),
+                //               ),
+                //               PopupMenuItem(
+                //                 value: 1,
+                //                 onTap: () {},
+                //                 child:  Column(
+                //                   children: [
+                //                     Text("Popular".tr),
+                //                     Divider(
+                //                       color: Colors.white,
+                //                     )
+                //                   ],
+                //                 ),
+                //               ),
+                //             ];
+                //           })),
+                // ),
               ],
             ),
           ),
@@ -205,7 +205,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
               ),
               Tab(
                 child: Text("Delivery".tr),
-              ),
+              )
             ],
           ),
           // title: Text('Tabs Demo'),
@@ -215,12 +215,12 @@ class _SerachListScreenState extends State<SerachListScreen> {
             StreamBuilder<List<RestaurantModel>>(
               stream: getRestaurantData(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return LoadingAnimationWidget.fourRotatingDots(
-                    color: AppTheme.primaryColor,
-                    size: 40,
-                  );
-                }
+                // if (snapshot.connectionState == ConnectionState.waiting) {
+                //   return LoadingAnimationWidget.fourRotatingDots(
+                //     color: AppTheme.primaryColor,
+                //     size: 40,
+                //   );
+                // }
                 if (snapshot.hasData) {
                   List<RestaurantModel> menu = snapshot.data ?? [];
                   log(menu.toString());
@@ -290,12 +290,12 @@ class _SerachListScreenState extends State<SerachListScreen> {
             StreamBuilder<List<RestaurantModel>>(
               stream: getDeliveryRestaurantData(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return LoadingAnimationWidget.fourRotatingDots(
-                    color: AppTheme.primaryColor,
-                    size: 40,
-                  );
-                }
+                // if (snapshot.connectionState == ConnectionState.waiting) {
+                //   return LoadingAnimationWidget.fourRotatingDots(
+                //     color: AppTheme.primaryColor,
+                //     size: 40,
+                //   );
+                // }
                 if (snapshot.hasData) {
                   List<RestaurantModel> menu = snapshot.data ?? [];
                   log(menu.toString());

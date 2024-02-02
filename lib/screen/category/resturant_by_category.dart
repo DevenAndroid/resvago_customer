@@ -155,13 +155,15 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                                       Positioned(
                                           top: 0,
                                           right: 0,
-                                          child:widget.restaurantType == "Delivery" ?  LikeButtonWidget(
-                                            restaurantModel: restaurantListItem,
-                                            restaurantType: 'Delivery',
-                                          ):LikeButtonWidget(
-                                            restaurantModel: restaurantListItem,
-                                            restaurantType: 'Dining',
-                                          )),
+                                          child: widget.restaurantType == "Delivery"
+                                              ? LikeButtonWidget(
+                                                  restaurantModel: restaurantListItem,
+                                                  restaurantType: 'Delivery',
+                                                )
+                                              : LikeButtonWidget(
+                                                  restaurantModel: restaurantListItem,
+                                                  restaurantType: 'Dining',
+                                                )),
                                     ]),
                                   ),
                                   const SizedBox(
@@ -250,11 +252,6 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                               .animate(
                                 key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
                               )
-                              //.slideX(
-                              // duration: Duration(milliseconds: 600),
-                              // delay: Duration(milliseconds: (index + 1) * 100),
-                              // end: 0,
-                              // begin: index.toDouble()/5)
                               .slideY(
                                   duration: Duration(milliseconds: 600),
                                   delay: Duration(milliseconds: (index + 1) * 100),
@@ -263,8 +260,7 @@ class _RestaurantByCategoryState extends State<RestaurantByCategory> {
                               .fade(
                                 duration: Duration(milliseconds: 800),
                                 delay: Duration(milliseconds: (index + 1) * 100),
-                              )
-                      );
+                              ));
                     });
               })
           : const SizedBox.shrink(),

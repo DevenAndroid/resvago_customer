@@ -54,8 +54,9 @@ class _HomePageState extends State<HomePage> {
   final wishListController = Get.put(WishListController());
   final bottomController = Get.put(BottomNavBarController());
   bool isDescendingOrder = false;
-  List<String>? sliderList;
 
+  //get Slider data
+  List<String>? sliderList;
   getSliders() {
     FirebaseFirestore.instance.collection("slider").get().then((value) {
       for (var element in value.docs) {
@@ -69,8 +70,8 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  //get Category data
   List<CategoryData>? categoryList;
-
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {
@@ -82,6 +83,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  //get restaurant data
   List<RestaurantModel>? restaurantList;
   Future getRestaurantList() async {
     restaurantList ??= [];
@@ -105,32 +107,7 @@ class _HomePageState extends State<HomePage> {
   Stream<List<DocumentSnapshot>>? stream;
   GeoFlutterFire? geo;
 
-  Future<bool> addToWishlist(
-    String userId,
-    String vendorId,
-  ) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('wishlist')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection("wishlist_list")
-          .doc()
-          .set({
-        'userId': userId,
-        'vendorId': vendorId,
-        'timestamp': DateTime.now().microsecondsSinceEpoch,
-      });
-      return true;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error adding to wishlist: $e');
-      }
-      return false;
-    }
-  }
-
   FirebaseService firebaseService = FirebaseService();
-
   Future<bool> addWishlistToFirestore(vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
@@ -153,20 +130,19 @@ class _HomePageState extends State<HomePage> {
     return true;
   }
 
-  bool? addedToWishlist;
+  // bool? addedToWishlist;
+  // addWishlist(
+  //   String vendorId,
+  // ) async {
+  //   addedToWishlist = await addWishlistToFirestore(vendorId);
+  //   if (addedToWishlist!) {
+  //     showToast("Item was added to the wishlist successfully");
+  //     getWishList();
+  //   } else {}
+  // }
 
-  addWishlist(
-    String vendorId,
-  ) async {
-    addedToWishlist = await addWishlistToFirestore(vendorId);
-    if (addedToWishlist!) {
-      showToast("Item was added to the wishlist successfully");
-      getWishList();
-    } else {}
-  }
-
+  //get Wishlist data
   List<WishListModel>? wishList;
-
   Future getWishList() async {
     await FirebaseFirestore.instance
         .collection('wishlist')
@@ -187,6 +163,7 @@ class _HomePageState extends State<HomePage> {
   final profileController = Get.put(ProfileController());
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
+
   @override
   void initState() {
     super.initState();
@@ -210,8 +187,6 @@ class _HomePageState extends State<HomePage> {
     getVendorCategories();
     getRestaurantList();
   }
-
-  int currentDrawer = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -290,24 +265,6 @@ class _HomePageState extends State<HomePage> {
                       );
               }),
             ),
-            // GestureDetector(
-            //   onTap: () {
-            //     FirebaseAuth _auth = FirebaseAuth.instance;
-            //     User? user = _auth.currentUser;
-            //     if (user != null) {
-            //       Get.toNamed(MyRouters.cartScreen);
-            //     } else {
-            //       Get.to(() => LoginScreen());
-            //     }
-            //   },
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(8.0),
-            //     child: Image.asset(
-            //       'assets/images/shoppinbag.png',
-            //       height: 30,
-            //     ),
-            //   ),
-            // ),
             user != null
                 ? Badge(
                     label: StreamBuilder(
