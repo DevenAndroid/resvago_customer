@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,12 +24,14 @@ import 'package:resvago_customer/widget/appassets.dart';
 import 'package:resvago_customer/widget/like_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/bottomnavbar_controller.dart';
+import '../controller/local_controller.dart';
 import '../controller/location_controller.dart';
 import '../controller/profile_controller.dart';
 import '../controller/wishlist_controller.dart';
 import '../firebase_service/firebase_service.dart';
 import '../model/add_address_modal.dart';
 import '../model/category_model.dart';
+import '../model/checkout_model.dart';
 import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'package:rxdart/rxdart.dart';
@@ -39,6 +42,7 @@ import 'language_change_screen.dart';
 import 'login_screen.dart';
 import 'myAddressList.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:collection/collection.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -57,14 +61,13 @@ class _HomePageState extends State<HomePage> {
 
   //get Slider data
   List<String>? sliderList;
+
   getSliders() {
     FirebaseFirestore.instance.collection("slider").get().then((value) {
       for (var element in value.docs) {
         var gg = element.data();
-        print(gg.toString());
         sliderList ??= [];
         sliderList!.add(gg["imageUrl"]);
-        print("dfasghdfhg$sliderList");
       }
       setState(() {});
     });
@@ -72,6 +75,7 @@ class _HomePageState extends State<HomePage> {
 
   //get Category data
   List<CategoryData>? categoryList;
+
   getVendorCategories() {
     FirebaseFirestore.instance.collection("resturent").where("deactivate", isEqualTo: false).get().then((value) {
       for (var element in value.docs) {
@@ -85,6 +89,7 @@ class _HomePageState extends State<HomePage> {
 
   //get restaurant data
   List<RestaurantModel>? restaurantList;
+
   Future getRestaurantList() async {
     restaurantList ??= [];
     restaurantList!.clear();
@@ -108,6 +113,7 @@ class _HomePageState extends State<HomePage> {
   GeoFlutterFire? geo;
 
   FirebaseService firebaseService = FirebaseService();
+
   Future<bool> addWishlistToFirestore(vendorId) async {
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
@@ -143,6 +149,7 @@ class _HomePageState extends State<HomePage> {
 
   //get Wishlist data
   List<WishListModel>? wishList;
+
   Future getWishList() async {
     await FirebaseFirestore.instance
         .collection('wishlist')
@@ -154,7 +161,6 @@ class _HomePageState extends State<HomePage> {
         var gg = element.data();
         wishList ??= [];
         wishList!.add(WishListModel.fromMap(gg, element.id));
-        print("wishList$wishList");
       }
       setState(() {});
     });
@@ -186,7 +192,65 @@ class _HomePageState extends State<HomePage> {
     getSliders();
     getVendorCategories();
     getRestaurantList();
+    manageLocalSession();
   }
+
+  Future<CheckOutModel?> getCartItems() async {
+    final item = await FirebaseFirestore.instance.collection('checkOut').doc(FirebaseAuth.instance.currentUser!.uid).get();
+    if (item.exists && item.data() != null) {
+      return CheckOutModel.fromJson(item.data()!);
+    } else {
+      return null;
+    }
+  }
+
+  manageLocalSession() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getString("checkout") != null && FirebaseAuth.instance.currentUser != null) {
+      final localModel = CheckOutModel.fromJson(jsonDecode(sharedPreferences.getString("checkout")!));
+      sharedPreferences.clear();
+      final liveData = await getCartItems();
+      if (liveData == null) {
+        // Cart Updated if no data on server
+        await FirebaseFirestore.instance
+            .collection('checkOut')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set(localModel.toJson());
+        return;
+      }
+      if (localModel.restaurantInfo?.userID != liveData.restaurantInfo?.userID) {
+        // Just Update the local to server
+        await FirebaseFirestore.instance
+            .collection('checkOut')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set(localModel.toJson());
+      } else {
+        // Check Items Quantity
+        for (MenuList element in localModel.menuList ?? []) {
+          for (var element1 in liveData.menuList!) {
+            if (element.menuId == element1.menuId) {
+              element.qty = int.parse(element.qty.toString()) + int.parse(element1.qty.toString());
+            }
+          }
+        }
+
+        List<MenuList> item = <MenuList>[];
+        for (MenuList element in liveData.menuList!) {
+          if (!localModel.menuList!.map((e) => e.menuId.toString()).toList().contains(element.menuId.toString())) {
+            item.add(element);
+          }
+        }
+        localModel.menuList!.addAll(item);
+
+        await FirebaseFirestore.instance
+            .collection('checkOut')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set(localModel.toJson());
+      }
+    }
+  }
+
+  final localController = Get.put(LocalController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   bottomController.scaffoldKey.currentState!.openDrawer();
                 },
-                child: Icon(Icons.menu)),
+                child: const Icon(Icons.menu)),
             const SizedBox(width: 10),
             Expanded(
               child: Obx(() {
@@ -219,14 +283,14 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           GestureDetector(
                               onTap: () {
-                                FirebaseAuth _auth = FirebaseAuth.instance;
-                                User? user = _auth.currentUser;
+                                FirebaseAuth auth = FirebaseAuth.instance;
+                                User? user = auth.currentUser;
                                 if (user != null) {
                                   Get.to(() => MyAddressList(
                                         addressChanged: (AddressModel address) {},
                                       ));
                                 } else {
-                                  Get.to(() => LoginScreen());
+                                  Get.to(() => const LoginScreen());
                                 }
                               },
                               behavior: HitTestBehavior.translucent,
@@ -285,9 +349,10 @@ class _HomePageState extends State<HomePage> {
                           return const Center(child: Text(" 0 "));
                         }
                         List<dynamic> menuList = snapshot.data!['menuList'];
+                        CheckOutModel checkOutModel = CheckOutModel.fromJson(snapshot.data!.data()!);
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                          child: Text("${menuList.length.toString()}"),
+                          child: Text("${checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum}"),
                         );
                       },
                     ),
@@ -295,14 +360,13 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.zero,
                     child: GestureDetector(
                       onTap: () {
-                        FirebaseAuth _auth = FirebaseAuth.instance;
-                        User? user = _auth.currentUser;
+                        FirebaseAuth auth = FirebaseAuth.instance;
+                        User? user = auth.currentUser;
                         if (user != null) {
                           Get.toNamed(MyRouters.cartScreen);
                         } else {
-                          Get.to(() => LoginScreen());
+                          Get.to(() => const LoginScreen());
                         }
-                        // Get.toNamed(MyRouters.cartScreen);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -313,34 +377,59 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   )
-                : GestureDetector(
-                    onTap: () {
-                      FirebaseAuth _auth = FirebaseAuth.instance;
-                      User? user = _auth.currentUser;
-                      if (user != null) {
-                        Get.toNamed(MyRouters.cartScreen);
-                      } else {
-                        Get.to(() => LoginScreen());
-                      }
-                      // Get.toNamed(MyRouters.cartScreen);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        'assets/images/shoppinbag.png',
-                        height: 30,
-                      ),
-                    ),
-                  ),
+                : Obx(() {
+                    if (localController.refreshInt.value > 0) {}
+                    return FutureBuilder(
+                      future: SharedPreferences.getInstance(),
+                      builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
+                        // print("adflkhjajdhalsdjajdalsdlasjd");
+                        String count = "0";
+                        if (snapshot.data != null && snapshot.data!.getString("checkout") != null) {
+                          CheckOutModel checkOutModel = CheckOutModel.fromJson(jsonDecode(snapshot.data!.getString("checkout")!));
+                          count = checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum.toString();
+                        }
+                        return Badge(
+                          backgroundColor: Colors.black,
+                          padding: EdgeInsets.zero,
+                          label: count != "0"
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                                  child: Text(count),
+                                )
+                              : const SizedBox(),
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.toNamed(MyRouters.cartScreen);
+                              // FirebaseAuth auth = FirebaseAuth.instance;
+                              // User? user = auth.currentUser;
+                              // if (user != null) {
+                              //   Get.toNamed(MyRouters.cartScreen);
+                              // } else {
+                              //   Get.to(() => const LoginScreen());
+                              // }
+                              // Get.toNamed(MyRouters.cartScreen);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(
+                                'assets/images/shoppinbag.png',
+                                height: 30,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }),
             GestureDetector(
               onTap: () {
-                FirebaseAuth _auth = FirebaseAuth.instance;
-                User? user = _auth.currentUser;
+                FirebaseAuth auth = FirebaseAuth.instance;
+                User? user = auth.currentUser;
                 if (user != null) {
                   bottomController.updateIndexValue(3);
                   Get.back();
                 } else {
-                  Get.to(() => LoginScreen());
+                  Get.to(() => const LoginScreen());
                 }
               },
               child: SizedBox(
@@ -450,21 +539,21 @@ class _HomePageState extends State<HomePage> {
                                       value: 1,
                                       onTap: () {},
                                       child: Column(
-                                        children: [Text("Near By".tr), Divider()],
+                                        children: [Text("Near By".tr), const Divider()],
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
                                       child: Column(
-                                        children: [Text("Rating".tr), Divider()],
+                                        children: [Text("Rating".tr), const Divider()],
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 1,
                                       onTap: () {},
                                       child: Column(
-                                        children: [Text("Offers".tr), Divider()],
+                                        children: [Text("Offers".tr), const Divider()],
                                       ),
                                     ),
                                     PopupMenuItem(
@@ -473,7 +562,7 @@ class _HomePageState extends State<HomePage> {
                                       child: Column(
                                         children: [
                                           Text("Popular".tr),
-                                          Divider(
+                                          const Divider(
                                             color: Colors.white,
                                           )
                                         ],
@@ -500,7 +589,7 @@ class _HomePageState extends State<HomePage> {
                             child: CachedNetworkImage(
                               imageUrl: i,
                               fit: BoxFit.cover,
-                              errorWidget: (_, __, ___) => Icon(
+                              errorWidget: (_, __, ___) => const Icon(
                                 Icons.error,
                                 color: Colors.red,
                               ),
@@ -508,7 +597,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     }).toList(),
                   ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -519,11 +608,11 @@ class _HomePageState extends State<HomePage> {
                         },
                         child: Text(
                           "View All".tr,
-                          style: TextStyle(color: AppTheme.primaryColor),
+                          style: const TextStyle(color: AppTheme.primaryColor),
                         ))
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 if (categoryList != null)
                   SizedBox(
                     height: 100,
@@ -552,7 +641,7 @@ class _HomePageState extends State<HomePage> {
                                         child: CachedNetworkImage(
                                           imageUrl: categoryList![index].image.toString(),
                                           fit: BoxFit.cover,
-                                          errorWidget: (_, __, ___) => Icon(
+                                          errorWidget: (_, __, ___) => const Icon(
                                             Icons.error,
                                             color: Colors.red,
                                           ),
@@ -735,12 +824,12 @@ class _HomePageState extends State<HomePage> {
                                   key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
                                 )
                                 .slideX(
-                                    duration: Duration(milliseconds: 600),
+                                    duration: const Duration(milliseconds: 600),
                                     delay: Duration(milliseconds: (index + 1) * 100),
                                     end: 0,
                                     begin: 2)
                                 .fade(
-                                  duration: Duration(milliseconds: 800),
+                                  duration: const Duration(milliseconds: 800),
                                   delay: Duration(milliseconds: (index + 1) * 100),
                                 ),
                           );
@@ -784,7 +873,7 @@ class _HomePageState extends State<HomePage> {
                                         child: CachedNetworkImage(
                                           imageUrl: categoryList![index].image.toString(),
                                           fit: BoxFit.cover,
-                                          errorWidget: (_, __, ___) => Icon(
+                                          errorWidget: (_, __, ___) => const Icon(
                                             Icons.error,
                                             color: Colors.red,
                                           ),
@@ -987,12 +1076,12 @@ class _HomePageState extends State<HomePage> {
                                   key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
                                 )
                                 .slideX(
-                                    duration: Duration(milliseconds: 600),
+                                    duration: const Duration(milliseconds: 600),
                                     delay: Duration(milliseconds: (index + 1) * 100),
                                     end: 0,
                                     begin: 2)
                                 .fade(
-                                  duration: Duration(milliseconds: 800),
+                                  duration: const Duration(milliseconds: 800),
                                   delay: Duration(milliseconds: (index + 1) * 100),
                                 ),
                           );
@@ -1001,8 +1090,8 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 90,
                 ),
-              ].animate(interval: Duration(milliseconds: 200)).fade(
-                    duration: Duration(milliseconds: 600),
+              ].animate(interval: const Duration(milliseconds: 200)).fade(
+                    duration: const Duration(milliseconds: 600),
                   ),
             ).appPaddingForScreen,
           ),
@@ -1017,6 +1106,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   RxString selectedLAnguage = "English".obs;
+
   checkLanguage() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? appLanguage = sharedPreferences.getString("app_language");

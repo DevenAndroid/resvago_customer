@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +14,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:resvago_customer/model/menu_model.dart';
 import 'package:resvago_customer/screen/single_store_screens/setting_for_restaurant.dart';
 import 'package:resvago_customer/widget/appassets.dart';
+import '../../controller/local_controller.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/resturant_model.dart';
 import '../../model/review_model.dart';
@@ -27,7 +27,6 @@ import 'cart screen.dart';
 
 class SingleRestaurantForDeliveryScreen extends StatefulWidget {
   final RestaurantModel? restaurantItem;
-  // String distance;
   SingleRestaurantForDeliveryScreen({
     super.key,
     required this.restaurantItem,
@@ -39,7 +38,6 @@ class SingleRestaurantForDeliveryScreen extends StatefulWidget {
 
 class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForDeliveryScreen> {
   RestaurantModel? get restaurantData => widget.restaurantItem;
-  // String? get distance => widget.distance;
   double fullRating = 0;
   int currentDrawer = 0;
   int currentMenu = 0;
@@ -173,20 +171,36 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
     OverlayEntry loader = Helper.overlayLoader(context);
     Overlay.of(context).insert(loader);
     try {
-      await firebaseService
-          .manageCheckOut(
-        cartId: FirebaseAuth.instance.currentUser!.uid,
-        menuList: menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList(),
-        restaurantInfo: restaurantData!.toJson(),
-        vendorId: vendorId,
-        time: DateTime.now().millisecondsSinceEpoch,
-      )
-          .then((value) {
+      if (FirebaseAuth.instance.currentUser != null) {
+        await firebaseService
+            .manageCheckOut(
+          // cartId: FirebaseAuth.instance.currentUser!.uid,
+          menuList: menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList(),
+          restaurantInfo: restaurantData!.toJson(),
+          vendorId: vendorId,
+          time: DateTime.now().millisecondsSinceEpoch,
+        )
+            .then((value) {
+          Helper.hideLoader(loader);
+        });
+      } else {
+        await firebaseService.storeLocalData(
+          cartId: DateTime.now().millisecondsSinceEpoch.toString(),
+          vendorId: vendorId,
+          restaurantInfo: restaurantData!.toJson(),
+          menuList: menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList(),
+          time: DateTime.now().millisecondsSinceEpoch.toString(),
+        );
+        final localController = Get.put(LocalController(), permanent: true);
+        localController.refreshInt.value = DateTime.now().millisecondsSinceEpoch;
         Helper.hideLoader(loader);
-      });
+          showToast("Added To Cart Successfully");
+      }
     } catch (e) {
       Helper.hideLoader(loader);
       throw Exception(e);
+    } finally {
+      Helper.hideLoader(loader);
     }
   }
 
@@ -957,12 +971,16 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                   Text(
                                                     "Review".tr,
                                                     style: GoogleFonts.poppins(
-                                                        fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: const Color(0xFF1E2538)),
                                                   ),
                                                   Text(
                                                     "(${reviewModel!.length})",
                                                     style: GoogleFonts.poppins(
-                                                        fontSize: 16, fontWeight: FontWeight.w500, color: const Color(0xFF1E2538)),
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: const Color(0xFF1E2538)),
                                                   ),
                                                 ],
                                               ),
@@ -1028,7 +1046,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                     Expanded(
+                                                    Expanded(
                                                       child: Text(
                                                         'Excellent'.tr,
                                                         style: TextStyle(
@@ -1058,7 +1076,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: [
-                                                     Expanded(
+                                                    Expanded(
                                                       child: Text(
                                                         'Good'.tr,
                                                         style: TextStyle(
@@ -1088,7 +1106,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                     Expanded(
+                                                    Expanded(
                                                       child: Text(
                                                         'Average'.tr,
                                                         style: TextStyle(
@@ -1118,7 +1136,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                     Expanded(
+                                                    Expanded(
                                                       child: Text(
                                                         'Below Average'.tr,
                                                         style: TextStyle(
@@ -1148,7 +1166,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                     Expanded(
+                                                    Expanded(
                                                       child: Text(
                                                         'Poor'.tr,
                                                         style: TextStyle(
@@ -1437,16 +1455,12 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                 child: ElevatedButton(
                                   onPressed: () {
                                     if (menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList().isNotEmpty) {
-                                      FirebaseAuth _auth = FirebaseAuth.instance;
-                                      User? user = _auth.currentUser;
-                                      if (user != null) {
+                                      // FirebaseAuth _auth = FirebaseAuth.instance;
+                                      // User? user = _auth.currentUser;
                                         manageCheckOut(widget.restaurantItem!.docid).then((value) {
                                           updateVendor(widget.restaurantItem!.order_count + 1, widget.restaurantItem!.userID);
                                           Get.to(() => const CartScreen());
                                         });
-                                      } else {
-                                        Get.to(() => LoginScreen());
-                                      }
                                     } else {
                                       showToast("Please select menu");
                                     }

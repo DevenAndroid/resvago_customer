@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -18,13 +19,16 @@ import 'package:resvago_customer/screen/delivery_screen/single_store_delivery_sc
 import 'package:resvago_customer/screen/helper.dart';
 import 'package:resvago_customer/screen/search_screen/searchlist_screen.dart';
 import 'package:resvago_customer/widget/like_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../controller/bottomnavbar_controller.dart';
+import '../../controller/local_controller.dart';
 import '../../controller/location_controller.dart';
 import '../../controller/profile_controller.dart';
 import '../../controller/wishlist_controller.dart';
 import '../../firebase_service/firebase_service.dart';
 import '../../model/add_address_modal.dart';
 import '../../model/category_model.dart';
+import '../../model/checkout_model.dart';
 import '../../model/profile_model.dart';
 import '../../widget/appassets.dart';
 import '../../widget/apptheme.dart';
@@ -38,6 +42,7 @@ import '../myAddressList.dart';
 import '../single_store_screens/setting_for_restaurant.dart';
 import '../widgets/address_widget.dart';
 import '../widgets/calculate_distance.dart';
+import 'package:collection/collection.dart';
 
 class DeliveryPage extends StatefulWidget {
   const DeliveryPage({super.key});
@@ -101,28 +106,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
   final _firestore = FirebaseFirestore.instance;
   Stream<List<DocumentSnapshot>>? stream;
   GeoFlutterFire? geo;
-
-  // String _calculateDistance({dynamic lat1, dynamic lon1}) {
-  //   if (kDebugMode) {
-  //     print(double.tryParse(locationController.lat.toString()));
-  //   }
-  //   if (kDebugMode) {
-  //     print(double.tryParse(locationController.long.toString()));
-  //   }
-  //   if (double.tryParse(lat1) == null ||
-  //       double.tryParse(lon1) == null ||
-  //       double.tryParse(locationController.lat.toString()) == null ||
-  //       double.tryParse(locationController.long.toString()) == null) {
-  //     return "Not Available";
-  //   }
-  //
-  //   double distanceInMeters = Geolocator.distanceBetween(double.parse(lat1), double.parse(lon1),
-  //       double.parse(locationController.lat.toString()), double.parse(locationController.long.toString()));
-  //   if ((distanceInMeters / 1000) < 1) {
-  //     return "${distanceInMeters.toInt()} Meter away";
-  //   }
-  //   return "${(distanceInMeters / 1000).toStringAsFixed(2)} KM";
-  // }
 
   Future<bool> addToWishlist(
     String userId,
@@ -237,7 +220,65 @@ class _DeliveryPageState extends State<DeliveryPage> {
     getRestaurantList();
     locationController.getLocation();
     locationController.checkGps(context).then((value) {});
+    manageLocalSession();
   }
+
+  Future<CheckOutModel?> getCartItems() async {
+    final item = await FirebaseFirestore.instance.collection('checkOut').doc(FirebaseAuth.instance.currentUser!.uid).get();
+    if (item.exists && item.data() != null) {
+      return CheckOutModel.fromJson(item.data()!);
+    } else {
+      return null;
+    }
+  }
+
+  manageLocalSession() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getString("checkout") != null && FirebaseAuth.instance.currentUser != null) {
+      final localModel = CheckOutModel.fromJson(jsonDecode(sharedPreferences.getString("checkout")!));
+      sharedPreferences.clear();
+      final liveData = await getCartItems();
+      if (liveData == null) {
+        // Cart Updated if no data on server
+        await FirebaseFirestore.instance
+            .collection('checkOut')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set(localModel.toJson());
+        return;
+      }
+      if (localModel.restaurantInfo?.userID != liveData.restaurantInfo?.userID) {
+        // Just Update the local to server
+        await FirebaseFirestore.instance
+            .collection('checkOut')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set(localModel.toJson());
+      } else {
+        // Check Items Quantity
+        for (MenuList element in localModel.menuList ?? []) {
+          for (var element1 in liveData.menuList!) {
+            if (element.menuId == element1.menuId) {
+              element.qty = int.parse(element.qty.toString()) + int.parse(element1.qty.toString());
+            }
+          }
+        }
+
+        List<MenuList> item = <MenuList>[];
+        for (MenuList element in liveData.menuList!) {
+          if (!localModel.menuList!.map((e) => e.menuId.toString()).toList().contains(element.menuId.toString())) {
+            item.add(element);
+          }
+        }
+        localModel.menuList!.addAll(item);
+
+        await FirebaseFirestore.instance
+            .collection('checkOut')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set(localModel.toJson());
+      }
+    }
+  }
+
+  final localController = Get.put(LocalController(), permanent: true);
 
   int currentDrawer = 0;
   AddressModel? addressData;
@@ -257,7 +298,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 onTap: () {
                   bottomController.scaffoldKey.currentState!.openDrawer();
                 },
-                child: Icon(Icons.menu)),
+                child: const Icon(Icons.menu)),
             const SizedBox(width: 10),
             Expanded(
               child: Obx(() {
@@ -309,60 +350,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
                       );
               }),
             ),
-            // Badge(
-            //   label: StreamBuilder(
-            //     stream: FirebaseFirestore.instance
-            //         .collection('vendor_menu')
-            //         .where('userID', isLessThan: FirebaseAuth.instance.currentUser!.uid)
-            //         .snapshots(),
-            //     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-            //       if (snapshot.hasData) {
-            //         if (snapshot.data == null) {
-            //           return const Text(" 0 ");
-            //         }
-            //         if (snapshot.data!.docs.isEmpty) {
-            //           return const Text(" 0 ");
-            //         }
-            //         CheckOutModel cartData = CheckOutModel.fromJson(snapshot.data!.docs.first.data());
-            //         return Text(" ${cartData.menuList!.length}");
-            //       }
-            //       return const Center(child: Text(" 0 "));
-            //     },
-            //   ),
-            //   backgroundColor: Colors.black,
-            //   padding: EdgeInsets.zero,
-            //   child: GestureDetector(
-            //     onTap: () {
-            //       Get.toNamed(MyRouters.cartScreen);
-            //     },
-            //     child: Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Image.asset(
-            //         'assets/images/shoppinbag.png',
-            //         height: 30,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // GestureDetector(
-            //   behavior: HitTestBehavior.translucent,
-            //   onTap: () {
-            //     FirebaseAuth _auth = FirebaseAuth.instance;
-            //     User? user = _auth.currentUser;
-            //     if (user != null) {
-            //       Get.toNamed(MyRouters.cartScreen);
-            //     } else {
-            //       Get.to(() => LoginScreen());
-            //     }
-            //   },
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(8.0),
-            //     child: Image.asset(
-            //       'assets/images/shoppinbag.png',
-            //       height: 30,
-            //     ),
-            //   ),
-            // ),
             user != null
                 ? Badge(
               label: StreamBuilder(
@@ -370,8 +357,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                     .collection('checkOut')
                     .doc(FirebaseAuth.instance.currentUser!.uid)
                     .snapshots(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: Text(" 0 "));
                   }
@@ -383,15 +369,11 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   if (!snapshot.hasData || !snapshot.data!.exists) {
                     return const Center(child: Text(" 0 "));
                   }
-
-                  // Access the menuList from the document snapshot
                   List<dynamic> menuList = snapshot.data!['menuList'];
-
-                  // Now you can use the menuList as needed
-
+                  CheckOutModel checkOutModel = CheckOutModel.fromJson(snapshot.data!.data()!);
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                    child: Text("${menuList.length.toString()}"),
+                    child: Text("${checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum}"),
                   );
                 },
               ),
@@ -399,14 +381,13 @@ class _DeliveryPageState extends State<DeliveryPage> {
               padding: EdgeInsets.zero,
               child: GestureDetector(
                 onTap: () {
-                  FirebaseAuth _auth = FirebaseAuth.instance;
-                  User? user = _auth.currentUser;
+                  FirebaseAuth auth = FirebaseAuth.instance;
+                  User? user = auth.currentUser;
                   if (user != null) {
                     Get.toNamed(MyRouters.cartScreen);
                   } else {
-                    Get.to(() => LoginScreen());
+                    Get.to(() => const LoginScreen());
                   }
-                  // Get.toNamed(MyRouters.cartScreen);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -417,25 +398,50 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 ),
               ),
             )
-                : GestureDetector(
-              onTap: () {
-                FirebaseAuth _auth = FirebaseAuth.instance;
-                User? user = _auth.currentUser;
-                if (user != null) {
-                  Get.toNamed(MyRouters.cartScreen);
-                } else {
-                  Get.to(() => LoginScreen());
-                }
-                // Get.toNamed(MyRouters.cartScreen);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  'assets/images/shoppinbag.png',
-                  height: 30,
-                ),
-              ),
-            ),
+                : Obx(() {
+              if (localController.refreshInt.value > 0) {}
+              return FutureBuilder(
+                future: SharedPreferences.getInstance(),
+                builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
+                  // print("adflkhjajdhalsdjajdalsdlasjd");
+                  String count = "0";
+                  if (snapshot.data != null && snapshot.data!.getString("checkout") != null) {
+                    CheckOutModel checkOutModel = CheckOutModel.fromJson(jsonDecode(snapshot.data!.getString("checkout")!));
+                    count = checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum.toString();
+                  }
+                  return Badge(
+                    backgroundColor: Colors.black,
+                    padding: EdgeInsets.zero,
+                    label: count != "0"
+                        ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                      child: Text(count),
+                    )
+                        : const SizedBox(),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.toNamed(MyRouters.cartScreen);
+                        // FirebaseAuth auth = FirebaseAuth.instance;
+                        // User? user = auth.currentUser;
+                        // if (user != null) {
+                        //   Get.toNamed(MyRouters.cartScreen);
+                        // } else {
+                        //   Get.to(() => const LoginScreen());
+                        // }
+                        // Get.toNamed(MyRouters.cartScreen);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/images/shoppinbag.png',
+                          height: 30,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            }),
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
@@ -445,7 +451,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   bottomController.updateIndexValue(3);
                   Get.back();
                 } else {
-                  Get.to(() => LoginScreen());
+                  Get.to(() => const LoginScreen());
                 }
               },
               child: SizedBox(
@@ -604,7 +610,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                           child: CachedNetworkImage(
                             imageUrl: i,
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => Icon(
+                            errorWidget: (_, __, ___) => const Icon(
                               Icons.error,
                               color: Colors.red,
                             ),
@@ -621,7 +627,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                               restaurantType: 'Delivery',
                             ));
                       },
-                      child: Text(
+                      child: const Text(
                         "View All",
                         style: TextStyle(color: AppTheme.primaryColor),
                       ))
@@ -655,7 +661,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       child: CachedNetworkImage(
                                         imageUrl: categoryList![index].image.toString(),
                                         fit: BoxFit.cover,
-                                        errorWidget: (_, __, ___) => Icon(
+                                        errorWidget: (_, __, ___) => const Icon(
                                           Icons.error,
                                           color: Colors.red,
                                         ),
@@ -871,7 +877,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       child: CachedNetworkImage(
                                         imageUrl: categoryList![index].image.toString(),
                                         fit: BoxFit.cover,
-                                        errorWidget: (_, __, ___) => Icon(
+                                        errorWidget: (_, __, ___) => const Icon(
                                           Icons.error,
                                           color: Colors.red,
                                         ),
@@ -1048,8 +1054,8 @@ class _DeliveryPageState extends State<DeliveryPage> {
               const SizedBox(
                 height: 90,
               ),
-            ].animate(interval: Duration(milliseconds: 200)).fade(
-                  duration: Duration(milliseconds: 600),
+            ].animate(interval: const Duration(milliseconds: 200)).fade(
+                  duration: const Duration(milliseconds: 600),
                 ),
           ).appPaddingForScreen,
         ),

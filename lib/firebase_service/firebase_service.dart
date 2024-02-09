@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import '../model/checkout_model.dart';
 import '../model/menu_model.dart';
 import '../model/model_store_slots.dart';
@@ -57,15 +59,17 @@ class FirebaseService {
     }
   }
 
+
   Future manageCheckOut(
-      {required String cartId,
+      {
+        // required String cartId,
       dynamic vendorId,
       required Map<String, dynamic> restaurantInfo,
       required List<dynamic> menuList,
       dynamic time}) async {
     try {
       await FirebaseFirestore.instance.collection('checkOut').doc(FirebaseAuth.instance.currentUser!.uid).set({
-        "cartId": cartId,
+        // "cartId": cartId,
         "userId": FirebaseAuth.instance.currentUser!.uid,
         "vendorId": vendorId,
         "restaurantInfo": restaurantInfo,
@@ -77,6 +81,35 @@ class FirebaseService {
       throw Exception(e);
     }
   }
+
+
+  Future<void> storeLocalData({
+    required String cartId,
+    dynamic vendorId,
+    required Map<String, dynamic> restaurantInfo,
+    required List<dynamic> menuList,
+    dynamic time,
+  }) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    Map<String, dynamic> map = {};
+    map["cartId"] = cartId;
+    map["vendorId"] = vendorId;
+    map["restaurantInfo"] = restaurantInfo;
+    map["menuList"] = menuList;
+    map["time"] = time;
+    sharedPreferences.setString("checkout", jsonEncode(map));
+    print(sharedPreferences.getString("checkout"));
+
+    // Database db = await openDatabase('checkout_database.db');
+    // await db.update('checkout', {
+    //   // "cartId": cartId,
+    //   "vendorId": vendorId,
+    //   "restaurantInfo": jsonEncode(restaurantInfo),
+    //   "menuList": jsonEncode(menuList),
+    //   "time": time.toString(),
+    // });
+  }
+
 
   Future manageOrder(
       {required String orderId,

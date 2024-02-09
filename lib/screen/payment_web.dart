@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,36 +22,65 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PayPal Integration'),
+        title: Text("Paymentcc"),
       ),
-      body: Center(
-        child: url.isNotEmpty
-            ? InAppWebView(
-          initialUrlRequest: URLRequest(url: WebUri(url)),
-          onWebViewCreated: (controller) {
-            webViewController = controller;
-            if (url.isNotEmpty) {
-              // Load the URL only when the webViewController is created
-              webViewController!.loadUrl(urlRequest: URLRequest(url: WebUri(url)));
+      body: FutureBuilder<String>(
+        future: initializePayment(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (snapshot.hasData) {
+              return InAppWebView(
+                initialUrlRequest: URLRequest(url: WebUri(snapshot.data!)),
+                onWebViewCreated: (controller) {
+                  print('WebView created');
+                  webViewController = controller;
+                },
+                onNavigationResponse: (InAppWebViewController controller, NavigationResponse response) async {
+                  print('Navigation response received: ${response.response!.url}');
+                  if (response.response!.statusCode == 200) {
+                    Get.back();
+                    return NavigationResponseAction.ALLOW;
+                  } else {
+                    Get.back();
+                    return NavigationResponseAction.CANCEL;
+                  }
+                },
+              );
+            } else {
+              return Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Retry initialization if needed
+                    setState(() {});
+                  },
+                  child: Text('Retry'),
+                ),
+              );
             }
-          },
-        )
-            : ElevatedButton(
-          onPressed: () async {
-            try {
-              final accessToken = await getAccessToken();
-              final orderId = await createOrder(accessToken);
-              initiatePayment(orderId);
-            } catch (e) {
-              print('Error: $e');
-            }
-          },
-          child: Text('Pay with PayPal'),
-        ),
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }
 
+  Future<String> initializePayment() async {
+    try {
+      final accessToken = await getAccessToken();
+      final orderId = await createOrder(accessToken);
+      return 'https://www.sandbox.paypal.com/checkoutnow?token=$orderId';
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to initialize payment');
+    }
+  }
   String clientId = "Ab5v6E4R-gNbD13BbcdgpzK0G66oJ8ij1Va8i85qzGTtgA4TXkmt2h4oRpCXGRTBQs8Fn1SMqgyVkQ19";
   String secret = "ELCzlUANZYqBS27CGrYqP3RNyoob11TbOj_J4kYp6QULFkDWh9veSi_zkpQoe8nu-VS3FN8XJf-o5WJx";
 
@@ -89,6 +121,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     if (response.statusCode == 201) {
       final Map<String, dynamic> responseData = json.decode(response.body);
+      log(responseData.toString());
       return responseData['id'];
     } else {
       throw Exception('Failed to create order');
@@ -100,9 +133,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     if (webViewController != null) {
       webViewController!.loadUrl(urlRequest: URLRequest(url: WebUri(paymentUrl)));
-      setState(() {
-        url = paymentUrl;
-      });
     } else {
       print('WebViewController is null. Unable to load URL.');
     }

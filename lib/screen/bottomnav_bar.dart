@@ -327,43 +327,53 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           height: 5,
                           color: Color(0xffF2F2F2),
                         ),
-                        drawerTile(
-                            active: true,
-                            title: "Setting".tr,
-                            icon: Icon(Icons.settings),
-                            onTap: () {
-                              FirebaseAuth _auth = FirebaseAuth.instance;
-                              User? user = _auth.currentUser;
-                              if (user != null) {
-                                Get.to(() => SettingScreen());
-                              } else {
-                                Get.to(() => LoginScreen());
-                              }
-                              // Get.back();
-                              // widget.onItemTapped(1);
-                            }),
-                        const Divider(
-                          height: 5,
-                          color: Color(0xffF2F2F2),
+                        if (user != null)
+                        Column(
+                          children: [
+                            drawerTile(
+                                active: true,
+                                title: "Setting".tr,
+                                icon: Icon(Icons.settings),
+                                onTap: () {
+                                  FirebaseAuth _auth = FirebaseAuth.instance;
+                                  User? user = _auth.currentUser;
+                                  if (user != null) {
+                                    Get.to(() => SettingScreen());
+                                  } else {
+                                    Get.to(() => LoginScreen());
+                                  }
+                                  // Get.back();
+                                  // widget.onItemTapped(1);
+                                }),
+                            const Divider(
+                              height: 5,
+                              color: Color(0xffF2F2F2),
+                            ),
+                          ],
                         ),
-                        drawerTile(
-                            active: true,
-                            title: "Change Password".tr,
-                            icon: Icon(Icons.password),
-                            onTap: () {
-                              FirebaseAuth _auth = FirebaseAuth.instance;
-                              User? user = _auth.currentUser;
-                              if (user != null) {
-                                Get.to(() => ChangePasswordScreen());
-                              } else {
-                                Get.to(() => LoginScreen());
-                              }
-                              // Get.back();
-                              // widget.onItemTapped(1);
-                            }),
-                        const Divider(
-                          height: 5,
-                          color: Color(0xffF2F2F2),
+                        if (user != null)
+                        Column(
+                          children: [
+                            drawerTile(
+                                active: true,
+                                title: "Change Password".tr,
+                                icon: Icon(Icons.password),
+                                onTap: () {
+                                  FirebaseAuth _auth = FirebaseAuth.instance;
+                                  User? user = _auth.currentUser;
+                                  if (user != null) {
+                                    Get.to(() => ChangePasswordScreen());
+                                  } else {
+                                    Get.to(() => LoginScreen());
+                                  }
+                                  // Get.back();
+                                  // widget.onItemTapped(1);
+                                }),
+                            const Divider(
+                              height: 5,
+                              color: Color(0xffF2F2F2),
+                            ),
+                          ],
                         ),
                         if (user != null)
                           drawerTile(
