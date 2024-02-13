@@ -201,7 +201,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                         height: size.height * .20,
                         fit: BoxFit.cover,
                         errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                          return Container(
+                          return SizedBox(
                               width: size.width,
                               height: size.height * .20,
                               child: Padding(
@@ -308,37 +308,38 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                         docId: widget.restaurantItem!.docid.toString(),
                                       ),
                                       const Spacer(),
-                                      Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                "4.9",
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 22, fontWeight: FontWeight.w300, color: const Color(0xff1E2538)),
-                                              ),
-                                              Text(
-                                                "/5.9",
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xff979798)),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              SvgPicture.asset(AppAssets.chat),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
-                                              Text(
-                                                "2584",
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xff1E2538)),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      )
+                                      if(reviewModel != null)
+                                        Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  averageRating.toStringAsFixed(1).toString(),
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 22, fontWeight: FontWeight.w300, color: const Color(0xff1E2538)),
+                                                ),
+                                                Text(
+                                                  "/5.0",
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xff979798)),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(AppAssets.chat),
+                                                const SizedBox(
+                                                  width: 3,
+                                                ),
+                                                Text(
+                                                  "${reviewModel!.length}",
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xff1E2538)),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )
                                     ],
                                   ),
                                   const SizedBox(
@@ -639,14 +640,14 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                             child: CachedNetworkImage(
                                                               imageUrl: menuListData.image,
                                                               fit: BoxFit.cover,
-                                                              errorWidget: (_, __, ___) => Icon(
+                                                              errorWidget: (_, __, ___) => const Icon(
                                                                 Icons.error,
                                                                 color: Colors.red,
                                                               ),
                                                             ),
                                                           ),
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           width: 10,
                                                         ),
                                                         Expanded(
@@ -686,10 +687,10 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                               children: [
                                                                 Text(
                                                                   "\$${(menuListData.price).toString()} ",
-                                                                  style: TextStyle(
+                                                                  style: const TextStyle(
                                                                     fontSize: 14,
                                                                     decoration: TextDecoration.lineThrough,
-                                                                    color: const Color(0xFF8E9196),
+                                                                    color: Color(0xFF8E9196),
                                                                   ),
                                                                 ),
                                                                 Text(
@@ -759,7 +760,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                   child: CachedNetworkImage(
                                                     imageUrl: widget.restaurantItem!.menuGalleryImages![index],
                                                     fit: BoxFit.cover,
-                                                    errorWidget: (_, __, ___) => Icon(
+                                                    errorWidget: (_, __, ___) => const Icon(
                                                       Icons.error,
                                                       color: Colors.red,
                                                     ),
@@ -794,13 +795,13 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                             child: CachedNetworkImage(
                                                               imageUrl: menuListData.image.toString(),
                                                               fit: BoxFit.cover,
-                                                              errorWidget: (_, __, ___) => Icon(
+                                                              errorWidget: (_, __, ___) => const Icon(
                                                                 Icons.error,
                                                                 color: Colors.red,
                                                               ),
                                                             )),
                                                       ),
-                                                      SizedBox(width: 10),
+                                                      const SizedBox(width: 10),
                                                       Expanded(
                                                         child: Column(
                                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -869,10 +870,10 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                             children: [
                                                               Text(
                                                                 "\$${menuListData.price.toString()} ",
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                   fontSize: 14,
                                                                   decoration: TextDecoration.lineThrough,
-                                                                  color: const Color(0xFF8E9196),
+                                                                  color: Color(0xFF8E9196),
                                                                 ),
                                                               ),
                                                               Text(

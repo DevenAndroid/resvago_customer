@@ -368,17 +368,18 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                       //       fontSize: 12, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
                                       // ),
                                       const Spacer(),
+                                      if(reviewModel != null)
                                       Column(
                                         children: [
                                           Row(
                                             children: [
                                               Text(
-                                                "4.9",
+                                                averageRating.toStringAsFixed(1).toString(),
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 22, fontWeight: FontWeight.w300, color: const Color(0xff1E2538)),
                                               ),
                                               Text(
-                                                "/5.9",
+                                                "/5.0",
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xff979798)),
                                               ),
@@ -391,7 +392,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                 width: 3,
                                               ),
                                               Text(
-                                                "2584",
+                                                "${reviewModel!.length}",
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 11, fontWeight: FontWeight.w300, color: const Color(0xff1E2538)),
                                               ),
@@ -405,37 +406,39 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                     height: 15,
                                   ),
 
-                                  Center(
-                                    child: Container(
-                                      width: size.width,
-                                      height: 60,
-                                      decoration: const BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-                                          color: Color(0xFFEBF0FB)),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Up to \$10 Master card Cashback",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff000000)),
-                                          ),
-                                          Text(
-                                            "Use code Card Above \$120",
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 10, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
-                                          ),
-                                        ],
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        width: size.width,
+                                        height: 60,
+                                        decoration: const BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+                                            color: Color(0xFFEBF0FB)),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Up to \$10 Master card Cashback",
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 15, fontWeight: FontWeight.w400, color: const Color(0xff000000)),
+                                            ),
+                                            Text(
+                                              "Use code Card Above \$120",
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 10, fontWeight: FontWeight.w300, color: const Color(0xff384953)),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
+                                      Positioned(
+                                          top: 0, left: 0, right: 0, child: Center(child: SvgPicture.asset(AppAssets.code))),
+                                    ],
                                   )
                                 ],
                               ),
                             ),
-                            Positioned(
-                                top: 120, bottom: 0, left: 0, right: 0, child: Center(child: SvgPicture.asset(AppAssets.code))),
                           ]),
                         ],
                       ),
@@ -562,7 +565,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                         child: CachedNetworkImage(
                                                           imageUrl: widget.restaurantItem!.restaurantImage![index],
                                                           fit: BoxFit.cover,
-                                                          errorWidget: (_, __, ___) => Icon(
+                                                          errorWidget: (_, __, ___) =>  const Icon(
                                                             Icons.error,
                                                             color: Colors.red,
                                                           ),
@@ -612,14 +615,14 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                                   child: CachedNetworkImage(
                                                                     imageUrl: menuListData.image,
                                                                     fit: BoxFit.cover,
-                                                                    errorWidget: (_, __, ___) => Icon(
+                                                                    errorWidget: (_, __, ___) => const Icon(
                                                                       Icons.error,
                                                                       color: Colors.red,
                                                                     ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                              SizedBox(
+                                                              const SizedBox(
                                                                 width: 10,
                                                               ),
                                                               Expanded(
@@ -659,10 +662,10 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                                     children: [
                                                                       Text(
                                                                         "\$${(menuListData.price).toString()} ",
-                                                                        style: TextStyle(
+                                                                        style: const TextStyle(
                                                                           fontSize: 14,
                                                                           decoration: TextDecoration.lineThrough,
-                                                                          color: const Color(0xFF8E9196),
+                                                                          color: Color(0xFF8E9196),
                                                                         ),
                                                                       ),
                                                                       Text(
@@ -735,7 +738,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                   child: CachedNetworkImage(
                                                     imageUrl: widget.restaurantItem!.menuGalleryImages![index],
                                                     fit: BoxFit.cover,
-                                                    errorWidget: (_, __, ___) => Icon(
+                                                    errorWidget: (_, __, ___) => const Icon(
                                                       Icons.error,
                                                       color: Colors.red,
                                                     ),
@@ -772,14 +775,14 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                             child: CachedNetworkImage(
                                                               imageUrl: menuListData.image,
                                                               fit: BoxFit.cover,
-                                                              errorWidget: (_, __, ___) => Icon(
+                                                              errorWidget: (_, __, ___) => const Icon(
                                                                 Icons.error,
                                                                 color: Colors.red,
                                                               ),
                                                             ),
                                                           ),
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           width: 10,
                                                         ),
                                                         Expanded(
@@ -911,10 +914,10 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                               children: [
                                                                 Text(
                                                                   "\$${(menuListData.price).toString()} ",
-                                                                  style: TextStyle(
+                                                                  style: const TextStyle(
                                                                     fontSize: 14,
                                                                     decoration: TextDecoration.lineThrough,
-                                                                    color: const Color(0xFF8E9196),
+                                                                    color: Color(0xFF8E9196),
                                                                   ),
                                                                 ),
                                                                 Text(
@@ -997,7 +1000,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                   child: Column(children: [
                                                     Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                                                       Text(
-                                                        averageRating.toStringAsFixed(2).toString(),
+                                                        averageRating.toStringAsFixed(1).toString(),
                                                         style: const TextStyle(
                                                           color: Color(0xFF1B233A),
                                                           fontSize: 40,
@@ -1049,7 +1052,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     Expanded(
                                                       child: Text(
                                                         'Excellent'.tr,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Color(0xFF969AA3),
                                                           fontSize: 12,
                                                           fontWeight: FontWeight.w400,
@@ -1079,7 +1082,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     Expanded(
                                                       child: Text(
                                                         'Good'.tr,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Color(0xFF969AA3),
                                                           fontSize: 12,
                                                           fontWeight: FontWeight.w400,
@@ -1109,7 +1112,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     Expanded(
                                                       child: Text(
                                                         'Average'.tr,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Color(0xFF969AA3),
                                                           fontSize: 12,
                                                           fontWeight: FontWeight.w400,
@@ -1139,7 +1142,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     Expanded(
                                                       child: Text(
                                                         'Below Average'.tr,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Color(0xFF969AA3),
                                                           fontSize: 12,
                                                           fontWeight: FontWeight.w400,
@@ -1169,7 +1172,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                     Expanded(
                                                       child: Text(
                                                         'Poor'.tr,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Color(0xFF969AA3),
                                                           fontSize: 12,
                                                           fontWeight: FontWeight.w400,

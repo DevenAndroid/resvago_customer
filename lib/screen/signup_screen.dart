@@ -231,7 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     errorText: 'Password must be at least 8 characters, with 1 special character & 1 numerical'),
                                 PatternValidator(r"(?=.*\W)(?=.*?[#?!@$%^&*-])(?=.*[0-9])",
                                     errorText: "Password must be at least with 1 special character & 1 numerical"),
-                              ])),
+                              ]).call),
                           const SizedBox(
                             height: 15,
                           ),
@@ -353,8 +353,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     },
                                   );
                                 },
-                                child: const Text('Are you agree terms and conditions?',
-                                    style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Colors.white)),
+                                child:  Row(
+                                  children: [
+                                    const Text('Are You Agree',
+                                        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Colors.white)),
+                                    Text(' Terms And Conditions?',
+                                      style: GoogleFonts.poppins(
+                                          color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 13),),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

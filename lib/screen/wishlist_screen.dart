@@ -16,6 +16,7 @@ import 'package:resvago_customer/screen/widgets/calculate_distance.dart';
 import 'package:resvago_customer/widget/common_text_field.dart';
 import '../controller/wishlist_controller.dart';
 import '../model/resturant_model.dart';
+import '../widget/appassets.dart';
 import '../widget/like_button.dart';
 import '../widget/restaurant_timing.dart';
 import 'delivery_screen/single_store_delivery_screen.dart';
@@ -60,7 +61,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                   style: GoogleFonts.poppins(color: const Color(0xFF423E5E), fontWeight: FontWeight.w600, fontSize: 17))
             ],
           ),
-          bottom:  TabBar(
+          bottom: TabBar(
             dividerColor: Colors.grey,
             indicatorSize: TabBarIndicatorSize.tab,
             tabs: [
@@ -120,13 +121,13 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                               topLeft: Radius.circular(10),
                                             ),
                                             child: CachedNetworkImage(
-                                              imageUrl: restaurantListItem.image.toString(),
-                                              fit: BoxFit.cover,
-                                              errorWidget: (_, __, ___) => Icon(
-                                                Icons.error,
-                                                color: Colors.red,
-                                              ),
-                                            )),
+                                                imageUrl: restaurantListItem.image.toString(),
+                                                fit: BoxFit.cover,
+                                                errorWidget: (_, __, ___) => SizedBox(
+                                                        child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Image.asset(AppAssets.storeIcon),
+                                                    )))),
                                       ),
                                       Positioned(
                                           top: 0,
@@ -215,12 +216,12 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                 key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
                               )
                               .slideY(
-                                  duration: Duration(milliseconds: 600),
+                                  duration: const Duration(milliseconds: 600),
                                   delay: Duration(milliseconds: (index + 1) * 100),
                                   end: 0,
                                   begin: .50)
                               .fade(
-                                duration: Duration(milliseconds: 800),
+                                duration: const Duration(milliseconds: 800),
                                 delay: Duration(milliseconds: (index + 1) * 100),
                               ),
                         );
@@ -232,7 +233,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
             Obx(() {
               if (wishListController.refreshInt.value > 0) {}
               List<RestaurantModel> restaurantModel =
-              wishListController.wishListRestaurants.values.where((restaurant) => restaurant.setDelivery == true).toList();
+                  wishListController.wishListRestaurants.values.where((restaurant) => restaurant.setDelivery == true).toList();
               log(restaurantModel.length.toString());
               log(jsonEncode(restaurantModel));
               return restaurantModel.isNotEmpty
@@ -247,8 +248,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                           child: InkWell(
                             onTap: () {
                               Get.to(() => SingleRestaurantForDeliveryScreen(
-                                restaurantItem: restaurantListItem,
-                              ));
+                                    restaurantItem: restaurantListItem,
+                                  ));
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -274,13 +275,13 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                               topLeft: Radius.circular(10),
                                             ),
                                             child: CachedNetworkImage(
-                                              imageUrl: restaurantListItem.image.toString(),
-                                              fit: BoxFit.cover,
-                                              errorWidget: (_, __, ___) => Icon(
-                                                Icons.error,
-                                                color: Colors.red,
-                                              ),
-                                            )),
+                                                imageUrl: restaurantListItem.image.toString(),
+                                                fit: BoxFit.cover,
+                                                errorWidget: (_, __, ___) => SizedBox(
+                                                        child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Image.asset(AppAssets.storeIcon),
+                                                    )))),
                                       ),
                                       Positioned(
                                           top: 0,
@@ -369,17 +370,17 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                 key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
                               )
                               .slideY(
-                                  duration: Duration(milliseconds: 600),
+                                  duration: const Duration(milliseconds: 600),
                                   delay: Duration(milliseconds: (index + 1) * 100),
                                   end: 0,
                                   begin: .50)
                               .fade(
-                                duration: Duration(milliseconds: 800),
+                                duration: const Duration(milliseconds: 800),
                                 delay: Duration(milliseconds: (index + 1) * 100),
                               ),
                         );
                       })
-                  : Center(
+                  : const Center(
                       child: Text("Wishlist is Empty"),
                     );
             }).appPaddingForScreen,

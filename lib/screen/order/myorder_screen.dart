@@ -317,7 +317,7 @@ class _MyOrderState extends State<MyOrder> {
                                     setState(() {});
                                   },
                                   child:  Column(
-                                    children: [Text("Dining Orders".tr), Divider()],
+                                    children: [Text("Dining Orders".tr), const Divider()],
                                   ),
                                 ),
                                 PopupMenuItem(
@@ -330,7 +330,7 @@ class _MyOrderState extends State<MyOrder> {
                                   child:  Column(
                                     children: [
                                       Text("Delivery Orders".tr),
-                                      Divider(
+                                      const Divider(
                                         color: Colors.white,
                                       )
                                     ],
@@ -455,7 +455,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           child: CachedNetworkImage(
                                                             imageUrl: orderItem.orderDetails!.restaurantInfo!.image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget: (_, __, ___) => const Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
@@ -690,7 +690,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           child: CachedNetworkImage(
                                                             imageUrl: orderItem.orderDetails!.restaurantInfo!.image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget: (_, __, ___) => const Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
@@ -973,7 +973,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           child: CachedNetworkImage(
                                                             imageUrl: orderItem.orderDetails!.restaurantInfo!.image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget: (_, __, ___) => const Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
@@ -1178,7 +1178,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           child: CachedNetworkImage(
                                                             imageUrl: orderItem.restaurantInfo!.image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget: (_, __, ___) => const Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
@@ -1358,7 +1358,7 @@ class _MyOrderState extends State<MyOrder> {
                                                         ),
                                                       ],
                                                     )
-                                                  : SizedBox(),
+                                                  : const SizedBox(),
                                             ],
                                           )).appPaddingForScreen,
                                     );
@@ -1470,7 +1470,7 @@ class _MyOrderState extends State<MyOrder> {
                                                             child: CachedNetworkImage(
                                                               imageUrl: orderItem.restaurantInfo!.image,
                                                               fit: BoxFit.cover,
-                                                              errorWidget: (_, __, ___) => Icon(
+                                                              errorWidget: (_, __, ___) => const Icon(
                                                                 Icons.error,
                                                                 color: Colors.red,
                                                               ),
@@ -1805,7 +1805,7 @@ class _MyOrderState extends State<MyOrder> {
                                                           child: CachedNetworkImage(
                                                             imageUrl: orderItem.restaurantInfo!.image,
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget: (_, __, ___) => const Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),
@@ -2005,8 +2005,8 @@ class _MyOrderState extends State<MyOrder> {
                     border: Border.all(color: Colors.grey, width: 2),
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Icon(
                       Icons.clear_rounded,
                       color: Colors.red,
@@ -2014,19 +2014,19 @@ class _MyOrderState extends State<MyOrder> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text('Cancel Order', style: TextStyle(fontWeight: FontWeight.w500)),
+                const Text('Cancel Order', style: TextStyle(fontWeight: FontWeight.w500)),
               ],
             ),
             content: Form(
               key: _formKey,
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Text("Are you sure you want to cancel this order?",
+                const Text("Are you sure you want to cancel this order?",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color(0xff384953))),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 RegisterTextFieldWidget(
@@ -2036,7 +2036,7 @@ class _MyOrderState extends State<MyOrder> {
                     RequiredValidator(errorText: 'Please enter your reason'),
                   ]).call,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
@@ -2050,14 +2050,14 @@ class _MyOrderState extends State<MyOrder> {
                         child: Container(
                           decoration:
                               BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.grey)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
                             child: Center(child: Text('No')),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Expanded(
@@ -2079,8 +2079,8 @@ class _MyOrderState extends State<MyOrder> {
                         },
                         child: Container(
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
                             child: Center(
                                 child: Text(
                               'Yes',
@@ -2113,8 +2113,8 @@ class _MyOrderState extends State<MyOrder> {
                     border: Border.all(color: Colors.grey, width: 2),
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Icon(
                       Icons.clear_rounded,
                       color: Colors.red,
@@ -2122,19 +2122,19 @@ class _MyOrderState extends State<MyOrder> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text('Cancel Order', style: TextStyle(fontWeight: FontWeight.w500)),
+                const Text('Cancel Order', style: TextStyle(fontWeight: FontWeight.w500)),
               ],
             ),
             content: Form(
               key: _formKey,
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Text("Are you sure you want to cancel this order?",
+                const Text("Are you sure you want to cancel this order?",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color(0xff384953))),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 RegisterTextFieldWidget(
@@ -2144,7 +2144,7 @@ class _MyOrderState extends State<MyOrder> {
                     RequiredValidator(errorText: 'Please enter your reason'),
                   ]).call,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
@@ -2158,14 +2158,14 @@ class _MyOrderState extends State<MyOrder> {
                         child: Container(
                           decoration:
                               BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.grey)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
                             child: Center(child: Text('No')),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Expanded(
@@ -2183,8 +2183,8 @@ class _MyOrderState extends State<MyOrder> {
                         },
                         child: Container(
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
                             child: Center(
                                 child: Text(
                               'Yes',

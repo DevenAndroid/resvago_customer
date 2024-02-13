@@ -34,7 +34,8 @@ class FirebaseService {
         "profile_image": "",
         "password": password,
         "deactivate": false,
-        "time":DateTime.now()
+        "time":DateTime.now(),
+        "verified":false
       }).then((value) {});
     } catch (e) {
       throw Exception(e);
