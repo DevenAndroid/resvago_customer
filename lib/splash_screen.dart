@@ -20,17 +20,15 @@ class _SplashScreenState extends State<SplashScreen> {
     FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
     if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const BottomNavbar()),
-      );
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) =>  const BottomNavbar()));
     } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool _seen = (prefs.getBool('seen') ?? false);
 
       if (_seen) {
         Navigator.of(context).pushReplacement(
-            new MaterialPageRoute(builder: (context) => new BottomNavbar()));
+             MaterialPageRoute(builder: (context) =>  BottomNavbar()));
       } else {
         await prefs.setBool('seen', true);
         Navigator.of(context).pushReplacement(

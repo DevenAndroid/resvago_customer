@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -81,23 +83,34 @@ class _BottomNavbarState extends State<BottomNavbar> {
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
+  final String isDisplayed = "isDisplayed";
   @override
   void initState() {
     super.initState();
     // updateFCMToken();
-    user = _auth.currentUser;
-    if (user != null) {
-      getProfileData();
-      profileController.getProfileData();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkFirstTimeOpen();
+      user = _auth.currentUser;
+      if (user != null) {
+        getProfileData();
+        profileController.getProfileData();
+      }
+    });
   }
 
+  Future<void> checkFirstTimeOpen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isFirstTime = prefs.getBool(isDisplayed);
+    if (isFirstTime == null || !isFirstTime) {
+      showDialogLanguage(context);
+      prefs.setBool(isDisplayed, true);
+    }
+
+    log("hghhhhhh$isFirstTime");
+  }
   RestaurantModel? restaurantModel;
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   showDialogLanguage(context);
-    // });
     Size size = MediaQuery.of(context).size;
     return Obx(() {
       return Theme(
@@ -191,7 +204,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                                 bottomController.updateIndexValue(2);
                                 Get.back();
                               } else {
-                                Get.to(() => LoginScreen());
+                                Get.to(() => const LoginScreen());
                               }
                             }),
                         const Divider(
@@ -213,7 +226,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                                 bottomController.updateIndexValue(3);
                                 Get.back();
                               } else {
-                                Get.to(() => LoginScreen());
+                                Get.to(() => const LoginScreen());
                               }
                             }),
                         const Divider(
@@ -234,7 +247,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                               if (user != null) {
                                 Get.toNamed(MyRouters.notification);
                               } else {
-                                Get.to(() => LoginScreen());
+                                Get.to(() => const LoginScreen());
                               }
                             }),
                         const Divider(
@@ -253,9 +266,9 @@ class _BottomNavbarState extends State<BottomNavbar> {
                               FirebaseAuth _auth = FirebaseAuth.instance;
                               User? user = _auth.currentUser;
                               if (user != null) {
-                                Get.to(() => MyAddressList());
+                                Get.to(() => const MyAddressList());
                               } else {
-                                Get.to(() => LoginScreen());
+                                Get.to(() => const LoginScreen());
                               }
                               // Get.back();
                               // widget.onItemTapped(1);
@@ -267,14 +280,14 @@ class _BottomNavbarState extends State<BottomNavbar> {
                         drawerTile(
                             active: true,
                             title: "My Wishlist".tr,
-                            icon: Icon(Icons.favorite_border_rounded),
+                            icon: const Icon(Icons.favorite_border_rounded),
                             onTap: () {
                               FirebaseAuth _auth = FirebaseAuth.instance;
                               User? user = _auth.currentUser;
                               if (user != null) {
-                                Get.to(() => WishlistScreen());
+                                Get.to(() => const WishlistScreen());
                               } else {
-                                Get.to(() => LoginScreen());
+                                Get.to(() => const LoginScreen());
                               }
                               // Get.back();
                               // widget.onItemTapped(1);
@@ -286,9 +299,9 @@ class _BottomNavbarState extends State<BottomNavbar> {
                         drawerTile(
                             active: true,
                             title: "Change Language".tr,
-                            icon: Icon(Icons.language),
+                            icon: const Icon(Icons.language),
                             onTap: () {
-                              Get.to(() => LanguageChangeScreen());
+                              Get.to(() => const LanguageChangeScreen());
                             }),
                         const Divider(
                           height: 5,
@@ -333,14 +346,14 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             drawerTile(
                                 active: true,
                                 title: "Setting".tr,
-                                icon: Icon(Icons.settings),
+                                icon: const Icon(Icons.settings),
                                 onTap: () {
                                   FirebaseAuth _auth = FirebaseAuth.instance;
                                   User? user = _auth.currentUser;
                                   if (user != null) {
-                                    Get.to(() => SettingScreen());
+                                    Get.to(() => const SettingScreen());
                                   } else {
-                                    Get.to(() => LoginScreen());
+                                    Get.to(() => const LoginScreen());
                                   }
                                   // Get.back();
                                   // widget.onItemTapped(1);
@@ -357,14 +370,14 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             drawerTile(
                                 active: true,
                                 title: "Change Password".tr,
-                                icon: Icon(Icons.password),
+                                icon: const Icon(Icons.password),
                                 onTap: () {
                                   FirebaseAuth _auth = FirebaseAuth.instance;
                                   User? user = _auth.currentUser;
                                   if (user != null) {
-                                    Get.to(() => ChangePasswordScreen());
+                                    Get.to(() => const ChangePasswordScreen());
                                   } else {
-                                    Get.to(() => LoginScreen());
+                                    Get.to(() => const LoginScreen());
                                   }
                                   // Get.back();
                                   // widget.onItemTapped(1);
@@ -454,11 +467,11 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           bottomController.pageIndex.value == 0
                               ? Text(
                                   "Dining".tr,
-                                  style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                               : Text(
                                   "Dining".tr,
-                                  style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
                       ),
@@ -487,11 +500,11 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           bottomController.pageIndex.value == 1
                               ? Text(
                                   "Delivery".tr,
-                                  style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                               : Text(
                                   "Delivery".tr,
-                                  style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
                       ),
@@ -506,7 +519,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                         if (user != null) {
                           bottomController.updateIndexValue(2);
                         } else {
-                          Get.to(() => LoginScreen());
+                          Get.to(() => const LoginScreen());
                         }
                       },
                       child: Column(
@@ -523,11 +536,11 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           bottomController.pageIndex.value == 2
                               ? Text(
                                   "Orders".tr,
-                                  style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                               : Text(
                                   "Orders".tr,
-                                  style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
                       ),
@@ -542,7 +555,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                         if (user != null) {
                           bottomController.updateIndexValue(3);
                         } else {
-                          Get.to(() => LoginScreen());
+                          Get.to(() => const LoginScreen());
                         }
                       },
                       child: Column(
@@ -559,11 +572,11 @@ class _BottomNavbarState extends State<BottomNavbar> {
                           bottomController.pageIndex.value == 3
                               ?  Text(
                                   "Profile".tr,
-                                  style: TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: Color(0xFFFAAF40), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                               :  Text(
                                   "Profile".tr,
-                                  style: TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
+                                  style: const TextStyle(color: Color(0xFF4E5B5F), fontSize: 15, fontWeight: FontWeight.w400),
                                 )
                         ],
                       ),
@@ -602,13 +615,10 @@ class _BottomNavbarState extends State<BottomNavbar> {
     }
   }
 
-  final keyIsFirstLoaded = 'is_first_loaded';
-
-  Future<void> showDialogLanguage(context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool? isFirstLoaded = prefs.getBool(keyIsFirstLoaded);
-    if (isFirstLoaded == null) {
-      return showDialog(
+  // final keyIsFirstLoaded = 'is_first_loaded';
+  // final isDisplayed = 'isDisplayed';
+   showDialogLanguage(BuildContext context) async {
+     showDialog(
           barrierDismissible: false,
           context: context,
           builder: (context) {
@@ -632,7 +642,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             Get.back();
                             Get.back();
                             Get.back();
-                            prefs.setBool(keyIsFirstLoaded, false);
+                            // prefs.setBool(keyIsFirstLoaded, false);
                           },
                         )
                       ],
@@ -719,7 +729,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                             Get.back();
                             Get.back();
                             updateLanguage(selectedLAnguage.value);
-                            prefs.setBool(keyIsFirstLoaded, false);
+                            // prefs.setBool(keyIsFirstLoaded, false);
                           },
                           child: Container(
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
@@ -738,7 +748,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
               ),
             );
           });
-    }
   }
 
   Widget drawerTile({required bool active, required String title, required Widget icon, required VoidCallback onTap}) {

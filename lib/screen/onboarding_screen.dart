@@ -62,13 +62,15 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               itemBuilder: (context, index) {
                 if (OnBoardingData.length == index) {
                   loginLoaded = true;
+                  // Future.delayed(Duration(milliseconds: 100)).then((value) {
+                  //   Get.offAll(()=> LoginScreen());
+                  // });
                   Future.delayed(Duration(milliseconds: 100)).then((value) {
-                    Get.offAll(()=> BottomNavbar());
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const BottomNavbar()),
+                    );
                   });
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => const BottomNavbar()),
-                  // );
                 }
                 loginLoaded = false;
                 return OnboardContent(

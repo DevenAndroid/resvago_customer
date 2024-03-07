@@ -120,10 +120,10 @@ class _HomePageState extends State<HomePage> {
     try {
       await firebaseService
           .manageWishlist(
-              time: DateTime.now().millisecondsSinceEpoch,
-              wishlistId: DateTime.now().microsecondsSinceEpoch.toString(),
-              userId: FirebaseAuth.instance.currentUser!.uid,
-              vendorId: vendorId)
+          time: DateTime.now().millisecondsSinceEpoch,
+          wishlistId: DateTime.now().microsecondsSinceEpoch.toString(),
+          userId: FirebaseAuth.instance.currentUser!.uid,
+          vendorId: vendorId)
           .then((value) {
         Get.back();
         Helper.hideLoader(loader);
@@ -251,12 +251,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   final localController = Get.put(LocalController(), permanent: true);
-
+  final String isDisplayed = "isDisplayed";
+  Future<void> checkFirstTimeOpen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isFirstTime = prefs.getBool(isDisplayed);
+    if (isFirstTime == null || !isFirstTime) {
+      showDialogLanguage(context);
+      prefs.setBool(isDisplayed, true);
+    }
+    print("hghhhhhh$isFirstTime");
+  }
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialogLanguage(context);
-    });
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xffF6F6F6),
@@ -279,94 +285,135 @@ class _HomePageState extends State<HomePage> {
                 return profileController.profileData != null && profileController.profileData!.selected_address != null
                     ? AddressWidget(addressId: profileController.profileData!.selected_address)
                     : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                              onTap: () {
-                                FirebaseAuth auth = FirebaseAuth.instance;
-                                User? user = auth.currentUser;
-                                if (user != null) {
-                                  Get.to(() => MyAddressList(
-                                        addressChanged: (AddressModel address) {},
-                                      ));
-                                } else {
-                                  Get.to(() => const LoginScreen());
-                                }
-                              },
-                              behavior: HitTestBehavior.translucent,
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/icons/location.png',
-                                    height: 15,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Flexible(
-                                    child: Text(
-                                      'Home'.tr,
-                                      style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Image.asset(
-                                    'assets/icons/dropdown.png',
-                                    height: 8,
-                                  ),
-                                ],
-                              )),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            locationController.locality.value.toString(),
-                            style: GoogleFonts.poppins(
-                              color: const Color(0xFF1E2538),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          FirebaseAuth auth = FirebaseAuth.instance;
+                          User? user = auth.currentUser;
+                          if (user != null) {
+                            Get.to(() => MyAddressList(
+                              addressChanged: (AddressModel address) {},
+                            ));
+                          } else {
+                            Get.to(() => const LoginScreen());
+                          }
+                        },
+                        behavior: HitTestBehavior.translucent,
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/icons/location.png',
+                              height: 15,
                             ),
-                          )
-                        ],
-                      );
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                'Home'.tr,
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 15),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Image.asset(
+                              'assets/icons/dropdown.png',
+                              height: 8,
+                            ),
+                          ],
+                        )),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      locationController.locality.value.toString(),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF1E2538),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    )
+                  ],
+                );
               }),
             ),
             user != null
                 ? Badge(
-                    label: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('checkOut')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .snapshots(),
-                      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: Text(" 0 "));
-                        }
+              label: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('checkOut')
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: Text(" 0 "));
+                  }
 
-                        if (snapshot.hasError) {
-                          return const Center(child: Text(" 0 "));
-                        }
+                  if (snapshot.hasError) {
+                    return const Center(child: Text(" 0 "));
+                  }
 
-                        if (!snapshot.hasData || !snapshot.data!.exists) {
-                          return const Center(child: Text(" 0 "));
-                        }
-                        List<dynamic> menuList = snapshot.data!['menuList'];
-                        CheckOutModel checkOutModel = CheckOutModel.fromJson(snapshot.data!.data()!);
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                          child: Text("${checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum}"),
-                        );
-                      },
-                    ),
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return const Center(child: Text(" 0 "));
+                  }
+                  List<dynamic> menuList = snapshot.data!['menuList'];
+                  CheckOutModel checkOutModel = CheckOutModel.fromJson(snapshot.data!.data()!);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                    child: Text("${checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum}"),
+                  );
+                },
+              ),
+              backgroundColor: Colors.black,
+              padding: EdgeInsets.zero,
+              child: GestureDetector(
+                onTap: () {
+                  FirebaseAuth auth = FirebaseAuth.instance;
+                  User? user = auth.currentUser;
+                  if (user != null) {
+                    Get.toNamed(MyRouters.cartScreen);
+                  } else {
+                    Get.to(() => const LoginScreen());
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/images/shoppinbag.png',
+                    height: 30,
+                  ),
+                ),
+              ),
+            )
+                : Obx(() {
+              if (localController.refreshInt.value > 0) {}
+              return FutureBuilder(
+                future: SharedPreferences.getInstance(),
+                builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
+                  // print("adflkhjajdhalsdjajdalsdlasjd");
+                  String count = "0";
+                  if (snapshot.data != null && snapshot.data!.getString("checkout") != null) {
+                    CheckOutModel checkOutModel = CheckOutModel.fromJson(jsonDecode(snapshot.data!.getString("checkout")!));
+                    count = checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum.toString();
+                  }
+                  return Badge(
                     backgroundColor: Colors.black,
                     padding: EdgeInsets.zero,
+                    label: count != "0"
+                        ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                      child: Text(count),
+                    )
+                        : const SizedBox(),
                     child: GestureDetector(
                       onTap: () {
-                        FirebaseAuth auth = FirebaseAuth.instance;
-                        User? user = auth.currentUser;
-                        if (user != null) {
-                          Get.toNamed(MyRouters.cartScreen);
-                        } else {
-                          Get.to(() => const LoginScreen());
-                        }
+                        Get.toNamed(MyRouters.cartScreen);
+                        // FirebaseAuth auth = FirebaseAuth.instance;
+                        // User? user = auth.currentUser;
+                        // if (user != null) {
+                        //   Get.toNamed(MyRouters.cartScreen);
+                        // } else {
+                        //   Get.to(() => const LoginScreen());
+                        // }
+                        // Get.toNamed(MyRouters.cartScreen);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -376,51 +423,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                  )
-                : Obx(() {
-                    if (localController.refreshInt.value > 0) {}
-                    return FutureBuilder(
-                      future: SharedPreferences.getInstance(),
-                      builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
-                        // print("adflkhjajdhalsdjajdalsdlasjd");
-                        String count = "0";
-                        if (snapshot.data != null && snapshot.data!.getString("checkout") != null) {
-                          CheckOutModel checkOutModel = CheckOutModel.fromJson(jsonDecode(snapshot.data!.getString("checkout")!));
-                          count = checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum.toString();
-                        }
-                        return Badge(
-                          backgroundColor: Colors.black,
-                          padding: EdgeInsets.zero,
-                          label: count != "0"
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                                  child: Text(count),
-                                )
-                              : const SizedBox(),
-                          child: GestureDetector(
-                            onTap: () {
-                              Get.toNamed(MyRouters.cartScreen);
-                              // FirebaseAuth auth = FirebaseAuth.instance;
-                              // User? user = auth.currentUser;
-                              // if (user != null) {
-                              //   Get.toNamed(MyRouters.cartScreen);
-                              // } else {
-                              //   Get.to(() => const LoginScreen());
-                              // }
-                              // Get.toNamed(MyRouters.cartScreen);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset(
-                                'assets/images/shoppinbag.png',
-                                height: 30,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }),
+                  );
+                },
+              );
+            }),
             GestureDetector(
               onTap: () {
                 FirebaseAuth auth = FirebaseAuth.instance;
@@ -444,7 +450,7 @@ class _HomePageState extends State<HomePage> {
                       return CachedNetworkImage(
                         fit: BoxFit.cover,
                         imageUrl:
-                            profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
+                        profileController.profileData != null ? profileController.profileData!.profile_image.toString() : "",
                         errorWidget: (_, __, ___) => const Icon(Icons.person),
                         placeholder: (_, __) => const SizedBox(),
                       );
@@ -689,8 +695,8 @@ class _HomePageState extends State<HomePage> {
                             child: InkWell(
                               onTap: () {
                                 Get.to(() => SingleRestaurantsScreen(
-                                      restaurantItem: restaurantListItem,
-                                    ));
+                                  restaurantItem: restaurantListItem,
+                                ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -789,14 +795,14 @@ class _HomePageState extends State<HomePage> {
                                         child: Row(
                                           children: List.generate(
                                               30,
-                                              (index) => Padding(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2),
-                                                    child: Container(
-                                                      color: Colors.grey[300],
-                                                      height: 2,
-                                                      width: 10,
-                                                    ),
-                                                  )),
+                                                  (index) => Padding(
+                                                padding: const EdgeInsets.only(left: 2, right: 2),
+                                                child: Container(
+                                                  color: Colors.grey[300],
+                                                  height: 2,
+                                                  width: 10,
+                                                ),
+                                              )),
                                         ),
                                       ),
                                     ),
@@ -821,17 +827,17 @@ class _HomePageState extends State<HomePage> {
                               ),
                             )
                                 .animate(
-                                  key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
-                                )
+                              key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
+                            )
                                 .slideX(
-                                    duration: const Duration(milliseconds: 600),
-                                    delay: Duration(milliseconds: (index + 1) * 100),
-                                    end: 0,
-                                    begin: 2)
+                                duration: const Duration(milliseconds: 600),
+                                delay: Duration(milliseconds: (index + 1) * 100),
+                                end: 0,
+                                begin: 2)
                                 .fade(
-                                  duration: const Duration(milliseconds: 800),
-                                  delay: Duration(milliseconds: (index + 1) * 100),
-                                ),
+                              duration: const Duration(milliseconds: 800),
+                              delay: Duration(milliseconds: (index + 1) * 100),
+                            ),
                           );
                         }),
                   ),
@@ -929,8 +935,8 @@ class _HomePageState extends State<HomePage> {
                             child: InkWell(
                               onTap: () {
                                 Get.to(() => SingleRestaurantsScreen(
-                                      restaurantItem: restaurantListItem,
-                                    ));
+                                  restaurantItem: restaurantListItem,
+                                ));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -1041,14 +1047,14 @@ class _HomePageState extends State<HomePage> {
                                         child: Row(
                                           children: List.generate(
                                               30,
-                                              (index) => Padding(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2),
-                                                    child: Container(
-                                                      color: Colors.grey[300],
-                                                      height: 2,
-                                                      width: 10,
-                                                    ),
-                                                  )),
+                                                  (index) => Padding(
+                                                padding: const EdgeInsets.only(left: 2, right: 2),
+                                                child: Container(
+                                                  color: Colors.grey[300],
+                                                  height: 2,
+                                                  width: 10,
+                                                ),
+                                              )),
                                         ),
                                       ),
                                     ),
@@ -1073,17 +1079,17 @@ class _HomePageState extends State<HomePage> {
                               ),
                             )
                                 .animate(
-                                  key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
-                                )
+                              key: ValueKey(DateTime.now().millisecondsSinceEpoch + index),
+                            )
                                 .slideX(
-                                    duration: const Duration(milliseconds: 600),
-                                    delay: Duration(milliseconds: (index + 1) * 100),
-                                    end: 0,
-                                    begin: 2)
+                                duration: const Duration(milliseconds: 600),
+                                delay: Duration(milliseconds: (index + 1) * 100),
+                                end: 0,
+                                begin: 2)
                                 .fade(
-                                  duration: const Duration(milliseconds: 800),
-                                  delay: Duration(milliseconds: (index + 1) * 100),
-                                ),
+                              duration: const Duration(milliseconds: 800),
+                              delay: Duration(milliseconds: (index + 1) * 100),
+                            ),
                           );
                         }),
                   ),
@@ -1091,15 +1097,15 @@ class _HomePageState extends State<HomePage> {
                   height: 90,
                 ),
               ].animate(interval: const Duration(milliseconds: 200)).fade(
-                    duration: const Duration(milliseconds: 600),
-                  ),
+                duration: const Duration(milliseconds: 600),
+              ),
             ).appPaddingForScreen,
           ),
         ),
       ),
     );
   }
-
+  final GlobalKey<NavigatorState> key = GlobalKey<NavigatorState>();
   updateLanguage(String gg) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString("app_language", gg);
@@ -1124,144 +1130,434 @@ class _HomePageState extends State<HomePage> {
       selectedLAnguage.value = "Arabic";
     }
   }
-
+  int count = 1;
   final keyIsFirstLoaded = 'is_first_loaded';
 
-  Future<void> showDialogLanguage(context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool? isFirstLoaded = prefs.getBool(keyIsFirstLoaded);
-    if (isFirstLoaded == null) {
-      return showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          child: const Icon(
-                            Icons.clear_rounded,
-                            color: Colors.black,
-                          ),
-                          onTap: () {
-                            Get.back();
-                            Get.back();
-                            Get.back();
-                            Get.back();
-                            Get.back();
-                            prefs.setBool(keyIsFirstLoaded, false);
-                          },
-                        )
-                      ],
-                    ),
-                    RadioListTile(
-                        value: "English",
-                        groupValue: selectedLAnguage.value,
-                        title: const Text(
-                          "English",
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+
+  showDialog1(context){
+     showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        child: const Icon(
+                          Icons.clear_rounded,
+                          color: Colors.black,
                         ),
-                        onChanged: (value) {
-                          locale = const Locale('en', 'US');
-                          Get.updateLocale(locale);
-                          selectedLAnguage.value = value!;
-                          // updateLanguage("English");
+                        onTap: () {
                           Get.back();
-                          setState(() {});
-                          if (kDebugMode) {
-                            print(selectedLAnguage);
-                          }
-                        }),
-                    RadioListTile(
-                        value: "Spanish",
-                        groupValue: selectedLAnguage.value,
-                        title: const Text(
-                          "Spanish",
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                        ),
-                        onChanged: (value) {
-                          locale = const Locale('es', 'ES');
-                          Get.updateLocale(locale);
-                          selectedLAnguage.value = value!;
-                          // updateLanguage("Spanish");
                           Get.back();
-                          setState(() {});
-                          if (kDebugMode) {
-                            print(selectedLAnguage);
-                          }
-                        }),
-                    RadioListTile(
-                        value: "French",
-                        groupValue: selectedLAnguage.value,
-                        title: const Text(
-                          "French",
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                        ),
-                        onChanged: (value) {
-                          locale = const Locale('fr', 'FR');
-                          Get.updateLocale(locale);
-                          selectedLAnguage.value = value!;
-                          // updateLanguage("French");
                           Get.back();
-                          setState(() {});
-                          if (kDebugMode) {
-                            print(selectedLAnguage);
-                          }
-                        }),
-                    RadioListTile(
-                        value: "Arabic",
-                        groupValue: selectedLAnguage.value,
-                        title: const Text(
-                          "Arabic",
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                        ),
-                        onChanged: (value) {
-                          locale = const Locale('ar', 'AE');
-                          Get.updateLocale(locale);
-                          selectedLAnguage.value = value!;
-                          // updateLanguage("Arabic");
                           Get.back();
-                          setState(() {});
-                          if (kDebugMode) {
-                            print(selectedLAnguage);
+                          Get.back();
+                          // prefs.setBool(keyIsFirstLoaded, false);
+                        },
+                      )
+                    ],
+                  ),
+                  RadioListTile(
+                      value: "English",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "English",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('en', 'US');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        // updateLanguage("English");
+                        count++;
+                        Get.back();
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  RadioListTile(
+                      value: "Spanish",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "Spanish",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('es', 'ES');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        // updateLanguage("Spanish");
+                        count++;
+                        Get.back();
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  RadioListTile(
+                      value: "French",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "French",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('fr', 'FR');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        // updateLanguage("French");
+                        count++;
+                        Get.back();
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  RadioListTile(
+                      value: "Arabic",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "Arabic",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('ar', 'AE');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        // updateLanguage("Arabic");
+                        count++;
+                        Get.back();
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if(count == 1){
+                            Get.back();
+                            Get.back();
+                            updateLanguage(selectedLAnguage.value);
+                            // prefs.setBool(keyIsFirstLoaded, false);
                           }
-                        }),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
+                          else{
                             Get.back();
                             Get.back();
                             Get.back();
                             Get.back();
                             updateLanguage(selectedLAnguage.value);
-                            prefs.setBool(keyIsFirstLoaded, false);
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Update",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              )),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+                            // prefs.setBool(keyIsFirstLoaded, false);
+                          }
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                "Update",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )),
+                      ),
+                    ],
+                  )
+                ],
               ),
-            );
-          });
-    }
+            ),
+          );
+        });
   }
+  showDialogLanguage(BuildContext context) async {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        child: const Icon(
+                          Icons.clear_rounded,
+                          color: Colors.black,
+                        ),
+                        onTap: () {
+                          Get.back();
+                          Get.back();
+                          Get.back();
+                          Get.back();
+                          // prefs.setBool(keyIsFirstLoaded, false);
+                        },
+                      )
+                    ],
+                  ),
+                  RadioListTile(
+                      value: "English",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "English",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('en', 'US');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        // updateLanguage("English");
+                        Get.back();
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  RadioListTile(
+                      value: "Spanish",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "Spanish",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('es', 'ES');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        // updateLanguage("Spanish");
+                        Get.back();
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  RadioListTile(
+                      value: "French",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "French",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('fr', 'FR');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        // updateLanguage("French");
+                        Get.back();
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  RadioListTile(
+                      value: "Arabic",
+                      groupValue: selectedLAnguage.value,
+                      title: const Text(
+                        "Arabic",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                      ),
+                      onChanged: (value) {
+                        locale = const Locale('ar', 'AE');
+                        Get.updateLocale(locale);
+                        selectedLAnguage.value = value!;
+                        // updateLanguage("Arabic");
+                        Get.back();
+                        setState(() {});
+                        if (kDebugMode) {
+                          print(selectedLAnguage);
+                        }
+                      }),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.back();
+                          Get.back();
+                          Get.back();
+                          Get.back();
+                          updateLanguage(selectedLAnguage.value);
+                          // prefs.setBool(keyIsFirstLoaded, false);
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                "Update",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+  //  showDialogLanguage(context) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   bool? isFirstLoaded = prefs.getBool(keyIsFirstLoaded);
+  //   if (isFirstLoaded == null) {
+  //      showDialog(
+  //         barrierDismissible: false,
+  //         context: context,
+  //         builder: (context) {
+  //           return AlertDialog(
+  //             content: Padding(
+  //               padding: const EdgeInsets.all(12.0),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.end,
+  //                     children: [
+  //                       GestureDetector(
+  //                         child: const Icon(
+  //                           Icons.clear_rounded,
+  //                           color: Colors.black,
+  //                         ),
+  //                         onTap: () {
+  //                           Get.back();
+  //                           Get.back();
+  //                           Get.back();
+  //                           Get.back();
+  //                           Get.back();
+  //                           prefs.setBool(keyIsFirstLoaded, false);
+  //                         },
+  //                       )
+  //                     ],
+  //                   ),
+  //                   RadioListTile(
+  //                       value: "English",
+  //                       groupValue: selectedLAnguage.value,
+  //                       title: const Text(
+  //                         "English",
+  //                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+  //                       ),
+  //                       onChanged: (value) {
+  //                         locale = const Locale('en', 'US');
+  //                         Get.updateLocale(locale);
+  //                         selectedLAnguage.value = value!;
+  //                         // updateLanguage("English");
+  //                         count++;
+  //                         Get.back();
+  //                         setState(() {});
+  //                         if (kDebugMode) {
+  //                           print(selectedLAnguage);
+  //                         }
+  //                       }),
+  //                   RadioListTile(
+  //                       value: "Spanish",
+  //                       groupValue: selectedLAnguage.value,
+  //                       title: const Text(
+  //                         "Spanish",
+  //                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+  //                       ),
+  //                       onChanged: (value) {
+  //                         locale = const Locale('es', 'ES');
+  //                         Get.updateLocale(locale);
+  //                         selectedLAnguage.value = value!;
+  //                         // updateLanguage("Spanish");
+  //                         count++;
+  //                         Get.back();
+  //                         setState(() {});
+  //                         if (kDebugMode) {
+  //                           print(selectedLAnguage);
+  //                         }
+  //                       }),
+  //                   RadioListTile(
+  //                       value: "French",
+  //                       groupValue: selectedLAnguage.value,
+  //                       title: const Text(
+  //                         "French",
+  //                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+  //                       ),
+  //                       onChanged: (value) {
+  //                         locale = const Locale('fr', 'FR');
+  //                         Get.updateLocale(locale);
+  //                         selectedLAnguage.value = value!;
+  //                         // updateLanguage("French");
+  //                         count++;
+  //                         Get.back();
+  //                         setState(() {});
+  //                         if (kDebugMode) {
+  //                           print(selectedLAnguage);
+  //                         }
+  //                       }),
+  //                   RadioListTile(
+  //                       value: "Arabic",
+  //                       groupValue: selectedLAnguage.value,
+  //                       title: const Text(
+  //                         "Arabic",
+  //                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+  //                       ),
+  //                       onChanged: (value) {
+  //                         locale = const Locale('ar', 'AE');
+  //                         Get.updateLocale(locale);
+  //                         selectedLAnguage.value = value!;
+  //                         // updateLanguage("Arabic");
+  //                         count++;
+  //                         Get.back();
+  //                         setState(() {});
+  //                         if (kDebugMode) {
+  //                           print(selectedLAnguage);
+  //                         }
+  //                       }),
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       GestureDetector(
+  //                         onTap: () {
+  //                           if(count == 1){
+  //                             Get.back();
+  //                             Get.back();
+  //                             updateLanguage(selectedLAnguage.value);
+  //                             prefs.setBool(keyIsFirstLoaded, false);
+  //                           }
+  //                           else{
+  //                             Get.back();
+  //                             Get.back();
+  //                             Get.back();
+  //                             Get.back();
+  //                             updateLanguage(selectedLAnguage.value);
+  //                             prefs.setBool(keyIsFirstLoaded, false);
+  //                           }
+  //                         },
+  //                         child: Container(
+  //                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
+  //                             child: const Padding(
+  //                               padding: EdgeInsets.all(8.0),
+  //                               child: Text(
+  //                                 "Update",
+  //                                 style: TextStyle(color: Colors.white),
+  //                               ),
+  //                             )),
+  //                       ),
+  //                     ],
+  //                   )
+  //                 ],
+  //               ),
+  //             ),
+  //           );
+  //         });
+  //   }
+  // }
 }

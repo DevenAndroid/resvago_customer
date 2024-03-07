@@ -353,13 +353,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     },
                                   );
                                 },
-                                child:  Row(
+                                child: Row(
                                   children: [
                                     const Text('Are You Agree',
                                         style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: Colors.white)),
-                                    Text(' Terms And Conditions?',
+                                    Text(
+                                      ' Terms And Conditions?',
                                       style: GoogleFonts.poppins(
-                                          color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 13),),
+                                          color: const Color(0xFFFFBA00), fontWeight: FontWeight.w600, fontSize: 13),
+                                    ),
                                   ],
                                 ),
                               ),
