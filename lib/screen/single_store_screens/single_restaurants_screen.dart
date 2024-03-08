@@ -49,7 +49,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
       for (var element in value.docs) {
         var gg = element.data();
         menuList ??= [];
-        menuList!.add(MenuData.fromMap(gg, element.id));
+        menuList!.add(MenuData.fromJson(gg));
       }
       setState(() {});
     });
@@ -620,8 +620,8 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                 itemCount: menuList!.length,
                                                 itemBuilder: (context, index) {
                                                   var menuListData = menuList![index];
-                                                  double? priceValue = double.tryParse(menuListData.price);
-                                                  double? discountValue = double.tryParse(menuListData.discount);
+                                                  double? priceValue = double.tryParse(menuListData.price!);
+                                                  double? discountValue = double.tryParse(menuListData.discount!);
                                                   result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
 
                                                   return Column(children: [
@@ -638,7 +638,7 @@ class _SingleRestaurantsScreenState extends State<SingleRestaurantsScreen> {
                                                           child: ClipRRect(
                                                             borderRadius: BorderRadius.circular(10),
                                                             child: CachedNetworkImage(
-                                                              imageUrl: menuListData.image,
+                                                              imageUrl: menuListData.image!,
                                                               fit: BoxFit.cover,
                                                               errorWidget: (_, __, ___) => const Icon(
                                                                 Icons.error,

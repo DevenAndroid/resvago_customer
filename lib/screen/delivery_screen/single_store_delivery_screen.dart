@@ -57,7 +57,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
       for (var element in value.docs) {
         var gg = element.data();
         menuList ??= [];
-        menuList!.add(MenuData.fromMap(gg, element.id));
+        menuList!.add(MenuData.fromJson(gg));
       }
       setState(() {});
     });
@@ -175,7 +175,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
         await firebaseService
             .manageCheckOut(
           // cartId: FirebaseAuth.instance.currentUser!.uid,
-          menuList: menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList(),
+          menuList: menuList!.where((e) => e.qty > 0).map((e) => e.toJson()).toList(),
           restaurantInfo: restaurantData!.toJson(),
           vendorId: vendorId,
           time: DateTime.now().millisecondsSinceEpoch,
@@ -188,7 +188,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
           cartId: DateTime.now().millisecondsSinceEpoch.toString(),
           vendorId: vendorId,
           restaurantInfo: restaurantData!.toJson(),
-          menuList: menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList(),
+          menuList: menuList!.where((e) => e.qty > 0).map((e) => e.toJson()).toList(),
           time: DateTime.now().millisecondsSinceEpoch.toString(),
         );
         final localController = Get.put(LocalController(), permanent: true);
@@ -595,8 +595,8 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                       itemCount: menuList!.length,
                                                       itemBuilder: (context, index) {
                                                         var menuListData = menuList![index];
-                                                        double? priceValue = double.tryParse(menuListData.price);
-                                                        double? discountValue = double.tryParse(menuListData.discount);
+                                                        double? priceValue = double.tryParse(menuListData.price!);
+                                                        double? discountValue = double.tryParse(menuListData.discount!);
                                                         result = priceValue! - (priceValue * (discountValue ?? 0)) / 100;
 
                                                         return Column(children: [
@@ -613,7 +613,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                                 child: ClipRRect(
                                                                   borderRadius: BorderRadius.circular(10),
                                                                   child: CachedNetworkImage(
-                                                                    imageUrl: menuListData.image,
+                                                                    imageUrl: menuListData.image!,
                                                                     fit: BoxFit.cover,
                                                                     errorWidget: (_, __, ___) => const Icon(
                                                                       Icons.error,
@@ -773,7 +773,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                                                           child: ClipRRect(
                                                             borderRadius: BorderRadius.circular(10),
                                                             child: CachedNetworkImage(
-                                                              imageUrl: menuListData.image,
+                                                              imageUrl: menuListData.image!,
                                                               fit: BoxFit.cover,
                                                               errorWidget: (_, __, ___) => const Icon(
                                                                 Icons.error,
@@ -1457,7 +1457,7 @@ class _SingleRestaurantForDeliveryScreenState extends State<SingleRestaurantForD
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    if (menuList!.where((e) => e.qty > 0).map((e) => e.toMap()).toList().isNotEmpty) {
+                                    if (menuList!.where((e) => e.qty > 0).map((e) => e.toJson()).toList().isNotEmpty) {
                                       // FirebaseAuth _auth = FirebaseAuth.instance;
                                       // User? user = _auth.currentUser;
                                         manageCheckOut(widget.restaurantItem!.docid).then((value) {

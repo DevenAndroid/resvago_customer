@@ -11,10 +11,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/logn_controller.dart';
 import '../model/admin_model.dart';
+import '../model/menu_model.dart';
+import '../model/resturant_model.dart';
 import '../routers/routers.dart';
 import '../widget/custom_textfield.dart';
+import 'checkout_for_dining/oder_screen.dart';
 import 'helper.dart';
 import 'dart:math';
 
@@ -43,6 +47,41 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
   void getAdminData() {
     FirebaseFirestore.instance.collection("admin_login").get().then((value) {
       adminModel = AdminModel.fromJson(value.docs.first.data());
+    });
+  }
+  String discountValueKey = 'discount_value';
+  String lunchSelectedKey = 'lunch_selected';
+  String slotKey = 'slot';
+  String guestKey = 'guest';
+  String dateKey = 'date';
+  String restaurantItemKey = 'restaurant_item';
+  String menuListKey = 'selected_menu_list';
+  getDataWithoutLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    double discountValue = prefs.getDouble(discountValueKey) ?? 0.0;
+    bool lunchSelected = prefs.getBool(lunchSelectedKey) ?? false;
+    String slot = prefs.getString(slotKey) ?? '';
+    String docId = prefs.getString("docId") ?? '';
+    int guest = prefs.getInt(guestKey) ?? 0;
+    String date = prefs.getString(dateKey) ?? '';
+    String restaurantItemJson = prefs.getString(restaurantItemKey) ?? '{}';
+    RestaurantModel? restaurantItem = RestaurantModel.fromJson(jsonDecode(restaurantItemJson),docId);
+    String menuListJson = prefs.getString(menuListKey) ?? '[]';
+    List<MenuData>? selectedMenuList = [];
+    if (menuListJson.isNotEmpty) {
+      selectedMenuList = (jsonDecode(menuListJson) as List<dynamic>).map((e) => MenuData.fromJson(e)).toList();
+    }
+    Get.to(()=>OderScreen(
+        checkScreen:"orderScreen",
+        discountValue: discountValue,
+        lunchSelected: lunchSelected,
+        slot: slot,
+        guest: guest,
+        date: DateTime.parse(date),
+        restaurantItem: restaurantItem,
+        menuList: selectedMenuList));
+    setState(() {
+
     });
   }
 
@@ -166,7 +205,15 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                                               content: Text("Verify otp successfully"),
                                                             ));
                                                           }
-                                                          Get.offAllNamed(MyRouters.bottomNavbar);
+                                                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                          var loginValue = prefs.getString("login_response",);
+                                                          if(loginValue !=null || loginValue == "checkOut"){
+                                                            getDataWithoutLogin();
+                                                            prefs.clear();
+                                                          }
+                                                          else{
+                                                            Get.offAllNamed(MyRouters.bottomNavbar);
+                                                          }
                                                         });
                                                       }
                                                     }
@@ -246,7 +293,15 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                                               content: Text("Verify otp successfully"),
                                             ));
                                           }
-                                          Get.offAllNamed(MyRouters.bottomNavbar);
+                                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                                          var loginValue = prefs.getString("login_response",);
+                                          if(loginValue !=null || loginValue == "checkOut"){
+                                            getDataWithoutLogin();
+                                            prefs.clear();
+                                          }
+                                          else{
+                                            Get.offAllNamed(MyRouters.bottomNavbar);
+                                          }
                                         });
                                       }
                                     }),

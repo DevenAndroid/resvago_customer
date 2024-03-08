@@ -172,6 +172,9 @@ AppBar backAppBar(
             if(dispose == 'Data'){
               Get.offAll(const BottomNavbar());
             }
+            if(dispose == 'orderScreen'){
+              Get.offAll(const BottomNavbar());
+            }
             Get.back();
           },
           child: icon ??

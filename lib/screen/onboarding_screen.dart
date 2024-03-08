@@ -1,11 +1,14 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resvago_customer/screen/bottomnav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../routers/routers.dart';
 import '../widget/apptheme.dart';
+import 'language_change_screen.dart';
 import 'login_screen.dart';
 import 'onboarding_list.dart';
 
@@ -20,7 +23,165 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   PageController controller = PageController();
   final RxInt _pageIndex = 0.obs;
   bool loginLoaded = false;
+  updateLanguage(String gg) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("app_language", gg);
+  }
 
+  RxString selectedLAnguage = "English".obs;
+  checkLanguage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? appLanguage = sharedPreferences.getString("app_language");
+    if (appLanguage == null || appLanguage == "English") {
+      Get.updateLocale(const Locale('en', 'US'));
+      selectedLAnguage.value = "English";
+    } else if (appLanguage == "Spanish") {
+      Get.updateLocale(const Locale('es', 'ES'));
+      selectedLAnguage.value = "Spanish";
+    } else if (appLanguage == "French") {
+      Get.updateLocale(const Locale('fr', 'FR'));
+      selectedLAnguage.value = "French";
+    } else if (appLanguage == "Arabic") {
+      Get.updateLocale(const Locale('ar', 'AE'));
+      selectedLAnguage.value = "Arabic";
+    }
+  }
+
+  final keyIsFirstLoaded = 'is_first_loaded';
+
+  Future<void> showDialogLanguage(context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isFirstLoaded = prefs.getBool(keyIsFirstLoaded);
+    if (isFirstLoaded == null) {
+      return showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.clear_rounded,
+                            color: Colors.black,
+                          ),
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            prefs.setBool(keyIsFirstLoaded, false);
+                          },
+                        )
+                      ],
+                    ),
+                    RadioListTile(
+                        value: "English",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "English",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('en', 'US');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("English");
+                          Get.back();
+
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    RadioListTile(
+                        value: "Spanish",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "Spanish",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('es', 'ES');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("Spanish");
+                          Get.back();
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    RadioListTile(
+                        value: "French",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "French",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('fr', 'FR');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("French");
+                          Get.back();
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    RadioListTile(
+                        value: "Arabic",
+                        groupValue: selectedLAnguage.value,
+                        title: const Text(
+                          "Arabic",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
+                        ),
+                        onChanged: (value) {
+                          locale = const Locale('ar', 'AE');
+                          Get.updateLocale(locale);
+                          selectedLAnguage.value = value!;
+                          // updateLanguage("Arabic");
+                          Get.back();
+                          if (kDebugMode) {
+                            print(selectedLAnguage);
+                          }
+                        }),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            Get.back();
+                            updateLanguage(selectedLAnguage.value);
+                            prefs.setBool(keyIsFirstLoaded, false);
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Update",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          });
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -37,9 +198,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   RxInt currentIndex12 = 0.obs;
   RxBool currentIndex1 = false.obs;
   bool isActive = false;
-
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialogLanguage(context);
+    });
     return Scaffold(
         body: SafeArea(
       child: Stack(
@@ -124,7 +287,6 @@ class OnboardContent extends StatelessWidget {
       required this.description,
       required this.indexValue})
       : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;

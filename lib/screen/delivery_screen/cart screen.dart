@@ -33,6 +33,7 @@ import '../../widget/common_text_field.dart';
 import '../bottomnav_bar.dart';
 import '../coupon_list_screen.dart';
 import '../helper.dart';
+import '../login_screen.dart';
 import '../paypal_services/payment.dart';
 import '../paypal_services/paypal.dart';
 
@@ -178,7 +179,7 @@ class _CartScreenState extends State<CartScreen> {
       await firebaseService
           .manageOrder(
               profileData: profileData!.toJson(),
-              orderId: gg.toString(),
+        orderId: gg.toString(),
               restaurantInfo: cartModel.toJson(),
               vendorId: vendorId,
               time: gg,
@@ -394,12 +395,17 @@ class _CartScreenState extends State<CartScreen> {
                             ]))),
                 InkWell(
                   onTap: () {
-                    Get.to(() => MyAddressList(
-                          addressChanged: (AddressModel address) {
-                            addressData = address;
-                            setState(() {});
-                          },
-                        ));
+                    if(FirebaseAuth.instance.currentUser !=null){
+                      Get.to(() => MyAddressList(
+                        addressChanged: (AddressModel address) {
+                          addressData = address;
+                          setState(() {});
+                        },
+                      ));
+                    }
+                    else{
+                      showToast("You Can't add address without login");
+                    }
                   },
                   child: Container(
                       width: size.width,
@@ -810,7 +816,8 @@ class _CartScreenState extends State<CartScreen> {
                         onPressed: () async {
                           if (addressData == null) {
                             showToast("Please choose address");
-                          } else {
+                          }
+                          else {
                             print([
                               {
                                 "amount": {
@@ -1100,6 +1107,8 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ));
   }
+
+
 
   String getOrderConfirmationHtml(
       {String? orderId,

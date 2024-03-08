@@ -101,15 +101,10 @@ class FirebaseService {
     sharedPreferences.setString("checkout", jsonEncode(map));
     print(sharedPreferences.getString("checkout"));
 
-    // Database db = await openDatabase('checkout_database.db');
-    // await db.update('checkout', {
-    //   // "cartId": cartId,
-    //   "vendorId": vendorId,
-    //   "restaurantInfo": jsonEncode(restaurantInfo),
-    //   "menuList": jsonEncode(menuList),
-    //   "time": time.toString(),
-    // });
   }
+
+
+
 
 
   Future manageOrder(
@@ -215,7 +210,7 @@ class FirebaseService {
         "user_data": profileData,
         "menuList": menuList,
         "time": time,
-        "date": date.toString(),
+        "date": date,
         "slot": slot,
         "guest": guest,
         "offer": "20%",

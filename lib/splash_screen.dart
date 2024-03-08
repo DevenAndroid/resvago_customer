@@ -22,7 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
     if (user != null) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) =>  const BottomNavbar()));
-    } else {
+    }
+    else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool _seen = (prefs.getBool('seen') ?? false);
 
@@ -32,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         await prefs.setBool('seen', true);
         Navigator.of(context).pushReplacement(
-            new MaterialPageRoute(builder: (context) => new OnBoardingScreen()));
+            MaterialPageRoute(builder: (context) => const OnBoardingScreen()));
       }
       // Navigator.pushReplacement(
       //   context,

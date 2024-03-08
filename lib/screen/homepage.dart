@@ -173,26 +173,26 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    locationController.checkGps(context).then((value) {});
-    locationController.getLocation();
-    user = _auth.currentUser;
-    if (user != null) {
-      wishListController.startListener();
-      profileController.getProfileData();
-    }
-    geo = GeoFlutterFire();
-    GeoFirePoint center = geo!.point(
-        latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
-    stream = radius.switchMap((rad) {
-      final collectionReference = _firestore.collection('vendor_users');
-      return geo!
-          .collection(collectionRef: collectionReference)
-          .within(center: center, radius: rad, field: 'restaurant_position', strictMode: true);
-    });
-    getSliders();
-    getVendorCategories();
-    getRestaurantList();
-    manageLocalSession();
+      locationController.checkGps(context).then((value) {});
+      locationController.getLocation();
+      user = _auth.currentUser;
+      if (user != null) {
+        wishListController.startListener();
+        profileController.getProfileData();
+      }
+      geo = GeoFlutterFire();
+      GeoFirePoint center = geo!.point(
+          latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
+      stream = radius.switchMap((rad) {
+        final collectionReference = _firestore.collection('vendor_users');
+        return geo!
+            .collection(collectionRef: collectionReference)
+            .within(center: center, radius: rad, field: 'restaurant_position', strictMode: true);
+      });
+      getSliders();
+      getVendorCategories();
+      getRestaurantList();
+      manageLocalSession();
   }
 
   Future<CheckOutModel?> getCartItems() async {
@@ -257,8 +257,10 @@ class _HomePageState extends State<HomePage> {
     bool? isFirstTime = prefs.getBool(isDisplayed);
     if (isFirstTime == null || !isFirstTime) {
       showDialogLanguage(context);
-      prefs.setBool(isDisplayed, true);
     }
+    setState(() {
+
+    });
     print("hghhhhhh$isFirstTime");
   }
   @override
@@ -335,98 +337,98 @@ class _HomePageState extends State<HomePage> {
                 );
               }),
             ),
-            user != null
-                ? Badge(
-              label: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('checkOut')
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: Text(" 0 "));
-                  }
-
-                  if (snapshot.hasError) {
-                    return const Center(child: Text(" 0 "));
-                  }
-
-                  if (!snapshot.hasData || !snapshot.data!.exists) {
-                    return const Center(child: Text(" 0 "));
-                  }
-                  List<dynamic> menuList = snapshot.data!['menuList'];
-                  CheckOutModel checkOutModel = CheckOutModel.fromJson(snapshot.data!.data()!);
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                    child: Text("${checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum}"),
-                  );
-                },
-              ),
-              backgroundColor: Colors.black,
-              padding: EdgeInsets.zero,
-              child: GestureDetector(
-                onTap: () {
-                  FirebaseAuth auth = FirebaseAuth.instance;
-                  User? user = auth.currentUser;
-                  if (user != null) {
-                    Get.toNamed(MyRouters.cartScreen);
-                  } else {
-                    Get.to(() => const LoginScreen());
-                  }
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/images/shoppinbag.png',
-                    height: 30,
-                  ),
-                ),
-              ),
-            )
-                : Obx(() {
-              if (localController.refreshInt.value > 0) {}
-              return FutureBuilder(
-                future: SharedPreferences.getInstance(),
-                builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
-                  // print("adflkhjajdhalsdjajdalsdlasjd");
-                  String count = "0";
-                  if (snapshot.data != null && snapshot.data!.getString("checkout") != null) {
-                    CheckOutModel checkOutModel = CheckOutModel.fromJson(jsonDecode(snapshot.data!.getString("checkout")!));
-                    count = checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum.toString();
-                  }
-                  return Badge(
-                    backgroundColor: Colors.black,
-                    padding: EdgeInsets.zero,
-                    label: count != "0"
-                        ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                      child: Text(count),
-                    )
-                        : const SizedBox(),
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.toNamed(MyRouters.cartScreen);
-                        // FirebaseAuth auth = FirebaseAuth.instance;
-                        // User? user = auth.currentUser;
-                        // if (user != null) {
-                        //   Get.toNamed(MyRouters.cartScreen);
-                        // } else {
-                        //   Get.to(() => const LoginScreen());
-                        // }
-                        // Get.toNamed(MyRouters.cartScreen);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(
-                          'assets/images/shoppinbag.png',
-                          height: 30,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            }),
+            // user != null
+            //     ? Badge(
+            //   label: StreamBuilder(
+            //     stream: FirebaseFirestore.instance
+            //         .collection('checkOut')
+            //         .doc(FirebaseAuth.instance.currentUser!.uid)
+            //         .snapshots(),
+            //     builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+            //       if (snapshot.connectionState == ConnectionState.waiting) {
+            //         return const Center(child: Text(" 0 "));
+            //       }
+            //
+            //       if (snapshot.hasError) {
+            //         return const Center(child: Text(" 0 "));
+            //       }
+            //
+            //       if (!snapshot.hasData || !snapshot.data!.exists) {
+            //         return const Center(child: Text(" 0 "));
+            //       }
+            //       List<dynamic> menuList = snapshot.data!['menuList'];
+            //       CheckOutModel checkOutModel = CheckOutModel.fromJson(snapshot.data!.data()!);
+            //       return Padding(
+            //         padding: const EdgeInsets.symmetric(horizontal: 3.0),
+            //         child: Text("${checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum}"),
+            //       );
+            //     },
+            //   ),
+            //   backgroundColor: Colors.black,
+            //   padding: EdgeInsets.zero,
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       FirebaseAuth auth = FirebaseAuth.instance;
+            //       User? user = auth.currentUser;
+            //       if (user != null) {
+            //         Get.toNamed(MyRouters.cartScreen);
+            //       } else {
+            //         Get.to(() => const LoginScreen());
+            //       }
+            //     },
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: Image.asset(
+            //         'assets/images/shoppinbag.png',
+            //         height: 30,
+            //       ),
+            //     ),
+            //   ),
+            // )
+            //     : Obx(() {
+            //   if (localController.refreshInt.value > 0) {}
+            //   return FutureBuilder(
+            //     future: SharedPreferences.getInstance(),
+            //     builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
+            //       // print("adflkhjajdhalsdjajdalsdlasjd");
+            //       String count = "0";
+            //       if (snapshot.data != null && snapshot.data!.getString("checkout") != null) {
+            //         CheckOutModel checkOutModel = CheckOutModel.fromJson(jsonDecode(snapshot.data!.getString("checkout")!));
+            //         count = checkOutModel.menuList!.map((e) => int.tryParse(e.qty.toString()) ?? 0).toList().sum.toString();
+            //       }
+            //       return Badge(
+            //         backgroundColor: Colors.black,
+            //         padding: EdgeInsets.zero,
+            //         label: count != "0"
+            //             ? Padding(
+            //           padding: const EdgeInsets.symmetric(horizontal: 3.0),
+            //           child: Text(count),
+            //         )
+            //             : const SizedBox(),
+            //         child: GestureDetector(
+            //           onTap: () {
+            //             Get.toNamed(MyRouters.cartScreen);
+            //             // FirebaseAuth auth = FirebaseAuth.instance;
+            //             // User? user = auth.currentUser;
+            //             // if (user != null) {
+            //             //   Get.toNamed(MyRouters.cartScreen);
+            //             // } else {
+            //             //   Get.to(() => const LoginScreen());
+            //             // }
+            //             // Get.toNamed(MyRouters.cartScreen);
+            //           },
+            //           child: Padding(
+            //             padding: const EdgeInsets.all(8.0),
+            //             child: Image.asset(
+            //               'assets/images/shoppinbag.png',
+            //               height: 30,
+            //             ),
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //   );
+            // }),
             GestureDetector(
               onTap: () {
                 FirebaseAuth auth = FirebaseAuth.instance;
@@ -1133,152 +1135,6 @@ class _HomePageState extends State<HomePage> {
   int count = 1;
   final keyIsFirstLoaded = 'is_first_loaded';
 
-
-  showDialog1(context){
-     showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        child: const Icon(
-                          Icons.clear_rounded,
-                          color: Colors.black,
-                        ),
-                        onTap: () {
-                          Get.back();
-                          Get.back();
-                          Get.back();
-                          Get.back();
-                          Get.back();
-                          // prefs.setBool(keyIsFirstLoaded, false);
-                        },
-                      )
-                    ],
-                  ),
-                  RadioListTile(
-                      value: "English",
-                      groupValue: selectedLAnguage.value,
-                      title: const Text(
-                        "English",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                      ),
-                      onChanged: (value) {
-                        locale = const Locale('en', 'US');
-                        Get.updateLocale(locale);
-                        selectedLAnguage.value = value!;
-                        // updateLanguage("English");
-                        count++;
-                        Get.back();
-                        setState(() {});
-                        if (kDebugMode) {
-                          print(selectedLAnguage);
-                        }
-                      }),
-                  RadioListTile(
-                      value: "Spanish",
-                      groupValue: selectedLAnguage.value,
-                      title: const Text(
-                        "Spanish",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                      ),
-                      onChanged: (value) {
-                        locale = const Locale('es', 'ES');
-                        Get.updateLocale(locale);
-                        selectedLAnguage.value = value!;
-                        // updateLanguage("Spanish");
-                        count++;
-                        Get.back();
-                        setState(() {});
-                        if (kDebugMode) {
-                          print(selectedLAnguage);
-                        }
-                      }),
-                  RadioListTile(
-                      value: "French",
-                      groupValue: selectedLAnguage.value,
-                      title: const Text(
-                        "French",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                      ),
-                      onChanged: (value) {
-                        locale = const Locale('fr', 'FR');
-                        Get.updateLocale(locale);
-                        selectedLAnguage.value = value!;
-                        // updateLanguage("French");
-                        count++;
-                        Get.back();
-                        setState(() {});
-                        if (kDebugMode) {
-                          print(selectedLAnguage);
-                        }
-                      }),
-                  RadioListTile(
-                      value: "Arabic",
-                      groupValue: selectedLAnguage.value,
-                      title: const Text(
-                        "Arabic",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-                      ),
-                      onChanged: (value) {
-                        locale = const Locale('ar', 'AE');
-                        Get.updateLocale(locale);
-                        selectedLAnguage.value = value!;
-                        // updateLanguage("Arabic");
-                        count++;
-                        Get.back();
-                        setState(() {});
-                        if (kDebugMode) {
-                          print(selectedLAnguage);
-                        }
-                      }),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if(count == 1){
-                            Get.back();
-                            Get.back();
-                            updateLanguage(selectedLAnguage.value);
-                            // prefs.setBool(keyIsFirstLoaded, false);
-                          }
-                          else{
-                            Get.back();
-                            Get.back();
-                            Get.back();
-                            Get.back();
-                            updateLanguage(selectedLAnguage.value);
-                            // prefs.setBool(keyIsFirstLoaded, false);
-                          }
-                        },
-                        child: Container(
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                "Update",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            )),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          );
-        });
-  }
   showDialogLanguage(BuildContext context) async {
     return showDialog(
         barrierDismissible: false,
@@ -1299,12 +1155,13 @@ class _HomePageState extends State<HomePage> {
                           Icons.clear_rounded,
                           color: Colors.black,
                         ),
-                        onTap: () {
+                        onTap: () async {
                           Get.back();
                           Get.back();
                           Get.back();
                           Get.back();
-                          // prefs.setBool(keyIsFirstLoaded, false);
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setBool(isDisplayed, true);
                         },
                       )
                     ],
@@ -1316,12 +1173,14 @@ class _HomePageState extends State<HomePage> {
                         "English",
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         locale = const Locale('en', 'US');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
                         // updateLanguage("English");
                         Get.back();
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setBool(isDisplayed, true);
                         setState(() {});
                         if (kDebugMode) {
                           print(selectedLAnguage);
@@ -1334,12 +1193,14 @@ class _HomePageState extends State<HomePage> {
                         "Spanish",
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         locale = const Locale('es', 'ES');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
                         // updateLanguage("Spanish");
                         Get.back();
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setBool(isDisplayed, true);
                         setState(() {});
                         if (kDebugMode) {
                           print(selectedLAnguage);
@@ -1352,12 +1213,14 @@ class _HomePageState extends State<HomePage> {
                         "French",
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         locale = const Locale('fr', 'FR');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
                         // updateLanguage("French");
                         Get.back();
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setBool(isDisplayed, true);
                         setState(() {});
                         if (kDebugMode) {
                           print(selectedLAnguage);
@@ -1370,12 +1233,14 @@ class _HomePageState extends State<HomePage> {
                         "Arabic",
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
                       ),
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         locale = const Locale('ar', 'AE');
                         Get.updateLocale(locale);
                         selectedLAnguage.value = value!;
                         // updateLanguage("Arabic");
                         Get.back();
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setBool(isDisplayed, true);
                         setState(() {});
                         if (kDebugMode) {
                           print(selectedLAnguage);
@@ -1385,13 +1250,14 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           Get.back();
                           Get.back();
                           Get.back();
                           Get.back();
                           updateLanguage(selectedLAnguage.value);
-                          // prefs.setBool(keyIsFirstLoaded, false);
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.setBool(keyIsFirstLoaded, false);
                         },
                         child: Container(
                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),

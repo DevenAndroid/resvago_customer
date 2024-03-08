@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,18 +9,23 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:resvago_customer/screen/forgot_password.dart';
 import 'package:resvago_customer/screen/otpscreen.dart';
+import 'package:resvago_customer/screen/single_store_screens/select_date_flow.dart';
 import 'package:resvago_customer/screen/two_step_verification.dart';
 import 'package:resvago_customer/screen/verify_otp_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/logn_controller.dart';
+import '../model/menu_model.dart';
 import '../model/profile_model.dart';
+import '../model/resturant_model.dart';
 import '../routers/routers.dart';
 import '../widget/apptheme.dart';
 import '../widget/custom_textfield.dart';
 import 'bottomnav_bar.dart';
+import 'checkout_for_dining/oder_screen.dart';
 import 'helper.dart';
 import 'dart:math';
 
@@ -59,6 +66,38 @@ class _LoginScreenState extends State<LoginScreen> {
       otp = otpCode;
     });
   }
+
+  getDataWithoutLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    double discountValue = prefs.getDouble(discountValueKey) ?? 0.0;
+    bool lunchSelected = prefs.getBool(lunchSelectedKey) ?? false;
+    String slot = prefs.getString(slotKey) ?? '';
+    String docId = prefs.getString("docId") ?? '';
+    int guest = prefs.getInt(guestKey) ?? 0;
+    String date = prefs.getString(dateKey) ?? '';
+    String restaurantItemJson = prefs.getString(restaurantItemKey) ?? '{}';
+    RestaurantModel? restaurantItem = RestaurantModel.fromJson(jsonDecode(restaurantItemJson),docId);
+    String menuListJson = prefs.getString(menuListKey) ?? '[]';
+    List<MenuData>? selectedMenuList = [];
+    if (menuListJson.isNotEmpty) {
+      selectedMenuList = (jsonDecode(menuListJson) as List<dynamic>).map((e) => MenuData.fromJson(e)).toList();
+    }
+    DateTime parsedDate = DateFormat('yyyy-MM-dd').parse(date);
+    print("xfgdggh${restaurantItem.toJson()}");
+    Get.to(()=>OderScreen(
+        checkScreen:"orderScreen",
+        discountValue: discountValue,
+        lunchSelected: lunchSelected,
+        slot: slot,
+        guest: guest,
+        date: parsedDate,
+        restaurantItem: restaurantItem,
+        menuList: selectedMenuList));
+    setState(() {
+
+    });
+  }
+
 
   void checkEmailInFirestore() async {
     OverlayEntry loader = Helper.overlayLoader(context);
@@ -153,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   "html": "Your otp is $otp",
                   "text": "asdfgwefddfgwefwn",
                 }
-              }).then((value) {
+              }).then((value) async {
                 if (!kIsWeb) {
                   Fluttertoast.showToast(msg: 'Otp email sent to ${emailController.text.trim()}');
                 } else {
@@ -163,7 +202,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
                 Get.to(() => TwoStepVerificationScreen(email: emailController.text, password: passwordController.text, otp: otp));
               });
-            } else {
+            }
+            else {
               FirebaseFirestore.instance.collection("send_mail").add({
                 "to": emailController.text.trim(),
                 "message": {
@@ -172,7 +212,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   "text": "asdfgwefddfgwefwn",
                 }
               });
-              Get.offAllNamed(MyRouters.bottomNavbar);
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              var loginValue = prefs.getString("login_response",);
+              if(loginValue !=null || loginValue == "dining_checkout"){
+                getDataWithoutLogin();
+                prefs.clear();
+              }
+              else{
+                Get.offAllNamed(MyRouters.bottomNavbar);
+              }
             }
           });
           return;
@@ -599,18 +647,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(
                             height: 30,
                           ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(() => const BottomNavbar());
-                              },
-                              child: Text(
-                                'Customer Booking?'.tr,
-                                style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ),
+                          // Align(
+                          //   alignment: Alignment.center,
+                          //   child: GestureDetector(
+                          //     onTap: () {
+                          //       Get.to(() => const BottomNavbar());
+                          //     },
+                          //     child: Text(
+                          //       'Customer Booking?'.tr,
+                          //       style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     )
@@ -620,175 +668,13 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
 
   }
-  // updateLanguage(String gg) async {
-  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  //   sharedPreferences.setString("app_language", gg);
-  // }
-  //
-  // RxString selectedLAnguage = "English".obs;
-  //
-  // checkLanguage() async {
-  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  //   String? appLanguage = sharedPreferences.getString("app_language");
-  //   if (appLanguage == null || appLanguage == "English") {
-  //     Get.updateLocale(const Locale('en', 'US'));
-  //     selectedLAnguage.value = "English";
-  //   } else if (appLanguage == "Spanish") {
-  //     Get.updateLocale(const Locale('es', 'ES'));
-  //     selectedLAnguage.value = "Spanish";
-  //   } else if (appLanguage == "French") {
-  //     Get.updateLocale(const Locale('fr', 'FR'));
-  //     selectedLAnguage.value = "French";
-  //   } else if (appLanguage == "Arabic") {
-  //     Get.updateLocale(const Locale('ar', 'AE'));
-  //     selectedLAnguage.value = "Arabic";
-  //   }
-  // }
-  //
-  // Future<void> showLanguageDialog() async {
-  //   setState(() {
-  //     isDialogShown = true;
-  //   });
-  //
-  //   await showDialog(
-  //     barrierDismissible: false,
-  //     context: context,
-  //     builder: (context) {
-  //       return WillPopScope(
-  //           onWillPop: () async => false,
-  //           child: AlertDialog(
-  //             content: Padding(
-  //               padding: const EdgeInsets.all(12.0),
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 children: [
-  //                   Row(
-  //                     mainAxisAlignment: MainAxisAlignment.end,
-  //                     children: [
-  //                       GestureDetector(
-  //                         child: const Icon(
-  //                           Icons.clear_rounded,
-  //                           color: Colors.black,
-  //                         ),
-  //                         onTap: () {
-  //                           Get.back();
-  //                           Get.back();
-  //                           Get.back();
-  //                           Get.back();
-  //                           Get.back();
-  //                         },
-  //                       )
-  //                     ],
-  //                   ),
-  //                   RadioListTile(
-  //                       value: "English",
-  //                       groupValue: selectedLAnguage.value,
-  //                       title: const Text(
-  //                         "English",
-  //                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-  //                       ),
-  //                       onChanged: (value) {
-  //                         locale = const Locale('en', 'US');
-  //                         Get.updateLocale(locale);
-  //                         selectedLAnguage.value = value!;
-  //                         // updateLanguage("English");
-  //                         Get.back();
-  //                         setState(() {});
-  //                         if (kDebugMode) {
-  //                           print(selectedLAnguage);
-  //                         }
-  //                       }),
-  //                   RadioListTile(
-  //                       value: "Spanish",
-  //                       groupValue: selectedLAnguage.value,
-  //                       title: const Text(
-  //                         "Spanish",
-  //                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-  //                       ),
-  //                       onChanged: (value) {
-  //                         locale = const Locale('es', 'ES');
-  //                         Get.updateLocale(locale);
-  //                         selectedLAnguage.value = value!;
-  //                         // updateLanguage("Spanish");
-  //                         Get.back();
-  //                         setState(() {});
-  //                         if (kDebugMode) {
-  //                           print(selectedLAnguage);
-  //                         }
-  //                       }),
-  //                   RadioListTile(
-  //                       value: "French",
-  //                       groupValue: selectedLAnguage.value,
-  //                       title: const Text(
-  //                         "French",
-  //                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-  //                       ),
-  //                       onChanged: (value) {
-  //                         locale = const Locale('fr', 'FR');
-  //                         Get.updateLocale(locale);
-  //                         selectedLAnguage.value = value!;
-  //                         // updateLanguage("French");
-  //                         Get.back();
-  //                         setState(() {});
-  //                         if (kDebugMode) {
-  //                           print(selectedLAnguage);
-  //                         }
-  //                       }),
-  //                   RadioListTile(
-  //                       value: "Arabic",
-  //                       groupValue: selectedLAnguage.value,
-  //                       title: const Text(
-  //                         "Arabic",
-  //                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff000000)),
-  //                       ),
-  //                       onChanged: (value) {
-  //                         locale = const Locale('ar', 'AE');
-  //                         Get.updateLocale(locale);
-  //                         selectedLAnguage.value = value!;
-  //                         // updateLanguage("Arabic");
-  //                         Get.back();
-  //                         setState(() {});
-  //                         if (kDebugMode) {
-  //                           print(selectedLAnguage);
-  //                         }
-  //                       }),
-  //                   Row(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: [
-  //                       GestureDetector(
-  //                         onTap: () {
-  //                           Get.back();
-  //                           Get.back();
-  //                           Get.back();
-  //                           Get.back();
-  //                           updateLanguage(selectedLAnguage.value);
-  //                         },
-  //                         child: Container(
-  //                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppTheme.primaryColor),
-  //                             child: const Padding(
-  //                               padding: EdgeInsets.all(8.0),
-  //                               child: Text(
-  //                                 "Update",
-  //                                 style: TextStyle(color: Colors.white),
-  //                               ),
-  //                             )),
-  //                       ),
-  //                     ],
-  //                   )
-  //                 ],
-  //               ),
-  //             ),
-  //           )
-  //       );
-  //     },
-  //   );
-  //
-  //   setState(() {
-  //     isDialogShown = false;
-  //     isDialogDismissed = true;
-  //   });
-  // }
+  String discountValueKey = 'discount_value';
+  String lunchSelectedKey = 'lunch_selected';
+  String slotKey = 'slot';
+  String guestKey = 'guest';
+  String dateKey = 'date';
+  String restaurantItemKey = 'restaurant_item';
+  String menuListKey = 'selected_menu_list';
   }
 
 

@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:resvago_customer/model/coupon_modal.dart';
 import 'package:resvago_customer/screen/coupon_list_screen.dart';
 import 'package:resvago_customer/screen/helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../model/menu_model.dart';
 import '../../model/model_store_slots.dart';
@@ -68,7 +69,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
       for (var element in value.docs) {
         var gg = element.data();
         menuList ??= [];
-        menuList!.add(MenuData.fromMap(gg, element.id));
+        menuList!.add(MenuData.fromJson(gg));
       }
       setState(() {});
     });
@@ -315,7 +316,7 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                 )
                               ],
                             ))
-                        :  Center(
+                        : Center(
                             child: Text("No Offer Selected".tr),
                           ),
                     const SizedBox(
@@ -434,41 +435,59 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {
-                                dynamic discountValue = 0;
-                                if (couponData != null) {
-                                  discountValue = couponData!.discount;
-                                } else {}
-                                FirebaseAuth _auth = FirebaseAuth.instance;
-                                User? user = _auth.currentUser;
-                                if (user != null) {
-                                  if (widget.restaurantItem!.menuSelection != true) {
+                            onPressed: () async {
+                              dynamic discountValue = 0;
+                              if (couponData != null) {
+                                discountValue = couponData!.discount;
+                              } else {}
+                              FirebaseAuth _auth = FirebaseAuth.instance;
+                              User? user = _auth.currentUser;
+                              if (user != null) {
+                                if (widget.restaurantItem!.menuSelection != true) {
+                                  Get.to(() => OderScreen(
+                                      checkScreen: "",
+                                      discountValue: discountValue,
+                                      lunchSelected: lunchSelected,
+                                      slot: slot,
+                                      guest: guest,
+                                      date: today,
+                                      restaurantItem: widget.restaurantItem,
+                                      menuList: menuList != null ? menuList!.where((e) => e.isCheck == true).toList() : []));
+                                } else {
+                                  if (menuList!.where((e) => e.isCheck == true).toList().isNotEmpty) {
+                                    log("aaaaaaa-----${jsonEncode(menuList!.where((e) => e.isCheck == true).map((e) => e.toJson()).toList())}");
                                     Get.to(() => OderScreen(
+                                        checkScreen: "",
                                         discountValue: discountValue,
                                         lunchSelected: lunchSelected,
                                         slot: slot,
                                         guest: guest,
                                         date: today,
                                         restaurantItem: widget.restaurantItem,
-                                        menuList:menuList != null ? menuList!.where((e) => e.isCheck == true).toList() : []));
+                                        menuList: menuList != null ? menuList!.where((e) => e.isCheck == true).toList() : []));
                                   } else {
-                                    if (menuList!.where((e) => e.isCheck == true).toList().isNotEmpty) {
-                                      log("aaaaaaa-----${jsonEncode(menuList!.where((e) => e.isCheck == true).map((e) => e.toMap()).toList())}");
-                                      Get.to(() => OderScreen(
-                                          discountValue: discountValue,
-                                          lunchSelected: lunchSelected,
-                                          slot: slot,
-                                          guest: guest,
-                                          date: today,
-                                          restaurantItem: widget.restaurantItem,
-                                          menuList: menuList != null ? menuList!.where((e) => e.isCheck == true).toList() : []));
-                                    } else {
-                                      showToast("Please select menu");
-                                    }
+                                    showToast("Please select menu");
                                   }
-                                } else {
-                                  Get.to(() => LoginScreen());
                                 }
+                              } else {
+                                log("aaaaaaa-----${jsonEncode(menuList!.where((e) => e.isCheck == true).map((e) => e.toJson()).toList())}");
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                await prefs.setDouble(discountValueKey, double.parse(discountValue.toString()));
+                                await prefs.setBool(lunchSelectedKey, lunchSelected);
+                                await prefs.setString(slotKey, slot!);
+                                await prefs.setString("docId", restaurantData!.docid);
+                                await prefs.setInt(guestKey, guest!);
+                                await prefs.setString(dateKey, today.toString());
+                                await prefs.setString(restaurantItemKey, jsonEncode(restaurantData!));
+                                await prefs.setString(menuListKey,
+                                    jsonEncode(menuList != null ? menuList!.where((e) => e.isCheck == true).toList() : []));
+
+                                String date = prefs.getString(dateKey) ?? '';
+                                log("gdfhdfj$date");
+                                log("gdfhdfj$today");
+                                log("gdfhdfj${restaurantData!.toJson()}");
+                                showLoginDialog();
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.primaryColor,
@@ -496,6 +515,40 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
           ],
         ),
       ),
+    );
+  }
+
+
+  showLoginDialog(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const Text("You can't placed order without login!",style: TextStyle(fontSize: 16),),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                child: const Text("No",style: TextStyle(fontSize: 20,color: Colors.red),),
+                onTap: () {
+                  Get.back(); // Close the dialog
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                child: const Text("Go to login",style: TextStyle(fontSize: 20,color: Colors.green),),
+                onTap: () async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setString("login_response", "dining_checkout");
+                  Get.to(() => const LoginScreen());
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -558,7 +611,6 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
 
     return emailHtml;
   }
-
 
   guestCountWidget() {
     return Column(
@@ -959,4 +1011,12 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
       ],
     );
   }
+
+  String discountValueKey = 'discount_value';
+  String lunchSelectedKey = 'lunch_selected';
+  String slotKey = 'slot';
+  String guestKey = 'guest';
+  String dateKey = 'date';
+  String restaurantItemKey = 'restaurant_item';
+  String menuListKey = 'selected_menu_list';
 }

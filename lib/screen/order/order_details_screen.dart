@@ -102,6 +102,12 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     log(widget.orderId.toString());
+    String formattedDate = "";
+    if(myDiningOrderModel != null){
+      DateTime date = myDiningOrderModel!.date.toDate();
+       formattedDate = DateFormat("dd-MMM-yyyy").format(date);
+      log(formattedDate);
+    }
     return Scaffold(
       appBar: backAppBar(title: "Orders Details".tr, context: context, dispose: widget.data!),
       body: widget.orderType == "Delivery" && myOrderModel.orderDetails != null
@@ -214,7 +220,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                       child: CachedNetworkImage(
                                         imageUrl: myOrderModel.orderDetails!.restaurantInfo!.image.toString(),
                                         fit: BoxFit.cover,
-                                        errorWidget: (_, __, ___) => Icon(
+                                        errorWidget: (_, __, ___) => const Icon(
                                           Icons.error,
                                           color: Colors.red,
                                         ),
@@ -315,7 +321,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                       child: CachedNetworkImage(
                                                         imageUrl: menuData.image,
                                                         fit: BoxFit.cover,
-                                                        errorWidget: (_, __, ___) => Icon(
+                                                        errorWidget: (_, __, ___) => const Icon(
                                                           Icons.error,
                                                           color: Colors.red,
                                                         ),
@@ -726,7 +732,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                           child: CachedNetworkImage(
                                             imageUrl: myDiningOrderModel!.restaurantInfo!.image.toString(),
                                             fit: BoxFit.cover,
-                                            errorWidget: (_, __, ___) => Icon(
+                                            errorWidget: (_, __, ___) => const Icon(
                                               Icons.error,
                                               color: Colors.red,
                                             ),
@@ -763,9 +769,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                       const SizedBox(
                                                         height: 5,
                                                       ),
-                                                      Text(
-                                                        DateFormat("dd-MMM-yyyy")
-                                                            .format(DateTime.parse(myDiningOrderModel!.date.toString())),
+                                                      Text(formattedDate,
                                                         style: GoogleFonts.poppins(
                                                             fontSize: 11,
                                                             fontWeight: FontWeight.w500,
@@ -902,7 +906,7 @@ class _OderDetailsScreenState extends State<OderDetailsScreen> {
                                                           child: CachedNetworkImage(
                                                             imageUrl: menuData.image.toString(),
                                                             fit: BoxFit.cover,
-                                                            errorWidget: (_, __, ___) => Icon(
+                                                            errorWidget: (_, __, ___) => const Icon(
                                                               Icons.error,
                                                               color: Colors.red,
                                                             ),

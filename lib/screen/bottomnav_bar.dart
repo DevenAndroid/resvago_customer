@@ -88,14 +88,14 @@ class _BottomNavbarState extends State<BottomNavbar> {
   void initState() {
     super.initState();
     // updateFCMToken();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkFirstTimeOpen();
-      user = _auth.currentUser;
-      if (user != null) {
-        getProfileData();
-        profileController.getProfileData();
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   checkFirstTimeOpen();
+    // });
+    user = _auth.currentUser;
+    if (user != null) {
+      getProfileData();
+      profileController.getProfileData();
+    }
   }
 
   Future<void> checkFirstTimeOpen() async {
@@ -122,6 +122,9 @@ class _BottomNavbarState extends State<BottomNavbar> {
           drawer: SizedBox(
             width: kIsWeb ? 300 : MediaQuery.of(context).size.width * 0.7,
             child: Drawer(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0)
+              ),
                 child: Container(
               // width: MediaQuery.of(context).size.width * 0.8,
               color: AppTheme.backgroundcolor,
