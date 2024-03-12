@@ -173,26 +173,26 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    user = _auth.currentUser;
+    if (user != null) {
+      wishListController.startListener();
+      profileController.getProfileData();
+    }
+    geo = GeoFlutterFire();
+    GeoFirePoint center = geo!.point(
+        latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
+    stream = radius.switchMap((rad) {
+      final collectionReference = _firestore.collection('vendor_users');
+      return geo!
+          .collection(collectionRef: collectionReference)
+          .within(center: center, radius: rad, field: 'restaurant_position', strictMode: true);
+    });
+    getSliders();
+    getVendorCategories();
+    getRestaurantList();
+    manageLocalSession();
       locationController.checkGps(context).then((value) {});
       locationController.getLocation();
-      user = _auth.currentUser;
-      if (user != null) {
-        wishListController.startListener();
-        profileController.getProfileData();
-      }
-      geo = GeoFlutterFire();
-      GeoFirePoint center = geo!.point(
-          latitude: double.parse(locationController.lat.toString()), longitude: double.parse(locationController.long.toString()));
-      stream = radius.switchMap((rad) {
-        final collectionReference = _firestore.collection('vendor_users');
-        return geo!
-            .collection(collectionRef: collectionReference)
-            .within(center: center, radius: rad, field: 'restaurant_position', strictMode: true);
-      });
-      getSliders();
-      getVendorCategories();
-      getRestaurantList();
-      manageLocalSession();
   }
 
   Future<CheckOutModel?> getCartItems() async {

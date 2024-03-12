@@ -75,6 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
     String docId = prefs.getString("docId") ?? '';
     int guest = prefs.getInt(guestKey) ?? 0;
     String date = prefs.getString(dateKey) ?? '';
+    if (kDebugMode) {
+      print("hjkhkjhjk${date}");
+    }
     String restaurantItemJson = prefs.getString(restaurantItemKey) ?? '{}';
     RestaurantModel? restaurantItem = RestaurantModel.fromJson(jsonDecode(restaurantItemJson),docId);
     String menuListJson = prefs.getString(menuListKey) ?? '[]';
@@ -82,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (menuListJson.isNotEmpty) {
       selectedMenuList = (jsonDecode(menuListJson) as List<dynamic>).map((e) => MenuData.fromJson(e)).toList();
     }
-    DateTime parsedDate = DateFormat('yyyy-MM-dd').parse(date);
+    var parsedDate = DateFormat('yyyy-MM-dd').parse(date.trim().toString());
     print("xfgdggh${restaurantItem.toJson()}");
     Get.to(()=>OderScreen(
         checkScreen:"orderScreen",
@@ -93,6 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
         date: parsedDate,
         restaurantItem: restaurantItem,
         menuList: selectedMenuList));
+    prefs.clear();
     setState(() {
 
     });
@@ -216,7 +220,6 @@ class _LoginScreenState extends State<LoginScreen> {
               var loginValue = prefs.getString("login_response",);
               if(loginValue !=null || loginValue == "dining_checkout"){
                 getDataWithoutLogin();
-                prefs.clear();
               }
               else{
                 Get.offAllNamed(MyRouters.bottomNavbar);

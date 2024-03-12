@@ -59,7 +59,7 @@ class _MyOrderState extends State<MyOrder> {
         .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
-      log(jsonEncode(value.docs.first.data()));
+      log(jsonEncode(value));
     });
     setState(() {});
   }
@@ -1121,6 +1121,10 @@ class _MyOrderState extends State<MyOrder> {
                                   itemCount: myOrder.length,
                                   itemBuilder: (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
+                                    String formattedDate = "";
+                                    DateTime date = orderItem.date.toDate();
+                                    formattedDate = DateFormat("dd-MMM-yyyy").format(date);
+                                    print(formattedDate);
                                     return GestureDetector(
                                       onTap: () {
                                         Get.to(() => OderDetailsScreen(
@@ -1218,8 +1222,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                         height: 5,
                                                                       ),
                                                                       Text(
-                                                                        DateFormat("dd-MMM-yyyy")
-                                                                            .format(DateTime.parse(orderItem.date.toString())),
+                                                                        formattedDate,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w500,
@@ -1414,6 +1417,9 @@ class _MyOrderState extends State<MyOrder> {
                                   itemCount: myOrder.length,
                                   itemBuilder: (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
+                                    String formattedDate = "";
+                                    DateTime date = orderItem.date.toDate();
+                                    formattedDate = DateFormat("dd-MMM-yyyy").format(date);
                                     return Column(children: [
                                       GestureDetector(
                                         onTap: () {
@@ -1510,8 +1516,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                           height: 5,
                                                                         ),
                                                                         Text(
-                                                                          DateFormat("dd-MMM-yyyy")
-                                                                              .format(DateTime.parse(orderItem.date.toString())),
+                                                                          formattedDate,
                                                                           style: GoogleFonts.poppins(
                                                                               fontSize: 11,
                                                                               fontWeight: FontWeight.w500,
@@ -1748,6 +1753,9 @@ class _MyOrderState extends State<MyOrder> {
                                   itemCount: myOrder.length,
                                   itemBuilder: (BuildContext context, int index) {
                                     var orderItem = myOrder[index];
+                                    String formattedDate = "";
+                                    DateTime date = orderItem.date.toDate();
+                                    formattedDate = DateFormat("dd-MMM-yyyy").format(date);
                                     return GestureDetector(
                                       onTap: () {
                                         Get.to(() => OderDetailsScreen(
@@ -1845,8 +1853,7 @@ class _MyOrderState extends State<MyOrder> {
                                                                         height: 5,
                                                                       ),
                                                                       Text(
-                                                                        DateFormat("dd-MMM-yyyy")
-                                                                            .format(DateTime.parse(orderItem.date.toString())),
+                                                                        formattedDate,
                                                                         style: GoogleFonts.poppins(
                                                                             fontSize: 11,
                                                                             fontWeight: FontWeight.w500,

@@ -481,11 +481,11 @@ class _SelectDateFlowScreenState extends State<SelectDateFlowScreen> {
                                 await prefs.setString(restaurantItemKey, jsonEncode(restaurantData!));
                                 await prefs.setString(menuListKey,
                                     jsonEncode(menuList != null ? menuList!.where((e) => e.isCheck == true).toList() : []));
-
                                 String date = prefs.getString(dateKey) ?? '';
-                                log("gdfhdfj$date");
-                                log("gdfhdfj$today");
-                                log("gdfhdfj${restaurantData!.toJson()}");
+
+                                log("gdfhdfj----$today");
+                                log("gdfhdfj----${date.toString()}");
+                                log("gdfhdfj----${restaurantData!.toJson()}");
                                 showLoginDialog();
                               }
                             },

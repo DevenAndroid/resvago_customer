@@ -15,25 +15,20 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   FirebaseService service = FirebaseService();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   Future<void> checkUserAuth() async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
     if (user != null) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) =>  const BottomNavbar()));
-    }
-    else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const BottomNavbar()));
+    } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool _seen = (prefs.getBool('seen') ?? false);
 
       if (_seen) {
-        Navigator.of(context).pushReplacement(
-             MaterialPageRoute(builder: (context) =>  BottomNavbar()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const BottomNavbar()));
       } else {
         await prefs.setBool('seen', true);
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const OnBoardingScreen()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const OnBoardingScreen()));
       }
       // Navigator.pushReplacement(
       //   context,
