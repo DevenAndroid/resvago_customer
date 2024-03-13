@@ -106,8 +106,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (kk["verified"] == false){
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim(),
+          email: kk["email"],
+          password: kk["password"],
         ).then((value){
           FirebaseFirestore.instance
               .collection("customer_users")
